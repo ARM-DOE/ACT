@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+gdf91968 documentation</title>
+    <title>act.qc.clean &#8212; Atmospheric data Community Toolkit 0.post1+g8ac845a documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=e4607acd"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=7e7c28b5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -293,6 +293,7 @@
         <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">cleanup_cf_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">cleanup_incorrect_qc_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -320,6 +321,9 @@
 <span class="sd">            Option to clean up assessments to use the same terminology. Set to</span>
 <span class="sd">            False for default because should only be an issue after adding DQRs</span>
 <span class="sd">            and the function to add DQRs calls this method.</span>
+<span class="sd">        cleanup_incorrect_qc_attributes : bool</span>
+<span class="sd">            Fix incorrectly named quality control variable attributes before</span>
+<span class="sd">            converting to standardized QC.</span>
 <span class="sd">        **kwargs : keywords</span>
 <span class="sd">            Keyword arguments passed through to clean.clean_arm_qc</span>
 <span class="sd">            method.</span>
@@ -333,6 +337,12 @@
 <span class="sd">                ds.clean.cleanup()</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># There are some QC variables with incorrect bit_#_description attribute names.</span>
+        <span class="c1"># This will check for the incorrect attribute names and correct to allow next</span>
+        <span class="c1"># process to work correctly</span>
+        <span class="k">if</span> <span class="n">cleanup_incorrect_qc_attributes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">fix_incorrect_variable_bit_description_attributes</span><span class="p">()</span>
+
         <span class="c1"># Convert ARM QC to be more like CF state fields</span>
         <span class="k">if</span> <span class="n">cleanup_arm_qc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_arm_qc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -781,10 +791,7 @@
 
 <div class="viewcode-block" id="CleanDataset.link_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.link_variables.html#act.qc.CleanDataset.link_variables">[docs]</a>    <span class="k">def</span> <span class="nf">link_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add some attributes to link and explain data</span>
-<span class="sd">        to QC data relationship. Will use non-CF standard_name</span>
-<span class="sd">        of quality_flag. Hopefully this will be added to the</span>
-<span class="sd">        standard_name table in the future.</span>
+<span class="sd">        Add some attributes to link and explain data to QC data relationship.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
             <span class="n">aa</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^qc_(.+)&#39;</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
@@ -793,9 +800,10 @@
                 <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">var</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">continue</span>
+
             <span class="c1"># Skip data quality fields.</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;Quality check results on field:&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;long_name&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;long_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Quality check results on&quot;</span><span class="p">):</span>
                     <span class="k">continue</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -809,7 +817,11 @@
             <span class="c1"># If the QC variable is not in ancillary_variables add</span>
             <span class="k">if</span> <span class="n">qc_variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ancillary_variables</span><span class="p">:</span>
                 <span class="n">ancillary_variables</span> <span class="o">=</span> <span class="n">qc_variable</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ancillary_variables</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ancillary_variables</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
 
             <span class="c1"># Check if QC variable has correct standard_name and iff not fix it.</span>
             <span class="n">correct_standard_name</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
@@ -850,6 +862,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">global_qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_info</span><span class="p">()</span>
+        <span class="n">qc_attributes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">qc_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_qc_variables</span><span class="p">:</span>
             <span class="c1"># Clean up units attribute from unitless to udunits &#39;1&#39;</span>
             <span class="k">try</span><span class="p">:</span>
@@ -949,7 +962,33 @@
                     <span class="k">for</span> <span class="n">test_to_remove</span> <span class="ow">in</span> <span class="n">tests_to_remove</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">remove_test</span><span class="p">(</span>
                             <span class="n">qc_var_name</span><span class="o">=</span><span class="n">qc_var_name</span><span class="p">,</span> <span class="n">test_number</span><span class="o">=</span><span class="n">test_to_remove</span>
-                        <span class="p">)</span></div>
+                        <span class="p">)</span>
+
+        <span class="c1"># If the QC was not cleaned up because it is not correctly formatted with SERI QC</span>
+        <span class="c1"># call the SERI QC method.</span>
+        <span class="k">if</span> <span class="n">global_qc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">DQMS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;qc_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DQMS&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">DQMS</span> <span class="o">=</span> <span class="s1">&#39;sirs_seriqc&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Command_Line&#39;</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">DQMS</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">DQMS</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_seri_qc</span><span class="p">()</span>
+
+        <span class="c1"># If the QC was not cleaned up because it is not correctly formatted with</span>
+        <span class="c1"># SWATS global attributes call the SWATS QC method.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;SWATS QC checks (bit values)&#39;</span>
+            <span class="n">SWATS_QC</span> <span class="o">=</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Mentor_QC_Field_Information&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">SWATS_QC</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">SWATS_QC</span> <span class="ow">and</span> <span class="n">global_qc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_swats_qc</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CleanDataset.normalize_assessment"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.normalize_assessment.html#act.qc.CleanDataset.normalize_assessment">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_assessment</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1097,7 +1136,209 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">flag_masks</span><span class="p">]</span>
 
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span></div></div>
+                <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CleanDataset.fix_incorrect_variable_bit_description_attributes"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes.html#act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">fix_incorrect_variable_bit_description_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to correct incorrectly defined quality control variable attributes.</span>
+<span class="sd">        There are some datastreams with the attribute names incorrectly having &#39;qc_&#39;</span>
+<span class="sd">        prepended to the attribute name. This will fix those attributes so the cleanqc</span>
+<span class="sd">        method can correctly read the attributes.</span>
+
+<span class="sd">        If the variable long_name starts with the string &quot;Quality check results on&quot;</span>
+<span class="sd">        and a variable attribute follows the pattern qc_bit_#_description the &#39;qc_&#39; part of</span>
+<span class="sd">        the variable attribute will be removed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">attr_description_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^qc_bit_([0-9]+)_description$&#39;</span>
+        <span class="n">attr_assessment_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^qc_bit_([0-9]+)_assessment$&#39;</span>
+
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Quality check results on&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="p">[</span><span class="n">attr_description_pattern</span><span class="p">,</span> <span class="n">attr_assessment_pattern</span><span class="p">]:</span>
+                    <span class="n">description</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">new_attr</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">new_attr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CleanDataset.clean_seri_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_seri_qc.html#act.qc.CleanDataset.clean_seri_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_seri_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to apply SERI QC to the quality control variables. The definition of the QC</span>
+<span class="sd">        is listed in a single global attribute and not easily parsable. This method will update</span>
+<span class="sd">        the quality control variable to correctly set the test descriptions for each of the</span>
+<span class="sd">        SERI QC tests defined in the global attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Quality check results on&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">var_name</span>
+            <span class="n">var_name</span> <span class="o">=</span> <span class="n">var_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;qc_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">qc_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s2">&quot;qc_down_short_diffuse&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;qc_short_direct_normal&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;qc_down_short_hemisp&quot;</span><span class="p">,</span>
+            <span class="p">]:</span>
+                <span class="n">value_number</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">]</span>
+                <span class="n">test_number</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_number</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">test_description</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Passed 1-component test; data fall within max-min limits of Kt,Kn, or Kd&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Passed 2-component test; data fall within 0.03 of the Gompertz boundaries&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Passed 3-component test; data come within +/- 0.03 of satifying Kt=Kn+Kd&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Value estimated; passes all pertinent SERI QC tests&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 1-component test; lower than allowed minimum&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Falied 1-component test; higher than allowed maximum&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Passed 3-component test but failed 2-component test by &gt;0.05&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Data fall into a physically impossible region where Kn&gt;Kt by K-space distances of 0.05 to 0.10.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Data fall into a physically impossible region where Kn&gt;Kt by K-space distances of 0.10 to 0.15.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Data fall into a physically impossible region where Kn&gt;Kt by K-space distances of 0.15 to 0.20.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Data fall into a physically impossible region where Kn&gt;Kt by K-space distances of &gt;= 0.20.&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="n">test_assessment</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="k">elif</span> <span class="n">qc_var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;qc_up_long_hemisp&quot;</span><span class="p">,</span> <span class="s2">&quot;qc_down_long_hemisp_shaded&quot;</span><span class="p">]:</span>
+                <span class="n">value_number</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span>
+                <span class="n">test_number</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_number</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">test_description</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Passed 1-component test; data fall within max-min limits of up_long_hemisp and down_long_hemisp_shaded, but short_direct_normal and down_short_hemisp or down_short_diffuse fail the SERI QC tests.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Passed 2-component test; data fall within max-min limits of up_long_hemisp and down_long_hemisp_shaded, and short_direct_normal, or down_short_hemisp and down_short_diffuse pass the SERI QC tests while the difference between down_short_hemisp and down_short_diffuse is greater than 20 W/m2.&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 1-component test; lower than allowed minimum&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 1-component test; higher than allowed maximum&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 2-component test&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="n">test_assessment</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="k">elif</span> <span class="n">qc_var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;qc_up_short_hemisp&quot;</span><span class="p">]:</span>
+                <span class="n">value_number</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span>
+                <span class="n">test_number</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_number</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">test_description</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Passed 1-component test&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Passed 2-component test&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 1-component test; lower than allowed minimum&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 1-component test; higher than allowed maximum&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Failed 2-component test; solar zenith angle is less than 80 degrees and down_short_hemisp is 0 or missing&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="n">test_assessment</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qc_var_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quality_flag&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_missing_value_test</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value_number</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">qc_data</span> <span class="o">==</span> <span class="n">value_number</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+                    <span class="n">var_name</span><span class="p">,</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                    <span class="n">test_number</span><span class="o">=</span><span class="n">test_number</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_description</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s2">&quot;qc_down_short_diffuse&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;qc_short_direct_normal&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;qc_down_short_hemisp&quot;</span><span class="p">,</span>
+            <span class="p">]:</span>
+                <span class="n">calculation</span> <span class="o">=</span> <span class="p">((</span><span class="n">qc_data</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>
+                <span class="n">calculation</span> <span class="o">=</span> <span class="n">calculation</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+                <span class="n">value_number</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+                <span class="n">test_description</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;Parameter too low by 3-component test (Kt=Kn+Kd)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Parameter too high by 3-component test (Kt=Kn+Kd)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Parameter too low by 2-component test (Gompertz boundary)&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Parameter too high by 2-component test (Gompertz boundary)&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="n">test_assessment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">,</span> <span class="s1">&#39;Bad&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value_number</span><span class="p">):</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="n">qc_data</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">qc_data</span> <span class="o">&lt;=</span> <span class="mi">93</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">calculation</span> <span class="o">==</span> <span class="n">value_number</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span>
+                        <span class="n">var_name</span><span class="p">,</span>
+                        <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                        <span class="n">test_meaning</span><span class="o">=</span><span class="n">test_description</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                        <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
+                    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CleanDataset.clean_swats_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_swats_qc.html#act.qc.CleanDataset.clean_swats_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_swats_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fix_data_units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to apply SWATS global attribute quality control definition to the</span>
+<span class="sd">        quality control variables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fix_data_units : bool</span>
+<span class="sd">            The units string for some data variables incorrectly defines degrees Celsius</span>
+<span class="sd">            as &#39;C&#39; insted of the udunits &#39;degC&#39;. When set to true those units strings</span>
+<span class="sd">            are updated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fix_data_units</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;degC&#39;</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Quality check results on&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">qc_var_name</span> <span class="o">=</span> <span class="n">var_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;Value is set to missing_value.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Data value less than valid_min.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Data value greater than valid_max.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Difference between current and previous values exceeds valid_delta.&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Bad&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Indeterminate&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">correct_valid_minmax</span><span class="p">(</span><span class="n">qc_var_name</span><span class="p">)</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Mentor_QC_Field_Information&#39;</span><span class="p">]</span></div></div>
 </pre></div>
 <div class="section ablog__blog_comments">
   

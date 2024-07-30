@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+gdf91968 documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g8ac845a documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=e4607acd"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=7e7c28b5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -211,11 +211,11 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">act.qc</span> <span class="kn">import</span> <span class="n">comparison_tests</span><span class="p">,</span> <span class="n">qctests</span><span class="p">,</span> <span class="n">bsrn_tests</span>
+<span class="kn">from</span> <span class="nn">act.qc</span> <span class="kn">import</span> <span class="n">comparison_tests</span><span class="p">,</span> <span class="n">qctests</span><span class="p">,</span> <span class="n">bsrn_tests</span><span class="p">,</span> <span class="n">qc_summary</span>
 
 
 <div class="viewcode-block" id="QCFilter"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.html#act.qc.QCFilter">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;qcfilter&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">QCFilter</span><span class="p">(</span><span class="n">qctests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">comparison_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">bsrn_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">QCFilter</span><span class="p">(</span><span class="n">qctests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">comparison_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">bsrn_tests</span><span class="o">.</span><span class="n">QCTests</span><span class="p">,</span> <span class="n">qc_summary</span><span class="o">.</span><span class="n">QCSummary</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for building quality control variables containing arrays for</span>
 <span class="sd">    filtering data based on a set of test condition typically based on the</span>
@@ -741,7 +741,10 @@
 
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flag_value</span><span class="p">:</span>
-                <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_number</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_variable</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">qc_variable</span> <span class="o">=</span> <span class="n">test_number</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_number</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">index</span><span class="p">)):</span>
                     <span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_bit</span><span class="p">(</span><span class="n">qc_variable</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">test_number</span><span class="p">)</span>
@@ -994,6 +997,7 @@
         <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">ma_fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">return_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">return_mask_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a numpy masked array containing data and mask or</span>
@@ -1020,6 +1024,8 @@
 <span class="sd">            Invert the masked array mask or return data array where mask is set</span>
 <span class="sd">            to False instead of True set to NaN. Useful for overplotting</span>
 <span class="sd">            where failing.</span>
+<span class="sd">        return_mask_only : boolean</span>
+<span class="sd">            Return the boolean mask only as a numpy array.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1104,9 +1110,21 @@
         <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
             <span class="n">nan_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
 
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get shape of mask from QC variable since there is a chance it will</span>
+            <span class="c1"># be a different shape than data variable.</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># If there is no QC variable make mask from shape of data variable.</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">test_numbers</span><span class="p">:</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
+            <span class="n">qc_test_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_qc_test_mask</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="n">flag_value</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">|</span> <span class="n">qc_test_mask</span>
+
+        <span class="c1"># If requested only return the mask.</span>
+        <span class="k">if</span> <span class="n">return_mask_only</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mask</span>
 
         <span class="c1"># Convert data numpy array into masked array</span>
         <span class="k">try</span><span class="p">:</span>
