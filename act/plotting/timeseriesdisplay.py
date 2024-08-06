@@ -946,7 +946,7 @@ class TimeSeriesDisplay(Display):
             else:
                 units = ''
             ytitle = ''.join(['(', units, ')'])
-            if barb_step_x is None:
+            if barb_step_y is None:
                 num_y = ydata.shape[0]
                 barb_step_y = round(num_y / num_barbs_y)
             if barb_step_y == 0:
