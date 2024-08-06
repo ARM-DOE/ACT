@@ -850,6 +850,8 @@ class TimeSeriesDisplay(Display):
         invert_y_axis=True,
         num_barbs_x=20,
         num_barbs_y=20,
+        barb_step_x=None,
+        barb_step_y=None,
         use_var_for_y=None,
         **kwargs,
     ):
@@ -883,6 +885,12 @@ class TimeSeriesDisplay(Display):
             The number of wind barbs to plot in the x axis.
         num_barbs_y : int
             The number of wind barbs to plot in the y axis.
+        barb_step_x : int
+            Step between each wind barb to plot.  If set, will override
+            values given for num_barbs_x
+        barb_step_y : int
+            Step between each wind barb to plot.  If set, will override
+            values given for num_barbs_y
         cmap : matplotlib.colors.LinearSegmentedColormap
             A color map to use with wind barbs. If this is set the plt.barbs
             routine will be passed the C parameter scaled as sqrt of sum of the
@@ -919,8 +927,9 @@ class TimeSeriesDisplay(Display):
         v = self._ds[dsname][v_field].values
         dim = list(self._ds[dsname][u_field].dims)
         xdata = self._ds[dsname][dim[0]].values
-        num_x = xdata.shape[-1]
-        barb_step_x = round(num_x / num_barbs_x)
+        if barb_step_x is None:
+            num_x = xdata.shape[-1]
+            barb_step_x = round(num_x / num_barbs_x)
         if barb_step_x == 0:
             barb_step_x = 1
 
@@ -937,8 +946,9 @@ class TimeSeriesDisplay(Display):
             else:
                 units = ''
             ytitle = ''.join(['(', units, ')'])
-            num_y = ydata.shape[0]
-            barb_step_y = round(num_y / num_barbs_y)
+            if barb_step_y is None:
+                num_y = ydata.shape[0]
+                barb_step_y = round(num_y / num_barbs_y)
             if barb_step_y == 0:
                 barb_step_y = 1
 
