@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g8ac845a documentation</title>
+    <title>act.plotting.timeseriesdisplay &#8212; Atmospheric data Community Toolkit 0.post1+g834c874 documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,12 +35,12 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=dec1520a" />
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=7e7c28b5"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c27cb0da"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1052,6 +1052,8 @@
         <span class="n">invert_y_axis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">num_barbs_x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
         <span class="n">num_barbs_y</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">barb_step_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">barb_step_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1085,6 +1087,12 @@
 <span class="sd">            The number of wind barbs to plot in the x axis.</span>
 <span class="sd">        num_barbs_y : int</span>
 <span class="sd">            The number of wind barbs to plot in the y axis.</span>
+<span class="sd">        barb_step_x : int</span>
+<span class="sd">            Step between each wind barb to plot.  If set, will override</span>
+<span class="sd">            values given for num_barbs_x</span>
+<span class="sd">        barb_step_y : int</span>
+<span class="sd">            Step between each wind barb to plot.  If set, will override</span>
+<span class="sd">            values given for num_barbs_y</span>
 <span class="sd">        cmap : matplotlib.colors.LinearSegmentedColormap</span>
 <span class="sd">            A color map to use with wind barbs. If this is set the plt.barbs</span>
 <span class="sd">            routine will be passed the C parameter scaled as sqrt of sum of the</span>
@@ -1121,8 +1129,9 @@
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">v_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">u_field</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
         <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">num_x</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">barb_step_x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_x</span> <span class="o">/</span> <span class="n">num_barbs_x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">barb_step_x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_x</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">barb_step_x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_x</span> <span class="o">/</span> <span class="n">num_barbs_x</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">barb_step_x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">barb_step_x</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -1139,8 +1148,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
-            <span class="n">num_y</span> <span class="o">=</span> <span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">barb_step_y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_y</span> <span class="o">/</span> <span class="n">num_barbs_y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">barb_step_y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">num_y</span> <span class="o">=</span> <span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">barb_step_y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_y</span> <span class="o">/</span> <span class="n">num_barbs_y</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">barb_step_y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">barb_step_y</span> <span class="o">=</span> <span class="mi">1</span>
 
