@@ -181,6 +181,10 @@ def add_dqr_to_qc(
             if skip_location_vars and var_name in loc_vars:
                 continue
 
+            # Do not process time varibles
+            if var_name in ['time', 'time_offset']:
+                continue
+
             # Only process provided variable names
             if variable is not None and var_name not in variable:
                 continue
