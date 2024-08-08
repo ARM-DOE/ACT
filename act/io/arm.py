@@ -623,6 +623,9 @@ class WriteDataset:
                 if 'standard_name' not in write_ds[var_name].attrs.keys():
                     continue
 
+                if write_ds[var_name].attrs['standard_name'] != "quality_flag":
+                    continue
+
                 for attr_name in check_atts:
                     try:
                         att_values = write_ds[var_name].attrs[attr_name]
@@ -637,18 +640,22 @@ class WriteDataset:
 
                 # Tell .to_netcdf() to not add a _FillValue attribute for
                 # quality control variables.
-                if FillValue is not None:
+                if FillValue is not False:
                     encoding[var_name] = {'_FillValue': None}
 
-            # Clean up _FillValue vs missing_value mess by creating an
-            # encoding dictionary with each variable's _FillValue set to
-            # requested fill value. May need to improve upon this for data type
-            # and other issues in the future.
-            if FillValue is not None:
-                skip_variables = ['base_time', 'time_offset', 'qc_time'] + list(encoding.keys())
-                for var_name in list(write_ds.data_vars):
-                    if var_name not in skip_variables:
-                        encoding[var_name] = {'_FillValue': FillValue}
+        # Clean up _FillValue vs missing_value mess by creating an
+        # encoding dictionary with each variable's _FillValue set to
+        # requested fill value. May need to improve upon this for data type
+        # and other issues in the future.
+        if FillValue is not False:
+            for var_name in list(write_ds.data_vars):
+                if '_FillValue' in write_ds[var_name].attrs:
+                    continue
+
+                if var_name not in encoding.keys():
+                    encoding[var_name] = {'_FillValue': FillValue}
+                elif '_FillValue' not in encoding[var_name].keys():
+                    encoding[var_name] = {'_FillValue': FillValue}
 
         if delete_global_attrs is not None:
             for attr in delete_global_attrs:
@@ -767,8 +774,14 @@ class WriteDataset:
                 ]
             )
 
-        if 'time_bounds' in encoding.keys():
-            encoding['time_bounds']['dtype'] = 'float64'
+        # Correct time variable from having a _FillValue attribute written to the file.
+        try:
+            if 'time' not in encoding.keys():
+                encoding['time'] = {}
+
+            encoding['time']['_FillValue'] = None
+        except KeyError:
+            pass
 
         if hasattr(write_ds, 'time_bounds') and not write_ds.time.encoding:
             write_ds.time.encoding.update(write_ds.time_bounds.encoding)
