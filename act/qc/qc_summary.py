@@ -8,6 +8,7 @@ description.
 """
 
 import datetime
+import copy
 
 
 class QCSummary:
@@ -23,7 +24,9 @@ class QCSummary:
         """initialize"""
         self._ds = ds
 
-    def create_qc_summary(self, cleanup_qc=False):
+    def create_qc_summary(
+        self, cleanup_qc=False, remove_attrs=['fail_min', 'fail_max', 'fail_delta']
+    ):
         """
         Method to convert embedded quality control to summary QC that utilzes
         flag values instead of flag masks and summarizes the assessments to only
@@ -34,6 +37,8 @@ class QCSummary:
             Call clean.cleanup() method to convert to standardized ancillary quality control
             variables. The quality control summary requires the current embedded quality
             control variables to use ACT standards.
+        remove_attrs : None, list
+            Quality Control variable attributes to remove after creating the summary.
 
         Returns
         -------
@@ -49,16 +54,16 @@ class QCSummary:
             'Bad',
         ]
         standard_meanings = [
-            "Data suspect, further analysis recommended",
-            "Data suspect, further analysis recommended",
-            "Data incorrect, use not recommended",
-            "Data incorrect, use not recommended",
+            "Data suspect further analysis recommended",
+            "Data suspect further analysis recommended",
+            "Data incorrect use not recommended",
+            "Data incorrect use not recommended",
         ]
 
-        if cleanup_qc:
-            self._ds.clean.cleanup()
-
         return_ds = self._ds.copy()
+
+        if cleanup_qc:
+            return_ds.clean.cleanup()
 
         added = False
         for var_name in list(self._ds.data_vars):
@@ -111,14 +116,23 @@ class QCSummary:
                     flag_value=True,
                 )
 
-            self._ds.update({qc_var_name: return_ds[qc_var_name]})
+            # Remove fail limit variable attributes
+            if remove_attrs is not None:
+                for att_name in copy.copy(list(return_ds[qc_var_name].attrs.keys())):
+                    if att_name in remove_attrs:
+                        del return_ds[qc_var_name].attrs[att_name]
 
         if added:
-            history = return_ds.attrs['history']
-            history += (
-                " ; Quality control summary implemented by ACT at "
-                f"{datetime.datetime.utcnow().isoformat()} UTC."
+            from act import __version__ as version
+
+            history_value = (
+                f"Quality control summary implemented by ACT-{version} at "
+                f"{datetime.datetime.utcnow().replace(microsecond=0)} UTC"
             )
-            return_ds.attrs['history'] = history
+
+            if 'history' in list(return_ds.attrs.keys()):
+                return_ds.attrs['history'] += f" ; {history_value}"
+            else:
+                return_ds.attrs['history'] = history_value
 
         return return_ds
