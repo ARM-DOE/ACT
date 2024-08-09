@@ -8,6 +8,7 @@ import datetime as dt
 import numpy as np
 import requests
 import json
+from dateutil import parser
 
 from act.config import DEFAULT_DATASTREAM_NAME
 
@@ -22,6 +23,7 @@ def add_dqr_to_qc(
     cleanup_qc=True,
     dqr_link=False,
     skip_location_vars=False,
+    create_missing_qc_variables=True,
 ):
     """
     Function to query the ARM DQR web service for reports and
@@ -68,6 +70,9 @@ def add_dqr_to_qc(
     skip_location_vars : boolean
         Does not apply DQRs to location variables.  This can be useful in the event
         the submitter has erroneously selected all variables.
+    create_missing_qc_variables : boolean
+        If a quality control varible for the data varialbe does not exist,
+        create the quality control varible and apply DQR.
 
     Returns
     -------
@@ -102,8 +107,35 @@ def add_dqr_to_qc(
     if cleanup_qc:
         ds.clean.cleanup()
 
-    start_date = ds['time'].values[0].astype('datetime64[s]').astype(dt.datetime).strftime('%Y%m%d')
-    end_date = ds['time'].values[-1].astype('datetime64[s]').astype(dt.datetime).strftime('%Y%m%d')
+    # Get time from Dataset
+    time = ds['time'].values
+
+    # If the time is not a datetime64 because the read routine was not asked to
+    # convert CF variables, convert the time varible for this routine only.
+    if not np.issubdtype(time.dtype, np.datetime64):
+        units_strings = [
+            'seconds since ',
+            'minutes since ',
+            'hours since ',
+            'days since ',
+            'milliseconds since ',
+            'months since ',
+            'years since ',
+        ]
+        td64_strings = ['s', 'm', 'h', 'D', 'ms', 'M', 'Y']
+        units = ds['time'].attrs['units']
+        for ii, _ in enumerate(units_strings):
+            if units.startswith(units_strings[ii]):
+                units = units.replace(units_strings[ii], '')
+                td64_string = td64_strings[ii]
+                break
+
+        start_time = parser.parse(units)
+        start_time = np.datetime64(start_time, td64_string)
+        time = start_time + ds['time'].values.astype('timedelta64[s]')
+
+    start_date = time[0].astype(dt.datetime).strftime('%Y%m%d')
+    end_date = time[-1].astype(dt.datetime).strftime('%Y%m%d')
 
     # Clean up assessment to ensure it is a string with no spaces.
     if isinstance(assessment, (list, tuple)):
@@ -152,7 +184,7 @@ def add_dqr_to_qc(
             for time_range in docs[quality_category][dqr_number]['dates']:
                 starttime = np.datetime64(time_range['start_date'])
                 endtime = np.datetime64(time_range['end_date'])
-                ind = np.where((ds['time'].values >= starttime) & (ds['time'].values <= endtime))
+                ind = np.where((time >= starttime) & (time <= endtime))
                 if ind[0].size > 0:
                     index = np.append(index, ind[0])
 
@@ -182,7 +214,7 @@ def add_dqr_to_qc(
                 continue
 
             # Do not process time varibles
-            if var_name in ['time', 'time_offset']:
+            if var_name in ['time', 'time_offset', 'time_bounds']:
                 continue
 
             # Only process provided variable names
@@ -196,6 +228,12 @@ def add_dqr_to_qc(
                     continue
             except KeyError:
                 pass
+
+            if (
+                create_missing_qc_variables is False
+                and ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False) is None
+            ):
+                continue
 
             try:
                 ds.qcfilter.add_test(
