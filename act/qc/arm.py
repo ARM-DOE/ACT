@@ -134,8 +134,8 @@ def add_dqr_to_qc(
         start_time = np.datetime64(start_time, td64_string)
         time = start_time + ds['time'].values.astype('timedelta64[s]')
 
-    start_date = time[0].astype(dt.datetime).strftime('%Y%m%d')
-    end_date = time[-1].astype(dt.datetime).strftime('%Y%m%d')
+    start_date = time[0].astype('datetime64[s]').astype(dt.datetime).strftime('%Y%m%d')
+    end_date = time[-1].astype('datetime64[s]').astype(dt.datetime).strftime('%Y%m%d')
 
     # Clean up assessment to ensure it is a string with no spaces.
     if isinstance(assessment, (list, tuple)):
