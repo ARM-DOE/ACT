@@ -60,10 +60,10 @@ class QCSummary:
             "Data incorrect use not recommended",
         ]
 
-        return_ds = self._ds.copy()
-
         if cleanup_qc:
-            return_ds.clean.cleanup()
+            self._ds.clean.cleanup()
+
+        return_ds = self._ds.copy()
 
         added = False
         for var_name in list(self._ds.data_vars):
@@ -121,6 +121,8 @@ class QCSummary:
                 for att_name in copy.copy(list(return_ds[qc_var_name].attrs.keys())):
                     if att_name in remove_attrs:
                         del return_ds[qc_var_name].attrs[att_name]
+
+            self._ds.update({qc_var_name: return_ds[qc_var_name]})
 
         if added:
             from act import __version__ as version
