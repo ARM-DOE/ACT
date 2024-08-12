@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+g834c874 documentation</title>
+    <title>act.utils.io_utils &#8212; Atmospheric data Community Toolkit 0.post1+gc20753b documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c27cb0da"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=600626e3"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -48,8 +48,7 @@
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-
+    <link rel="search" title="Search" href="../../../search.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -63,17 +62,14 @@
                     gtag('js', new Date());
                     gtag('config', 'G-8YN80YZDD8');
                 </script>
-
-
+ 
 <link
   rel="alternate"
   type="application/atom+xml"
   href="../../../blog/atom.xml"
   title="ACT Blog"
 />
-
-
-
+  
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -198,10 +194,13 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                
-<h1>Source code for act.utils.io_utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+                 <h1>Source code for act.utils.io_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">act</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">sep</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
 <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">rmtree</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
@@ -222,8 +221,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates TAR file from list of filenames provided. Currently only works with</span>
 <span class="sd">    all files existing in the same directory.</span>
-
-<span class="sd">    ...</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -282,8 +279,6 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unpacks TAR file contents into provided base directory</span>
-
-<span class="sd">    ...</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -357,8 +352,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cleans up files and directory possibly created from unpacking TAR files with unpack_tar()</span>
 
-<span class="sd">    ...</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dirname : str, pathlib.Path, None</span>
@@ -411,8 +404,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a gunzip file from a filename path</span>
 
-<span class="sd">    ...</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str, pathlib.Path</span>
@@ -450,8 +441,6 @@
 <div class="viewcode-block" id="unpack_gzip"><a class="viewcode-back" href="../../../API/generated/act.utils.unpack_gzip.html#act.utils.unpack_gzip">[docs]</a><span class="k">def</span> <span class="nf">unpack_gzip</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">write_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts file from a gunzip file.</span>
-
-<span class="sd">    ...</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -491,8 +480,6 @@
 <div class="viewcode-block" id="generate_movie"><a class="viewcode-back" href="../../../API/generated/act.utils.generate_movie.html#act.utils.generate_movie">[docs]</a><span class="k">def</span> <span class="nf">generate_movie</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">write_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a movie from a list of images or convert movie to different type</span>
-
-<span class="sd">    ...</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -578,10 +565,194 @@
         <span class="n">clip</span><span class="o">.</span><span class="n">write_videofile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">write_filename</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">write_filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="arm_standards_validator"><a class="viewcode-back" href="../../../API/generated/act.utils.arm_standards_validator.html#act.utils.arm_standards_validator">[docs]</a><span class="k">def</span> <span class="nf">arm_standards_validator</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ARM Data Validator (ADV) - Checks to ensure that ARM standards are being followed</span>
+<span class="sd">    in the files or dataset passed to it.  Note, this includes a minimal set of</span>
+<span class="sd">    standards that it checks against</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : str</span>
+<span class="sd">        Filename to check against ARM standards.  Do not pass in both a file and dataset</span>
+<span class="sd">    dataset : xarray.DataSet</span>
+<span class="sd">        Xarray dataset of an already read in file.</span>
+<span class="sd">    verbose : boolean</span>
+<span class="sd">        Defaults to print out errors in addition to returning a list of them</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    err : list</span>
+<span class="sd">        List of errors in the data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Set up the error tracking list</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># Check file naming standards</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">60.0</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Filename length exceeds 60 characters&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f_obj</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data_utils</span><span class="o">.</span><span class="n">DatastreamParserARM</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">datastream_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">facility</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">ext</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s1">&#39;Filename does not follow the normal ARM convention: &#39;</span>
+                <span class="o">+</span> <span class="s1">&#39;(sss)(inst)(qualifier)(temporal)(Fn).(dl).(yyyymmdd).(hhmmss).nc&#39;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f_obj</span><span class="o">.</span><span class="n">level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">]:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f_obj</span><span class="o">.</span><span class="n">level</span> <span class="o">+</span> <span class="s1">&#39; is not a standard ARM data level&#39;</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">arm_site_location_search</span><span class="p">(</span>
+            <span class="n">site_code</span><span class="o">=</span><span class="n">f_obj</span><span class="o">.</span><span class="n">site</span><span class="p">,</span> <span class="n">facility_code</span><span class="o">=</span><span class="n">f_obj</span><span class="o">.</span><span class="n">facility</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Site and facility are not ARM standard&#39;</span><span class="p">)</span>
+
+    <span class="c1"># The ability to read a file from NetCDF to xarray will catch a lot of the</span>
+    <span class="c1"># problems with formatting.  This would leave standard ARM checks</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File and dataset are both None&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;File is not in a standard format that is readable by xarray: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)]</span>
+
+    <span class="c1"># Review time variables for errors for conformance to standards</span>
+    <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">dims</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;time&quot; is required to be the first dimension.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="s1">&#39;: Coordinate is not included in dimensions.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Time must not include NaNs.&#39;</span><span class="p">)</span>
+
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">duplicated</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">duplicates</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Duplicate times present in the file&#39;</span><span class="p">)</span>
+
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&lt;=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Time is not in increasing order&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;base_time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">or</span> <span class="s1">&#39;time_offset&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires base_time and time_offset variables.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check to make sure other coordinate variables don&#39;t have nans</span>
+    <span class="c1"># Also check to make sure coordinate variables are not decreasing</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Coordinates must not include NaNs &#39;</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
+
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="s1">&#39; is not in increasing order&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;missing_value&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">encoding</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="s1">&#39; should not include missing value&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Verify that each variable has a long_name and units attributes</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;bounds&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">):</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: &quot;time&quot; is required to be the first dimension.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;: is not defined as a scalar.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;long_name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Required attribute long_name not in &#39;</span> <span class="o">+</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="s1">&#39; long_name attribute does not start with uppercase&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s1">&#39;qc_&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;bounds&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;missing_value&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;FillValue&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">encoding</span><span class="p">):</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="s1">&#39; does not include missing_value or FillValue attributes&#39;</span><span class="p">)</span>
+
+        <span class="c1"># QC variable checks</span>
+        <span class="k">if</span> <span class="s1">&#39;qc_&#39;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;QC variable does not have a corresponding variable &#39;</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="s1">&#39;ancillary_variables&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:]]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39; does not include ancillary_variable attribute pointing to &#39;</span> <span class="o">+</span> <span class="n">v</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;description&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="s1">&#39; does not include description attribute&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;flag_method&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="s1">&#39; does not include flag_method attribute&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;bounds&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Required attribute units not in &#39;</span> <span class="o">+</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="c1"># Lat/Lon/Alt Checks</span>
+    <span class="k">if</span> <span class="s1">&#39;lat&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires the latitude variable to be named lat&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;latitude&#39;</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires the lat standard_name to be latitude&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;lat&quot; variable does not have a standard_name attribute&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;lon&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires the longitude variable to be named lon&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;longitude&#39;</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires the lon standard_name to be longitude&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;long&quot; variable does not have a standard_name attribute&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;alt&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires the altitude variable to be named alt&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;alt&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;altitude&#39;</span><span class="p">:</span>
+                <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ARM requires the alt standard_name to be altitude&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;alt&quot; variable does not have a standard_name attribute&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Required global attributes</span>
+    <span class="n">req_att</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;doi&#39;</span><span class="p">,</span> <span class="s1">&#39;sampling_interval&#39;</span><span class="p">,</span> <span class="s1">&#39;averaging_interval&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">ra</span> <span class="ow">in</span> <span class="n">req_att</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ra</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Global attribute is missing: &#39;</span> <span class="o">+</span> <span class="n">ra</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">err</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File is passing standards checks&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">err</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
-  
-  
+   
 </div>
 
               </div>
