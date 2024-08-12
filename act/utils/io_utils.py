@@ -25,8 +25,6 @@ def pack_tar(filenames, write_filename=None, write_directory=None, remove=False)
     Creates TAR file from list of filenames provided. Currently only works with
     all files existing in the same directory.
 
-    ...
-
     Parameters
     ----------
     filenames : str or list
@@ -84,8 +82,6 @@ def unpack_tar(
 ):
     """
     Unpacks TAR file contents into provided base directory
-
-    ...
 
     Parameters
     ----------
@@ -159,8 +155,6 @@ def cleanup_files(dirname=None, files=None):
     """
     Cleans up files and directory possibly created from unpacking TAR files with unpack_tar()
 
-    ...
-
     Parameters
     ----------
     dirname : str, pathlib.Path, None
@@ -213,8 +207,6 @@ def pack_gzip(filename, write_directory=None, remove=False):
     """
     Creates a gunzip file from a filename path
 
-    ...
-
     Parameters
     ----------
     filename : str, pathlib.Path
@@ -252,8 +244,6 @@ def pack_gzip(filename, write_directory=None, remove=False):
 def unpack_gzip(filename, write_directory=None, remove=False):
     """
     Extracts file from a gunzip file.
-
-    ...
 
     Parameters
     ----------
@@ -293,8 +283,6 @@ def unpack_gzip(filename, write_directory=None, remove=False):
 def generate_movie(images, write_filename=None, fps=10, **kwargs):
     """
     Creates a movie from a list of images or convert movie to different type
-
-    ...
 
     Parameters
     ----------
@@ -387,8 +375,6 @@ def arm_standards_validator(file=None, dataset=None, verbose=True):
     ARM Data Validator (ADV) - Checks to ensure that ARM standards are being followed
     in the files or dataset passed to it.  Note, this includes a minimal set of
     standards that it checks against
-
-    ...
 
     Parameters
     ----------
