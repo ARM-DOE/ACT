@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 import tarfile
+from os import sep
 from os import PathLike
 from shutil import rmtree
 import gzip
@@ -409,7 +410,7 @@ def arm_standards_validator(file=None, dataset=None, verbose=True):
     err = []
     if file is not None:
         # Check file naming standards
-        if len(file) > 60.0:
+        if len(file.split(sep)[-1]) > 60.0:
             err.append('Filename length exceeds 60 characters')
         try:
             f_obj = act.utils.data_utils.DatastreamParserARM(file)

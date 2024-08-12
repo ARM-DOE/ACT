@@ -288,11 +288,11 @@ def test_generate_movie():
 
 
 def test_arm_standards_validator():
-    f = './sgpmetE13.b1.20230324.000000.nc'
-    errors = act.utils.arm_standards_validator(f)
+    met_files = sample_files.EXAMPLE_MET_SAIL
+    errors = act.utils.arm_standards_validator(met_files)
     assert len(errors) == 0
 
-    ds = act.io.read_arm_netcdf(f)
+    ds = act.io.read_arm_netcdf(met_files)
     ds2 = ds.drop_vars(['lat', 'lon', 'alt'])
     errors = act.utils.arm_standards_validator(dataset=ds2)
 
@@ -318,7 +318,7 @@ def test_arm_standards_validator():
     errors = act.utils.arm_standards_validator(dataset=ds2)
     assert len(errors) == 54
 
-    ds2 = act.io.read_arm_netcdf(f)
+    ds2 = act.io.read_arm_netcdf(met_files)
     ds2['time'].values[1] = ds2['time'].values[10]
     errors = act.utils.arm_standards_validator(dataset=ds2)
 
