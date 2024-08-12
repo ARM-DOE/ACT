@@ -334,3 +334,7 @@ def test_arm_standards_validator():
     errors = act.utils.arm_standards_validator(file)
 
     assert 'no files to open' in errors[0]
+
+    ds = act.io.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
+    errors = act.utils.arm_standards_validator(dataset=ds)
+    assert len(errors) == 4

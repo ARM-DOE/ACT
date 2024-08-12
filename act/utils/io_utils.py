@@ -408,7 +408,7 @@ def arm_standards_validator(file=None, dataset=None, verbose=True):
 
     # Set up the error tracking list
     err = []
-    if file is not None:
+    if file is not None and isinstance(file, str):
         # Check file naming standards
         if len(file.split(sep)[-1]) > 60.0:
             err.append('Filename length exceeds 60 characters')
@@ -484,8 +484,8 @@ def arm_standards_validator(file=None, dataset=None, verbose=True):
             if any(np.isnan(ds[d].values)):
                 err.append('Coordinates must not include NaNs ' + d)
 
-            diff = ds[d].diff('time')
-            idx = np.where(diff <= pd.Timedelta(0))
+            diff = ds[d].diff(d)
+            idx = np.where(diff <= 0.0)
             if len(idx[0]) > 0:
                 err.append(d + ' is not in increasing order')
             if 'missing_value' in ds[d].encoding:
@@ -493,7 +493,7 @@ def arm_standards_validator(file=None, dataset=None, verbose=True):
 
     # Verify that each variable has a long_name and units attributes
     for v in ds:
-        if (len(ds[v].dims) > 0) and ('time' not in list(ds[v].dims)[0]):
+        if (len(ds[v].dims) > 0) and ('time' not in list(ds[v].dims)[0]) and ('bounds' not in v):
             err.append(v + ': "time" is required to be the first dimension.')
         if (ds[v].size == 1) and (len(ds[v].dims) > 0):
             err.append(v + ': is not defined as a scalar.')
@@ -524,7 +524,7 @@ def arm_standards_validator(file=None, dataset=None, verbose=True):
             if 'flag_method' not in ds[v].attrs:
                 err.append(v + ' does not include flag_method attribute')
 
-        if v not in ['base_time', 'time_offset', 'time_bounds']:
+        if (v not in ['base_time', 'time_offset']) and ('bounds' not in v):
             if 'units' not in ds[v].attrs:
                 err.append('Required attribute units not in ' + v)
 
