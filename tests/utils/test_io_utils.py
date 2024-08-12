@@ -285,3 +285,52 @@ def test_generate_movie():
 
         finally:
             chdir(cwd)
+
+
+def test_arm_standards_validator():
+    f = './sgpmetE13.b1.20230324.000000.nc'
+    errors = act.utils.arm_standards_validator(f)
+    assert len(errors) == 0
+
+    ds = act.io.read_arm_netcdf(f)
+    ds2 = ds.drop_vars(['lat', 'lon', 'alt'])
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+
+    assert len(errors) == 3
+
+    ds2 = ds
+    var = ['lat', 'lon', 'alt']
+    for v in var:
+        del ds2[v].attrs['standard_name']
+
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+    assert len(errors) == 3
+
+    ds2 = ds
+    for v in var:
+        ds2[v].attrs['standard_name'] = 'test'
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+    assert len(errors) == 3
+
+    ds2 = ds
+    for v in ds2:
+        del ds2[v].attrs['long_name']
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+    assert len(errors) == 54
+
+    ds2 = act.io.read_arm_netcdf(f)
+    ds2['time'].values[1] = ds2['time'].values[10]
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+
+    assert 'Duplicate' in errors[0]
+    assert 'increasing' in errors[1]
+
+    file = 'shpinstrumentX50.z1.202005.000000.nc'
+    errors = act.utils.arm_standards_validator(file)
+
+    assert 'File is not in a standard format' in errors[0]
+
+    file = 'sgpmetE13.z1.20200501.000000.nc'
+    errors = act.utils.arm_standards_validator(file)
+
+    assert 'no files to open' in errors[0]

@@ -1,3 +1,6 @@
+import act
+import numpy as np
+import pandas as pd
 from pathlib import Path
 import tarfile
 from os import PathLike
@@ -376,3 +379,190 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
         clip.write_videofile(str(write_filename), **kwargs)
 
     return str(write_filename)
+
+
+def arm_standards_validator(file=None, dataset=None, verbose=True):
+    """
+    ARM Data Validator (ADV) - Checks to ensure that ARM standards are being followed
+    in the files or dataset passed to it.  Note, this includes a minimal set of
+    standards that it checks against
+
+    ...
+
+    Parameters
+    ----------
+    file : str
+        Filename to check against ARM standards.  Do not pass in both a file and dataset
+    dataset : xarray.DataSet
+        Xarray dataset of an already read in file.
+    verbose : boolean
+        Defaults to print out errors in addition to returning a list of them
+
+    Returns
+    -------
+    err : list
+        List of errors in the data
+
+    """
+
+    # Set up the error tracking list
+    err = []
+    if file is not None:
+        # Check file naming standards
+        if len(file) > 60.0:
+            err.append('Filename length exceeds 60 characters')
+        try:
+            f_obj = act.utils.data_utils.DatastreamParserARM(file)
+        except Exception as e:
+            print(e)
+
+        if (
+            (f_obj.site is None)
+            or (f_obj.datastream_class is None)
+            or (f_obj.level is None)
+            or (f_obj.facility is None)
+            or (f_obj.date is None)
+            or (f_obj.time is None)
+            or (f_obj.ext is None)
+        ):
+            err.append(
+                'Filename does not follow the normal ARM convention: '
+                + '(sss)(inst)(qualifier)(temporal)(Fn).(dl).(yyyymmdd).(hhmmss).nc'
+            )
+        else:
+            if f_obj.level[0] not in ['0', 'a', 'b', 'c', 's', 'm']:
+                err.append(f_obj.level + ' is not a standard ARM data level')
+
+        results = act.utils.arm_site_location_search(
+            site_code=f_obj.site, facility_code=f_obj.facility
+        )
+        if len(results) == 0:
+            err.append('Site and facility are not ARM standard')
+
+    # The ability to read a file from NetCDF to xarray will catch a lot of the
+    # problems with formatting.  This would leave standard ARM checks
+    try:
+        if dataset is None and file is not None:
+            ds = act.io.read_arm_netcdf(file)
+        elif dataset is not None:
+            ds = dataset
+        else:
+            raise ValueError('File and dataset are both None')
+    except Exception as e:
+        return ['File is not in a standard format that is readable by xarray: ' + str(e)]
+
+    # Review time variables for errors for conformance to standards
+    if 'time' not in list(ds.dims)[0]:
+        err.append('"time" is required to be the first dimension.')
+
+    for c in list(ds.coords):
+        if c not in ds.dims:
+            err.append(c + ': Coordinate is not included in dimensions.')
+
+    if any(np.isnan(ds['time'].values)):
+        err.append('Time must not include NaNs.')
+
+    duplicates = sum(ds['time'].to_pandas().duplicated())
+    if duplicates > 0:
+        err.append('Duplicate times present in the file')
+
+    diff = ds['time'].diff('time')
+    idx = np.where(diff <= pd.Timedelta(0))
+    if len(idx[0]) > 0:
+        err.append('Time is not in increasing order')
+
+    if 'base_time' not in ds or 'time_offset' not in ds:
+        err.append('ARM requires base_time and time_offset variables.')
+
+    # Check to make sure other coordinate variables don't have nans
+    # Also check to make sure coordinate variables are not decreasing
+    if len(list(ds.coords)) > 1:
+        for d in ds.coords:
+            if d == 'time':
+                continue
+            if any(np.isnan(ds[d].values)):
+                err.append('Coordinates must not include NaNs ' + d)
+
+            diff = ds[d].diff('time')
+            idx = np.where(diff <= pd.Timedelta(0))
+            if len(idx[0]) > 0:
+                err.append(d + ' is not in increasing order')
+            if 'missing_value' in ds[d].encoding:
+                err.append(d + ' should not include missing value')
+
+    # Verify that each variable has a long_name and units attributes
+    for v in ds:
+        if (len(ds[v].dims) > 0) and ('time' not in list(ds[v].dims)[0]):
+            err.append(v + ': "time" is required to be the first dimension.')
+        if (ds[v].size == 1) and (len(ds[v].dims) > 0):
+            err.append(v + ': is not defined as a scalar.')
+        if 'long_name' not in ds[v].attrs:
+            err.append('Required attribute long_name not in ' + v)
+        else:
+            if not ds[v].attrs['long_name'][0].isupper():
+                err.append(v + ' long_name attribute does not start with uppercase')
+
+        if (
+            ('qc_' not in v)
+            and (v not in ['time', 'time_offset', 'base_time', 'lat', 'lon', 'alt'])
+            and ('bounds' not in v)
+        ):
+            if ('missing_value' not in ds[v].encoding) and ('FillValue' not in ds[v].encoding):
+                err.append(v + ' does not include missing_value or FillValue attributes')
+
+        # QC variable checks
+        if 'qc_' in v:
+            if v[3:] not in ds:
+                err.append('QC variable does not have a corresponding variable ' + v[3:])
+            if 'ancillary_variables' not in ds[v[3:]].attrs:
+                err.append(
+                    v[3:] + ' does not include ancillary_variable attribute pointing to ' + v
+                )
+            if 'description' not in ds[v].attrs:
+                err.append(v + ' does not include description attribute')
+            if 'flag_method' not in ds[v].attrs:
+                err.append(v + ' does not include flag_method attribute')
+
+        if v not in ['base_time', 'time_offset', 'time_bounds']:
+            if 'units' not in ds[v].attrs:
+                err.append('Required attribute units not in ' + v)
+
+    # Lat/Lon/Alt Checks
+    if 'lat' not in ds:
+        err.append('ARM requires the latitude variable to be named lat')
+    else:
+        if 'standard_name' in ds['lat'].attrs:
+            if ds['lat'].attrs['standard_name'] != 'latitude':
+                err.append('ARM requires the lat standard_name to be latitude')
+        else:
+            err.append('"lat" variable does not have a standard_name attribute')
+    if 'lon' not in ds:
+        err.append('ARM requires the longitude variable to be named lon')
+    else:
+        if 'standard_name' in ds['lon'].attrs:
+            if ds['lon'].attrs['standard_name'] != 'longitude':
+                err.append('ARM requires the lon standard_name to be longitude')
+        else:
+            err.append('"long" variable does not have a standard_name attribute')
+    if 'alt' not in ds:
+        err.append('ARM requires the altitude variable to be named alt')
+    else:
+        if 'standard_name' in ds['alt'].attrs:
+            if ds['alt'].attrs['standard_name'] != 'altitude':
+                err.append('ARM requires the alt standard_name to be altitude')
+        else:
+            err.append('"alt" variable does not have a standard_name attribute')
+
+    # Required global attributes
+    req_att = ['doi', 'sampling_interval', 'averaging_interval']
+    for ra in req_att:
+        if ra not in ds.attrs:
+            err.append('Global attribute is missing: ' + ra)
+
+    if verbose:
+        if len(err) > 0:
+            [print(e) for e in err]
+        else:
+            print('File is passing standards checks')
+
+    return err

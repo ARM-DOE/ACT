@@ -63,6 +63,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'pack_gzip',
             'unpack_gzip',
             'generate_movie',
+            'arm_standards_validator',
         ],
     },
 )
