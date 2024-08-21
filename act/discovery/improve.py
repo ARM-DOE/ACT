@@ -11,7 +11,8 @@ import xarray as xr
 def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=None):
     """
     Retrieve IMPROVE data for the given site and variable ids and store it in an
-    xarray dataset
+    xarray dataset. Documentation on the IMPROVE data can be found at
+    https://vista.cira.colostate.edu/Improve/data-user-guide/
 
     Parameters
     ----------
