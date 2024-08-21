@@ -304,7 +304,8 @@ def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=
     # Run through each variable in the dataframe and add it to a dataset
     # along with the appropriate metadata
     ct = 0
-    attrs = {'url': base_url, 'site': np.unique(df.Site)[0]}
+    site = np.unique(df.Site)[0]
+    attrs = {'url': base_url, 'datastream': site + ' IMPROVE'}
     for v in variables:
         # Find data for just the variable in question
         poc_attrs = {'units': '1', 'long_name': 'Parameter Occurrence Code for ' + v}
@@ -326,7 +327,7 @@ def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=
         data = df2.FactValue
 
         # Set up attributes
-        var_attrs = {'units': unit[0], 'long_name': mapping[v]['long_name']}
+        var_attrs = {'units': unit[0], 'long_name': mapping[v]['long_name'], '_FillValue': -999.0}
         if 'comments' in mapping[v]:
             var_attrs['comments'] = mapping[v]['comments']
         if 'epa_code' in mapping[v]:
@@ -350,5 +351,51 @@ def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=
             ds['poc_' + mapping[v]['name']] = xr.DataArray(
                 data=poc, dims=['time'], coords={'time': time}, attrs=poc_attrs
             )
+
+    # Add in metadata from site summary page
+    url = 'https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&siidse=' + str(
+        site_id
+    )
+    df = pd.read_html(url)
+    for i in df[0].index:
+        # Add lat/lon as variables
+        if df[0][0][i] == 'Latitude':
+            attrs = {
+                'long_name': 'North latitude',
+                'units': 'degree_N',
+                'valid_min': -90.0,
+                'valid_max': 90.0,
+                'standard_name': 'latitude',
+            }
+            ds['lat'] = xr.DataArray(
+                data=float(df[0][1][i]),
+                dims=['time'],
+                coords={'time': ds['time'].values},
+                attrs=attrs,
+            )
+        elif df[0][0][i] == 'Longitude':
+            attrs = {
+                'long_name': 'East longitude',
+                'units': 'degree_E',
+                'valid_min': -180.0,
+                'valid_max': 180.0,
+                'standard_name': 'longitude',
+            }
+            ds['lon'] = xr.DataArray(
+                data=float(df[0][1][i]),
+                dims=['time'],
+                coords={'time': ds['time'].values},
+                attrs=attrs,
+            )
+        else:
+            ds.attrs[df[0][0][i]] = df[0][1][i]
+
+    # Add in problem information from the site summary page
+    problem = ''
+    for i in df[-1].index:
+        problem += '_'.join(
+            [df[-1]['EventDate'][i], df[-1]['EventType'][i], df[-1]['Notes'][i], '\n']
+        )
+    ds.attrs['site_problems'] = problem
 
     return ds
