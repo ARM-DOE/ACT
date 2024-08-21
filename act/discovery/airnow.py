@@ -75,7 +75,6 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
             + str(token)
         )
 
-    print(url)
     df = pd.read_csv(url)
 
     # converting to xarray dataset object
