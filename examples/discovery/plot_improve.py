@@ -23,4 +23,8 @@ display.plot('aluminum_fine')
 # Print out the known problems documented by IMPROVE
 print(ds.attrs['site_problems'])
 
+# Write out the data to netCDF and csv
+ds.to_netcdf('./sgpimprove.20230101.nc')
+ds.to_dataframe().to_csv('sgpimprove.20230101.csv')
+
 plt.show()
