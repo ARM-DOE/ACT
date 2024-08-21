@@ -14,6 +14,9 @@ def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=
     xarray dataset. Documentation on the IMPROVE data can be found at
     https://vista.cira.colostate.edu/Improve/data-user-guide/
 
+    Also adds in metadata from the site summary page to the global attributes
+    https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&siidse=244
+
     Parameters
     ----------
     site_id : str
