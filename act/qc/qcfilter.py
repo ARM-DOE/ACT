@@ -10,6 +10,7 @@ import numpy as np
 import xarray as xr
 
 from act.qc import comparison_tests, qctests, bsrn_tests, qc_summary
+from act.utils.data_utils import get_missing_value
 
 
 @xr.register_dataset_accessor('qcfilter')
@@ -957,6 +958,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         rm_tests=None,
         verbose=False,
         del_qc_var=False,
+        no_NaN=False,
     ):
         """
         Method to apply quality control variables to data variables by
@@ -987,6 +989,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             and xarray method processing would also process the quality control
             variables, the default is to remove the quality control data
             variables.  Defaults to False.
+        no_NaN : boolean
+            Should the returned Xarray Dataset use NaN as the missing value indicator.
+            If Xarray did not convert the _FillValue or missing_value to NaN upon reading
+            the same missing value indicator should be used. If set to true will try to determine
+            the current missing_value or _FillValue set in the file and use that value. If neither
+            are set as a variable attribute it will use the default value (most likely -9999).
 
         Examples
         --------
@@ -1048,6 +1056,12 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 var_name, rm_assessments=rm_assessments, rm_tests=rm_tests, return_nan_array=True
             )
 
+            if no_NaN:
+                missing_value = get_missing_value(self._ds, var_name, add_if_missing_in_ds=True)
+                index = np.isnan(data)
+                if np.any(index):
+                    data[index] = missing_value
+
             # If data was orginally stored as Dask array return values to Dataset as Dask array
             # else set as Numpy array.
             try:
@@ -1070,35 +1084,45 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 pass
 
             # Add comment to history for each test that's filtered out
-            if isinstance(rm_tests, int):
-                rm_tests = [rm_tests]
             if rm_tests is not None:
-                for test in list(rm_tests):
-                    test = 2 ** (test - 1)
-                    if test in flag_masks:
-                        index = flag_masks.index(test)
-                        comment = ''.join(['act.qc.datafilter: ', flag_meanings[index]])
-                        if 'history' in self._ds[var_name].attrs.keys():
-                            self._ds[var_name].attrs['history'] += '\n' + comment
-                        else:
-                            self._ds[var_name].attrs['history'] = comment
+                if isinstance(rm_tests, int):
+                    rm_tests = [rm_tests]
 
-            if isinstance(rm_assessments, str):
-                rm_assessments = [rm_assessments]
+                for test in rm_tests:
+                    try:
+                        index = flag_masks.index(set_bit(0, test))
+                    except ValueError:
+                        continue
+
+                    comment = f'act.qc.datafilter: {flag_meanings[index]}'
+                    if 'history' in self._ds[var_name].attrs.keys():
+                        self._ds[var_name].attrs['history'] += f'\n {comment}'
+                    else:
+                        self._ds[var_name].attrs['history'] = comment
+
             if rm_assessments is not None:
+                if isinstance(rm_assessments, str):
+                    rm_assessments = [rm_assessments]
+
                 for assessment in rm_assessments:
                     if assessment in flag_assessments:
                         index = [i for i, e in enumerate(flag_assessments) if e == assessment]
                         for ind in index:
-                            comment = ''.join(['act.qc.datafilter: ', flag_meanings[ind]])
+                            comment = f'act.qc.datafilter: {flag_meanings[ind]}'
                             if 'history' in self._ds[var_name].attrs.keys():
-                                self._ds[var_name].attrs['history'] += '\n' + comment
+                                self._ds[var_name].attrs['history'] += f'\n {comment}'
                             else:
                                 self._ds[var_name].attrs['history'] = comment
 
             # If requested delete quality control variable
             if del_qc_var:
                 del self._ds[qc_var_name]
+                try:
+                    if self._ds[var_name].attrs['ancillary_variables'] == qc_var_name:
+                        del self._ds[var_name].attrs['ancillary_variables']
+                except KeyError:
+                    pass
+
                 if verbose:
                     print(f'Deleting {qc_var_name} from dataset')
 
