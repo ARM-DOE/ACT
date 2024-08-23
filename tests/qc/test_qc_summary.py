@@ -38,10 +38,10 @@ def test_qc_summary():
 
             assert np.sum(result[qc_var_name].values) == 610
 
-            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Indeterminate')
+            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Suspect')
             assert np.all(np.where(qc_ma.mask)[0] == np.arange(100, 170))
 
-            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
+            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Incorrect')
             index = np.concatenate([index_1, index_2, index_3])
             assert np.all(np.where(qc_ma.mask)[0] == index)
 
@@ -78,7 +78,7 @@ def test_qc_summary_multiple_assessment_names():
         var_name, index=index_6, test_meaning='Testing Incorrect', test_assessment='Incorrect'
     )
 
-    result = ds.qcfilter.create_qc_summary()
+    result = ds.qcfilter.create_qc_summary(normalize_assessment=False)
 
     assert result[qc_var_name].attrs['flag_assessments'] == [
         'Not failing',
