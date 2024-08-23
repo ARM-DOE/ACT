@@ -45,6 +45,17 @@ def test_qc_summary():
             index = np.concatenate([index_1, index_2, index_3])
             assert np.all(np.where(qc_ma.mask)[0] == index)
 
+            att_names = [
+                'fail_min',
+                'fail_max',
+                'fail_delta',
+                'valid_min',
+                'valid_max',
+                'valid_delta',
+            ]
+            for att_name in att_names:
+                assert att_name not in ds[f'qc_{var_name}'].attrs
+
         assert "Quality control summary implemented by ACT" in result.attrs['history']
 
         del ds
@@ -150,31 +161,13 @@ def test_qc_summary_big_data():
         'zrh',
         'osc',
     ]
-    skip_datastream_codes = [
-        'mmcrmom',
-        # 'microbasepi',
-        # 'lblch1a',
-        # '30co2flx4mmet',
-        # 'microbasepi2',
-        # '30co2flx60m',
-        # 'bbhrpavg1mlawer',
-        # 'co',
-        # 'lblch1b',
-        # '30co2flx25m',
-        # '30co2flx4m',
-        # 'armbeatm',
-        # 'armtrajcld',
-        # '1swfanalsiros1long',
-    ]
-    # skip_datastreams = ['nimmfrsraod5chcorM1.c1', 'anxaoso3M1.b0']
+    skip_datastream_codes = ['mmcrmom']
     num_files = 3
     expected_assessments = ['Not failing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
 
     testing_files = []
 
-    single_test = False
     if len(testing_files) == 0:
-        single_test = True
         filename = (
             f'test_qc_summary_big_data.{datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S")}.txt'
         )
@@ -191,9 +184,6 @@ def test_qc_summary_big_data():
             for datastream_dir in datastream_dirs:
                 if '-' in datastream_dir.name:
                     continue
-
-                # if datastream_dir.name in skip_datastreams:
-                #     continue
 
                 fn_obj = DatastreamParserARM(datastream_dir.name)
                 facility = fn_obj.facility
@@ -216,8 +206,7 @@ def test_qc_summary_big_data():
                 for ii in range(0, num_tests):
                     testing_files.append(random.choice(files))
 
-    if single_test:
-        print(f"Testing {len(testing_files)} files\n")
+        print(f"\nTesting {len(testing_files)} files\n")
         print(f"Output file name = {output_file}\n")
 
     for file in testing_files:
