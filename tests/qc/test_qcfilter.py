@@ -45,10 +45,10 @@ def test_arm_qc():
     except ValueError:
         return
 
-    assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
-    assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
-    assert 'Bad' in ds[qc_variable].attrs['flag_assessments']
-    assert 'Indeterminate' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Suspect' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Incorrect' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Bad' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Indeterminate' not in ds[qc_variable].attrs['flag_assessments']
 
     # Check that defualt will update all variables in DQR
     for var_name in ['wdir_vec_mean', 'wdir_vec_std', 'wspd_arith_mean', 'wspd_vec_mean']:
