@@ -25,7 +25,10 @@ class QCSummary:
         self._ds = ds
 
     def create_qc_summary(
-        self, cleanup_qc=False, remove_attrs=['fail_min', 'fail_max', 'fail_delta']
+        self,
+        cleanup_qc=False,
+        remove_attrs=['fail_min', 'fail_max', 'fail_delta'],
+        normalize_assessment=True,
     ):
         """
         Method to convert embedded quality control to summary QC that utilzes
@@ -39,6 +42,9 @@ class QCSummary:
             control variables to use ACT standards.
         remove_attrs : None, list
             Quality Control variable attributes to remove after creating the summary.
+        normalize_assessment : bool
+            Option to clean up assessments to use the same terminology.
+
 
         Returns
         -------
@@ -62,6 +68,9 @@ class QCSummary:
 
         if cleanup_qc:
             self._ds.clean.cleanup()
+
+        if normalize_assessment:
+            self._ds.clean.normalize_assessment()
 
         return_ds = self._ds.copy()
 
