@@ -409,29 +409,50 @@ def test_datafilter():
     data_var_names.sort()
     qc_var_names.sort()
 
-    var_name = 'atmos_pressure'
+    var_name = 'rh_mean'
 
-    ds_1 = ds.mean()
+    ds_1 = ds.sum()
 
-    ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
+    ds.qcfilter.add_less_test(var_name, 80, test_assessment='Bad')
+    ds.qcfilter.add_less_test(var_name, 70, test_assessment='Suspect')
     ds_filtered = copy.deepcopy(ds)
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad')
-    ds_2 = ds_filtered.mean()
-    assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
-    assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_1[var_name].values, 104602.23, atol=0.01)
+    assert np.isclose(ds_2[var_name].values, 7466.4004, atol=0.01)
     assert isinstance(ds_1[var_name].data, da.core.Array)
     assert 'act.qc.datafilter' in ds_filtered[var_name].attrs['history']
+    assert 'ancillary_variables' in ds_filtered[var_name].attrs.keys()
 
     ds_filtered = copy.deepcopy(ds)
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name, del_qc_var=True)
-    ds_2 = ds_filtered.mean()
-    assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 7466.40, atol=0.01)
     expected_var_names = sorted(list(set(data_var_names + qc_var_names) - {'qc_' + var_name}))
     assert sorted(list(ds_filtered.data_vars)) == expected_var_names
 
     ds_filtered = copy.deepcopy(ds)
-    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', del_qc_var=True)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Suspect', del_qc_var=True)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 80244.33, atol=0.01)
     assert sorted(list(ds_filtered.data_vars)) == data_var_names
+    assert 'ancillary_variables' not in ds_filtered[var_name].attrs.keys()
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments=['Bad', 'Suspect'])
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 7466.40, atol=0.01)
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments=['Sponge', 'Bob'])
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 104602.23, atol=0.01)
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments=['Sponge', 'Bob', 'suspect'], variables=var_name)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 80244.33, atol=0.01)
+    assert np.isclose(ds_2['temp_mean'].values, np.sum(ds_filtered['temp_mean'].values), atol=0.01)
 
     ds.close()
     del ds
