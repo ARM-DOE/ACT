@@ -67,7 +67,8 @@ def test_multi_skewt_plot():
 def test_enhanced_skewt_plot():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = act.plotting.SkewTDisplay(ds)
-    display.plot_enhanced_skewt(color_field='alt', component_range=85)
+    with pytest.warns():
+        display.plot_enhanced_skewt(color_field='alt', component_range=85)
     ds.close()
     return display.fig
 
