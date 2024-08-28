@@ -9,6 +9,8 @@ description.
 
 import datetime
 import copy
+import xarray as xr
+import warnings
 
 
 class QCSummary:
@@ -53,18 +55,12 @@ class QCSummary:
 
         """
 
-        standard_assessments = [
-            'Suspect',
-            'Indeterminate',
-            'Incorrect',
-            'Bad',
-        ]
-        standard_meanings = [
-            "Data suspect further analysis recommended",
-            "Data suspect further analysis recommended",
-            "Data incorrect use not recommended",
-            "Data incorrect use not recommended",
-        ]
+        standard_meanings = {
+            'Suspect': "Data suspect further analysis recommended",
+            'Indeterminate': "Data suspect further analysis recommended",
+            'Incorrect': "Data incorrect use not recommended",
+            'Bad': "Data incorrect use not recommended",
+        }
 
         if cleanup_qc:
             self._ds.clean.cleanup()
@@ -81,11 +77,15 @@ class QCSummary:
             if qc_var_name is None:
                 continue
 
+            # Do not really know how to handle scalars yet.
+            if return_ds[qc_var_name].ndim == 0:
+                warnings.warn(
+                    f'Unable to process scalar variable {var_name}. '
+                    'Scalar variables currently not implemented.'
+                )
+                continue
+
             added = True
-
-            assessments = list(set(self._ds[qc_var_name].attrs['flag_assessments']))
-
-            import xarray as xr
 
             result = xr.zeros_like(return_ds[qc_var_name])
             for attr in ['flag_masks', 'flag_meanings', 'flag_assessments', 'flag_values']:
@@ -105,22 +105,31 @@ class QCSummary:
                 flag_value=True,
             )
 
-            for ii, assessment in enumerate(standard_assessments):
-                if assessment not in assessments:
-                    continue
+            flag_assessments = list(standard_meanings.keys())
+            added_assessments = set(self._ds[qc_var_name].attrs['flag_assessments']) - set(
+                flag_assessments
+            )
+            flag_assessments += list(added_assessments)
+            for ii, assessment in enumerate(flag_assessments):
+                try:
+                    standard_meaning = standard_meanings[assessment.capitalize()]
+                except KeyError:
+                    standard_meaning = f"Data {assessment}"
 
                 qc_mask = self.get_masked_data(
                     var_name, rm_assessments=assessment, return_mask_only=True
                 )
 
-                # Do not really know how to handle scalars yet.
-                if qc_mask.ndim == 0:
-                    continue
+                # # Do not really know how to handle scalars yet.
+                # if return_ds[var_name].ndim == 0:
+                #     warnings.warn(f'Unable to process scalar variable {var_name}. '
+                #                   'Scalar variables currently not implemented.')
+                #     continue
 
                 return_ds.qcfilter.add_test(
                     var_name,
                     index=qc_mask,
-                    test_meaning=standard_meanings[ii],
+                    test_meaning=standard_meaning,
                     test_assessment=assessment,
                     flag_value=True,
                 )
