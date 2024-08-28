@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import pytest
 import numpy as np
 
 import act
@@ -22,6 +22,9 @@ def test_get_region():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
     lat_window = (41.8781 - 0.5, 41.8781 + 0.5)
     lon_window = (-87.6298 - 0.5, -87.6298 + 0.5)
-    my_asoses = act.discovery.get_asos_data(time_window, lat_range=lat_window, lon_range=lon_window)
+    with pytest.warns(UserWarning, match="No data available at station"):
+        my_asoses = act.discovery.get_asos_data(
+            time_window, lat_range=lat_window, lon_range=lon_window
+        )
     asos_keys = list(my_asoses.keys())
     assert asos_keys == my_keys
