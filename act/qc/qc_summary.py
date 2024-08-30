@@ -121,7 +121,6 @@ class QCSummary:
                 )
 
                 # # Do not really know how to handle scalars yet.
-                #                   'Scalar variables currently not implemented.')
                 #     continue
 
                 return_ds.qcfilter.add_test(
