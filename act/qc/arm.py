@@ -111,7 +111,7 @@ def add_dqr_to_qc(
     time = ds['time'].values
 
     # If the time is not a datetime64 because the read routine was not asked to
-    # convert CF variables, convert the time varible for this routine only.
+    # convert CF variables, convert the time variable for this routine only.
     if not np.issubdtype(time.dtype, np.datetime64):
         units_strings = [
             'seconds since ',
