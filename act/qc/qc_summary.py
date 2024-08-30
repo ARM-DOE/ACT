@@ -121,7 +121,6 @@ class QCSummary:
                 )
 
                 # # Do not really know how to handle scalars yet.
-                #     warnings.warn(f'Unable to process scalar variable {var_name}. '
                 #                   'Scalar variables currently not implemented.')
                 #     continue
 
