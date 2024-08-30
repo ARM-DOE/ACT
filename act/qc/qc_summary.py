@@ -121,7 +121,6 @@ class QCSummary:
                 )
 
                 # # Do not really know how to handle scalars yet.
-                #     continue
 
                 return_ds.qcfilter.add_test(
                     var_name,
