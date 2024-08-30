@@ -71,7 +71,7 @@ def add_dqr_to_qc(
         Does not apply DQRs to location variables.  This can be useful in the event
         the submitter has erroneously selected all variables.
     create_missing_qc_variables : boolean
-        If a quality control varible for the data varialbe does not exist,
+        If a quality control variable for the data variable does not exist,
         create the quality control varible and apply DQR.
 
     Returns
