@@ -792,7 +792,6 @@ class CleanDataset:
         self,
         variables=None,
         exclude_variables=None,
-        # qc_lookup={'Incorrect': 'Bad', 'Suspect': 'Indeterminate'},
         qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'},
     ):
         """
