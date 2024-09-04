@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>act.qc.QCFilter.create_qc_summary &#8212; Atmospheric data Community Toolkit 0.post1+geed7afd documentation</title>
+    <title>act.qc.QCFilter.create_qc_summary &#8212; Atmospheric data Community Toolkit 0.post1+g6b2ce1c documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -41,7 +41,7 @@
     
     <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=96986021"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=8eeed692"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1735,7 +1735,7 @@
 <h1>act.qc.QCFilter.create_qc_summary<a class="headerlink" href="#act-qc-qcfilter-create-qc-summary" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.qc.QCFilter.create_qc_summary">
-<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">create_qc_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleanup_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.QCFilter.create_qc_summary" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">create_qc_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleanup_qc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['fail_min',</span> <span class="pre">'fail_max',</span> <span class="pre">'fail_delta']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.QCFilter.create_qc_summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to convert embedded quality control to summary QC that utilzes
 flag values instead of flag masks and summarizes the assessments to only
 a few states. Lowest level of quality control will be listed first with most
@@ -1744,6 +1744,10 @@ sever having higher integer numbers. Dataset is updated in place.</p>
 <dt>cleanup_qc<span class="classifier">boolean</span></dt><dd><p>Call clean.cleanup() method to convert to standardized ancillary quality control
 variables. The quality control summary requires the current embedded quality
 control variables to use ACT standards.</p>
+</dd>
+<dt>remove_attrs<span class="classifier">None, list</span></dt><dd><p>Quality Control variable attributes to remove after creating the summary.</p>
+</dd>
+<dt>normalize_assessment<span class="classifier">bool</span></dt><dd><p>Option to clean up assessments to use the same terminology.</p>
 </dd>
 </dl>
 <dl class="field-list simple">

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+geed7afd documentation</title>
+    <title>act.qc.qcfilter &#8212; Atmospheric data Community Toolkit 0.post1+g6b2ce1c documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,7 +40,7 @@
     
     <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=96986021"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=8eeed692"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -207,6 +207,7 @@
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
 <span class="kn">from</span> <span class="nn">act.qc</span> <span class="kn">import</span> <span class="n">comparison_tests</span><span class="p">,</span> <span class="n">qctests</span><span class="p">,</span> <span class="n">bsrn_tests</span><span class="p">,</span> <span class="n">qc_summary</span>
+<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">get_missing_value</span>
 
 
 <div class="viewcode-block" id="QCFilter"><a class="viewcode-back" href="../../../API/generated/act.qc.QCFilter.html#act.qc.QCFilter">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;qcfilter&#39;</span><span class="p">)</span>
@@ -1154,6 +1155,7 @@
         <span class="n">rm_tests</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">del_qc_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">no_NaN</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to apply quality control variables to data variables by</span>
@@ -1184,6 +1186,12 @@
 <span class="sd">            and xarray method processing would also process the quality control</span>
 <span class="sd">            variables, the default is to remove the quality control data</span>
 <span class="sd">            variables.  Defaults to False.</span>
+<span class="sd">        no_NaN : boolean</span>
+<span class="sd">            Should the returned Xarray Dataset use NaN as the missing value indicator.</span>
+<span class="sd">            If Xarray did not convert the _FillValue or missing_value to NaN upon reading</span>
+<span class="sd">            the same missing value indicator should be used. If set to true will try to determine</span>
+<span class="sd">            the current missing_value or _FillValue set in the file and use that value. If neither</span>
+<span class="sd">            are set as a variable attribute it will use the default value (most likely -9999).</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1245,6 +1253,12 @@
                 <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span> <span class="n">rm_tests</span><span class="o">=</span><span class="n">rm_tests</span><span class="p">,</span> <span class="n">return_nan_array</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">no_NaN</span><span class="p">:</span>
+                <span class="n">missing_value</span> <span class="o">=</span> <span class="n">get_missing_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">add_if_missing_in_ds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">missing_value</span>
+
             <span class="c1"># If data was orginally stored as Dask array return values to Dataset as Dask array</span>
             <span class="c1"># else set as Numpy array.</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1267,35 +1281,45 @@
                 <span class="k">pass</span>
 
             <span class="c1"># Add comment to history for each test that&#39;s filtered out</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm_tests</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="n">rm_tests</span> <span class="o">=</span> <span class="p">[</span><span class="n">rm_tests</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">rm_tests</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">rm_tests</span><span class="p">):</span>
-                    <span class="n">test</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">flag_masks</span><span class="p">:</span>
-                        <span class="n">index</span> <span class="o">=</span> <span class="n">flag_masks</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
-                        <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;act.qc.datafilter: &#39;</span><span class="p">,</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">index</span><span class="p">]])</span>
-                        <span class="k">if</span> <span class="s1">&#39;history&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">comment</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm_tests</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">rm_tests</span> <span class="o">=</span> <span class="p">[</span><span class="n">rm_tests</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm_assessments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">rm_assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">rm_assessments</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">rm_tests</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">=</span> <span class="n">flag_masks</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">set_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">comment</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;act.qc.datafilter: </span><span class="si">{</span><span class="n">flag_meanings</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">if</span> <span class="s1">&#39;history&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span>
+
             <span class="k">if</span> <span class="n">rm_assessments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rm_assessments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">rm_assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">rm_assessments</span><span class="p">]</span>
+
                 <span class="k">for</span> <span class="n">assessment</span> <span class="ow">in</span> <span class="n">rm_assessments</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">assessment</span> <span class="ow">in</span> <span class="n">flag_assessments</span><span class="p">:</span>
                         <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">)</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">assessment</span><span class="p">]</span>
                         <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
-                            <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;act.qc.datafilter: &#39;</span><span class="p">,</span> <span class="n">flag_meanings</span><span class="p">[</span><span class="n">ind</span><span class="p">]])</span>
+                            <span class="n">comment</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;act.qc.datafilter: </span><span class="si">{</span><span class="n">flag_meanings</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
                             <span class="k">if</span> <span class="s1">&#39;history&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">comment</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="s1">&#39;</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span>
 
             <span class="c1"># If requested delete quality control variable</span>
             <span class="k">if</span> <span class="n">del_qc_var</span><span class="p">:</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">qc_var_name</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Deleting </span><span class="si">{</span><span class="n">qc_var_name</span><span class="si">}</span><span class="s1"> from dataset&#39;</span><span class="p">)</span></div></div>
 
