@@ -462,7 +462,8 @@ def test_plot_barbs_from_u_v4():
     fake_ds = xr.Dataset(
         {'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres}
     )
-    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    with pytest.warns(UserWarning, match="Could not discern datastreamname and dict or tuple"):
+        BarbDisplay = TimeSeriesDisplay(fake_ds)
     BarbDisplay.plot_barbs_from_u_v(
         'xdata', 'ydata', None, set_title='test', use_var_for_y='pres', cmap='jet'
     )
@@ -488,7 +489,8 @@ def test_plot_barbs_from_u_v5():
     fake_ds = xr.Dataset(
         {'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres}
     )
-    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    with pytest.warns(UserWarning, match="Could not discern datastreamname and dict or tuple"):
+        BarbDisplay = TimeSeriesDisplay(fake_ds)
     BarbDisplay.plot_barbs_from_u_v(
         'xdata',
         'ydata',

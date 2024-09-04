@@ -57,7 +57,11 @@ def test_xsection_plot_map():
         sample_files.EXAMPLE_VISST, combine='nested', concat_dim='time'
     )
     try:
-        xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
+        with pytest.warns(
+            UserWarning,
+            match="Could not discern datastreamname and dict or tuple were not provided. Using defaultname of act_datastream!",
+        ):
+            xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
         xsection.plot_xsection_map(
             None,
             'ir_temperature',

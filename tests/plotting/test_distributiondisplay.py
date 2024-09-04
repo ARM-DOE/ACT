@@ -419,7 +419,12 @@ def test_plot_pie_chart():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_AOSACSM)
     fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
     display = DistributionDisplay(ds)
-    display.plot_pie_chart(fields)
+    with pytest.warns(UserWarning, match="contains negatives values, consider using a threshold."):
+        with pytest.warns(
+            UserWarning,
+            match="No time parameter used, calculating a mean for each field for the whole dataset.",
+        ):
+            display.plot_pie_chart(fields)
     ds.close()
 
     try:
@@ -435,12 +440,16 @@ def test_plot_pie_chart_kwargs():
     threshold = 0.0
     fill_value = 0.0
     display = DistributionDisplay(ds)
-    display.plot_pie_chart(
-        fields,
-        threshold=threshold,
-        fill_value=fill_value,
-        colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
-    )
+    with pytest.warns(
+        UserWarning,
+        match="No time parameter used, calculating a mean for each field for the whole dataset.",
+    ):
+        display.plot_pie_chart(
+            fields,
+            threshold=threshold,
+            fill_value=fill_value,
+            colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
+        )
     ds.close()
 
     try:

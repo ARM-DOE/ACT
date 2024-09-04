@@ -792,7 +792,7 @@ class CleanDataset:
         self,
         variables=None,
         exclude_variables=None,
-        qc_lookup={'Incorrect': 'Bad', 'Suspect': 'Indeterminate'},
+        qc_lookup={'Bad': 'Incorrect', 'Indeterminate': 'Suspect'},
     ):
         """
         Method to clean up assessment terms used to be consistent between

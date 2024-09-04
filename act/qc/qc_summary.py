@@ -8,6 +8,9 @@ description.
 """
 
 import datetime
+import copy
+import xarray as xr
+import warnings
 
 
 class QCSummary:
@@ -23,7 +26,12 @@ class QCSummary:
         """initialize"""
         self._ds = ds
 
-    def create_qc_summary(self, cleanup_qc=False):
+    def create_qc_summary(
+        self,
+        cleanup_qc=False,
+        remove_attrs=['fail_min', 'fail_max', 'fail_delta'],
+        normalize_assessment=True,
+    ):
         """
         Method to convert embedded quality control to summary QC that utilzes
         flag values instead of flag masks and summarizes the assessments to only
@@ -34,6 +42,11 @@ class QCSummary:
             Call clean.cleanup() method to convert to standardized ancillary quality control
             variables. The quality control summary requires the current embedded quality
             control variables to use ACT standards.
+        remove_attrs : None, list
+            Quality Control variable attributes to remove after creating the summary.
+        normalize_assessment : bool
+            Option to clean up assessments to use the same terminology.
+
 
         Returns
         -------
@@ -42,21 +55,18 @@ class QCSummary:
 
         """
 
-        standard_assessments = [
-            'Suspect',
-            'Indeterminate',
-            'Incorrect',
-            'Bad',
-        ]
-        standard_meanings = [
-            "Data suspect, further analysis recommended",
-            "Data suspect, further analysis recommended",
-            "Data incorrect, use not recommended",
-            "Data incorrect, use not recommended",
-        ]
+        standard_meanings = {
+            'Suspect': "Data suspect further analysis recommended",
+            'Indeterminate': "Data suspect further analysis recommended",
+            'Incorrect': "Data incorrect use not recommended",
+            'Bad': "Data incorrect use not recommended",
+        }
 
         if cleanup_qc:
             self._ds.clean.cleanup()
+
+        if normalize_assessment:
+            self._ds.clean.normalize_assessment()
 
         return_ds = self._ds.copy()
 
@@ -67,11 +77,15 @@ class QCSummary:
             if qc_var_name is None:
                 continue
 
+            # Do not really know how to handle scalars yet.
+            if return_ds[qc_var_name].ndim == 0:
+                warnings.warn(
+                    f'Unable to process scalar variable {var_name}. '
+                    'Scalar variables currently not implemented.'
+                )
+                continue
+
             added = True
-
-            assessments = list(set(self._ds[qc_var_name].attrs['flag_assessments']))
-
-            import xarray as xr
 
             result = xr.zeros_like(return_ds[qc_var_name])
             for attr in ['flag_masks', 'flag_meanings', 'flag_assessments', 'flag_values']:
@@ -91,34 +105,50 @@ class QCSummary:
                 flag_value=True,
             )
 
-            for ii, assessment in enumerate(standard_assessments):
-                if assessment not in assessments:
-                    continue
+            flag_assessments = list(standard_meanings.keys())
+            added_assessments = set(self._ds[qc_var_name].attrs['flag_assessments']) - set(
+                flag_assessments
+            )
+            flag_assessments += list(added_assessments)
+            for ii, assessment in enumerate(flag_assessments):
+                try:
+                    standard_meaning = standard_meanings[assessment.capitalize()]
+                except KeyError:
+                    standard_meaning = f"Data {assessment}"
 
                 qc_mask = self.get_masked_data(
                     var_name, rm_assessments=assessment, return_mask_only=True
                 )
 
-                # Do not really know how to handle scalars yet.
-                if qc_mask.ndim == 0:
-                    continue
+                # # Do not really know how to handle scalars yet.
 
                 return_ds.qcfilter.add_test(
                     var_name,
                     index=qc_mask,
-                    test_meaning=standard_meanings[ii],
+                    test_meaning=standard_meaning,
                     test_assessment=assessment,
                     flag_value=True,
                 )
 
+            # Remove fail limit variable attributes
+            if remove_attrs is not None:
+                for att_name in copy.copy(list(return_ds[qc_var_name].attrs.keys())):
+                    if att_name in remove_attrs:
+                        del return_ds[qc_var_name].attrs[att_name]
+
             self._ds.update({qc_var_name: return_ds[qc_var_name]})
 
         if added:
-            history = return_ds.attrs['history']
-            history += (
-                " ; Quality control summary implemented by ACT at "
-                f"{datetime.datetime.utcnow().isoformat()} UTC."
+            from act import __version__ as version
+
+            history_value = (
+                f"Quality control summary implemented by ACT-{version} at "
+                f"{datetime.datetime.utcnow().replace(microsecond=0)} UTC"
             )
-            return_ds.attrs['history'] = history
+
+            if 'history' in list(return_ds.attrs.keys()):
+                return_ds.attrs['history'] += f" ; {history_value}"
+            else:
+                return_ds.attrs['history'] = history_value
 
         return return_ds

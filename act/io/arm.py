@@ -549,8 +549,9 @@ class WriteDataset:
         make_copy=True,
         cf_compliant=False,
         delete_global_attrs=['qc_standards_version', 'qc_method', 'qc_comment'],
-        FillValue=-9999,
+        FillValue=True,
         cf_convention='CF-1.8',
+        encoding={},
         **kwargs,
     ):
         """
@@ -573,7 +574,8 @@ class WriteDataset:
             white space between words.
         join_char : str
             The character sting to use for replacing white spaces between words when converting
-            a list of strings to single character string attributes.
+            a list of strings to single character string attributes. Main use is with the
+            flag_meanings attribute.
         make_copy : boolean
             Make a copy before modifying Dataset to write. For large Datasets this
             may add processing time and memory. If modifying the Dataset is OK
@@ -587,14 +589,18 @@ class WriteDataset:
             Optional global attributes to be deleted. Defaults to some standard
             QC attributes that are not needed. Can add more or set to None to not
             remove the attributes.
-        FillValue : int, float
-            The value to use as a _FillValue in output file. This is used to fix
-            issues with how Xarray handles missing_value upon reading. It's confusing
-            so not a perfect fix. Set to None to leave Xarray to do what it wants.
-            Set to a value to be the value used as _FillValue in the file and data
-            array. This should then remove missing_value attribute from the file as well.
+        FillValue : boolean
+            Xarray assumes all float type variables had the missing value indicator converted
+            to NaN upon reading. to_netcdf() will then write a _FillValue attribute set to NaN.
+            Set FillValue to False to supress adding the _FillValue=NaN variable attribute to
+            the written file. Set to True to allow to_netcdf() to add the attribute.
+            If the Dataset variable already has a _FillValue attribute or a _FillValue key
+            is provided in the encoding dictionary those will not be changed and a _FillValue
+            will be written to NetCDF file.
         cf_convention : str
             The Climate and Forecast convention string to add to Conventions attribute.
+        encoding : dict
+            The encoding dictionary used with to_netcdf() method.
         **kwargs : keywords
             Keywords to pass through to Dataset.to_netcdf()
 
@@ -607,98 +613,102 @@ class WriteDataset:
         """
 
         if make_copy:
-            write_ds = copy.deepcopy(self._ds)
+            ds = copy.deepcopy(self._ds)
         else:
-            write_ds = self._ds
+            ds = self._ds
 
-        encoding = {}
         if cleanup_global_atts:
-            for attr in list(write_ds.attrs):
+            for attr in list(ds.attrs):
                 if attr.startswith('_'):
-                    del write_ds.attrs[attr]
+                    del ds.attrs[attr]
 
         if cleanup_qc_atts:
             check_atts = ['flag_meanings', 'flag_assessments']
-            for var_name in list(write_ds.data_vars):
-                if 'standard_name' not in write_ds[var_name].attrs.keys():
+            for var_name in list(ds.data_vars):
+                if 'standard_name' not in ds[var_name].attrs.keys():
+                    continue
+
+                if ds[var_name].attrs['standard_name'] != "quality_flag":
                     continue
 
                 for attr_name in check_atts:
                     try:
-                        att_values = write_ds[var_name].attrs[attr_name]
+                        att_values = ds[var_name].attrs[attr_name]
                         if isinstance(att_values, (list, tuple)):
                             att_values = [
                                 att_value.replace(' ', join_char) for att_value in att_values
                             ]
-                            write_ds[var_name].attrs[attr_name] = ' '.join(att_values)
+                            ds[var_name].attrs[attr_name] = ' '.join(att_values)
 
                     except KeyError:
                         pass
 
-                # Tell .to_netcdf() to not add a _FillValue attribute for
-                # quality control variables.
-                if FillValue is not None:
-                    encoding[var_name] = {'_FillValue': None}
+        # Xarray makes an assumption that float type variables were read in and converted
+        # missing value indicator to NaN. .to_netcdf() will then automatically assign
+        # _FillValue attribute set to NaN when writing. If requested will set _FillValue
+        # key in encoding to None which will supress to_netcdf() from adding a _FillValue.
+        # If _FillValue attribute or _FillValue key in encoding is already set, will not
+        # override and the _FillValue will be written to the file.
+        if not FillValue:
+            all_var_names = list(ds.coords.keys()) + list(ds.data_vars)
+            for var_name in all_var_names:
+                if '_FillValue' in ds[var_name].attrs:
+                    continue
 
-            # Clean up _FillValue vs missing_value mess by creating an
-            # encoding dictionary with each variable's _FillValue set to
-            # requested fill value. May need to improve upon this for data type
-            # and other issues in the future.
-            if FillValue is not None:
-                skip_variables = ['base_time', 'time_offset', 'qc_time'] + list(encoding.keys())
-                for var_name in list(write_ds.data_vars):
-                    if var_name not in skip_variables:
-                        encoding[var_name] = {'_FillValue': FillValue}
+                if var_name not in encoding.keys():
+                    encoding[var_name] = {'_FillValue': None}
+                elif '_FillValue' not in encoding[var_name].keys():
+                    encoding[var_name]['_FillValue'] = None
 
         if delete_global_attrs is not None:
             for attr in delete_global_attrs:
                 try:
-                    del write_ds.attrs[attr]
+                    del ds.attrs[attr]
                 except KeyError:
                     pass
 
-        for var_name in list(write_ds.keys()):
-            if 'string' in list(write_ds[var_name].attrs.keys()):
-                att = write_ds[var_name].attrs['string']
-                write_ds[var_name].attrs[var_name + '_string'] = att
-                del write_ds[var_name].attrs['string']
+        for var_name in list(ds.keys()):
+            if 'string' in list(ds[var_name].attrs.keys()):
+                att = ds[var_name].attrs['string']
+                ds[var_name].attrs[var_name + '_string'] = att
+                del ds[var_name].attrs['string']
 
         # If requested update global attributes and variables attributes for required
         # CF attributes.
         if cf_compliant:
             # Get variable names and standard name for each variable
-            var_names = list(write_ds.keys())
+            var_names = list(ds.keys())
             standard_names = []
             for var_name in var_names:
                 try:
-                    standard_names.append(write_ds[var_name].attrs['standard_name'])
+                    standard_names.append(ds[var_name].attrs['standard_name'])
                 except KeyError:
                     standard_names.append(None)
 
             # Check if time varible has axis and standard_name attribute
             coord_name = 'time'
             try:
-                write_ds[coord_name].attrs['axis']
+                ds[coord_name].attrs['axis']
             except KeyError:
                 try:
-                    write_ds[coord_name].attrs['axis'] = 'T'
+                    ds[coord_name].attrs['axis'] = 'T'
                 except KeyError:
                     pass
 
             try:
-                write_ds[coord_name].attrs['standard_name']
+                ds[coord_name].attrs['standard_name']
             except KeyError:
                 try:
-                    write_ds[coord_name].attrs['standard_name'] = 'time'
+                    ds[coord_name].attrs['standard_name'] = 'time'
                 except KeyError:
                     pass
 
             # Try to determine type of dataset by coordinate dimention named time
             # and other factors
             try:
-                write_ds.attrs['FeatureType']
+                ds.attrs['FeatureType']
             except KeyError:
-                dim_names = list(write_ds.dims)
+                dim_names = list(ds.dims)
                 FeatureType = None
                 if dim_names == ['time']:
                     FeatureType = 'timeSeries'
@@ -706,15 +716,15 @@ class WriteDataset:
                     FeatureType = 'timeSeries'
                 elif len(dim_names) >= 2 and 'time' in dim_names:
                     for var_name in var_names:
-                        dims = list(write_ds[var_name].dims)
+                        dims = list(ds[var_name].dims)
                         if len(dims) == 2 and 'time' in dims:
                             prof_dim = list(set(dims) - {'time'})[0]
-                            if write_ds[prof_dim].values.size > 2:
+                            if ds[prof_dim].values.size > 2:
                                 FeatureType = 'timeSeriesProfile'
                                 break
 
                 if FeatureType is not None:
-                    write_ds.attrs['FeatureType'] = FeatureType
+                    ds.attrs['FeatureType'] = FeatureType
 
             # Add axis and positive attributes to variables with standard_name
             # equal to 'altitude'
@@ -723,18 +733,18 @@ class WriteDataset:
             ]
             for var_name in alt_variables:
                 try:
-                    write_ds[var_name].attrs['axis']
+                    ds[var_name].attrs['axis']
                 except KeyError:
-                    write_ds[var_name].attrs['axis'] = 'Z'
+                    ds[var_name].attrs['axis'] = 'Z'
 
                 try:
-                    write_ds[var_name].attrs['positive']
+                    ds[var_name].attrs['positive']
                 except KeyError:
-                    write_ds[var_name].attrs['positive'] = 'up'
+                    ds[var_name].attrs['positive'] = 'up'
 
             # Check if the Conventions global attribute lists the CF convention
             try:
-                Conventions = write_ds.attrs['Conventions']
+                Conventions = ds.attrs['Conventions']
                 Conventions = Conventions.split()
                 cf_listed = False
                 for ii in Conventions:
@@ -743,37 +753,30 @@ class WriteDataset:
                         break
                 if not cf_listed:
                     Conventions.append(cf_convention)
-                write_ds.attrs['Conventions'] = ' '.join(Conventions)
+                ds.attrs['Conventions'] = ' '.join(Conventions)
 
             except KeyError:
-                write_ds.attrs['Conventions'] = str(cf_convention)
+                ds.attrs['Conventions'] = str(cf_convention)
 
             # Reorder global attributes to ensure history is last
             try:
-                history = copy.copy(write_ds.attrs['history'])
-                del write_ds.attrs['history']
-                write_ds.attrs['history'] = history
+                history = copy.copy(ds.attrs['history'])
+                del ds.attrs['history']
+                ds.attrs['history'] = history
             except KeyError:
                 pass
-        current_time = dt.datetime.now().replace(microsecond=0)
-        if 'history' in list(write_ds.attrs.keys()):
-            write_ds.attrs['history'] += ''.join(
-                [
-                    '\n',
-                    str(current_time),
-                    ' created by ACT ',
-                    str(act.__version__),
-                    ' act.io.write.write_netcdf',
-                ]
-            )
 
-        if 'time_bounds' in encoding.keys():
-            encoding['time_bounds']['dtype'] = 'float64'
+        current_time = dt.datetime.utcnow().replace(microsecond=0)
+        history_value = (
+            f'Written to file by ACT-{act.__version__} '
+            f'with write_netcdf() at {current_time} UTC'
+        )
+        if 'history' in list(ds.attrs.keys()):
+            ds.attrs['history'] += f" ; {history_value}"
+        else:
+            ds.attrs['history'] = history_value
 
-        if hasattr(write_ds, 'time_bounds') and not write_ds.time.encoding:
-            write_ds.time.encoding.update(write_ds.time_bounds.encoding)
-
-        write_ds.to_netcdf(encoding=encoding, **kwargs)
+        ds.to_netcdf(encoding=encoding, **kwargs)
 
 
 def check_if_tar_gz_file(filenames):

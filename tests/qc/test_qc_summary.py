@@ -36,14 +36,24 @@ def test_qc_summary():
             assert 'flag_masks' not in result[qc_var_name].attrs.keys()
             assert isinstance(result[qc_var_name].attrs['flag_values'], list)
 
-            assert np.sum(result[qc_var_name].values) == 610
+            assert np.sum(result[qc_var_name].values) == 880
 
-            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Indeterminate')
-            assert np.all(np.where(qc_ma.mask)[0] == np.arange(100, 170))
+            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Suspect')
+            assert np.sum(np.where(qc_ma.mask)) == 9415
 
-            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Bad')
-            index = np.concatenate([index_1, index_2, index_3])
-            assert np.all(np.where(qc_ma.mask)[0] == index)
+            qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Incorrect')
+            assert np.sum(np.where(qc_ma.mask)) == 89415
+
+            att_names = [
+                'fail_min',
+                'fail_max',
+                'fail_delta',
+                'valid_min',
+                'valid_max',
+                'valid_delta',
+            ]
+            for att_name in att_names:
+                assert att_name not in ds[f'qc_{var_name}'].attrs
 
         assert "Quality control summary implemented by ACT" in result.attrs['history']
 
@@ -78,7 +88,7 @@ def test_qc_summary_multiple_assessment_names():
         var_name, index=index_6, test_meaning='Testing Incorrect', test_assessment='Incorrect'
     )
 
-    result = ds.qcfilter.create_qc_summary()
+    result = ds.qcfilter.create_qc_summary(normalize_assessment=False)
 
     assert result[qc_var_name].attrs['flag_assessments'] == [
         'Not failing',
@@ -103,6 +113,118 @@ def test_qc_summary_multiple_assessment_names():
     assert np.sum(np.where(result[qc_var_name].values == 0)) == 884575
     qc_ma = result.qcfilter.get_masked_data(var_name, rm_assessments='Not failing')
     assert np.sum(np.where(qc_ma.mask)[0]) == 884575
+
+
+def test_qc_summary_unexpected_assessment_name():
+    var_name = 'temp_mean'
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=var_name)
+
+    test_meanings = [
+        'Testing Bad',
+        'Testing Boomer',
+        'Testing Boomer Second',
+        'Testing Incorrect',
+        'Testing Indeterminate',
+        'Testing Sooner',
+        'Testing Suspect',
+    ]
+    test_assessments = [
+        'Bad',
+        'Boomer',
+        'boomer',
+        'Incorrect',
+        'Indeterminate',
+        'Sooner',
+        'Suspect',
+    ]
+
+    test_index_sums = [4950, 39900, 39900, 34950, 44950, 54950, 64950]
+
+    for ii, _ in enumerate(test_assessments):
+        ds.qcfilter.add_test(
+            var_name,
+            index=np.arange(ii * 100, ii * 100 + 100),
+            test_meaning=test_meanings[ii],
+            test_assessment=test_assessments[ii],
+        )
+
+    ds = ds.qcfilter.create_qc_summary(normalize_assessment=False)
+
+    qc_var_name = ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False)
+
+    # Make sure flag meanings are correct with new assessments.
+    assert sorted(ds[qc_var_name].attrs['flag_meanings']) == [
+        'Data Boomer',
+        'Data Sooner',
+        'Data incorrect use not recommended',
+        'Data incorrect use not recommended',
+        'Data suspect further analysis recommended',
+        'Data suspect further analysis recommended',
+        'Not failing quality control tests',
+    ]
+    assert sorted(ds[qc_var_name].attrs['flag_assessments']) == [
+        'Bad',
+        'Boomer',
+        'Incorrect',
+        'Indeterminate',
+        'Not failing',
+        'Sooner',
+        'Suspect',
+    ]
+    # Make sure the values and order of first 5 are as expected. The other non-standard
+    # assessments may be in different order with set operations.
+    assert ds[qc_var_name].attrs['flag_assessments'][:5] == [
+        'Not failing',
+        'Suspect',
+        'Indeterminate',
+        'Incorrect',
+        'Bad',
+    ]
+
+    for assessment, index_sum in zip(test_assessments, test_index_sums):
+        qc_ma = ds.qcfilter.get_masked_data(var_name, rm_assessments=assessment)
+        assert np.sum(np.where(qc_ma.mask)[0]) == index_sum
+
+    qc_ma = ds.qcfilter.get_masked_data(var_name, rm_assessments=['Bucky'])
+    assert np.sum(np.where(qc_ma.mask)[0]) == 0
+
+    qc_ma = ds.qcfilter.get_masked_data(var_name, rm_assessments=['Boomer', 'Sooner'])
+    assert np.sum(np.where(qc_ma.mask)[0]) == 94850
+
+    qc_ma = ds.qcfilter.get_masked_data(
+        var_name,
+        rm_assessments=['Boomer', 'Sooner', 'Indeterminate', 'Suspect', 'Bad', 'Incorrect'],
+    )
+    assert np.sum(np.where(qc_ma.mask)[0]) == 244650
+
+    del ds
+
+
+def test_qc_summary_scalar():
+    # Test scalar variables. Currently not implemented so just check that we
+    # don't do anything.
+    var_names = ['alt', 'temp_mean']
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=var_names)
+
+    test_meanings = ['Testing Incorrect', 'Testing Suspect']
+    test_assessments = ['Incorrect', 'Suspect']
+
+    for var_name in var_names:
+        for ii, _ in enumerate(test_assessments):
+            ds.qcfilter.add_test(
+                var_name,
+                index=0,
+                test_meaning=test_meanings[ii],
+                test_assessment=test_assessments[ii],
+            )
+
+    with pytest.warns(UserWarning, match="Unable to process scalar variable"):
+        ds = ds.qcfilter.create_qc_summary(normalize_assessment=False)
+
+    assert 'flag_masks' in ds[f'qc_{var_names[0]}'].attrs.keys()
+    assert 'flag_values' not in ds[f'qc_{var_names[0]}'].attrs.keys()
+    assert 'flag_masks' not in ds[f'qc_{var_names[1]}'].attrs.keys()
+    assert 'flag_values' in ds[f'qc_{var_names[1]}'].attrs.keys()
 
 
 @pytest.mark.big
@@ -150,31 +272,13 @@ def test_qc_summary_big_data():
         'zrh',
         'osc',
     ]
-    skip_datastream_codes = [
-        'mmcrmom',
-        # 'microbasepi',
-        # 'lblch1a',
-        # '30co2flx4mmet',
-        # 'microbasepi2',
-        # '30co2flx60m',
-        # 'bbhrpavg1mlawer',
-        # 'co',
-        # 'lblch1b',
-        # '30co2flx25m',
-        # '30co2flx4m',
-        # 'armbeatm',
-        # 'armtrajcld',
-        # '1swfanalsiros1long',
-    ]
-    # skip_datastreams = ['nimmfrsraod5chcorM1.c1', 'anxaoso3M1.b0']
+    skip_datastream_codes = ['mmcrmom']
     num_files = 3
     expected_assessments = ['Not failing', 'Suspect', 'Indeterminate', 'Incorrect', 'Bad']
 
     testing_files = []
 
-    single_test = False
     if len(testing_files) == 0:
-        single_test = True
         filename = (
             f'test_qc_summary_big_data.{datetime.datetime.utcnow().strftime("%Y%m%d.%H%M%S")}.txt'
         )
@@ -191,9 +295,6 @@ def test_qc_summary_big_data():
             for datastream_dir in datastream_dirs:
                 if '-' in datastream_dir.name:
                     continue
-
-                # if datastream_dir.name in skip_datastreams:
-                #     continue
 
                 fn_obj = DatastreamParserARM(datastream_dir.name)
                 facility = fn_obj.facility
@@ -216,8 +317,7 @@ def test_qc_summary_big_data():
                 for ii in range(0, num_tests):
                     testing_files.append(random.choice(files))
 
-    if single_test:
-        print(f"Testing {len(testing_files)} files\n")
+        print(f"\nTesting {len(testing_files)} files\n")
         print(f"Output file name = {output_file}\n")
 
     for file in testing_files:
