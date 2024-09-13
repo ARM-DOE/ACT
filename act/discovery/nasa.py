@@ -9,21 +9,17 @@ import requests
 import re
 import shutil
 
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib import urlopen
 
-
-def download_mplnet_data(version=None,
-                         level=None,
-                         product=None,
-                         site=None,
-                         year=None,
-                         month=None,
-                         day=None,
-                         outdir=None,
-                         ):
+def download_mplnet_data(
+    version=None,
+    level=None,
+    product=None,
+    site=None,
+    year=None,
+    month=None,
+    day=None,
+    outdir=None,
+):
     """
     Function to download data from the NASA MPL Network Data
     https://mplnet.gsfc.nasa.gov/mplnet_web_services.cgi?download
@@ -83,12 +79,18 @@ def download_mplnet_data(version=None,
     print("The MPLNET Data Policy can be found at:\n\thttps://mplnet.gsfc.nasa.gov/data-policy\n")
 
     # Generate the data acknowledgement statement, might require site information.
-    print("Please Include the Following Acknowledgements in Any Publication \nor" +
-          " presentation of MPLNET data, regardless of co-authorship status:")
-    print("\n\tThe MPLNET project is funded by the NASA Radiation Sciences Program" +
-          " \n\tand Earth Observing System.")
-    print("\n\tWe thank the MPLNET (PI) for (its/theirs) effort in establishing" +
-          " \n\tand maintaining sites.\n")
+    print(
+        "Please Include the Following Acknowledgements in Any Publication \nor"
+        + " presentation of MPLNET data, regardless of co-authorship status:"
+    )
+    print(
+        "\n\tThe MPLNET project is funded by the NASA Radiation Sciences Program"
+        + " \n\tand Earth Observing System."
+    )
+    print(
+        "\n\tWe thank the MPLNET (PI) for (its/theirs) effort in establishing"
+        + " \n\tand maintaining sites.\n"
+    )
 
     # Define the base URL
     base_url = "https://mplnet.gsfc.nasa.gov/download?"
@@ -115,14 +117,12 @@ def download_mplnet_data(version=None,
         base_url += "&site=" + str(site)
 
     if year is None:
-        raise ValueError(
-            "Year of desired data download is required to download MPLNET data")
+        raise ValueError("Year of desired data download is required to download MPLNET data")
     else:
         base_url += "&year=" + str(year)
 
     if month is None:
-        raise ValueError(
-            "Month of desired data download is required to download MPLNet data")
+        raise ValueError("Month of desired data download is required to download MPLNet data")
     else:
         base_url += "&month=" + str(month)
 
@@ -145,15 +145,14 @@ def download_mplnet_data(version=None,
     # Make a Request
     files = []
     with requests.get(base_url, stream=True) as r:
-        fname = re.findall("filename=(.+)",
-                           r.headers['Content-Disposition']
-                           )
+        fname = re.findall("filename=(.+)", r.headers['Content-Disposition'])
         # Check for successful file check
         if fname[0][1:-1] == "MPLNET_download_fail.txt":
-            raise ValueError("Failed MPLNET Download\n" +
-                             " File could not be found for the desired input parameters" +
-                             " for MPLNET Download API"
-                             )
+            raise ValueError(
+                "Failed MPLNET Download\n"
+                + " File could not be found for the desired input parameters"
+                + " for MPLNET Download API"
+            )
         else:
             output_filename = os.path.join(output_dir, fname[0][1:-1])
             print("[DOWNLOADING] ", fname[0][1:-1])
@@ -164,12 +163,9 @@ def download_mplnet_data(version=None,
     return files
 
 
-def get_mplnet_meta(sites=None,
-                    method=None,
-                    year=None,
-                    month=None,
-                    day=None,
-                    print_to_screen=False):
+def get_mplnet_meta(
+    sites=None, method=None, year=None, month=None, day=None, print_to_screen=False
+):
     """
     Returns a list of meta data from the NASA MPL Network Data
     https://mplnet.gsfc.nasa.gov/mplnet_web_services.cgi?metadata
@@ -212,9 +208,7 @@ def get_mplnet_meta(sites=None,
     base_url = "https://mplnet.gsfc.nasa.gov/operations/sites?api&format=galion"
 
     if sites is None:
-        raise ValueError(
-            "Site Parameter is required to download MPLNET Meta Data"
-        )
+        raise ValueError("Site Parameter is required to download MPLNET Meta Data")
     else:
         base_url += "&sites=" + str(sites)
 
