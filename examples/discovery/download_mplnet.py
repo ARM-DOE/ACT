@@ -14,5 +14,5 @@ meta = act.discovery.get_mplnet_meta(sites="active", method="data", print_to_scr
 
 # Download MPLNET data for site of interest
 output = act.discovery.download_mplnet_data(
-    version=3, level=2, product="NRB", site="GSFC", year="2022", month="09", day="01"
+    version=3, level=1, product="NRB", site="GSFC", year="2022", month="09", day="01"
 )
