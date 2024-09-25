@@ -337,10 +337,9 @@ def test_qctests_dos():
     ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
 
-    # persistence test
     data = ds[var_name].values
     data[1000:2400] = data[1000]
-    data = np.around(data, decimals=3)
+    data = np.around(data, decimals=5)
     ds[var_name].values = data
     result = ds.qcfilter.add_persistence_test(var_name)
     qc_var_name = result['qc_variable_name']
@@ -348,10 +347,10 @@ def test_qctests_dos():
         'Data failing persistence test. Standard Deviation over a '
         'window of 10 values less than 0.0001.'
     )
-    assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
-    # There is a precision issue with GitHub testing that makes the number of tests
-    # tripped off. This isclose() option is to account for that.
-    assert np.isclose(np.sum(ds[qc_var_name].values), 1399, atol=2)
+    assert ds[qc_var_name].attrs['flag_meanings'] == [test_meaning]
+    # There is a precision issue with hardware/VM used in testing that makes the
+    # number of tests tripped off. This isclose() option is to account for that.
+    assert np.isclose(np.sum(ds[qc_var_name].values), 1406, atol=2)
 
     ds.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
     test_meaning = (
@@ -359,6 +358,41 @@ def test_qctests_dos():
         '4320 values less than 0.0001.'
     )
     assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
+
+    ds.close()
+    del ds
+
+    # Test the ignore range in persistence test
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
+    data = ds[var_name].values
+    data[1000:1400] = data[1000]
+    data[2000:2400] = 14.2
+    data = np.around(data, decimals=3)
+    ds[var_name].values = data
+    result = ds.qcfilter.add_persistence_test(var_name, window=20, min_periods=20, test_limit=0.01)
+
+    assert np.isclose(np.sum(ds[qc_var_name].values), 768, atol=2)
+
+    del ds[qc_var_name]
+    result = ds.qcfilter.add_persistence_test(
+        var_name,
+        window=20,
+        min_periods=20,
+        test_limit=0.01,
+        ignore_range=[13.1, 14.8],
+        test_assessment='Suspect',
+    )
+
+    assert np.isclose(np.sum(ds[qc_var_name].values), 387, atol=2)
+    assert ds[qc_var_name].attrs['flag_assessments'] == ['Suspect']
+    test_meaning = (
+        'Data failing persistence test. Standard Deviation over a window '
+        'of 20 values less than 0.01.'
+    )
+    assert ds[qc_var_name].attrs['flag_meanings'] == [test_meaning]
+
+    ds.close()
+    del ds
 
 
 def test_add_atmospheric_pressure_test():
