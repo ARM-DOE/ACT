@@ -348,8 +348,9 @@ def test_qctests_dos():
         'window of 10 values less than 0.0001.'
     )
     assert ds[qc_var_name].attrs['flag_meanings'] == [test_meaning]
+
     # There is a precision issue with hardware/VM used in testing that makes the
-    # number of tests tripped off. This isclose() option is to account for that.
+    # number of tests tripped different than listed value. The isclose() option is to account for that.
     assert np.isclose(np.sum(ds[qc_var_name].values), 1400, atol=10)
 
     ds.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
@@ -367,11 +368,11 @@ def test_qctests_dos():
     data = ds[var_name].values
     data[1000:1400] = data[1000]
     data[2000:2400] = 14.2
-    data = np.around(data, decimals=3)
+    data = np.around(data, decimals=5)
     ds[var_name].values = data
     result = ds.qcfilter.add_persistence_test(var_name, window=20, min_periods=20, test_limit=0.01)
 
-    assert np.isclose(np.sum(ds[qc_var_name].values), 768, atol=5)
+    assert np.isclose(np.sum(ds[qc_var_name].values), 779, atol=5)
 
     del ds[qc_var_name]
     result = ds.qcfilter.add_persistence_test(
@@ -383,7 +384,7 @@ def test_qctests_dos():
         test_assessment='Suspect',
     )
 
-    assert np.isclose(np.sum(ds[qc_var_name].values), 387, atol=5)
+    assert np.isclose(np.sum(ds[qc_var_name].values), 398, atol=5)
     assert ds[qc_var_name].attrs['flag_assessments'] == ['Suspect']
     test_meaning = (
         'Data failing persistence test. Standard Deviation over a window '
