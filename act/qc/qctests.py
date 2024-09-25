@@ -1017,7 +1017,7 @@ class QCTests:
             index = stddev <= test_limit
 
         if ignore_range is not None:
-            ignore_index = (data >= ignore_range[0]) & (data <= ignore_range[1])
+            ignore_index = (data >= min(ignore_range)) & (data <= max(ignore_range))
             index = index & ~ignore_index
 
         result = self._ds.qcfilter.add_test(

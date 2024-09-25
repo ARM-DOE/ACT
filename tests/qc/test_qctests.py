@@ -379,7 +379,7 @@ def test_qctests_dos():
         window=20,
         min_periods=20,
         test_limit=0.01,
-        ignore_range=[13.1, 14.8],
+        ignore_range=[14.8, 13.1],
         test_assessment='Suspect',
     )
 
