@@ -34,7 +34,7 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
         os: [macOS, ubuntu, Windows]
-        inlcude:
+        include:
           - os: macos-latest
             PLAT: arm64
             INTERFACE64: ""
@@ -49,6 +49,7 @@ jobs:
           create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
           environment-name: act_env
+          micromamba-version: 1.5.10-0
 
       - name: Install ACT
         run: |

@@ -407,9 +407,9 @@ class WindRoseDisplay(Display):
                 # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
                 # as the contours.
                 spd_data = ds[spd_field].values
-                spd_bins = np.linspace(0, ds[spd_field].max(), num_data_bins + 1)
+                spd_bins = np.linspace(0, ds[spd_field].max().values, num_data_bins + 1)
                 spd_bins = np.insert(spd_bins, 1, calm_threshold)
-                #  Set up an array and cycle through the data, binning them by speed/direction
+                # Set up an array and cycle through the data, binning them by speed/direction
                 mean_data = np.zeros([len(bins), len(spd_bins)])
                 for i in range(len(bins) - 1):
                     for j in range(len(spd_bins)):
@@ -432,7 +432,6 @@ class WindRoseDisplay(Display):
                 mean_data = np.insert(mean_data, -1, mean_data[0, :], axis=0)
                 bins.append(bins[0])
                 mean_data[-1, :] = mean_data[0, :]
-
                 # In order to properly handle vmin/vmax in contours, need to adjust
                 # the levels plotted and remove the keywords to contourf
                 vmin = np.nanmin(mean_data)
