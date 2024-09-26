@@ -948,6 +948,7 @@ class QCTests:
         test_number=None,
         flag_value=False,
         prepend_text=None,
+        ignore_range=None,
     ):
         """
         Method to perform a persistence test over 1-D data..
@@ -968,21 +969,26 @@ class QCTests:
         center : boolean
             Optional where within the moving window to report the standard
             deviation values. Used in the .rolling.std() calculation with xarray.
-        test_meaning : str
+        test_meaning : None or str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
         test_assessment : str
             Optional single word describing the assessment of the test.
             Will set a default if not set.
-        test_number : int
+        test_number : None or int
             Optional test number to use. If not set will ues next
             available test number.
         flag_value : boolean
             Indicates that the tests are stored as integers
             not bit packed values in quality control variable.
-        prepend_text : str
+        prepend_text : None or str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        ignore_range : None, tuple, list
+            Optional list of minimum and maximum data values used to define a range
+            where the test will not flag if a persistence is discovered if the data used
+            in testing is within this range. Can be used when there is a specific range
+            of values that often have a persistent value. e.g. RH at 100% during raining event.
 
         Returns
         -------
@@ -1008,7 +1014,11 @@ class QCTests:
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
             stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
-            index = stddev < test_limit
+            index = stddev <= test_limit
+
+        if ignore_range is not None:
+            ignore_index = (data >= min(ignore_range)) & (data <= max(ignore_range))
+            index = index & ~ignore_index
 
         result = self._ds.qcfilter.add_test(
             var_name,
