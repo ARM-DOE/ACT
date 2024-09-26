@@ -407,7 +407,7 @@ class WindRoseDisplay(Display):
                 # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
                 # as the contours.
                 spd_data = ds[spd_field].values
-                spd_bins = np.linspace(0, ds[spd_field].max(), num_data_bins + 1)
+                spd_bins = np.linspace(0, ds[spd_field].values.max(), num_data_bins + 1)
                 spd_bins = np.insert(spd_bins, 1, calm_threshold)
                 #  Set up an array and cycle through the data, binning them by speed/direction
                 mean_data = np.zeros([len(bins), len(spd_bins)])
