@@ -37,7 +37,6 @@ jobs:
         include:
           - os: macos-latest
             PLAT: arm64
-            micromamba-version: 1.5.10
             INTERFACE64: ""
             platform: [x64]
 
@@ -50,6 +49,7 @@ jobs:
           create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
           environment-name: act_env
+          micromamba-version: 1.5.10
 
       - name: Install ACT
         run: |
