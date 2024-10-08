@@ -34,17 +34,11 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
         os: [macOS, ubuntu, Windows]
-        include:
-          - os: macos-latest
-            PLAT: arm64
-            INTERFACE64: ""
-            platform: [x64]
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
