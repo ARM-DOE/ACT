@@ -28,7 +28,7 @@ def test_xsection_errors():
 
     display = XSectionDisplay(ds, figsize=(10, 8), subplot_shape=(1,))
     with np.testing.assert_raises(RuntimeError):
-        display.plot_xsection(None, 'backscatter', x='time', cmap='HomeyerRainbow')
+        display.plot_xsection('backscatter', x='time', cmap='HomeyerRainbow')
 
     ds.close()
     matplotlib.pyplot.close(fig=display.fig)
@@ -39,9 +39,7 @@ def test_xsection_plot():
     visst_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
     xsection = XSectionDisplay(visst_ds, figsize=(10, 8))
-    xsection.plot_xsection(
-        None, 'backscatter', x='time', y='range', cmap='coolwarm', vmin=0, vmax=320
-    )
+    xsection.plot_xsection('backscatter', x='time', y='range', cmap='coolwarm', vmin=0, vmax=320)
     visst_ds.close()
 
     try:
@@ -63,7 +61,6 @@ def test_xsection_plot_map():
         ):
             xsection = XSectionDisplay(radar_ds, figsize=(15, 8))
         xsection.plot_xsection_map(
-            None,
             'ir_temperature',
             vmin=220,
             vmax=300,
