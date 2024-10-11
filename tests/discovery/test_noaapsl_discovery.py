@@ -1,8 +1,10 @@
 import numpy as np
+import pytest
 
 import act
 
 
+@pytest.mark.skip(reason="NCEI is currently down.")
 def test_noaa_psl():
     result = act.discovery.download_noaa_psl_data(
         site='ctd',
