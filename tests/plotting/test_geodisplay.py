@@ -64,7 +64,7 @@ def test_geoplot_tile():
             ],
             text={'Ponca City': [-97.0725, 36.7125]},
             img_tile='GoogleTiles',
-            img_tile_args={'style': 'street'},
+            img_tile_args={'style': 'terrain'},
         )
         try:
             return geodisplay.fig
