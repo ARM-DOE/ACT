@@ -29,6 +29,7 @@ plt.show()
 files = DATASETS.fetch('enatsiskycoverC1.b1.20230307.082100.cdf')
 ds_tsi = act.io.read_arm_netcdf(files)
 ds_tsi = ds_tsi.where(ds_tsi.percent_opaque > 0)
+ds_tsi = ds_tsi.resample(time='30min').mean()
 
 # Set coordinates to extra data for ENA
 ena_lat = 39.091600
