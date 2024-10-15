@@ -20,8 +20,8 @@ my_ds = act.io.arm.read_arm_netcdf(filename_visst)
 # Dimensions whose coordinates can be specified by variables in the file
 display = act.plotting.XSectionDisplay(my_ds, figsize=(20, 8), subplot_shape=(2, 2))
 display.plot_xsection_map(
-    None,
     'ir_temperature',
+    None,
     x='longitude',
     y='latitude',
     cmap='Greys',
@@ -30,8 +30,8 @@ display.plot_xsection_map(
     subplot_index=(0, 0),
 )
 display.plot_xsection_map(
-    None,
     'ir_temperature',
+    None,
     x='longitude',
     y='latitude',
     cmap='Greys',
@@ -40,8 +40,8 @@ display.plot_xsection_map(
     subplot_index=(1, 0),
 )
 display.plot_xsection_map(
-    None,
     'ir_temperature',
+    None,
     x='longitude',
     y='latitude',
     cmap='Greys',
@@ -50,8 +50,8 @@ display.plot_xsection_map(
     subplot_index=(0, 1),
 )
 display.plot_xsection_map(
-    None,
     'ir_temperature',
+    None,
     x='longitude',
     y='latitude',
     cmap='Greys',
