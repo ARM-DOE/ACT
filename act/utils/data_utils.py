@@ -112,6 +112,7 @@ class ChangeUnits:
                     self._ds[var_name].attrs = attrs
             except (
                 KeyError,
+                TypeError,
                 pint.errors.DimensionalityError,
                 pint.errors.UndefinedUnitError,
                 np._core._exceptions.UFuncTypeError,
