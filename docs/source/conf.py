@@ -63,6 +63,7 @@ plot_html_show_formats = False
 autoclass_content = 'both'
 autosummary_generate = True
 autosummary_imported_members = True
+autodoc_typehints = "description"
 
 # Otherwise, the Return parameter list looks different from the Parameter list
 napoleon_use_rtype = False
@@ -84,7 +85,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Atmospheric data Community Toolkit'
-copyright = '2018-2022, ACT Developers'
+copyright = '2018-2024, ACT Developers'
 author = 'ACT Developers'
 
 # The version info for the project you're documenting, acts as replacement for
