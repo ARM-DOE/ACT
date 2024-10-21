@@ -143,7 +143,7 @@ class QCSummary:
 
             history_value = (
                 f"Quality control summary implemented by ACT-{version} at "
-                f"{datetime.datetime.utcnow().replace(microsecond=0)} UTC"
+                f"{datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)} UTC"
             )
 
             if 'history' in list(return_ds.attrs.keys()):

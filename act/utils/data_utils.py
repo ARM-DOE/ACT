@@ -114,7 +114,7 @@ class ChangeUnits:
                 KeyError,
                 pint.errors.DimensionalityError,
                 pint.errors.UndefinedUnitError,
-                np.core._exceptions.UFuncTypeError,
+                np._core._exceptions.UFuncTypeError,
             ):
                 if raise_error:
                     raise ValueError(
