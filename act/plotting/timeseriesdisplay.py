@@ -1864,7 +1864,7 @@ class TimeSeriesDisplay(Display):
         **kwargs,
     ):
         """
-        Makes a fill_between plot, based on matplotlib
+        Makes a climate stripe plot with or without a baseline period specified
 
         Parameters
         ----------
