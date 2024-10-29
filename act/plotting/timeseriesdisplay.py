@@ -9,11 +9,14 @@ import warnings
 from copy import deepcopy
 from re import search, search as re_search
 
+import numpy as np
+import pandas as pd
+from scipy import stats
 import matplotlib as mpl
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+from matplotlib.patches import Rectangle
+from matplotlib.collections import PatchCollection
 from matplotlib import colors as mplcolors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import NearestNDInterpolator
@@ -1841,6 +1844,119 @@ class TimeSeriesDisplay(Display):
                     dsname,
                     field,
                     'on',
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                ]
+            )
+        ax.set_title(set_title)
+        self.axes[subplot_index] = ax
+        return self.axes[subplot_index]
+
+    def plot_stripes(
+        self,
+        field,
+        dsname=None,
+        subplot_index=(0,),
+        set_title=None,
+        reference_period=None,
+        cmap='coolwarm',
+        **kwargs,
+    ):
+        """
+        Makes a fill_between plot, based on matplotlib
+
+        Parameters
+        ----------
+        field : str
+            The name of the field to plot.
+        dsname : None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream ACT will use the sole datastream
+            in the object.
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+        set_title : str
+            The title for the plot.
+        reference_period : list
+            List of a start and end date for a reference period ['2020-01-01', '2020-04-01']
+            If this is set, the plot will subtract the mean of the reference period from the
+            field to create an anomaly calculation.
+        cmap : string
+            Colormap to use for plotting.  Defaults to coolwarm
+        **kwargs : keyword arguments
+            The keyword arguments for :func:`plt.plot` (1D timeseries) or
+            :func:`plt.pcolormesh` (2D timeseries).
+
+        Returns
+        -------
+        ax : matplotlib axis handle
+            The matplotlib axis handle of the plot.
+
+        """
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        # Get data and dimensions
+        data = self._ds[dsname][field]
+        dim = list(self._ds[dsname][field].dims)
+        xdata = self._ds[dsname][dim[0]]
+
+        if 'units' in data.attrs:
+            ytitle = ''.join(['(', data.attrs['units'], ')'])
+        else:
+            ytitle = field
+
+        delta = 1
+        start = int(mdates.date2num(xdata.values[0]))
+        end = int(mdates.date2num(xdata.values[-1]))
+        delta = stats.mode(xdata.diff('time').values)[0] / np.timedelta64(1, 'D')
+        if reference_period is not None:
+            reference = data.sel(time=slice(reference_period[0], reference_period[1])).mean('time')
+            data.values = data.values - reference.values
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Set ax to appropriate axis
+        ax = self.axes[subplot_index]
+
+        col = PatchCollection([Rectangle((y, 0), 1, 1) for y in np.arange(start, end + 1, delta)])
+
+        col.set_array(data)
+        col.set_cmap(cmap)
+        col.set_clim(np.nanmin(data), np.nanmax(data))
+        ax.add_collection(col)
+
+        locator = mdates.AutoDateLocator(minticks=3)
+        formatter = mdates.AutoDateFormatter(locator)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(formatter)
+
+        ax.set_ylim(0, 1)
+        ax.set_yticks([])
+        ax.set_xlim(start, end + 1)
+
+        # Set YTitle
+        ax.set_ylabel(ytitle)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join(
+                [
+                    dsname,
+                    field,
+                    'Stripes on',
                     dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
                 ]
             )
