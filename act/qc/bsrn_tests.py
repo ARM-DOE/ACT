@@ -470,6 +470,8 @@ class QCTests:
         if isinstance(test, str):
             test = [test]
 
+        test = [ii.lower() for ii in test]
+
         test_options = [
             'Global over Sum SW Ratio',
             'Diffuse Ratio',
@@ -477,13 +479,14 @@ class QCTests:
             'LW down to air temp',
             'LW up to air temp',
             'LW down to LW up',
+            'Closure',
         ]
 
         solar_constant = 1360.8
         sza, Sa = _calculate_solar_parameters(self._ds, lat_name, lon_name, solar_constant)
 
         # Ratio of Global over Sum SW
-        if test_options[0] in test:
+        if test_options[0].lower() in test:
             if (
                 gbl_SW_dn_name is None
                 or glb_diffuse_SW_dn_name is None
@@ -544,7 +547,7 @@ class QCTests:
             )
 
         # Diffuse Ratio
-        if test_options[1] in test:
+        if test_options[1].lower() in test:
             if gbl_SW_dn_name is None or glb_diffuse_SW_dn_name is None:
                 raise ValueError(
                     'Must set keywords gbl_SW_dn_name, glb_diffuse_SW_dn_name '
@@ -587,7 +590,7 @@ class QCTests:
             )
 
         # Shortwave up comparison
-        if test_options[2] in test:
+        if test_options[2].lower() in test:
             if (
                 glb_SW_up_name is None
                 or glb_diffuse_SW_dn_name is None
@@ -637,7 +640,7 @@ class QCTests:
             )
 
         # Longwave down to air temperature comparison
-        if test_options[3] in test:
+        if test_options[3].lower() in test:
             if glb_LW_dn_name is None or air_temp_name is None:
                 raise ValueError(
                     'Must set keywords glb_LW_dn_name, air_temp_name '
@@ -670,7 +673,7 @@ class QCTests:
             )
 
         # Longwave up to air temperature comparison
-        if test_options[4] in test:
+        if test_options[4].lower() in test:
             if glb_LW_up_name is None or air_temp_name is None:
                 raise ValueError(
                     'Must set keywords glb_LW_up_name, air_temp_name '
@@ -705,7 +708,7 @@ class QCTests:
             )
 
         # Lonwave down to longwave up comparison
-        if test_options[5] in test:
+        if test_options[5].lower() in test:
             if glb_LW_dn_name is None or glb_LW_up_name is None:
                 raise ValueError(
                     'Must set keywords glb_LW_dn_name, glb_LW_up_name '
@@ -746,6 +749,72 @@ class QCTests:
             )
             self._ds.qcfilter.add_test(
                 glb_LW_up_name,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+
+        # Closure test
+        if test_options[6].lower() in test:
+            if (
+                direct_normal_SW_dn_name is None
+                or glb_diffuse_SW_dn_name is None
+                or gbl_SW_dn_name is None
+            ):
+                raise ValueError(
+                    'Must set keywords direct_normal_SW_dn_name, glb_diffuse_SW_dn_name, '
+                    f'gbl_SW_dn_name for {test_options[3]} test.'
+                )
+
+            # not tested  yet !!!!!!!!!!!!
+            if use_dask and isinstance(self._ds[gbl_SW_dn_name].data, da.Array):
+                sza = da.array(sza)
+                component_sum = self._ds[gbl_SW_dn_name].values + (
+                    self._ds[direct_normal_SW_dn_name].values * np.cos(np.radians(sza))
+                )
+
+                index_lsz = da.where((component_sum > 50.0) & (sza <= 75.0), True, False)
+                index_hsz = da.where(
+                    (component_sum > 50.0) & (sza > 75.0) & (sza < 93.0), True, False
+                )
+
+                value = (self._ds[glb_diffuse_SW_dn_name].values / component_sum) - 1.0
+
+                index_1 = da.where((value >= 0.08) & index_lsz, True, False)
+                index_2 = da.where((value >= 0.15) & index_hsz, True, False)
+
+                index = (index_1 | index_2).compute()
+
+            else:
+                component_sum = self._ds[gbl_SW_dn_name].values + (
+                    self._ds[direct_normal_SW_dn_name].values * np.cos(np.radians(sza))
+                )
+
+                index_lsz = (component_sum > 50.0) & (sza <= 75.0)
+                index_hsz = (component_sum > 50.0) & (sza > 75.0) & (sza < 93.0)
+
+                value = (self._ds[glb_diffuse_SW_dn_name].values / component_sum) - 1.0
+
+                index_1 = (value >= 0.08) & index_lsz
+                index_2 = (value >= 0.15) & index_hsz
+
+                index = index_1 | index_2
+
+            test_meaning = "Closure test indicating value outside of expected range"
+            self._ds.qcfilter.add_test(
+                direct_normal_SW_dn_name,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+            self._ds.qcfilter.add_test(
+                glb_diffuse_SW_dn_name,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+            self._ds.qcfilter.add_test(
+                gbl_SW_dn_name,
                 index=index,
                 test_assessment=test_assessment,
                 test_meaning=test_meaning,
