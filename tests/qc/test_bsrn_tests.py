@@ -232,6 +232,11 @@ def test_bsrn_limits_test():
         )
         ds['up_long_hemisp'].values[0:100] = ds['up_long_hemisp'].values[0:100] - 200
 
+        # Closure test modified data
+        ds['down_short_diffuse_hemisp'].values[714:814] = (
+            ds['down_short_diffuse_hemisp'].values[714:814] + 50.0
+        )
+
         ds.qcfilter.bsrn_comparison_tests(
             [
                 'Global over Sum SW Ratio',
@@ -240,6 +245,7 @@ def test_bsrn_limits_test():
                 'LW down to air temp',
                 'LW up to air temp',
                 'LW down to LW up',
+                'Closure',
             ],
             gbl_SW_dn_name='down_short_hemisp',
             glb_diffuse_SW_dn_name='down_short_diffuse_hemisp',
@@ -256,11 +262,11 @@ def test_bsrn_limits_test():
 
         # Ratio of Global over Sum SW
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=5)
-        assert np.sum(result) == 190
+        assert np.sum(result) == 276
 
         # Diffuse Ratio
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=6)
-        assert np.sum(result) == 47
+        assert np.sum(result) == 103
 
         # Shortwave up comparison
         result = ds.qcfilter.get_qc_test_mask('up_short_hemisp', test_number=5)
@@ -274,6 +280,26 @@ def test_bsrn_limits_test():
         result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=5)
         assert np.sum(result) == 976
 
-        # Lonwave down to longwave up comparison
+        # Longwave down to longwave up comparison
         result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=6)
         assert np.sum(result) == 100
+
+        # Closure test
+        assert (
+            ds['qc_down_short_hemisp'].attrs['flag_meanings'][6]
+            == 'Closure test indicating value outside of expected range'
+        )
+        result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=7)
+        assert np.sum(result) == 38
+        assert (
+            ds['qc_short_direct_normal'].attrs['flag_meanings'][6]
+            == 'Closure test indicating value outside of expected range'
+        )
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=7)
+        assert np.sum(result) == 38
+        assert (
+            ds['qc_down_short_diffuse_hemisp'].attrs['flag_meanings'][7]
+            == 'Closure test indicating value outside of expected range'
+        )
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=8)
+        assert np.sum(result) == 38
