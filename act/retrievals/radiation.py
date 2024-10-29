@@ -8,6 +8,7 @@ import xarray as xr
 from scipy.constants import Stefan_Boltzmann
 
 from act.utils.geo_utils import get_solar_azimuth_elevation
+from act.utils.data_utils import convert_units
 
 
 def calculate_dsh_from_dsdh_sdn(
@@ -19,45 +20,247 @@ def calculate_dsh_from_dsdh_sdn(
 ):
     """
 
-    Function to derive the downwelling shortwave hemispheric irradiance from the
+    Function to derive the downwelling shortwave hemispheric irradiance (dsh) from the
     downwelling shortwave diffuse hemispheric irradiance (dsdh) and the shortwave
-    direct normal irradiance (sdn) at a given location (lat,lon)
+    direct normal irradiance (sdn). The derived values are added the returned
+    Datasets as a new varible.
 
     Parameters
     ----------
     ds : xarray.Dataset
-        Xarray dataset where variables for these calculations are stored
+        Xarray dataset where variables for these calculations are stored.
     dsdh : str
         Name of the downwelling shortwave diffuse hemispheric irradiance field to use.
-        Defaults to downwelling_sw_diffuse_hemisp_irradiance.
     sdn : str
         Name of shortwave direct normal irradiance field to use.
-        Defaults to shortwave_direct_normal_irradiance.
     lat : str
-        Name of latitude field in dataset to use. Defaults to 'lat'.
+        Name of latitude variable in dataset to use for deriving solar zenight angle.
     lon : str
-        Name of longitued field in dataset to use. Defaults to 'lon'.
+        Name of longitude variable in dataset to use for deriving solar zenight angle.
 
     Returns
     -------
 
     ds: xarray.Dataset
-        ACT Xarray Dataset with calculations included as new variables.
+        ACT Xarray Dataset with calculations included as new variable.
 
     """
 
-    # Calculating Derived Down Short Hemisp
-    elevation, _, _ = get_solar_azimuth_elevation(ds[lat].values, ds[lon].values, ds['time'].values)
-    solar_zenith = np.cos(np.radians(90.0 - elevation))
-    dsh = ds[dsdh].values + (solar_zenith * ds[sdn].values)
+    ds = calculate_ghi_from_dni_dhi(ds, dni=sdn, dhi=dsdh, lat=lat, lon=lon)
 
-    # Add data back to DataArray
-    ds['derived_down_short_hemisp'] = xr.DataArray(
-        dsh,
+    return ds
+
+
+def calculate_ghi_from_dni_dhi(
+    ds,
+    dni='short_direct_normal',
+    dhi='down_short_diffuse_hemisp',
+    derived='derived_down_short_hemisp',
+    long_name='Derived global horizontal irradiance',
+    solar_zenith=None,
+    lat='lat',
+    lon='lon',
+):
+    """
+
+    Function to derive the Global Horizontal Irradiance (GHI) from
+    Direct Normal Irradiance (DNI) and Diffuse Horizontal
+    Irradiance (DHI). The derived values are added the returned Datasets as a new DataArray.
+
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Xarray dataset where variables used for these calculations are stored
+    dni : str
+        Name of the direct normal irradiance DataArray to use.
+    dhi : str
+        Name of diffuse hemispheric irradiance DataArray to use.
+    derived : str
+        Name of new diffuse horizontal irradiance DataArray.
+    long_name : str
+        Long name used in new DataArray.
+    solar_zenith : str or None
+        Name of solar zenith DataArray in Dataset. If set to None will calculate using
+        location and time variables from Dataset.
+    lat : str
+        Name of latitude DataArray in dataset to use for deriving solar zenight angle.
+        Ignored if solar_zenith provided.
+    lon : str
+        Name of longitued DataArray in dataset to use for deriving solar zenight angle.
+        Ignored if solar_zenith provided.
+
+    Returns
+    -------
+
+    ds: xarray.Dataset
+        ACT Xarray Dataset with global horizontal irradiance included as new DataArray.
+
+    """
+
+    # Get solar zenith angle
+    if solar_zenith is not None:
+        sz = ds[solar_zenith].values
+        sz = convert_units(sz, ds[solar_zenith].attrs['units'], 'radians')
+        cos_sz = np.cos(sz)
+    else:
+        elevation, _, _ = get_solar_azimuth_elevation(
+            ds[lat].values, ds[lon].values, ds['time'].values
+        )
+        cos_sz = np.cos(np.radians(90.0 - elevation))
+
+    ghi = ds[dhi].values + (cos_sz * ds[dni].values)
+
+    # Add data into Dataset
+    ds[derived] = xr.DataArray(
+        ghi,
         dims=['time'],
         attrs={
-            'long_name': 'Derived Downwelling Shortwave Hemispheric Irradiance',
-            'units': 'W/m^2',
+            'long_name': long_name,
+            'units': ds[dhi].attrs['units'],
+        },
+    )
+
+    return ds
+
+
+def calculate_dni_from_dhi_ghi(
+    ds,
+    dhi='down_short_diffuse_hemisp',
+    ghi='down_short_hemisp',
+    derived='derived_short_direct_normal',
+    long_name='Derived direct normal irradiance',
+    solar_zenith=None,
+    lat='lat',
+    lon='lon',
+):
+    """
+
+    Function to derive the Direct Normal Irradiance (DNI) from
+    Diffuse Horizontal Irradiance (DHI) and Global Horizontal
+    Irradiance (GHI). The derived values are added the returned Datasets as a new DataArray.
+
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Xarray dataset where variables used for these calculations are stored
+    dhi : str
+        Name of the diffuse horizontal irradiance DataArray to use.
+    ghi : str
+        Name of global hemispheric irradiance DataArray to use.
+    derived : str
+        Name of new direct normal irradiance DataArray.
+    long_name : str
+        Long name used in new DataArray.
+    solar_zenith : str or None
+        Name of solar zenith DataArray in Dataset. If set to None will calculate using
+        location and time variables from Dataset.
+    lat : str
+        Name of latitude DataArray in dataset to use for deriving solar zenight angle.
+        Ignored if solar_zenith provided.
+    lon : str
+        Name of longitued DataArray in dataset to use for deriving solar zenight angle.
+        Ignored if solar_zenith provided.
+
+    Returns
+    -------
+
+    ds: xarray.Dataset
+        ACT Xarray Dataset with direct normal irradiance included as new DataArray.
+
+    """
+
+    # Get solar zenith angle
+    if solar_zenith is not None:
+        sz = ds[solar_zenith].values
+        sz = convert_units(sz, ds[solar_zenith].attrs['units'], 'radians')
+        cos_sz = np.cos(sz)
+    else:
+        elevation, _, _ = get_solar_azimuth_elevation(
+            ds[lat].values, ds[lon].values, ds['time'].values
+        )
+        cos_sz = np.cos(np.radians(90.0 - elevation))
+
+    dni = (ds[ghi].values - ds[dhi].values) / cos_sz
+
+    # Add data into Dataset
+    ds[derived] = xr.DataArray(
+        dni,
+        dims=['time'],
+        attrs={
+            'long_name': long_name,
+            'units': ds[dhi].attrs['units'],
+        },
+    )
+
+    return ds
+
+
+def calculate_dhi_from_dni_ghi(
+    ds,
+    dni='short_direct_normal',
+    ghi='down_short_hemisp',
+    derived='derived_down_short_diffuse_hemisp',
+    long_name='Derived diffuse horizontal irradiance',
+    solar_zenith=None,
+    lat='lat',
+    lon='lon',
+):
+    """
+
+    Function to derive the Diffuse Horizontal Irradiance (DHI) from
+    Direct Normal Irradiance (DNI) and Global Horizontal
+    Irradiance (GHI). The derived values are added the returned Datasets as a new DataArray.
+
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Xarray dataset where variables used for these calculations are stored
+    dni : str
+        Name of the dirret normal irradiance DataArray to use.
+    ghi : str
+        Name of global hemispheric irradiance DataArray to use.
+    derived : str
+        Name of new diffuse horizontal irradiance DataArray.
+    long_name : str
+        Long name used in new DataArray.
+    solar_zenith : str or None
+        Name of solar zenith DataArray in Dataset. If set to None will calculate using
+        location and time variables from Dataset.
+    lat : str
+        Name of latitude DataArray in dataset to use for deriving solar zenight angle.
+        Ignored if solar_zenith provided.
+    lon : str
+        Name of longitued DataArray in dataset to use for deriving solar zenight angle.
+        Ignored if solar_zenith provided.
+
+    Returns
+    -------
+
+    ds: xarray.Dataset
+        ACT Xarray Dataset with diffuse horizontal irradiance included as new DataArray.
+
+    """
+
+    # Get solar zenith angle
+    if solar_zenith is not None:
+        sz = ds[solar_zenith].values
+        sz = convert_units(sz, ds[solar_zenith].attrs['units'], 'radians')
+        cos_sz = np.cos(sz)
+    else:
+        elevation, _, _ = get_solar_azimuth_elevation(
+            ds[lat].values, ds[lon].values, ds['time'].values
+        )
+        cos_sz = np.cos(np.radians(90.0 - elevation))
+
+    dhi = ds[ghi].values - (ds[dni].values * cos_sz)
+
+    # Add data into Dataset
+    ds[derived] = xr.DataArray(
+        dhi,
+        dims=['time'],
+        attrs={
+            'long_name': long_name,
+            'units': ds[ghi].attrs['units'],
         },
     )
 
@@ -86,10 +289,10 @@ def calculate_irradiance_stats(
         Name of the second irradiance variable
     diff_output_variable : str
         Variable name to store the difference results
-        Defaults to 'diff[underscore]'+variable
+        Defaults to 'diff_' + variable
     ratio_output_variable : str
         Variable name to store the ratio results
-        Defaults to 'ratio[underscore]'+variable
+        Defaults to 'ratio_' + variable
 
     Returns
     -------
@@ -101,8 +304,10 @@ def calculate_irradiance_stats(
 
     if variable is None or variable2 is None:
         return ds
+
     if diff_output_variable is None:
         diff_output_variable = 'diff_' + variable
+
     if ratio_output_variable is None:
         ratio_output_variable = 'ratio_' + variable
 
@@ -145,7 +350,7 @@ def calculate_net_radiation(
 ):
     """
 
-    Function to calculate the net  radiation from upwelling short and long-wave irradiance and
+    Function to calculate the net radiation from upwelling short and long-wave irradiance and
     downwelling short and long-wave hemisperic irradiances
 
     Parameters
