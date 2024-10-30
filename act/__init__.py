@@ -30,8 +30,8 @@ submodules = [
 __getattr__, __dir__, _ = lazy.attach(__name__, submodules)
 
 # Get the version
-#try:
-__version__ = _importlib_metadata.version("act-atmos")
-#except _importlib_metadata.PackageNotFoundError:
-# package is not installed
-# __version__ = "0.0.0"
+try:
+    __version__ = _importlib_metadata.version("act-atmos")
+except _importlib_metadata.PackageNotFoundError:
+    # package is not installed
+    __version__ = "0.0.0"

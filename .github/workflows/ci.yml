@@ -45,6 +45,10 @@ jobs:
           environment-name: act_env
           micromamba-version: 1.5.10-0
 
+      - name: Fetch all history for all tags and branches
+        run: |
+           git fetch --prune --unshallow
+
       - name: Install ACT
         run: |
           python -m pip install -e . --no-deps --force-reinstall
