@@ -52,6 +52,11 @@ setup(
     include_package_data=True,
     package_data={'act': []},
     scripts=glob.glob("scripts/*"),
+    setup_requires=["setuptools_scm", "setuptools"],
+    use_scm_version={
+        "version_scheme": "post-release",
+        "local_scheme": "dirty-tag",
+    },
     install_requires=requirements,
     license='BSD (3-clause)',
     classifiers=[
