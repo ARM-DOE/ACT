@@ -37,7 +37,7 @@ file but called under the qcfilter method.
 
     result = {'test_number': 1, 'test_meaning': 'Value is set to missing_value.', 'test_assessment': 'Bad', 'qc_variable_name': 'qc_inst_up_long_dome_resist', 'variable_name': 'inst_up_long_dome_resist'}
 
-    Data type = <class 'numpy.ma.core.MaskedArray'>
+    Data type = <class 'numpy.ma.MaskedArray'>
 
     data = [-- 7.877699851989746 7.896500110626221 ... -- -- --]
 
@@ -53,7 +53,7 @@ file but called under the qcfilter method.
     Attributes:
         long_name:         Quality check results on field: Instantaneous Upwellin...
         units:             1
-        flag_masks:        [1, 2, 4, 16]
+        flag_masks:        [np.uint32(1), np.uint32(2), np.uint32(4), np.uint32(16)]
         flag_meanings:     ['Value is set to missing_value.', 'Data value less th...
         flag_assessments:  ['Bad', 'Bad', 'Suspect', 'Suspect']
         standard_name:     quality_flag
@@ -154,7 +154,7 @@ file but called under the qcfilter method.
     diff = np.diff(data)
     max_difference = 0.04
     data = np.ma.masked_greater(diff, max_difference)
-    index = np.where(data.mask is True)[0]
+    index = np.where(data.mask)[0]
     result = ds.qcfilter.add_test(
         var_name,
         index=index,
@@ -206,7 +206,7 @@ file but called under the qcfilter method.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.051 seconds)
+   **Total running time of the script:** (0 minutes 0.055 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_qc_plot_qc_example.py:

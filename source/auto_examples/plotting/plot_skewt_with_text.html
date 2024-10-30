@@ -1,34 +1,36 @@
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" data-content_root="" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Skew-T plot of a sounding &#8212; Atmospheric data Community Toolkit 0.post1+g70a757c documentation</title>
-    
-    <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+    <title>Skew-T plot of a sounding &#8212; Atmospheric data Community Toolkit 0.post1+g849e4ec documentation</title>
   
-    
-    <link rel="stylesheet"
-      href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
   
-    
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
-</style>
-    
-      
   
-    
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/pydata-sphinx-theme.css?v=1140d252" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -37,35 +39,29 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=dec1520a" />
-    
-    <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=e2ee527d" />
   
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=1bc36ee4"></script>
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=0643ce50"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/auto_examples/plotting/plot_skewt_with_text';</script>
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Spatial contour plot" href="plot_contour.html" />
     <link rel="prev" title="Using ACT for Satellite data" href="plot_satellite.html" /> 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-8YN80YZDD8');
-                </script>
- 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.post1+g849e4ec" /> 
 <link
   rel="alternate"
   type="application/atom+xml"
@@ -74,537 +70,468 @@
 />
   
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-  <nav class="navbar navbar-dark navbar-expand-lg bg-arm fixed-top bd-navbar shadow" id="navbar-main"><div class="container-xl">
-
-  <div id="navbar-start">
-    
-    
-<a class="navbar-brand" href="../../../index.html">
-<p class="title">Atmospheric data Community Toolkit</p>
-</a>
-
-    
-  </div>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
-    <div id="navbar-center" class="mr-auto">
-      
-      <div class="navbar-center-item">
-        <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../../userguide/GUIDE_V2.html">
-  ACT Version 2 Release Guide
- </a>
-</li>
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../../userguide/index.html">
-  User Guide
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../../API/index.html">
-  API Reference Manual
- </a>
-</li>
-
-<li class="toctree-l1 current active nav-item">
- <a class="reference internal nav-link" href="../index.html">
-  ACT Example Gallery
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../../blog.html">
-  Blog
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference external nav-link" href="https://github.com/ARM-DOE/ACT/issues">
-  GitHub Issue Tracker
- </a>
-</li>
-
+  
+  <dialog id="pst-search-dialog">
     
-</ul>
-      </div>
-      
-    </div>
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
 
-    <div id="navbar-end">
-      
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-        <li class="nav-item">
-          <a class="nav-link" href="https://github.com/ARM-DOE/ACT" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label></a>
-        </li>
-      </ul>
-      </div>
-      
-    </div>
-  </div>
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-  </nav>
 
-
-    <div class="container-fluid" id="banner"></div>
-
-
-    <div class="container-xl">
-      <div class="row">
-          
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
-    <ul class="current nav bd-sidenav">
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../corrections/index.html">
-   Correction examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../corrections/plot_correct_ship_wind_data.html">
-     Correct wind data for ship motion
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../discovery/index.html">
-   Discovery examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../discovery/download_mplnet.html">
-     NASA MPLNET
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../discovery/plot_asos_temp.html">
-     Query and plot ASOS data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../discovery/plot_improve.html">
-     IMPROVE Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../discovery/skip_noaa_fmcw_moment.html">
-     NOAA FMCW and parsivel plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../discovery/plot_neon.html">
-     NEON Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../discovery/plot_airnow.html">
-     Airnow Data
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../io/index.html">
-   Input/Output Examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_hysplit.html">
-     Read and plot a HYSPLIT trajectory file from a HYSPlIT run.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_raw_minimpl.html">
-     Read and plot a PPI from raw mini-MPL data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_sodar.html">
-     Read and plot a Sodar file
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_surfrad.html">
-     Plot SurfRad Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_icartt.html">
-     Plot ICARTT Formatted Files
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_create_arm_ds.html">
-     Create a dataset to mimic ARM file formats
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../io/plot_convert_ameriflux.html">
-     Convert Data to AmeriFlux Format
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 current active has-children">
-  <a class="reference internal" href="index.html">
-   Plotting examples
-  </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul class="current">
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_enhanced_skewt.html">
-     Enhanced plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_hist_kwargs.html">
-     Plot a histogram of Met data.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_sonde.html">
-     Plot a timeseries of sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_time_height_scatter.html">
-     Time-Height Scatter Plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_aaf_track.html">
-     Plot ARM AAF Flight Path
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_qc.html">
-     Plotting QC Flags
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_size_distribution.html">
-     Example Size Distribution Plots
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_violin.html">
-     Investigate Temperature Quantiles
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_daytime_averages.html">
-     Calculate and plot daily daytime temperature averages
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_skewt.html">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_multiple_column.html">
-     Plot a timeseries of sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_days.html">
-     Calculate and plot wind rose plots separated by day.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_secondary_y.html">
-     Secondary Y-Axis Plotting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_pie_chart.html">
-     Calculate and View Aerosol Percentages
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_examples.html">
-     Xarray Plotting Examples
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_xsection.html">
-     Multidimensional cross sections
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_ceil.html">
-     Simple plot of 2D data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_heatmap.html">
-     Example plot using heat maps
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_satellite.html">
-     Using ACT for Satellite data
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Skew-T plot of a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_contour.html">
-     Spatial contour plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_scatter.html">
-     Compare Aircraft Airspeeds
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_rh_timeseries.html">
-     Plot winds and relative humidity from sounding data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_data_rose.html">
-     Data rose plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_wind_rose.html">
-     Windrose and windbarb timeseries plot
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_presentweathercode.html">
-     Plot Present Weather Code
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="plot_state_variable.html">
-     Plotting state variables
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../qc/index.html">
-   Quality Control Examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../qc/plot_dqr_qc.html">
-     Query the ARM DQR webservice
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../qc/plot_force_line_qc.html">
-     Forcing line plots with 2D data and QC
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../qc/plot_qc_bsrn.html">
-     Plotting Baseline Surface Radiation Network (BSRN) QC Flags
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../qc/plot_qc_example.html">
-     Working with embedded quality control variables
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../qc/plot_arm_qc.html">
-     Working with and expanding embedded quality control variables
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../retrievals/index.html">
-   Retrieval examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-  <label for="toctree-checkbox-6">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../retrievals/plot_get_stability_indices_example.html">
-     Retrieve stability indicies from a sounding
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../retrievals/plot_cbh_sobel.html">
-     Cloud Base Height Retrievals
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../utils/index.html">
-   Utility examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-  <label for="toctree-checkbox-7">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utils/plot_calculated_percentages.html">
-     Calculate and plot aerosol percentages.
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utils/plot_parse_filename.html">
-     Parse the ARM datastream filename
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utils/plot_change_units.html">
-     Changing units in dataset
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utils/plot_tar.html">
-     Working with TAR and gunzip files
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../workflows/index.html">
-   Workflow examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-  <label for="toctree-checkbox-8">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_qc_transforms.html">
-     Transformations and QC
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_multiple_dataset.html">
-     Plot multiple datasets
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_aerioe_with_cbh.html">
-     Plot AERIoe data with cloud base height from ceilometer
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_weighted_average.html">
-     Calculate and plot weighted means
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../workflows/plot_merged_product.html">
-     Merge multiple datasets
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-  </div>
-</nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
-
-<nav id="bd-toc-nav">
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
     
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Atmospheric data Community Toolkit 0.post1+g849e4ec documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../API/index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blog.html">
+    Blog
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+                </ul>
+            </li>
             
-          </div>
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
           
 
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
           
           
-            
           
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../API/index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blog.html">
+    Blog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../corrections/index.html">Correction examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../corrections/plot_correct_ship_wind_data.html">Correct wind data for ship motion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../discovery/index.html">Discovery examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/download_mplnet.html">NASA MPLNET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../io/plot_hysplit.html">Read and plot a HYSPLIT trajectory file from a HYSPlIT run.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/read_raw_minimpl.html">Read and plot a PPI from raw mini-MPL data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/plot_sodar.html">Read and plot a Sodar file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/plot_surfrad.html">Plot SurfRad Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/plot_icartt.html">Plot ICARTT Formatted Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/plot_create_arm_ds.html">Create a dataset to mimic ARM file formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/plot_convert_ameriflux.html">Convert Data to AmeriFlux Format</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Plotting examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_enhanced_skewt.html">Enhanced plot of a sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_hist_kwargs.html">Plot a histogram of Met data.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sonde.html">Plot a timeseries of sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_time_height_scatter.html">Time-Height Scatter Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_aaf_track.html">Plot ARM AAF Flight Path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_qc.html">Plotting QC Flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_stripes.html">Example plot using stripes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_size_distribution.html">Example Size Distribution Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_violin.html">Investigate Temperature Quantiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_daytime_averages.html">Calculate and plot daily daytime temperature averages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_skewt.html">Skew-T plot of a sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multiple_column.html">Plot a timeseries of sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_days.html">Calculate and plot wind rose plots separated by day.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_secondary_y.html">Secondary Y-Axis Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_pie_chart.html">Calculate and View Aerosol Percentages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_examples.html">Xarray Plotting Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_xsection.html">Multidimensional cross sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_ceil.html">Simple plot of 2D data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_heatmap.html">Example plot using heat maps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_satellite.html">Using ACT for Satellite data</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Skew-T plot of a sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_contour.html">Spatial contour plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_scatter.html">Compare Aircraft Airspeeds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_rh_timeseries.html">Plot winds and relative humidity from sounding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_data_rose.html">Data rose plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_wind_rose.html">Windrose and windbarb timeseries plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_presentweathercode.html">Plot Present Weather Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_state_variable.html">Plotting state variables</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../qc/index.html">Quality Control Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../qc/plot_dqr_qc.html">Query the ARM DQR webservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qc/plot_force_line_qc.html">Forcing line plots with 2D data and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qc/plot_qc_bsrn.html">Plotting Baseline Surface Radiation Network (BSRN) QC Flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qc/plot_qc_example.html">Working with embedded quality control variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qc/plot_arm_qc.html">Working with and expanding embedded quality control variables</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../retrievals/index.html">Retrieval examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_get_stability_indices_example.html">Retrieve stability indicies from a sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_cbh_sobel.html">Cloud Base Height Retrievals</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../utils/plot_calculated_percentages.html">Calculate and plot aerosol percentages.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/plot_parse_filename.html">Parse the ARM datastream filename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/plot_change_units.html">Changing units in dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/plot_tar.html">Working with TAR and gunzip files</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../workflows/index.html">Workflow examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflows/plot_qc_transforms.html">Transformations and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflows/plot_multiple_dataset.html">Plot multiple datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflows/plot_aerioe_with_cbh.html">Plot AERIoe data with cloud base height from ceilometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflows/plot_weighted_average.html">Calculate and plot weighted means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflows/plot_merged_product.html">Merge multiple datasets</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
               
-              <div>
-                 <div class="sphx-glr-download-link-note admonition note">
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">ACT Example Gallery</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Plotting examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Skew-T plot of a sounding</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-plotting-plot-skewt-with-text-py"><span class="std std-ref">Go to the end</span></a>
 to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="skew-t-plot-of-a-sounding">
-<span id="sphx-glr-source-auto-examples-plotting-plot-skewt-with-text-py"></span><h1>Skew-T plot of a sounding<a class="headerlink" href="#skew-t-plot-of-a-sounding" title="Permalink to this heading">¶</a></h1>
+<span id="sphx-glr-source-auto-examples-plotting-plot-skewt-with-text-py"></span><h1>Skew-T plot of a sounding<a class="headerlink" href="#skew-t-plot-of-a-sounding" title="Permalink to this heading">#</a></h1>
 <p>This example shows how to make a Skew-T plot from a sounding
 and calculate stability indicies.</p>
 <p>Author: Maxwell Grover</p>
-<img src="../../../_images/sphx_glr_plot_skewt_with_text_001.png" srcset="../../../_images/sphx_glr_plot_skewt_with_text_001.png" alt="twpsondewnpnC3.b1 on 20060121" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
+<img src="../../../_images/sphx_glr_plot_skewt_with_text_001.png" srcset="../../../_images/sphx_glr_plot_skewt_with_text_001.png" alt="twpsondewnpnC3.b1 on 20060121" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/ACT/ACT/act/retrievals/sonde.py:168: UserWarning: Duplicate pressure(s) [5.800000190734863 5.900000095367432 6.0 6.099999904632568 6.199999809265137 6.300000190734863 6.400000095367432 6.5 6.599999904632568 6.699999809265137 6.800000190734863 6.900000095367432 7.0 7.099999904632568 7.199999809265137 7.300000190734863 7.400000095367432 7.5 7.599999904632568 7.699999809265137 7.800000190734863 7.900000095367432 8.0 8.100000381469727 8.199999809265137 8.300000190734863 8.399999618530273 8.5 8.600000381469727 8.699999809265137 8.800000190734863 8.899999618530273 9.0 9.100000381469727 9.199999809265137 9.300000190734863 9.399999618530273 9.5 9.600000381469727 9.699999809265137 9.800000190734863 9.899999618530273 10.0 10.100000381469727 10.199999809265137 10.300000190734863 10.399999618530273 10.5 10.600000381469727 10.699999809265137 10.800000190734863 10.899999618530273 11.0 11.100000381469727 11.199999809265137 11.300000190734863 11.399999618530273 11.5 11.600000381469727 11.699999809265137 11.800000190734863 11.899999618530273 12.0 12.100000381469727 12.199999809265137 12.300000190734863 12.399999618530273 12.5 12.600000381469727 12.699999809265137 12.800000190734863 12.899999618530273 13.0 13.100000381469727 13.199999809265137 13.300000190734863 13.399999618530273 13.5 13.600000381469727 13.699999809265137 13.800000190734863 13.899999618530273 14.0 14.100000381469727 14.199999809265137 14.300000190734863 14.399999618530273 14.5 14.600000381469727 14.699999809265137 14.800000190734863 14.899999618530273 15.0 15.100000381469727 15.199999809265137 15.300000190734863 15.399999618530273 15.5 15.600000381469727 15.699999809265137 15.800000190734863 15.899999618530273 16.0 16.100000381469727 16.200000762939453 16.299999237060547 16.399999618530273 16.5 16.600000381469727 16.700000762939453 16.799999237060547 16.899999618530273 17.0 17.100000381469727 17.200000762939453 17.299999237060547 17.399999618530273 17.5 17.600000381469727 17.700000762939453 17.799999237060547 17.899999618530273 18.0 18.100000381469727 18.200000762939453 18.299999237060547 18.399999618530273 18.5 18.600000381469727 18.700000762939453 18.799999237060547 18.899999618530273 19.0 19.100000381469727 19.200000762939453 19.299999237060547 19.399999618530273 19.5 19.600000381469727 19.700000762939453 19.799999237060547 19.899999618530273 20.0 20.100000381469727 20.200000762939453 20.299999237060547 20.399999618530273 20.5 20.600000381469727 20.700000762939453 20.799999237060547 20.899999618530273 21.0 21.100000381469727 21.200000762939453 21.299999237060547 21.399999618530273 21.5 21.600000381469727 21.700000762939453 21.799999237060547 21.899999618530273 22.0 22.100000381469727 22.200000762939453 22.299999237060547 22.399999618530273 22.5 22.600000381469727 22.700000762939453 22.799999237060547 22.899999618530273 23.0 23.100000381469727 23.200000762939453 23.299999237060547 23.399999618530273 23.5 23.600000381469727 23.700000762939453 23.799999237060547 23.899999618530273 24.0 24.100000381469727 24.200000762939453 24.299999237060547 24.399999618530273 24.5 24.600000381469727 24.700000762939453 24.799999237060547 24.899999618530273 25.0 25.100000381469727 25.200000762939453 25.299999237060547 25.399999618530273 25.5 25.600000381469727 25.700000762939453 25.799999237060547 25.899999618530273 26.0 26.100000381469727 26.200000762939453 26.299999237060547 26.399999618530273 26.5 26.600000381469727 26.700000762939453 26.799999237060547 26.899999618530273 27.0 27.100000381469727 27.200000762939453 27.299999237060547 27.399999618530273 27.5 27.600000381469727 27.700000762939453 27.799999237060547 27.899999618530273 28.0 28.100000381469727 28.200000762939453 28.299999237060547 28.399999618530273 28.5 28.600000381469727 28.700000762939453 28.799999237060547 28.899999618530273 29.0 29.100000381469727 29.200000762939453 29.299999237060547 29.399999618530273 29.5 29.600000381469727 29.700000762939453 29.799999237060547 29.899999618530273 30.0 30.100000381469727 30.200000762939453 30.299999237060547 30.399999618530273 30.5 30.600000381469727 30.799999237060547 30.899999618530273 31.0 31.200000762939453 31.299999237060547 31.399999618530273 31.600000381469727 31.700000762939453 31.899999618530273 32.0 32.20000076293945 32.29999923706055 32.5 32.599998474121094 32.79999923706055 32.900001525878906 33.0 33.099998474121094 33.29999923706055 33.400001525878906 33.5 33.599998474121094 33.70000076293945 33.900001525878906 34.0 34.099998474121094 34.20000076293945 34.29999923706055 34.400001525878906 34.5 34.599998474121094 34.70000076293945 34.79999923706055 34.900001525878906 35.0 35.099998474121094 35.20000076293945 35.29999923706055 35.400001525878906 35.5 35.599998474121094 35.70000076293945 35.79999923706055 35.900001525878906 36.0 36.099998474121094 36.29999923706055 36.400001525878906 36.5 36.599998474121094 36.70000076293945 36.79999923706055 36.900001525878906 37.0 37.099998474121094 37.20000076293945 37.29999923706055 37.5 37.599998474121094 37.70000076293945 37.79999923706055 37.900001525878906 38.099998474121094 38.20000076293945 38.29999923706055 38.400001525878906 38.599998474121094 38.70000076293945 38.79999923706055 39.0 39.099998474121094 39.29999923706055 39.400001525878906 39.599998474121094 39.70000076293945 39.900001525878906 40.099998474121094 40.20000076293945 40.400001525878906 40.599998474121094 40.79999923706055 41.0 41.20000076293945 41.400001525878906 41.599998474121094 41.79999923706055 42.099998474121094 42.29999923706055 42.5 42.79999923706055 43.099998474121094 43.29999923706055 43.5 43.70000076293945 44.0 44.20000076293945 44.5 44.70000076293945 45.0 45.20000076293945 45.5 45.599998474121094 45.79999923706055 46.0 46.20000076293945 46.29999923706055 46.5 46.599998474121094 46.79999923706055 47.0 47.099998474121094 47.29999923706055 47.5 47.599998474121094 47.79999923706055 48.0 48.20000076293945 48.400001525878906 48.599998474121094 48.79999923706055 49.0 49.29999923706055 49.5 49.79999923706055 50.099998474121094 50.5 50.900001525878906 51.400001525878906 52.099998474121094 53.099998474121094 54.099998474121094 55.099998474121094 55.79999923706055 56.29999923706055 56.79999923706055 57.20000076293945 57.599998474121094 58.0 58.400001525878906 58.79999923706055 59.099998474121094 59.5 59.900001525878906 60.5 61.099998474121094 61.599998474121094 62.599998474121094] hPa provided. Output profile includes duplicate temperatures as a result.
+  t_profile = mpcalc.parcel_profile(p_sorted, t_sorted[0], td_sorted[0])
+/home/runner/work/ACT/ACT/act/retrievals/sonde.py:175: UserWarning: Duplicate pressure(s) [5.800000190734863 5.900000095367432 6.0 6.099999904632568 6.199999809265137 6.300000190734863 6.400000095367432 6.5 6.599999904632568 6.699999809265137 6.800000190734863 6.900000095367432 7.0 7.099999904632568 7.199999809265137 7.300000190734863 7.400000095367432 7.5 7.599999904632568 7.699999809265137 7.800000190734863 7.900000095367432 8.0 8.100000381469727 8.199999809265137 8.300000190734863 8.399999618530273 8.5 8.600000381469727 8.699999809265137 8.800000190734863 8.899999618530273 9.0 9.100000381469727 9.199999809265137 9.300000190734863 9.399999618530273 9.5 9.600000381469727 9.699999809265137 9.800000190734863 9.899999618530273 10.0 10.100000381469727 10.199999809265137 10.300000190734863 10.399999618530273 10.5 10.600000381469727 10.699999809265137 10.800000190734863 10.899999618530273 11.0 11.100000381469727 11.199999809265137 11.300000190734863 11.399999618530273 11.5 11.600000381469727 11.699999809265137 11.800000190734863 11.899999618530273 12.0 12.100000381469727 12.199999809265137 12.300000190734863 12.399999618530273 12.5 12.600000381469727 12.699999809265137 12.800000190734863 12.899999618530273 13.0 13.100000381469727 13.199999809265137 13.300000190734863 13.399999618530273 13.5 13.600000381469727 13.699999809265137 13.800000190734863 13.899999618530273 14.0 14.100000381469727 14.199999809265137 14.300000190734863 14.399999618530273 14.5 14.600000381469727 14.699999809265137 14.800000190734863 14.899999618530273 15.0 15.100000381469727 15.199999809265137 15.300000190734863 15.399999618530273 15.5 15.600000381469727 15.699999809265137 15.800000190734863 15.899999618530273 16.0 16.100000381469727 16.200000762939453 16.299999237060547 16.399999618530273 16.5 16.600000381469727 16.700000762939453 16.799999237060547 16.899999618530273 17.0 17.100000381469727 17.200000762939453 17.299999237060547 17.399999618530273 17.5 17.600000381469727 17.700000762939453 17.799999237060547 17.899999618530273 18.0 18.100000381469727 18.200000762939453 18.299999237060547 18.399999618530273 18.5 18.600000381469727 18.700000762939453 18.799999237060547 18.899999618530273 19.0 19.100000381469727 19.200000762939453 19.299999237060547 19.399999618530273 19.5 19.600000381469727 19.700000762939453 19.799999237060547 19.899999618530273 20.0 20.100000381469727 20.200000762939453 20.299999237060547 20.399999618530273 20.5 20.600000381469727 20.700000762939453 20.799999237060547 20.899999618530273 21.0 21.100000381469727 21.200000762939453 21.299999237060547 21.399999618530273 21.5 21.600000381469727 21.700000762939453 21.799999237060547 21.899999618530273 22.0 22.100000381469727 22.200000762939453 22.299999237060547 22.399999618530273 22.5 22.600000381469727 22.700000762939453 22.799999237060547 22.899999618530273 23.0 23.100000381469727 23.200000762939453 23.299999237060547 23.399999618530273 23.5 23.600000381469727 23.700000762939453 23.799999237060547 23.899999618530273 24.0 24.100000381469727 24.200000762939453 24.299999237060547 24.399999618530273 24.5 24.600000381469727 24.700000762939453 24.799999237060547 24.899999618530273 25.0 25.100000381469727 25.200000762939453 25.299999237060547 25.399999618530273 25.5 25.600000381469727 25.700000762939453 25.799999237060547 25.899999618530273 26.0 26.100000381469727 26.200000762939453 26.299999237060547 26.399999618530273 26.5 26.600000381469727 26.700000762939453 26.799999237060547 26.899999618530273 27.0 27.100000381469727 27.200000762939453 27.299999237060547 27.399999618530273 27.5 27.600000381469727 27.700000762939453 27.799999237060547 27.899999618530273 28.0 28.100000381469727 28.200000762939453 28.299999237060547 28.399999618530273 28.5 28.600000381469727 28.700000762939453 28.799999237060547 28.899999618530273 29.0 29.100000381469727 29.200000762939453 29.299999237060547 29.399999618530273 29.5 29.600000381469727 29.700000762939453 29.799999237060547 29.899999618530273 30.0 30.100000381469727 30.200000762939453 30.299999237060547 30.399999618530273 30.5 30.600000381469727 30.799999237060547 30.899999618530273 31.0 31.200000762939453 31.299999237060547 31.399999618530273 31.600000381469727 31.700000762939453 31.899999618530273 32.0 32.20000076293945 32.29999923706055 32.5 32.599998474121094 32.79999923706055 32.900001525878906 33.0 33.099998474121094 33.29999923706055 33.400001525878906 33.5 33.599998474121094 33.70000076293945 33.900001525878906 34.0 34.099998474121094 34.20000076293945 34.29999923706055 34.400001525878906 34.5 34.599998474121094 34.70000076293945 34.79999923706055 34.900001525878906 35.0 35.099998474121094 35.20000076293945 35.29999923706055 35.400001525878906 35.5 35.599998474121094 35.70000076293945 35.79999923706055 35.900001525878906 36.0 36.099998474121094 36.29999923706055 36.400001525878906 36.5 36.599998474121094 36.70000076293945 36.79999923706055 36.900001525878906 37.0 37.099998474121094 37.20000076293945 37.29999923706055 37.5 37.599998474121094 37.70000076293945 37.79999923706055 37.900001525878906 38.099998474121094 38.20000076293945 38.29999923706055 38.400001525878906 38.599998474121094 38.70000076293945 38.79999923706055 39.0 39.099998474121094 39.29999923706055 39.400001525878906 39.599998474121094 39.70000076293945 39.900001525878906 40.099998474121094 40.20000076293945 40.400001525878906 40.599998474121094 40.79999923706055 41.0 41.20000076293945 41.400001525878906 41.599998474121094 41.79999923706055 42.099998474121094 42.29999923706055 42.5 42.79999923706055 43.099998474121094 43.29999923706055 43.5 43.70000076293945 44.0 44.20000076293945 44.5 44.70000076293945 45.0 45.20000076293945 45.5 45.599998474121094 45.79999923706055 46.0 46.20000076293945 46.29999923706055 46.5 46.599998474121094 46.79999923706055 47.0 47.099998474121094 47.29999923706055 47.5 47.599998474121094 47.79999923706055 48.0 48.20000076293945 48.400001525878906 48.599998474121094 48.79999923706055 49.0 49.29999923706055 49.5 49.79999923706055 50.099998474121094 50.5 50.900001525878906 51.400001525878906 52.099998474121094 53.099998474121094 54.099998474121094 55.099998474121094 55.79999923706055 56.29999923706055 56.79999923706055 57.20000076293945 57.599998474121094 58.0 58.400001525878906 58.79999923706055 59.099998474121094 59.5 59.900001525878906 60.5 61.099998474121094 61.599998474121094 62.599998474121094] hPa provided. Output profile includes duplicate temperatures as a result.
+  sbcape, sbcin = mpcalc.surface_based_cape_cin(p_sorted, t_sorted, td_sorted)
+/home/runner/work/ACT/ACT/act/retrievals/sonde.py:179: UserWarning: Interpolation point out of data bounds encountered
+  lfc = mpcalc.lfc(p_sorted[0], t_sorted[0], td_sorted[0])
+/home/runner/work/ACT/ACT/act/retrievals/sonde.py:183: UserWarning: Duplicate pressure(s) [5.800000190734863 5.900000095367432 6.0 6.099999904632568 6.199999809265137 6.300000190734863 6.400000095367432 6.5 6.599999904632568 6.699999809265137 6.800000190734863 6.900000095367432 7.0 7.099999904632568 7.199999809265137 7.300000190734863 7.400000095367432 7.5 7.599999904632568 7.699999809265137 7.800000190734863 7.900000095367432 8.0 8.100000381469727 8.199999809265137 8.300000190734863 8.399999618530273 8.5 8.600000381469727 8.699999809265137 8.800000190734863 8.899999618530273 9.0 9.100000381469727 9.199999809265137 9.300000190734863 9.399999618530273 9.5 9.600000381469727 9.699999809265137 9.800000190734863 9.899999618530273 10.0 10.100000381469727 10.199999809265137 10.300000190734863 10.399999618530273 10.5 10.600000381469727 10.699999809265137 10.800000190734863 10.899999618530273 11.0 11.100000381469727 11.199999809265137 11.300000190734863 11.399999618530273 11.5 11.600000381469727 11.699999809265137 11.800000190734863 11.899999618530273 12.0 12.100000381469727 12.199999809265137 12.300000190734863 12.399999618530273 12.5 12.600000381469727 12.699999809265137 12.800000190734863 12.899999618530273 13.0 13.100000381469727 13.199999809265137 13.300000190734863 13.399999618530273 13.5 13.600000381469727 13.699999809265137 13.800000190734863 13.899999618530273 14.0 14.100000381469727 14.199999809265137 14.300000190734863 14.399999618530273 14.5 14.600000381469727 14.699999809265137 14.800000190734863 14.899999618530273 15.0 15.100000381469727 15.199999809265137 15.300000190734863 15.399999618530273 15.5 15.600000381469727 15.699999809265137 15.800000190734863 15.899999618530273 16.0 16.100000381469727 16.200000762939453 16.299999237060547 16.399999618530273 16.5 16.600000381469727 16.700000762939453 16.799999237060547 16.899999618530273 17.0 17.100000381469727 17.200000762939453 17.299999237060547 17.399999618530273 17.5 17.600000381469727 17.700000762939453 17.799999237060547 17.899999618530273 18.0 18.100000381469727 18.200000762939453 18.299999237060547 18.399999618530273 18.5 18.600000381469727 18.700000762939453 18.799999237060547 18.899999618530273 19.0 19.100000381469727 19.200000762939453 19.299999237060547 19.399999618530273 19.5 19.600000381469727 19.700000762939453 19.799999237060547 19.899999618530273 20.0 20.100000381469727 20.200000762939453 20.299999237060547 20.399999618530273 20.5 20.600000381469727 20.700000762939453 20.799999237060547 20.899999618530273 21.0 21.100000381469727 21.200000762939453 21.299999237060547 21.399999618530273 21.5 21.600000381469727 21.700000762939453 21.799999237060547 21.899999618530273 22.0 22.100000381469727 22.200000762939453 22.299999237060547 22.399999618530273 22.5 22.600000381469727 22.700000762939453 22.799999237060547 22.899999618530273 23.0 23.100000381469727 23.200000762939453 23.299999237060547 23.399999618530273 23.5 23.600000381469727 23.700000762939453 23.799999237060547 23.899999618530273 24.0 24.100000381469727 24.200000762939453 24.299999237060547 24.399999618530273 24.5 24.600000381469727 24.700000762939453 24.799999237060547 24.899999618530273 25.0 25.100000381469727 25.200000762939453 25.299999237060547 25.399999618530273 25.5 25.600000381469727 25.700000762939453 25.799999237060547 25.899999618530273 26.0 26.100000381469727 26.200000762939453 26.299999237060547 26.399999618530273 26.5 26.600000381469727 26.700000762939453 26.799999237060547 26.899999618530273 27.0 27.100000381469727 27.200000762939453 27.299999237060547 27.399999618530273 27.5 27.600000381469727 27.700000762939453 27.799999237060547 27.899999618530273 28.0 28.100000381469727 28.200000762939453 28.299999237060547 28.399999618530273 28.5 28.600000381469727 28.700000762939453 28.799999237060547 28.899999618530273 29.0 29.100000381469727 29.200000762939453 29.299999237060547 29.399999618530273 29.5 29.600000381469727 29.700000762939453 29.799999237060547 29.899999618530273 30.0 30.100000381469727 30.200000762939453 30.299999237060547 30.399999618530273 30.5 30.600000381469727 30.799999237060547 30.899999618530273 31.0 31.200000762939453 31.299999237060547 31.399999618530273 31.600000381469727 31.700000762939453 31.899999618530273 32.0 32.20000076293945 32.29999923706055 32.5 32.599998474121094 32.79999923706055 32.900001525878906 33.0 33.099998474121094 33.29999923706055 33.400001525878906 33.5 33.599998474121094 33.70000076293945 33.900001525878906 34.0 34.099998474121094 34.20000076293945 34.29999923706055 34.400001525878906 34.5 34.599998474121094 34.70000076293945 34.79999923706055 34.900001525878906 35.0 35.099998474121094 35.20000076293945 35.29999923706055 35.400001525878906 35.5 35.599998474121094 35.70000076293945 35.79999923706055 35.900001525878906 36.0 36.099998474121094 36.29999923706055 36.400001525878906 36.5 36.599998474121094 36.70000076293945 36.79999923706055 36.900001525878906 37.0 37.099998474121094 37.20000076293945 37.29999923706055 37.5 37.599998474121094 37.70000076293945 37.79999923706055 37.900001525878906 38.099998474121094 38.20000076293945 38.29999923706055 38.400001525878906 38.599998474121094 38.70000076293945 38.79999923706055 39.0 39.099998474121094 39.29999923706055 39.400001525878906 39.599998474121094 39.70000076293945 39.900001525878906 40.099998474121094 40.20000076293945 40.400001525878906 40.599998474121094 40.79999923706055 41.0 41.20000076293945 41.400001525878906 41.599998474121094 41.79999923706055 42.099998474121094 42.29999923706055 42.5 42.79999923706055 43.099998474121094 43.29999923706055 43.5 43.70000076293945 44.0 44.20000076293945 44.5 44.70000076293945 45.0 45.20000076293945 45.5 45.599998474121094 45.79999923706055 46.0 46.20000076293945 46.29999923706055 46.5 46.599998474121094 46.79999923706055 47.0 47.099998474121094 47.29999923706055 47.5 47.599998474121094 47.79999923706055 48.0 48.20000076293945 48.400001525878906 48.599998474121094 48.79999923706055 49.0 49.29999923706055 49.5 49.79999923706055 50.099998474121094 50.5 50.900001525878906 51.400001525878906 52.099998474121094 53.099998474121094 54.099998474121094 55.099998474121094 55.79999923706055 56.29999923706055 56.79999923706055 57.20000076293945 57.599998474121094 58.0 58.400001525878906 58.79999923706055 59.099998474121094 59.5 59.900001525878906 60.5 61.099998474121094 61.599998474121094 62.599998474121094] hPa provided. Output profile includes duplicate temperatures as a result.
+  mucape, mucin = mpcalc.most_unstable_cape_cin(p_sorted, t_sorted, td_sorted)
+/home/runner/work/ACT/ACT/act/plotting/skewtdisplay.py:419: UserWarning: Duplicate pressure(s) [5.800000190734863 5.900000095367432 6.0 6.099999904632568 6.199999809265137 6.300000190734863 6.400000095367432 6.5 6.599999904632568 6.699999809265137 6.800000190734863 6.900000095367432 7.0 7.099999904632568 7.199999809265137 7.300000190734863 7.400000095367432 7.5 7.599999904632568 7.699999809265137 7.800000190734863 7.900000095367432 8.0 8.100000381469727 8.199999809265137 8.300000190734863 8.399999618530273 8.5 8.600000381469727 8.699999809265137 8.800000190734863 8.899999618530273 9.0 9.100000381469727 9.199999809265137 9.300000190734863 9.399999618530273 9.5 9.600000381469727 9.699999809265137 9.800000190734863 9.899999618530273 10.0 10.100000381469727 10.199999809265137 10.300000190734863 10.399999618530273 10.5 10.600000381469727 10.699999809265137 10.800000190734863 10.899999618530273 11.0 11.100000381469727 11.199999809265137 11.300000190734863 11.399999618530273 11.5 11.600000381469727 11.699999809265137 11.800000190734863 11.899999618530273 12.0 12.100000381469727 12.199999809265137 12.300000190734863 12.399999618530273 12.5 12.600000381469727 12.699999809265137 12.800000190734863 12.899999618530273 13.0 13.100000381469727 13.199999809265137 13.300000190734863 13.399999618530273 13.5 13.600000381469727 13.699999809265137 13.800000190734863 13.899999618530273 14.0 14.100000381469727 14.199999809265137 14.300000190734863 14.399999618530273 14.5 14.600000381469727 14.699999809265137 14.800000190734863 14.899999618530273 15.0 15.100000381469727 15.199999809265137 15.300000190734863 15.399999618530273 15.5 15.600000381469727 15.699999809265137 15.800000190734863 15.899999618530273 16.0 16.100000381469727 16.200000762939453 16.299999237060547 16.399999618530273 16.5 16.600000381469727 16.700000762939453 16.799999237060547 16.899999618530273 17.0 17.100000381469727 17.200000762939453 17.299999237060547 17.399999618530273 17.5 17.600000381469727 17.700000762939453 17.799999237060547 17.899999618530273 18.0 18.100000381469727 18.200000762939453 18.299999237060547 18.399999618530273 18.5 18.600000381469727 18.700000762939453 18.799999237060547 18.899999618530273 19.0 19.100000381469727 19.200000762939453 19.299999237060547 19.399999618530273 19.5 19.600000381469727 19.700000762939453 19.799999237060547 19.899999618530273 20.0 20.100000381469727 20.200000762939453 20.299999237060547 20.399999618530273 20.5 20.600000381469727 20.700000762939453 20.799999237060547 20.899999618530273 21.0 21.100000381469727 21.200000762939453 21.299999237060547 21.399999618530273 21.5 21.600000381469727 21.700000762939453 21.799999237060547 21.899999618530273 22.0 22.100000381469727 22.200000762939453 22.299999237060547 22.399999618530273 22.5 22.600000381469727 22.700000762939453 22.799999237060547 22.899999618530273 23.0 23.100000381469727 23.200000762939453 23.299999237060547 23.399999618530273 23.5 23.600000381469727 23.700000762939453 23.799999237060547 23.899999618530273 24.0 24.100000381469727 24.200000762939453 24.299999237060547 24.399999618530273 24.5 24.600000381469727 24.700000762939453 24.799999237060547 24.899999618530273 25.0 25.100000381469727 25.200000762939453 25.299999237060547 25.399999618530273 25.5 25.600000381469727 25.700000762939453 25.799999237060547 25.899999618530273 26.0 26.100000381469727 26.200000762939453 26.299999237060547 26.399999618530273 26.5 26.600000381469727 26.700000762939453 26.799999237060547 26.899999618530273 27.0 27.100000381469727 27.200000762939453 27.299999237060547 27.399999618530273 27.5 27.600000381469727 27.700000762939453 27.799999237060547 27.899999618530273 28.0 28.100000381469727 28.200000762939453 28.299999237060547 28.399999618530273 28.5 28.600000381469727 28.700000762939453 28.799999237060547 28.899999618530273 29.0 29.100000381469727 29.200000762939453 29.299999237060547 29.399999618530273 29.5 29.600000381469727 29.700000762939453 29.799999237060547 29.899999618530273 30.0 30.100000381469727 30.200000762939453 30.299999237060547 30.399999618530273 30.5 30.600000381469727 30.799999237060547 30.899999618530273 31.0 31.200000762939453 31.299999237060547 31.399999618530273 31.600000381469727 31.700000762939453 31.899999618530273 32.0 32.20000076293945 32.29999923706055 32.5 32.599998474121094 32.79999923706055 32.900001525878906 33.0 33.099998474121094 33.29999923706055 33.400001525878906 33.5 33.599998474121094 33.70000076293945 33.900001525878906 34.0 34.099998474121094 34.20000076293945 34.29999923706055 34.400001525878906 34.5 34.599998474121094 34.70000076293945 34.79999923706055 34.900001525878906 35.0 35.099998474121094 35.20000076293945 35.29999923706055 35.400001525878906 35.5 35.599998474121094 35.70000076293945 35.79999923706055 35.900001525878906 36.0 36.099998474121094 36.29999923706055 36.400001525878906 36.5 36.599998474121094 36.70000076293945 36.79999923706055 36.900001525878906 37.0 37.099998474121094 37.20000076293945 37.29999923706055 37.5 37.599998474121094 37.70000076293945 37.79999923706055 37.900001525878906 38.099998474121094 38.20000076293945 38.29999923706055 38.400001525878906 38.599998474121094 38.70000076293945 38.79999923706055 39.0 39.099998474121094 39.29999923706055 39.400001525878906 39.599998474121094 39.70000076293945 39.900001525878906 40.099998474121094 40.20000076293945 40.400001525878906 40.599998474121094 40.79999923706055 41.0 41.20000076293945 41.400001525878906 41.599998474121094 41.79999923706055 42.099998474121094 42.29999923706055 42.5 42.79999923706055 43.099998474121094 43.29999923706055 43.5 43.70000076293945 44.0 44.20000076293945 44.5 44.70000076293945 45.0 45.20000076293945 45.5 45.599998474121094 45.79999923706055 46.0 46.20000076293945 46.29999923706055 46.5 46.599998474121094 46.79999923706055 47.0 47.099998474121094 47.29999923706055 47.5 47.599998474121094 47.79999923706055 48.0 48.20000076293945 48.400001525878906 48.599998474121094 48.79999923706055 49.0 49.29999923706055 49.5 49.79999923706055 50.099998474121094 50.5 50.900001525878906 51.400001525878906 52.099998474121094 53.099998474121094 54.099998474121094 55.099998474121094 55.79999923706055 56.29999923706055 56.79999923706055 57.20000076293945 57.599998474121094 58.0 58.400001525878906 58.79999923706055 59.099998474121094 59.5 59.900001525878906 60.5 61.099998474121094 61.599998474121094 62.599998474121094] hPa provided. Output profile includes duplicate temperatures as a result.
+  prof = mpcalc.parcel_profile(p, T[0], Td[0]).to(&#39;degC&#39;)
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">arm_test_data</span> <span class="kn">import</span> <span class="n">DATASETS</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
@@ -666,7 +593,7 @@ and calculate stability indicies.</p>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.368 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.339 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-plotting-plot-skewt-with-text-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/ddf90f2bd54a3012bac9d929526c8119/plot_skewt_with_text.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_skewt_with_text.ipynb</span></code></a></p>
@@ -685,50 +612,107 @@ and calculate stability indicies.</p>
    
 </div>
 
-              </div>
+                </article>
               
               
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="plot_satellite.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Using ACT for Satellite data</p>
-        </div>
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="plot_satellite.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Using ACT for Satellite data</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_contour.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="plot_contour.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Spatial contour plot</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
+                </footer>
               
-          </main>
-          
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-      </div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/source/auto_examples/plotting/plot_skewt_with_text.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, ACT Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
     </div>
   
-    <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2018-2022, ACT Developers.<br>
-</p>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
     </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br>
-</p>
-    </div>
-    
-  </div>
-</footer>
+  
+</div>
+
+  </footer>
   </body>
 </html>

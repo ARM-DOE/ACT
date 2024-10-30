@@ -1,0 +1,900 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>act.plotting.TimeSeriesDisplay.plot_stripes &#8212; Atmospheric data Community Toolkit 0.post1+g849e4ec documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/act-theme.css?v=e2ee527d" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=0643ce50"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'API/generated/act.plotting.TimeSeriesDisplay.plot_stripes';</script>
+    <script src="../../_static/doc_shared.js?v=4c9803b4"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data" href="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data.html" />
+    <link rel="prev" title="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v" href="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v.html" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.post1+g849e4ec" /> 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../blog/atom.xml"
+  title="ACT Blog"
+/>
+  
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Atmospheric data Community Toolkit 0.post1+g849e4ec documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../userguide/GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../source/auto_examples/index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../blog.html">
+    Blog
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../userguide/GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../source/auto_examples/index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../blog.html">
+    Blog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="act.corrections.html">act.corrections</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.correct_ceil.html">act.corrections.correct_ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.correct_dl.html">act.corrections.correct_dl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.correct_mpl.html">act.corrections.correct_mpl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.correct_rl.html">act.corrections.correct_rl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.corrections.correct_wind.html">act.corrections.correct_wind</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="act.discovery.html">act.discovery</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.download_arm_data.html">act.discovery.download_arm_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.download_mplnet_data.html">act.discovery.download_mplnet_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.download_neon_data.html">act.discovery.download_neon_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.download_noaa_psl_data.html">act.discovery.download_noaa_psl_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.download_surfrad_data.html">act.discovery.download_surfrad_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_airnow_bounded_obs.html">act.discovery.get_airnow_bounded_obs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_airnow_forecast.html">act.discovery.get_airnow_forecast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_airnow_obs.html">act.discovery.get_airnow_obs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_arm_doi.html">act.discovery.get_arm_doi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_asos_data.html">act.discovery.get_asos_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_crop_type.html">act.discovery.get_crop_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_improve_data.html">act.discovery.get_improve_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_mplnet_meta.html">act.discovery.get_mplnet_meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_neon_product_avail.html">act.discovery.get_neon_product_avail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.get_neon_site_products.html">act.discovery.get_neon_site_products</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="act.io.html">act.io</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.io.WriteDataset.html">act.io.WriteDataset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.io.WriteDataset.write_netcdf.html">act.io.WriteDataset.write_netcdf</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.check_arm_standards.html">act.io.check_arm_standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.check_if_tar_gz_file.html">act.io.check_if_tar_gz_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.convert_to_ameriflux.html">act.io.convert_to_ameriflux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.create_ds_from_arm_dod.html">act.io.create_ds_from_arm_dod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.proc_sigma_mplv5_read.html">act.io.proc_sigma_mplv5_read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_arm_mmcr.html">act.io.read_arm_mmcr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_arm_netcdf.html">act.io.read_arm_netcdf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_csv.html">act.io.read_csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_gml.html">act.io.read_gml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_gml_co2.html">act.io.read_gml_co2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_gml_halo.html">act.io.read_gml_halo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_gml_met.html">act.io.read_gml_met</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_gml_ozone.html">act.io.read_gml_ozone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_gml_radiation.html">act.io.read_gml_radiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_hk_file.html">act.io.read_hk_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_hysplit.html">act.io.read_hysplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_icartt.html">act.io.read_icartt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_mfas_sodar.html">act.io.read_mfas_sodar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_neon_csv.html">act.io.read_neon_csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_psl_parsivel.html">act.io.read_psl_parsivel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_psl_radar_fmcw_moment.html">act.io.read_psl_radar_fmcw_moment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_psl_surface_met.html">act.io.read_psl_surface_met</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_psl_wind_profiler.html">act.io.read_psl_wind_profiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_psl_wind_profiler_temperature.html">act.io.read_psl_wind_profiler_temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_sigma_mplv5.html">act.io.read_sigma_mplv5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_sp2.html">act.io.read_sp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_sp2_dat.html">act.io.read_sp2_dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_surfrad.html">act.io.read_surfrad</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="act.plotting.html">act.plotting</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.ContourDisplay.html">act.plotting.ContourDisplay</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.add_colorbar.html">act.plotting.ContourDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.add_subplots.html">act.plotting.ContourDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.assign_to_figure_axis.html">act.plotting.ContourDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.barbs.html">act.plotting.ContourDisplay.barbs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.contour.html">act.plotting.ContourDisplay.contour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.contourf.html">act.plotting.ContourDisplay.contourf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.create_contour.html">act.plotting.ContourDisplay.create_contour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.group_by.html">act.plotting.ContourDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.plot_station.html">act.plotting.ContourDisplay.plot_station</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.plot_vectors_from_spd_dir.html">act.plotting.ContourDisplay.plot_vectors_from_spd_dir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.ContourDisplay.put_display_in_subplot.html">act.plotting.ContourDisplay.put_display_in_subplot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.Display.html">act.plotting.Display</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.add_colorbar.html">act.plotting.Display.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.add_subplots.html">act.plotting.Display.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.assign_to_figure_axis.html">act.plotting.Display.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.group_by.html">act.plotting.Display.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.Display.put_display_in_subplot.html">act.plotting.Display.put_display_in_subplot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.DistributionDisplay.html">act.plotting.DistributionDisplay</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.add_colorbar.html">act.plotting.DistributionDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.add_subplots.html">act.plotting.DistributionDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.assign_to_figure_axis.html">act.plotting.DistributionDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.group_by.html">act.plotting.DistributionDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_heatmap.html">act.plotting.DistributionDisplay.plot_heatmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_pie_chart.html">act.plotting.DistributionDisplay.plot_pie_chart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_scatter.html">act.plotting.DistributionDisplay.plot_scatter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_size_distribution.html">act.plotting.DistributionDisplay.plot_size_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_stacked_bar.html">act.plotting.DistributionDisplay.plot_stacked_bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_stairstep.html">act.plotting.DistributionDisplay.plot_stairstep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.plot_violin.html">act.plotting.DistributionDisplay.plot_violin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.put_display_in_subplot.html">act.plotting.DistributionDisplay.put_display_in_subplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.set_ratio_line.html">act.plotting.DistributionDisplay.set_ratio_line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.set_xrng.html">act.plotting.DistributionDisplay.set_xrng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.DistributionDisplay.set_yrng.html">act.plotting.DistributionDisplay.set_yrng</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.html">act.plotting.GeographicPlotDisplay</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.add_colorbar.html">act.plotting.GeographicPlotDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.add_subplots.html">act.plotting.GeographicPlotDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.assign_to_figure_axis.html">act.plotting.GeographicPlotDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.geoplot.html">act.plotting.GeographicPlotDisplay.geoplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.group_by.html">act.plotting.GeographicPlotDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.GeographicPlotDisplay.put_display_in_subplot.html">act.plotting.GeographicPlotDisplay.put_display_in_subplot</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.SkewTDisplay.html">act.plotting.SkewTDisplay</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.add_colorbar.html">act.plotting.SkewTDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.add_stability_info.html">act.plotting.SkewTDisplay.add_stability_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.add_subplots.html">act.plotting.SkewTDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.assign_to_figure_axis.html">act.plotting.SkewTDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.group_by.html">act.plotting.SkewTDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.plot_enhanced_skewt.html">act.plotting.SkewTDisplay.plot_enhanced_skewt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_spd_and_dir.html">act.plotting.SkewTDisplay.plot_from_spd_and_dir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.plot_from_u_and_v.html">act.plotting.SkewTDisplay.plot_from_u_and_v</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.plot_hodograph.html">act.plotting.SkewTDisplay.plot_hodograph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.put_display_in_subplot.html">act.plotting.SkewTDisplay.put_display_in_subplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.set_xrng.html">act.plotting.SkewTDisplay.set_xrng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.SkewTDisplay.set_yrng.html">act.plotting.SkewTDisplay.set_yrng</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.html">act.plotting.TimeSeriesDisplay</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.add_colorbar.html">act.plotting.TimeSeriesDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.add_subplots.html">act.plotting.TimeSeriesDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.assign_to_figure_axis.html">act.plotting.TimeSeriesDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.day_night_background.html">act.plotting.TimeSeriesDisplay.day_night_background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.fill_between.html">act.plotting.TimeSeriesDisplay.fill_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.group_by.html">act.plotting.TimeSeriesDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot.html">act.plotting.TimeSeriesDisplay.plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir.html">act.plotting.TimeSeriesDisplay.plot_barbs_from_spd_dir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v.html">act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">act.plotting.TimeSeriesDisplay.plot_stripes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data.html">act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.put_display_in_subplot.html">act.plotting.TimeSeriesDisplay.put_display_in_subplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.qc_flag_block_plot.html">act.plotting.TimeSeriesDisplay.qc_flag_block_plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.set_xrng.html">act.plotting.TimeSeriesDisplay.set_xrng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.set_yrng.html">act.plotting.TimeSeriesDisplay.set_yrng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.TimeSeriesDisplay.time_height_scatter.html">act.plotting.TimeSeriesDisplay.time_height_scatter</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.WindRoseDisplay.html">act.plotting.WindRoseDisplay</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.add_colorbar.html">act.plotting.WindRoseDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.add_subplots.html">act.plotting.WindRoseDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.assign_to_figure_axis.html">act.plotting.WindRoseDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.group_by.html">act.plotting.WindRoseDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.plot.html">act.plotting.WindRoseDisplay.plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.plot_data.html">act.plotting.WindRoseDisplay.plot_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.put_display_in_subplot.html">act.plotting.WindRoseDisplay.put_display_in_subplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.set_rrng.html">act.plotting.WindRoseDisplay.set_rrng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.WindRoseDisplay.set_thetarng.html">act.plotting.WindRoseDisplay.set_thetarng</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.plotting.XSectionDisplay.html">act.plotting.XSectionDisplay</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.add_colorbar.html">act.plotting.XSectionDisplay.add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.add_subplots.html">act.plotting.XSectionDisplay.add_subplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.assign_to_figure_axis.html">act.plotting.XSectionDisplay.assign_to_figure_axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.group_by.html">act.plotting.XSectionDisplay.group_by</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.plot_xsection.html">act.plotting.XSectionDisplay.plot_xsection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.plot_xsection_map.html">act.plotting.XSectionDisplay.plot_xsection_map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.put_display_in_subplot.html">act.plotting.XSectionDisplay.put_display_in_subplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.set_subplot_to_map.html">act.plotting.XSectionDisplay.set_subplot_to_map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.set_xrng.html">act.plotting.XSectionDisplay.set_xrng</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.plotting.XSectionDisplay.set_yrng.html">act.plotting.XSectionDisplay.set_yrng</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="act.qc.html">act.qc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.qc.CleanDataset.html">act.qc.CleanDataset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.clean_arm_qc.html">act.qc.CleanDataset.clean_arm_qc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.clean_arm_state_variables.html">act.qc.CleanDataset.clean_arm_state_variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.clean_cf_qc.html">act.qc.CleanDataset.clean_cf_qc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.clean_seri_qc.html">act.qc.CleanDataset.clean_seri_qc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.clean_swats_qc.html">act.qc.CleanDataset.clean_swats_qc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.cleanup.html">act.qc.CleanDataset.cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.correct_valid_minmax.html">act.qc.CleanDataset.correct_valid_minmax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes.html">act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.get_attr_info.html">act.qc.CleanDataset.get_attr_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.handle_missing_values.html">act.qc.CleanDataset.handle_missing_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.link_variables.html">act.qc.CleanDataset.link_variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.normalize_assessment.html">act.qc.CleanDataset.normalize_assessment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.CleanDataset.matched_qc_variables.html">act.qc.CleanDataset.matched_qc_variables</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.qc.QCFilter.html">act.qc.QCFilter</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_atmospheric_pressure_test.html">act.qc.QCFilter.add_atmospheric_pressure_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_delta_test.html">act.qc.QCFilter.add_delta_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_difference_test.html">act.qc.QCFilter.add_difference_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_equal_to_test.html">act.qc.QCFilter.add_equal_to_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_gesd_test.html">act.qc.QCFilter.add_gesd_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_greater_equal_test.html">act.qc.QCFilter.add_greater_equal_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_greater_test.html">act.qc.QCFilter.add_greater_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_inside_test.html">act.qc.QCFilter.add_inside_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_iqr_test.html">act.qc.QCFilter.add_iqr_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_less_equal_test.html">act.qc.QCFilter.add_less_equal_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_less_test.html">act.qc.QCFilter.add_less_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_missing_value_test.html">act.qc.QCFilter.add_missing_value_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_not_equal_to_test.html">act.qc.QCFilter.add_not_equal_to_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_outside_test.html">act.qc.QCFilter.add_outside_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_persistence_test.html">act.qc.QCFilter.add_persistence_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.add_test.html">act.qc.QCFilter.add_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.available_bit.html">act.qc.QCFilter.available_bit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.bsrn_comparison_tests.html">act.qc.QCFilter.bsrn_comparison_tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.bsrn_limits_test.html">act.qc.QCFilter.bsrn_limits_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.check_for_ancillary_qc.html">act.qc.QCFilter.check_for_ancillary_qc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.compare_time_series_trends.html">act.qc.QCFilter.compare_time_series_trends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.create_qc_summary.html">act.qc.QCFilter.create_qc_summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.create_qc_variable.html">act.qc.QCFilter.create_qc_variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.datafilter.html">act.qc.QCFilter.datafilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.get_masked_data.html">act.qc.QCFilter.get_masked_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.get_qc_test_mask.html">act.qc.QCFilter.get_qc_test_mask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.remove_test.html">act.qc.QCFilter.remove_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.set_test.html">act.qc.QCFilter.set_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.unset_test.html">act.qc.QCFilter.unset_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.update_ancillary_variable.html">act.qc.QCFilter.update_ancillary_variable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.qc.QCSummary.html">act.qc.QCSummary</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCSummary.create_qc_summary.html">act.qc.QCSummary.create_qc_summary</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.qc.QCTests.html">act.qc.QCTests</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCTests.compare_time_series_trends.html">act.qc.QCTests.compare_time_series_trends</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.SP2ParticleCriteria.html">act.qc.SP2ParticleCriteria</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.add_dqr_to_qc.html">act.qc.add_dqr_to_qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.fft_shading_test.html">act.qc.fft_shading_test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.fft_shading_test_process.html">act.qc.fft_shading_test_process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.get_waveform_statistics.html">act.qc.get_waveform_statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.parse_bit.html">act.qc.parse_bit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.read_yaml_supplemental_qc.html">act.qc.read_yaml_supplemental_qc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.set_bit.html">act.qc.set_bit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.qc.unset_bit.html">act.qc.unset_bit</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="act.retrievals.html">act.retrievals</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.aeri2irt.html">act.retrievals.aeri2irt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calc_sp2_diams_masses.html">act.retrievals.calc_sp2_diams_masses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_dsh_from_dsdh_sdn.html">act.retrievals.calculate_dsh_from_dsdh_sdn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_irradiance_stats.html">act.retrievals.calculate_irradiance_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_longwave_radiation.html">act.retrievals.calculate_longwave_radiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_net_radiation.html">act.retrievals.calculate_net_radiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_pbl_heffter.html">act.retrievals.calculate_pbl_heffter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_pbl_liu_liang.html">act.retrievals.calculate_pbl_liu_liang</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">act.retrievals.calculate_stability_indicies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">act.retrievals.compute_winds_from_ppi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.process_sp2_psds.html">act.retrievals.process_sp2_psds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.sst_from_irt.html">act.retrievals.sst_from_irt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.sum_function_irt.html">act.retrievals.sum_function_irt</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="act.utils.html">act.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.utils.ChangeUnits.html">act.utils.ChangeUnits</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.ChangeUnits.change_units.html">act.utils.ChangeUnits.change_units</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="act.utils.DatastreamParserARM.html">act.utils.DatastreamParserARM</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.set_datastream.html">act.utils.DatastreamParserARM.set_datastream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.datastream.html">act.utils.DatastreamParserARM.datastream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.datastream_class.html">act.utils.DatastreamParserARM.datastream_class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.datastream_standard.html">act.utils.DatastreamParserARM.datastream_standard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.date.html">act.utils.DatastreamParserARM.date</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.ext.html">act.utils.DatastreamParserARM.ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.facility.html">act.utils.DatastreamParserARM.facility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.level.html">act.utils.DatastreamParserARM.level</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.site.html">act.utils.DatastreamParserARM.site</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.utils.DatastreamParserARM.time.html">act.utils.DatastreamParserARM.time</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.accumulate_precip.html">act.utils.accumulate_precip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.add_in_nan.html">act.utils.add_in_nan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.add_solar_variable.html">act.utils.add_solar_variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.adjust_timestamp.html">act.utils.adjust_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.arm_site_location_search.html">act.utils.arm_site_location_search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.arm_standards_validator.html">act.utils.arm_standards_validator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.assign_coordinates.html">act.utils.assign_coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.calc_cog_sog.html">act.utils.calc_cog_sog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.calculate_dqr_times.html">act.utils.calculate_dqr_times</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.calculate_percentages.html">act.utils.calculate_percentages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.cleanup_files.html">act.utils.cleanup_files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.convert_2d_to_1d.html">act.utils.convert_2d_to_1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.convert_to_potential_temp.html">act.utils.convert_to_potential_temp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.convert_units.html">act.utils.convert_units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.create_pyart_obj.html">act.utils.create_pyart_obj</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.date_parser.html">act.utils.date_parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.dates_between.html">act.utils.dates_between</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.datetime64_to_datetime.html">act.utils.datetime64_to_datetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.decode_present_weather.html">act.utils.decode_present_weather</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.destination_azimuth_distance.html">act.utils.destination_azimuth_distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.determine_time_delta.html">act.utils.determine_time_delta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.generate_movie.html">act.utils.generate_movie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.get_missing_value.html">act.utils.get_missing_value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.get_solar_azimuth_elevation.html">act.utils.get_solar_azimuth_elevation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.get_sunrise_sunset_noon.html">act.utils.get_sunrise_sunset_noon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.height_adjusted_pressure.html">act.utils.height_adjusted_pressure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.height_adjusted_temperature.html">act.utils.height_adjusted_temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.is_gunzip_file.html">act.utils.is_gunzip_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.is_sun_visible.html">act.utils.is_sun_visible</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.numpy_to_arm_date.html">act.utils.numpy_to_arm_date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.pack_gzip.html">act.utils.pack_gzip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.pack_tar.html">act.utils.pack_tar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.planck_converter.html">act.utils.planck_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.proc_scog.html">act.utils.proc_scog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.reduce_time_ranges.html">act.utils.reduce_time_ranges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.ts_weighted_average.html">act.utils.ts_weighted_average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.unpack_gzip.html">act.utils.unpack_gzip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.utils.unpack_tar.html">act.utils.unpack_tar</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API Reference Manual</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="act.plotting.html" class="nav-link">act.plotting</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="act.plotting.TimeSeriesDisplay.html" class="nav-link">act.plotting.TimeSeriesDisplay</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">act.plotting.TimeSeriesDisplay.plot_stripes</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section id="act-plotting-timeseriesdisplay-plot-stripes">
+<h1>act.plotting.TimeSeriesDisplay.plot_stripes<a class="headerlink" href="#act-plotting-timeseriesdisplay-plot-stripes" title="Permalink to this heading">#</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="act.plotting.TimeSeriesDisplay.plot_stripes">
+<span class="sig-prename descclassname"><span class="pre">TimeSeriesDisplay.</span></span><span class="sig-name descname"><span class="pre">plot_stripes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bwr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/plotting/timeseriesdisplay.html#TimeSeriesDisplay.plot_stripes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.plotting.TimeSeriesDisplay.plot_stripes" title="Permalink to this definition">#</a></dt>
+<dd><p>Makes a climate stripe plot with or without a baseline period specified</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>str</em>) – The name of the field to plot.</p></li>
+<li><p><strong>dsname</strong> (<em>None or str</em>) – If there is more than one datastream in the display object the
+name of the datastream needs to be specified. If set to None and
+there is only one datastream ACT will use the sole datastream
+in the object.</p></li>
+<li><p><strong>subplot_index</strong> (<em>1 or 2D tuple, list, or array</em>) – The index of the subplot to set the x range of.</p></li>
+<li><p><strong>set_title</strong> (<em>str</em>) – The title for the plot.</p></li>
+<li><p><strong>reference_period</strong> (<em>list</em>) – List of a start and end date for a reference period [‘2020-01-01’, ‘2020-04-01’]
+If this is set, the plot will subtract the mean of the reference period from the
+field to create an anomaly calculation.</p></li>
+<li><p><strong>cmap</strong> (<em>string</em>) – Colormap to use for plotting.  Defaults to bwr</p></li>
+<li><p><strong>cbar_label</strong> (<em>str</em>) – Option to overwrite default colorbar label.</p></li>
+<li><p><strong>colorbar</strong> (<em>boolean</em>) – Option to not plot the colorbar. Default is to plot it</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) – The keyword arguments for <code class="xref py py-func docutils literal notranslate"><span class="pre">plt.plot()</span></code> (1D timeseries) or
+<code class="xref py py-func docutils literal notranslate"><span class="pre">plt.pcolormesh()</span></code> (2D timeseries).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ax</strong> (<em>matplotlib axis handle</em>) – The matplotlib axis handle of the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+<div class="section ablog__blog_comments">
+   
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">act.plotting.TimeSeriesDisplay.plot_barbs_from_u_v</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">act.plotting.TimeSeriesDisplay.plot_time_height_xsection_from_1d_data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#act.plotting.TimeSeriesDisplay.plot_stripes"><code class="docutils literal notranslate"><span class="pre">TimeSeriesDisplay.plot_stripes()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/API/generated/act.plotting.TimeSeriesDisplay.plot_stripes.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, ACT Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
