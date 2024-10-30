@@ -97,6 +97,10 @@ import re  # noqa
 
 # Extrac the version info and parse it
 verinfo = act.__version__
+
+if verinfo is None:
+    verinfo = ""
+
 parsed_version = re.search(r"(?P<full>(?P<base>\d+\.\d+)\.?\w*)", verinfo).groupdict()
 
 # The short X.Y version.
