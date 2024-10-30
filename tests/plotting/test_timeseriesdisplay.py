@@ -685,3 +685,16 @@ def test_xlim_correction_plot():
     ds.close()
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_plot_stripes():
+    ds = act.io.read_arm_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
+    ds = ds.resample(time='1H').mean()
+    print(ds)
+    reference_period = ['2019-01-01', '2019-10-02']
+
+    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 2))
+    display.plot_stripes('temp_mean', reference_period=reference_period)
+
+    return display.fig

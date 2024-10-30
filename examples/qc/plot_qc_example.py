@@ -79,7 +79,7 @@ data = ds.qcfilter.get_masked_data(var_name)
 diff = np.diff(data)
 max_difference = 0.04
 data = np.ma.masked_greater(diff, max_difference)
-index = np.where(data.mask is True)[0]
+index = np.where(data.mask)[0]
 result = ds.qcfilter.add_test(
     var_name,
     index=index,

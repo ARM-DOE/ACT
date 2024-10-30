@@ -103,7 +103,6 @@ def test_read_psl_surface_met():
         ds = read_psl_surface_met('aaa22001.00m')
 
 
-@pytest.mark.skip(reason="NCEI is currently down.")
 def test_read_psl_parsivel():
     url = [
         'https://downloads.psl.noaa.gov/psd2/data/realtime/DisdrometerParsivel/Stats/ctd/2022/002/ctd2200200_stats.txt',
@@ -122,7 +121,6 @@ def test_read_psl_parsivel():
     assert 'number_density_drops' in ds
 
 
-@pytest.mark.skip(reason="NCEI is currently down.")
 def test_read_psl_fmcw_moment():
     result = act.discovery.download_noaa_psl_data(
         site='kps', instrument='Radar FMCW Moment', startdate='20220815', hour='06'
@@ -134,7 +132,6 @@ def test_read_psl_fmcw_moment():
     assert len(ds['time'].values) == 115
 
 
-@pytest.mark.skip(reason="NCEI is currently down.")
 def test_read_psl_sband_moment():
     result = act.discovery.download_noaa_psl_data(
         site='ctd', instrument='Radar S-band Moment', startdate='20211225', hour='06'
