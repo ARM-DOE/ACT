@@ -30,6 +30,10 @@ jobs:
           environment-name: act-docs
           cache-downloads: true
 
+      - name: Fetch all history for all tags and branches
+        run: |
+           git fetch --prune --unshallow
+
       - name: Install ACT
         run: |
           pip install -e . --no-deps --force-reinstall
