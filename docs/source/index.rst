@@ -1,6 +1,6 @@
-================================================
-Atmospheric data Community Toolkit Documentation
-================================================
+===
+ACT
+===
 
 .. toctree::
    :maxdepth: 2
