@@ -2,7 +2,6 @@ import glob
 from os import path
 from setuptools import setup, find_packages
 import sys
-import versioneer
 
 
 # NOTE: This file must remain Python 2 compatible for the foreseeable future,
@@ -39,8 +38,6 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 
 setup(
     name='act-atmos',
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
     description='Package for working with atmospheric time series datasets',
     long_description=readme,
     long_description_content_type='text/x-rst',
@@ -52,6 +49,11 @@ setup(
     include_package_data=True,
     package_data={'act': []},
     scripts=glob.glob("scripts/*"),
+    setup_requires=["setuptools_scm", "setuptools"],
+    use_scm_version={
+        "version_scheme": "post-release",
+        "local_scheme": "dirty-tag",
+    },
     install_requires=requirements,
     license='BSD (3-clause)',
     classifiers=[
