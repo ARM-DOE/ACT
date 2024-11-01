@@ -18,7 +18,7 @@ except ImportError:
     from urllib2 import urlopen
 
 
-def get_asos_data(time_window, lat_range=None, lon_range=None, station=None):
+def get_asos_data(time_window, lat_range=None, lon_range=None, station=None, regions=None):
     """
     Returns all of the station observations from the Iowa Mesonet from either
     a given latitude and longitude window or a given station code.
@@ -34,6 +34,9 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None):
         The longitude window to grab all of the ASOS observations from.
     station: str
         The station ID to grab the ASOS observations from.
+    regions: str
+        Region that the ASOS is in.  For Alabama, it would be AL
+        For more than one region add it to the string with spaces between 'AL MN'
 
     Returns
     -------
@@ -51,33 +54,36 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None):
     """
     # First query the database for all of the JSON info for every station
     # Only add stations whose lat/lon are within the Grid's boundaries
-    regions = """AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_
-        AO_ AS_ AR AW_ AU_ AT_
-        AZ_ BA_ BE_ BB_ BG_ BO_ BR_ BF_
-        BT_ BS_ BI_ BM_ BB_ BY_ BZ_ BJ_ BW_ AZ CA CA_AB
-        CA_BC CD_ CK_ CF_ CG_ CL_ CM_ CO CO_ CN_ CR_ CT
-        CU_ CV_ CY_ CZ_ DE DK_ DJ_ DM_ DO_
-        DZ EE_ ET_ FK_ FM_ FJ_ FI_ FR_ GF_ PF_
-        GA_ GM_ GE_ DE_ GH_ GI_ KY_ GB_ GR_ GL_ GD_
-        GU_ GT_ GN_ GW_ GY_ HT_ HN_ HK_ HU_ IS_ IN_
-        ID_ IR_ IQ_ IE_ IL_ IT_ CI_ JM_ JP_
-        JO_ KZ_ KE_ KI_ KW_ LA_ LV_ LB_ LS_ LR_ LY_
-        LT_ LU_ MK_ MG_ MW_ MY_ MV_ ML_ CA_MB
-        MH_ MR_ MU_ YT_ MX_ MD_ MC_ MA_ MZ_ MM_ NA_ NP_
-        AN_ NL_ CA_NB NC_ CA_NF NF_ NI_
-        NE_ NG_ MP_ KP_ CA_NT NO_ CA_NS CA_NU OM_
-        CA_ON PK_ PA_ PG_ PY_ PE_ PH_ PN_ PL_
-        PT_ CA_PE PR_ QA_ CA_QC RO_ RU_RW_ SH_ KN_
-        LC_ VC_ WS_ ST_ CA_SK SA_ SN_ RS_ SC_
-        SL_ SG_ SK_ SI_ SB_ SO_ ZA_ KR_ ES_ LK_ SD_ SR_
-        SZ_ SE_ CH_ SY_ TW_ TJ_ TZ_ TH_
-        TG_ TO_ TT_ TU TN_ TR_ TM_ UG_ UA_ AE_ UN_ UY_
-        UZ_ VU_ VE_ VN_ VI_ YE_ CA_YT ZM_ ZW_
-        EC_ EG_ FL GA GQ_ HI HR_ IA ID IL IO_ IN KS
-        KH_ KY KM_ LA MA MD ME
-        MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK
-        OR PA RI SC SV_ SD TD_ TN TX UT VA VT VG_
-        WA WI WV WY"""
+    if regions is None:
+        regions = """AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_
+            AO_ AS_ AR AW_ AU_ AT_
+            AZ_ BA_ BE_ BB_ BG_ BO_ BR_ BF_
+            BT_ BS_ BI_ BM_ BB_ BY_ BZ_ BJ_ BW_ AZ CA CA_AB
+            CA_BC CD_ CK_ CF_ CG_ CL_ CM_ CO CO_ CN_ CR_ CT
+            CU_ CV_ CY_ CZ_ DE DK_ DJ_ DM_ DO_
+            DZ EE_ ET_ FK_ FM_ FJ_ FI_ FR_ GF_ PF_
+            GA_ GM_ GE_ DE_ GH_ GI_ KY_ GB_ GR_ GL_ GD_
+            GU_ GT_ GN_ GW_ GY_ HT_ HN_ HK_ HU_ IS_ IN_
+            ID_ IR_ IQ_ IE_ IL_ IT_ CI_ JM_ JP_
+            JO_ KZ_ KE_ KI_ KW_ LA_ LV_ LB_ LS_ LR_ LY_
+            LT_ LU_ MK_ MG_ MW_ MY_ MV_ ML_ CA_MB
+            MH_ MR_ MU_ YT_ MX_ MD_ MC_ MA_ MZ_ MM_ NA_ NP_
+            AN_ NL_ CA_NB NC_ CA_NF NF_ NI_
+            NE_ NG_ MP_ KP_ CA_NT NO_ CA_NS CA_NU OM_
+            CA_ON PK_ PA_ PG_ PY_ PE_ PH_ PN_ PL_
+            PT_ CA_PE PR_ QA_ CA_QC RO_ RU_RW_ SH_ KN_
+            LC_ VC_ WS_ ST_ CA_SK SA_ SN_ RS_ SC_
+            SL_ SG_ SK_ SI_ SB_ SO_ ZA_ KR_ ES_ LK_ SD_ SR_
+            SZ_ SE_ CH_ SY_ TW_ TJ_ TZ_ TH_
+            TG_ TO_ TT_ TU TN_ TR_ TM_ UG_ UA_ AE_ UN_ UY_
+            UZ_ VU_ VE_ VN_ VI_ YE_ CA_YT ZM_ ZW_
+            EC_ EG_ FL GA GQ_ HI HR_ IA ID IL IO_ IN KS
+            KH_ KY KM_ LA MA MD ME
+            MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK
+            OR PA RI SC SV_ SD TD_ TN TX UT VA VT VG_
+            WA WI WV WY"""
+    else:
+        regions = '_ '.join(regions.split(' '))
 
     networks = ['AWOS']
     metadata_list = {}
