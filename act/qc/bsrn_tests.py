@@ -831,8 +831,8 @@ class QCTests:
         lat_name='lat',
         lon_name='lon',
         alt_name='alt',
-        upper_total_transmittance_limit=1.4,
-        upper_diffuse_transmittance_limit=0.6,
+        upper_total_transmittance_limit=1.6,
+        upper_diffuse_transmittance_limit=1.0,
         use_dask=False,
     ):
         """
@@ -1026,12 +1026,12 @@ class QCTests:
                 sza = da.array(sza)
                 Sa = da.array(Sa)
                 K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
-                index = (sza > 0) & (sza < 90) & (K_diffuse > 0)
+                index = (sza > 0) & (sza < 90) & (K_diffuse > upper_diffuse_transmittance_limit)
                 index = index.compute()
 
             else:
                 K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
-                index = (sza > 0) & (sza < 90) & (K_diffuse > 0)
+                index = (sza > 0) & (sza < 90) & (K_diffuse > upper_diffuse_transmittance_limit)
 
             test_meaning = f"Diffuse transmittance greater than {upper_diffuse_transmittance_limit}"
             self._ds.qcfilter.add_test(
