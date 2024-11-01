@@ -64,6 +64,19 @@ ds.qcfilter.bsrn_comparison_tests(
     direct_normal_SW_dn_name='short_direct_normal',
 )
 
+# Add K-tests QC to ancillary QC variables.
+ds.qcfilter.k_test(
+    [
+        'Clearness index',
+        'Upper total transmittance',
+        'Upper direct transmittance',
+        'Upper diffuse transmittance',
+    ],
+    dni='short_direct_normal',
+    dhi='down_short_hemisp',
+    ghi='down_short_diffuse_hemisp',
+)
+
 # Creat Plot Display and plot data including embedded QC from data file
 variable = 'down_short_hemisp'
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
