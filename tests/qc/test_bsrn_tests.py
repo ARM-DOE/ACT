@@ -1,5 +1,5 @@
 import copy
-
+import pytest
 import dask.array as da
 import numpy as np
 import xarray as xr
@@ -303,3 +303,87 @@ def test_bsrn_limits_test():
         )
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=8)
         assert np.sum(result) == 38
+
+
+def test_k_test():
+    keep_vars = [
+        'short_direct_normal',
+        'down_short_diffuse_hemisp',
+        'down_short_hemisp',
+        'lat',
+        'lon',
+        'alt',
+    ]
+    ds = read_arm_netcdf(EXAMPLE_BRS, keep_variables=keep_vars)
+    tests = [
+        'Clearness index',
+        'Upper total transmittance',
+        'Upper direct transmittance',
+        'Upper diffuse transmittance',
+    ]
+    for test in tests:
+        with pytest.raises(RuntimeError):
+            ds.qcfilter.k_test(test)
+
+    for use_dask in [False, True]:
+        ds = read_arm_netcdf(EXAMPLE_BRS, keep_variables=keep_vars)
+        data = ds['short_direct_normal'].values
+        data[1050:1100] = data[1050:1100] + 400
+        ds['short_direct_normal'].values = data
+        ds.qcfilter.k_test(
+            tests,
+            dni='short_direct_normal',
+            dhi='down_short_diffuse_hemisp',
+            ghi='down_short_hemisp',
+            use_dask=use_dask,
+        )
+
+        test_number = (
+            ds['qc_down_short_diffuse_hemisp']
+            .attrs['flag_meanings']
+            .index('Normalized direct normal irradiance greater than total transmittance.')
+            + 1
+        )
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=test_number)
+        assert np.sum(np.where(result)) == 15780
+        test_number = (
+            ds['qc_down_short_diffuse_hemisp']
+            .attrs['flag_meanings']
+            .index('Total transmittance greater than 1.4')
+            + 1
+        )
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=test_number)
+        assert np.sum(np.where(result)) == 789
+        test_number = (
+            ds['qc_down_short_diffuse_hemisp']
+            .attrs['flag_meanings']
+            .index('Diffuse transmittance greater than 0.6')
+            + 1
+        )
+        result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=test_number)
+        assert np.sum(np.where(result)) == 812004
+
+        test_number = (
+            ds['qc_short_direct_normal']
+            .attrs['flag_meanings']
+            .index('Normalized direct normal irradiance greater than total transmittance.')
+            + 1
+        )
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=test_number)
+        assert np.sum(np.where(result)) == 15780
+        test_number = (
+            ds['qc_short_direct_normal']
+            .attrs['flag_meanings']
+            .index('Total transmittance greater than 1.4')
+            + 1
+        )
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=test_number)
+        assert np.sum(np.where(result)) == 789
+        test_number = (
+            ds['qc_short_direct_normal']
+            .attrs['flag_meanings']
+            .index('Direct transmittance greater than upper direct transmittance limit')
+            + 1
+        )
+        result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=test_number)
+        assert np.sum(np.where(result)) == 18547
