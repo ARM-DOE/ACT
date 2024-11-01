@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Atmospheric data Community Toolkit documentation build configuration file, created by
+# ACT Documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun 28 12:35:56 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -137,7 +137,7 @@ exclude_patterns = ['*.ipynb']
 # a list of builtin themes.
 #
 html_theme = 'pydata_sphinx_theme'
-
+html_title = 'ACT Documentation'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
