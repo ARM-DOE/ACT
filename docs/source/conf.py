@@ -225,7 +225,7 @@ latex_documents = [
     (
         master_doc,
         'act.tex',
-        'Atmospheric data Community Toolkit Documentation',
+        'ACT Documentation',
         'Contributors',
         'manual',
     ),
@@ -236,7 +236,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'act', 'Atmospheric data Community Toolkit Documentation', [author], 1)]
+man_pages = [(master_doc, 'act', 'ACT Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -248,7 +248,7 @@ texinfo_documents = [
     (
         master_doc,
         'act',
-        'Atmospheric data Community Toolkit Documentation',
+        'ACT Documentation',
         author,
         'act',
         'Package for connecting users to the data',
