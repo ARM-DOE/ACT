@@ -15,7 +15,7 @@ from act.utils.geo_utils import get_solar_azimuth_elevation
 from act.utils.data_utils import convert_units
 
 
-def _calculate_solar_parameters(ds, lat_name, lon_name, solar_constant):
+def _calculate_solar_parameters(ds, lat_name, lon_name, solar_constant=1360.8):
     """
     Function to calculate solar zenith angles and solar constant adjusted
     to Earth Sun distance
@@ -128,7 +128,7 @@ class QCTests:
 
         Parameters
         ----------
-        test : str
+        test : str or list
             Type of tests to apply. Options include "Physically Possible" or "Extremely Rare"
         gbl_SW_dn_name : str
             Variable name in the Dataset for global shortwave downwelling radiation
@@ -415,9 +415,9 @@ class QCTests:
 
         Parameters
         ----------
-        test : str
+        test : str or list
             Type of tests to apply. Options include: 'Global over Sum SW Ratio', 'Diffuse Ratio',
-            'SW up', 'LW down to air temp', 'LW up to air temp', 'LW down to LW up'
+            'SW up', 'LW down to air temp', 'LW up to air temp', 'LW down to LW up', 'Closure'
         gbl_SW_dn_name : str
             Variable name in Dataset for global shortwave downwelling radiation
             measured by unshaded pyranometer
@@ -451,6 +451,8 @@ class QCTests:
         References
         ----------
         Long, Charles N., and Ellsworth G. Dutton. "BSRN Global Network recommended QC tests, V2. x." (2010).
+        Long, Charles N., and Y. Shi.  “An Automated Quality Assessment and Control Algorithm for Surface
+            Radiation Measurements.” (2008) https://doi.org/10.2174/1874282300802010023
 
         Examples
         --------
@@ -766,7 +768,6 @@ class QCTests:
                     f'gbl_SW_dn_name for {test_options[3]} test.'
                 )
 
-            # not tested  yet !!!!!!!!!!!!
             if use_dask and isinstance(self._ds[gbl_SW_dn_name].data, da.Array):
                 sza = da.array(sza)
                 component_sum = self._ds[gbl_SW_dn_name].values + (
@@ -815,6 +816,226 @@ class QCTests:
             )
             self._ds.qcfilter.add_test(
                 gbl_SW_dn_name,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+
+    def k_test(
+        self,
+        test,
+        dni=None,
+        dhi=None,
+        ghi=None,
+        test_assessment='Indeterminate',
+        lat_name='lat',
+        lon_name='lon',
+        alt_name='alt',
+        upper_total_transmittance_limit=1.4,
+        upper_diffuse_transmittance_limit=0.6,
+        use_dask=False,
+    ):
+        """
+        Method to apply Normalized Irradiance Tests tests and add results to ancillary quality control variable.
+        Need to provided variable name for each measurement for the test to be performed. All radiation
+        data must be in W/m^2 units. All results from tests are set in ancillary quality control varibles
+        for dni and dhi.
+
+        test : list or str
+            Type of tests to apply. Options include: 'Clearness index', 'Upper total transmittance',
+            'Upper direct transmittance', 'Upper diffuse transmittance'
+        dni : str
+            Variable name in Dataset for direct normal irradiance
+        dhi : str
+            Variable name in Dataset for diffuse hemipheric irradiance
+        ghi : str
+            Variable name in Dataset for global hemispheric irradiance. Used in
+            'Upper direct transmittance' test only.
+        test_assessment : str
+            Test assessment string value appended to flag_assessments attribute of QC variable.
+        lat_name : str
+            Variable name in the Dataset for latitude
+        lon_name : str
+            Variable name in the Dataset for longitude
+        alt_name : str
+            Variable name in the Dataset for altitude. Used in 'Upper direct transmittance' test.
+        upper_total_transmittance_limit : float
+            Limit value used in 'Upper total transmittance' test. Values larger than this will be flagged.
+        upper_diffuse_transmittance_limit : float
+            Limit value used in 'Upper diffuse transmittance' test. Values larger than this will be flagged.
+        use_dask : boolean
+            Option to use Dask for processing if data is stored in a Dask array
+
+
+        References
+        ----------
+        Sengupta, Manajit, Habte, Aron, Wilbert, Stefan , Christian Gueymard, Jan Remund, Elke Lorenz,
+            Wilfried van Sark, and Adam R. Jensen "Best Practices Handbook for the Collection and Use of Solar
+            Resource Data for Solar Energy Applications: Fourth Edition" (2024).
+
+        Examples
+        --------
+            .. code-block:: python
+
+                ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
+                ds.qcfilter.k_test(
+                    ['Clearness index', 'Upper total transmittance',
+                     'Upper direct transmittance', 'Upper diffuse transmittance'],
+                    dhi='down_short_diffuse_hemisp',
+                    ghi='down_short_hemisp',
+                    dni='short_direct_normal'
+                )
+        """
+
+        if isinstance(test, str):
+            test = [test]
+
+        test = [ii.lower() for ii in test]
+
+        solar_constant = 1366
+        sza, Sa = _calculate_solar_parameters(self._ds, lat_name, lon_name, solar_constant)
+
+        test_options = [
+            'Clearness index',
+            'Upper total transmittance',
+            'Upper direct transmittance',
+            'Upper diffuse transmittance',
+        ]
+
+        if test_options[0].lower() in test:
+            if dni is None:
+                raise RuntimeError(
+                    "Need to set 'dni' keyword to perform 'Clearness index' test in k_test()."
+                )
+            if dhi is None:
+                raise RuntimeError(
+                    "Need to set 'dhi' keyword to perform 'Clearness index' test in k_test()."
+                )
+
+            if use_dask and isinstance(self._ds[dni].data, da.Array):
+                sza = da.array(sza)
+                Sa = da.array(Sa)
+                K_direct = self._ds[dni].values / Sa
+                K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
+                K_total = K_direct + K_diffuse
+                index = (K_direct > K_total).compute()
+
+            else:
+                K_direct = self._ds[dni].values / Sa
+                K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
+                K_total = K_direct + K_diffuse
+                index = K_direct > K_total
+
+            test_meaning = "Normalized direct normal irradiance greater than total transmittance."
+            self._ds.qcfilter.add_test(
+                dni,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+            self._ds.qcfilter.add_test(
+                dhi,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+
+        if test_options[1].lower() in test:
+            if dni is None:
+                raise RuntimeError(
+                    "Need to set 'dni' keyword to perform 'Upper total transmittance' test in k_test()."
+                )
+            if dhi is None:
+                raise RuntimeError(
+                    "Need to set 'dhi' keyword to perform 'Upper total transmittance' test in k_test()."
+                )
+
+            if use_dask and isinstance(self._ds[dni].data, da.Array):
+                sza = da.array(sza)
+                Sa = da.array(Sa)
+                K_direct = self._ds[dni].values / Sa
+                K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
+                K_total = K_direct + K_diffuse
+                index = (K_total > upper_total_transmittance_limit) & (sza > 0) & (sza < 90)
+                index = index.compute()
+
+            else:
+                K_direct = self._ds[dni].values / Sa
+                K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
+                K_total = K_direct + K_diffuse
+                index = (K_total > upper_total_transmittance_limit) & (sza > 0) & (sza < 90)
+
+            test_meaning = f"Total transmittance greater than {upper_total_transmittance_limit}"
+            self._ds.qcfilter.add_test(
+                dni,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+            self._ds.qcfilter.add_test(
+                dhi,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+
+        if test_options[2].lower() in test:
+            if dni is None:
+                raise RuntimeError(
+                    "Need to set 'dni' keyword to perform 'Upper direct transmittance' test in k_test()."
+                )
+            if ghi is None:
+                raise RuntimeError(
+                    "Need to set 'ghi' keyword to perform 'Upper direct transmittance' test in k_test()."
+                )
+
+            if use_dask and isinstance(self._ds[dni].data, da.Array):
+                Sa = da.array(Sa)
+                K_direct = self._ds[dni].values / Sa
+                alt = da.array(
+                    convert_units(self._ds[alt_name].values, self._ds[alt_name].attrs['units'], 'm')
+                )
+                index1 = (K_direct > 0) & (self._ds[ghi].values > 50.0)
+                index2 = K_direct > ((1100 + 0.03 * alt) / Sa)
+                index = (index1 & index2).compute()
+
+            else:
+                K_direct = self._ds[dni].values / Sa
+                alt = convert_units(
+                    self._ds[alt_name].values, self._ds[alt_name].attrs['units'], 'm'
+                )
+                index1 = (K_direct > 0) & (self._ds[ghi].values > 50.0)
+                index2 = K_direct > ((1100 + 0.03 * alt) / Sa)
+                index = index1 & index2
+
+            test_meaning = "Direct transmittance greater than upper direct transmittance limit"
+            self._ds.qcfilter.add_test(
+                dni,
+                index=index,
+                test_assessment=test_assessment,
+                test_meaning=test_meaning,
+            )
+
+        if test_options[3].lower() in test:
+            if dhi is None:
+                raise RuntimeError(
+                    "Need to set 'dhi' keyword to perform 'Upper diffuse transmittance' test in k_test()."
+                )
+
+            if use_dask and isinstance(self._ds[dhi].data, da.Array):
+                sza = da.array(sza)
+                Sa = da.array(Sa)
+                K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
+                index = (sza > 0) & (sza < 90) & (K_diffuse > 0)
+                index = index.compute()
+
+            else:
+                K_diffuse = self._ds[dhi].values / (Sa * np.cos(np.radians(sza)))
+                index = (sza > 0) & (sza < 90) & (K_diffuse > 0)
+
+            test_meaning = f"Diffuse transmittance greater than {upper_diffuse_transmittance_limit}"
+            self._ds.qcfilter.add_test(
+                dhi,
                 index=index,
                 test_assessment=test_assessment,
                 test_meaning=test_meaning,
