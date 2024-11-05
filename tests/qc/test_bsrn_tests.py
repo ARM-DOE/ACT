@@ -336,6 +336,8 @@ def test_k_test():
             dhi='down_short_diffuse_hemisp',
             ghi='down_short_hemisp',
             use_dask=use_dask,
+            upper_total_transmittance_limit=1.4,
+            upper_diffuse_transmittance_limit=0.6,
         )
 
         test_number = (
@@ -361,7 +363,7 @@ def test_k_test():
             + 1
         )
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=test_number)
-        assert np.sum(np.where(result)) == 812004
+        assert np.sum(np.where(result)) == 2367
 
         test_number = (
             ds['qc_short_direct_normal']
