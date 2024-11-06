@@ -65,7 +65,7 @@ ds.qcfilter.bsrn_comparison_tests(
 )
 
 # Add K-tests QC to ancillary QC variables.
-ds.qcfilter.k_test(
+ds.qcfilter.normalized_rradiance_test(
     [
         'Clearness index',
         'Upper total transmittance',

@@ -305,7 +305,7 @@ def test_bsrn_limits_test():
         assert np.sum(result) == 38
 
 
-def test_k_test():
+def test_normalized_rradiance_test():
     keep_vars = [
         'short_direct_normal',
         'down_short_diffuse_hemisp',
@@ -323,14 +323,14 @@ def test_k_test():
     ]
     for test in tests:
         with pytest.raises(RuntimeError):
-            ds.qcfilter.k_test(test)
+            ds.qcfilter.normalized_rradiance_test(test)
 
     for use_dask in [False, True]:
         ds = read_arm_netcdf(EXAMPLE_BRS, keep_variables=keep_vars)
         data = ds['short_direct_normal'].values
         data[1050:1100] = data[1050:1100] + 400
         ds['short_direct_normal'].values = data
-        ds.qcfilter.k_test(
+        ds.qcfilter.normalized_rradiance_test(
             tests,
             dni='short_direct_normal',
             dhi='down_short_diffuse_hemisp',

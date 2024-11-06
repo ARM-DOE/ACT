@@ -821,7 +821,7 @@ class QCTests:
                 test_meaning=test_meaning,
             )
 
-    def k_test(
+    def normalized_rradiance_test(
         self,
         test,
         dni=None,
@@ -878,7 +878,7 @@ class QCTests:
             .. code-block:: python
 
                 ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
-                ds.qcfilter.k_test(
+                ds.qcfilter.normalized_rradiance_test(
                     ['Clearness index', 'Upper total transmittance',
                      'Upper direct transmittance', 'Upper diffuse transmittance'],
                     dhi='down_short_diffuse_hemisp',
@@ -905,11 +905,11 @@ class QCTests:
         if test_options[0].lower() in test:
             if dni is None:
                 raise RuntimeError(
-                    "Need to set 'dni' keyword to perform 'Clearness index' test in k_test()."
+                    "Need to set 'dni' keyword to perform 'Clearness index' test in normalized_rradiance_test()."
                 )
             if dhi is None:
                 raise RuntimeError(
-                    "Need to set 'dhi' keyword to perform 'Clearness index' test in k_test()."
+                    "Need to set 'dhi' keyword to perform 'Clearness index' test in normalized_rradiance_test()."
                 )
 
             if use_dask and isinstance(self._ds[dni].data, da.Array):
@@ -943,11 +943,11 @@ class QCTests:
         if test_options[1].lower() in test:
             if dni is None:
                 raise RuntimeError(
-                    "Need to set 'dni' keyword to perform 'Upper total transmittance' test in k_test()."
+                    "Need to set 'dni' keyword to perform 'Upper total transmittance' test in normalized_rradiance_test()."
                 )
             if dhi is None:
                 raise RuntimeError(
-                    "Need to set 'dhi' keyword to perform 'Upper total transmittance' test in k_test()."
+                    "Need to set 'dhi' keyword to perform 'Upper total transmittance' test in normalized_rradiance_test()."
                 )
 
             if use_dask and isinstance(self._ds[dni].data, da.Array):
@@ -982,11 +982,11 @@ class QCTests:
         if test_options[2].lower() in test:
             if dni is None:
                 raise RuntimeError(
-                    "Need to set 'dni' keyword to perform 'Upper direct transmittance' test in k_test()."
+                    "Need to set 'dni' keyword to perform 'Upper direct transmittance' test in normalized_rradiance_test()."
                 )
             if ghi is None:
                 raise RuntimeError(
-                    "Need to set 'ghi' keyword to perform 'Upper direct transmittance' test in k_test()."
+                    "Need to set 'ghi' keyword to perform 'Upper direct transmittance' test in normalized_rradiance_test()."
                 )
 
             if use_dask and isinstance(self._ds[dni].data, da.Array):
@@ -1019,7 +1019,7 @@ class QCTests:
         if test_options[3].lower() in test:
             if dhi is None:
                 raise RuntimeError(
-                    "Need to set 'dhi' keyword to perform 'Upper diffuse transmittance' test in k_test()."
+                    "Need to set 'dhi' keyword to perform 'Upper diffuse transmittance' test in normalized_rradiance_test()."
                 )
 
             if use_dask and isinstance(self._ds[dhi].data, da.Array):
