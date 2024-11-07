@@ -583,6 +583,7 @@
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.datafilter.html">act.qc.QCFilter.datafilter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.get_masked_data.html">act.qc.QCFilter.get_masked_data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.get_qc_test_mask.html">act.qc.QCFilter.get_qc_test_mask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.normalized_rradiance_test.html">act.qc.QCFilter.normalized_rradiance_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.remove_test.html">act.qc.QCFilter.remove_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.set_test.html">act.qc.QCFilter.set_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.unset_test.html">act.qc.QCFilter.unset_test</a></li>
@@ -755,8 +756,8 @@ data must be in W/m^2 units. Test will provided exception if required variable n
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>test</strong> (<em>str</em>) – Type of tests to apply. Options include: ‘Global over Sum SW Ratio’, ‘Diffuse Ratio’,
-‘SW up’, ‘LW down to air temp’, ‘LW up to air temp’, ‘LW down to LW up’</p></li>
+<li><p><strong>test</strong> (<em>str or list</em>) – Type of tests to apply. Options include: ‘Global over Sum SW Ratio’, ‘Diffuse Ratio’,
+‘SW up’, ‘LW down to air temp’, ‘LW up to air temp’, ‘LW down to LW up’, ‘Closure’</p></li>
 <li><p><strong>gbl_SW_dn_name</strong> (<em>str</em>) – Variable name in Dataset for global shortwave downwelling radiation
 measured by unshaded pyranometer</p></li>
 <li><p><strong>glb_diffuse_SW_dn_name</strong> (<em>str</em>) – Variable name in Dataset for global diffuse shortwave downwelling radiation
@@ -777,7 +778,11 @@ in longwave tests.</p></li>
 </dd>
 </dl>
 <p class="rubric">References</p>
-<p>Long, Charles N., and Ellsworth G. Dutton. “BSRN Global Network recommended QC tests, V2. x.” (2010).</p>
+<p>Long, Charles N., and Ellsworth G. Dutton. “BSRN Global Network recommended QC tests, V2. x.” (2010).
+Long, Charles N., and Y. Shi.  “An Automated Quality Assessment and Control Algorithm for Surface</p>
+<blockquote>
+<div><p>Radiation Measurements.” (2008) <a class="reference external" href="https://doi.org/10.2174/1874282300802010023">https://doi.org/10.2174/1874282300802010023</a></p>
+</div></blockquote>
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">EXAMPLE_BRS</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">bsrn_comparison_tests</span><span class="p">(</span>

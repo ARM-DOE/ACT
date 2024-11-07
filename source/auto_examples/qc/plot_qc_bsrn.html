@@ -575,6 +575,19 @@ using colorblind friendly colors.
     <span class="n">direct_normal_SW_dn_name</span><span class="o">=</span><span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="c1"># Add K-tests QC to ancillary QC variables.</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">normalized_rradiance_test</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;Clearness index&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Upper total transmittance&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Upper direct transmittance&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Upper diffuse transmittance&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">dni</span><span class="o">=</span><span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span>
+    <span class="n">dhi</span><span class="o">=</span><span class="s1">&#39;down_short_hemisp&#39;</span><span class="p">,</span>
+    <span class="n">ghi</span><span class="o">=</span><span class="s1">&#39;down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="c1"># Creat Plot Display and plot data including embedded QC from data file</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variable</span></a> <span class="o">=</span> <span class="s1">&#39;down_short_hemisp&#39;</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
@@ -593,7 +606,7 @@ using colorblind friendly colors.
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.110 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.239 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-qc-plot-qc-bsrn-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../../_downloads/4c1f13ddc2bb3a718a3ffe827d418e17/plot_qc_bsrn.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_qc_bsrn.ipynb</span></code></a></p>

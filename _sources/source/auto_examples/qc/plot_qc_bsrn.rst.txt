@@ -28,7 +28,7 @@ https://bsrn.awi.de/data/quality-checks/
 
 Author: Ken Kehoe
 
-.. GENERATED FROM PYTHON SOURCE LINES 13-83
+.. GENERATED FROM PYTHON SOURCE LINES 13-96
 
 
 
@@ -109,6 +109,19 @@ Author: Ken Kehoe
         direct_normal_SW_dn_name='short_direct_normal',
     )
 
+    # Add K-tests QC to ancillary QC variables.
+    ds.qcfilter.normalized_rradiance_test(
+        [
+            'Clearness index',
+            'Upper total transmittance',
+            'Upper direct transmittance',
+            'Upper diffuse transmittance',
+        ],
+        dni='short_direct_normal',
+        dhi='down_short_hemisp',
+        ghi='down_short_diffuse_hemisp',
+    )
+
     # Creat Plot Display and plot data including embedded QC from data file
     variable = 'down_short_hemisp'
     display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(2,))
@@ -129,7 +142,7 @@ Author: Ken Kehoe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.110 seconds)
+   **Total running time of the script:** (0 minutes 1.239 seconds)
 
 
 .. _sphx_glr_download_source_auto_examples_qc_plot_qc_bsrn.py:
