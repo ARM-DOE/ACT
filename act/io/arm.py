@@ -12,7 +12,7 @@ import tarfile
 import tempfile
 import urllib
 import warnings
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from os import PathLike
 from pathlib import Path, PosixPath
 
