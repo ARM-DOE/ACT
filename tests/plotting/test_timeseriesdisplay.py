@@ -690,7 +690,7 @@ def test_xlim_correction_plot():
 @pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_stripes():
     ds = act.io.read_arm_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
-    ds = ds.resample(time='1H').mean()
+    ds = ds.resample(time='1h').mean()
     print(ds)
     reference_period = ['2019-01-01', '2019-10-02']
 

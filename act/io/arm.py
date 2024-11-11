@@ -5,7 +5,6 @@ Office of Science.
 """
 
 import copy
-import datetime as dt
 import glob
 import json
 import re
@@ -13,6 +12,7 @@ import tarfile
 import tempfile
 import urllib
 import warnings
+from datetime import datetime, timedelta
 from os import PathLike
 from pathlib import Path, PosixPath
 
@@ -766,7 +766,7 @@ class WriteDataset:
             except KeyError:
                 pass
 
-        current_time = dt.datetime.utcnow().replace(microsecond=0)
+        current_time = datetime.now(timezone.utc).replace(microsecond=0)
         history_value = (
             f'Written to file by ACT-{act.__version__} '
             f'with write_netcdf() at {current_time} UTC'
