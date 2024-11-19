@@ -79,7 +79,6 @@ if username is not None and token is not None:
     title = 'Comparison of ARM and EPA Ozone Measurements'
     display.plot('o3', dsname='ARM_O3', label='ARM', subplot_index=(1,))
     if airnow:
-        display.plot('OZONE_sites_0', dsname='EPA', label='EPA ' + sites[0], subplot_index=(1,))
         display.plot('OZONE_sites_1', dsname='EPA', label='EPA' + sites[1], subplot_index=(1,))
         display.plot(
             'OZONE_sites_2',
@@ -88,14 +87,13 @@ if username is not None and token is not None:
             subplot_index=(1,),
             set_title=title,
         )
-    display.set_yrng([0, 60], subplot_index=(1,))
+    display.set_yrng([0, 70], subplot_index=(1,))
     display.day_night_background(dsname='ARM', subplot_index=(1,))
 
     # Plot ARM SMPS Concentrations and EPA PM2.5 data on different axes
     title = 'ARM SMPS Concentrations and EPA PM2.5'
     if airnow:
         display.plot('PM2.5_sites_0', dsname='EPA', label='EPA ' + sites[0], subplot_index=(2,))
-        display.plot('PM2.5_sites_1', dsname='EPA', label='EPA ' + sites[1], subplot_index=(2,))
         display.plot(
             'PM2.5_sites_2',
             dsname='EPA',
@@ -107,6 +105,8 @@ if username is not None and token is not None:
     ax2 = display.axes[2].twinx()
     ax2.plot(ds_smps['time'], ds_smps['total_N_conc'], label='ARM SMPS', color='purple')
     ax2.set_ylabel('ARM SMPS (' + ds_smps['total_N_conc'].attrs['units'] + ')')
+    ax2.set_ylim([0, 7000])
+    ax2.legend(loc=1)
     display.day_night_background(dsname='ARM', subplot_index=(2,))
 
     # Set legends
