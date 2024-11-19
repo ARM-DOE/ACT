@@ -7,7 +7,7 @@ import act
 
 def test_get_ord():
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
-    my_asoses = act.discovery.get_asos_data(time_window, station='ORD')
+    my_asoses = act.discovery.get_asos_data(time_window, station='ORD', regions='IL')
     assert 'ORD' in my_asoses.keys()
     assert np.all(
         np.equal(
