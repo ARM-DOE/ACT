@@ -114,8 +114,8 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
     # and decode from bytes type to utf-8 string
     try:
         response_body = urlopen(query_url).read().decode('utf-8')
-    except Exception as error:
-        raise (error, ' for url: ' + query_url)
+    except ValueError:
+        raise ('Error for url: ' + query_url)
         return
     # if the response is an html doc, then there was an error with the user
     if response_body[1:14] == '!DOCTYPE html':
