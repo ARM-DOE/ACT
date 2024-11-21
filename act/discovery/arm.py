@@ -115,7 +115,8 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
     try:
         response_body = urlopen(query_url).read().decode('utf-8')
     except Exception as error:
-        print(error, ' for url: ' + query_url)
+        raise (error, ' for url: ' + query_url)
+        return
     # if the response is an html doc, then there was an error with the user
     if response_body[1:14] == '!DOCTYPE html':
         raise ConnectionRefusedError('Error with user. Check username or token.')
