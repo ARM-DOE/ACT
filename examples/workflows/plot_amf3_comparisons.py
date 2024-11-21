@@ -114,3 +114,5 @@ if username is not None and token is not None:
         ax.legend(loc=2)
 
     plt.show()
+else:
+    pass
