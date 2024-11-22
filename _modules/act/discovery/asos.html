@@ -426,7 +426,7 @@
     <span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">urlopen</span>
 
 
-<div class="viewcode-block" id="get_asos_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.get_asos_data.html#act.discovery.get_asos_data">[docs]</a><span class="k">def</span> <span class="nf">get_asos_data</span><span class="p">(</span><span class="n">time_window</span><span class="p">,</span> <span class="n">lat_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_asos_data"><a class="viewcode-back" href="../../../API/generated/act.discovery.get_asos_data.html#act.discovery.get_asos_data">[docs]</a><span class="k">def</span> <span class="nf">get_asos_data</span><span class="p">(</span><span class="n">time_window</span><span class="p">,</span> <span class="n">lat_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns all of the station observations from the Iowa Mesonet from either</span>
 <span class="sd">    a given latitude and longitude window or a given station code.</span>
@@ -442,6 +442,9 @@
 <span class="sd">        The longitude window to grab all of the ASOS observations from.</span>
 <span class="sd">    station: str</span>
 <span class="sd">        The station ID to grab the ASOS observations from.</span>
+<span class="sd">    regions: str</span>
+<span class="sd">        Region that the ASOS is in.  For Alabama, it would be AL</span>
+<span class="sd">        For more than one region add it to the string with spaces between &#39;AL MN&#39;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -459,33 +462,36 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># First query the database for all of the JSON info for every station</span>
     <span class="c1"># Only add stations whose lat/lon are within the Grid&#39;s boundaries</span>
-    <span class="n">regions</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_</span>
-<span class="s2">        AO_ AS_ AR AW_ AU_ AT_</span>
-<span class="s2">        AZ_ BA_ BE_ BB_ BG_ BO_ BR_ BF_</span>
-<span class="s2">        BT_ BS_ BI_ BM_ BB_ BY_ BZ_ BJ_ BW_ AZ CA CA_AB</span>
-<span class="s2">        CA_BC CD_ CK_ CF_ CG_ CL_ CM_ CO CO_ CN_ CR_ CT</span>
-<span class="s2">        CU_ CV_ CY_ CZ_ DE DK_ DJ_ DM_ DO_</span>
-<span class="s2">        DZ EE_ ET_ FK_ FM_ FJ_ FI_ FR_ GF_ PF_</span>
-<span class="s2">        GA_ GM_ GE_ DE_ GH_ GI_ KY_ GB_ GR_ GL_ GD_</span>
-<span class="s2">        GU_ GT_ GN_ GW_ GY_ HT_ HN_ HK_ HU_ IS_ IN_</span>
-<span class="s2">        ID_ IR_ IQ_ IE_ IL_ IT_ CI_ JM_ JP_</span>
-<span class="s2">        JO_ KZ_ KE_ KI_ KW_ LA_ LV_ LB_ LS_ LR_ LY_</span>
-<span class="s2">        LT_ LU_ MK_ MG_ MW_ MY_ MV_ ML_ CA_MB</span>
-<span class="s2">        MH_ MR_ MU_ YT_ MX_ MD_ MC_ MA_ MZ_ MM_ NA_ NP_</span>
-<span class="s2">        AN_ NL_ CA_NB NC_ CA_NF NF_ NI_</span>
-<span class="s2">        NE_ NG_ MP_ KP_ CA_NT NO_ CA_NS CA_NU OM_</span>
-<span class="s2">        CA_ON PK_ PA_ PG_ PY_ PE_ PH_ PN_ PL_</span>
-<span class="s2">        PT_ CA_PE PR_ QA_ CA_QC RO_ RU_RW_ SH_ KN_</span>
-<span class="s2">        LC_ VC_ WS_ ST_ CA_SK SA_ SN_ RS_ SC_</span>
-<span class="s2">        SL_ SG_ SK_ SI_ SB_ SO_ ZA_ KR_ ES_ LK_ SD_ SR_</span>
-<span class="s2">        SZ_ SE_ CH_ SY_ TW_ TJ_ TZ_ TH_</span>
-<span class="s2">        TG_ TO_ TT_ TU TN_ TR_ TM_ UG_ UA_ AE_ UN_ UY_</span>
-<span class="s2">        UZ_ VU_ VE_ VN_ VI_ YE_ CA_YT ZM_ ZW_</span>
-<span class="s2">        EC_ EG_ FL GA GQ_ HI HR_ IA ID IL IO_ IN KS</span>
-<span class="s2">        KH_ KY KM_ LA MA MD ME</span>
-<span class="s2">        MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK</span>
-<span class="s2">        OR PA RI SC SV_ SD TD_ TN TX UT VA VT VG_</span>
-<span class="s2">        WA WI WV WY&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">regions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">regions</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_</span>
+<span class="s2">            AO_ AS_ AR AW_ AU_ AT_</span>
+<span class="s2">            AZ_ BA_ BE_ BB_ BG_ BO_ BR_ BF_</span>
+<span class="s2">            BT_ BS_ BI_ BM_ BB_ BY_ BZ_ BJ_ BW_ AZ CA CA_AB</span>
+<span class="s2">            CA_BC CD_ CK_ CF_ CG_ CL_ CM_ CO CO_ CN_ CR_ CT</span>
+<span class="s2">            CU_ CV_ CY_ CZ_ DE DK_ DJ_ DM_ DO_</span>
+<span class="s2">            DZ EE_ ET_ FK_ FM_ FJ_ FI_ FR_ GF_ PF_</span>
+<span class="s2">            GA_ GM_ GE_ DE_ GH_ GI_ KY_ GB_ GR_ GL_ GD_</span>
+<span class="s2">            GU_ GT_ GN_ GW_ GY_ HT_ HN_ HK_ HU_ IS_ IN_</span>
+<span class="s2">            ID_ IR_ IQ_ IE_ IL_ IT_ CI_ JM_ JP_</span>
+<span class="s2">            JO_ KZ_ KE_ KI_ KW_ LA_ LV_ LB_ LS_ LR_ LY_</span>
+<span class="s2">            LT_ LU_ MK_ MG_ MW_ MY_ MV_ ML_ CA_MB</span>
+<span class="s2">            MH_ MR_ MU_ YT_ MX_ MD_ MC_ MA_ MZ_ MM_ NA_ NP_</span>
+<span class="s2">            AN_ NL_ CA_NB NC_ CA_NF NF_ NI_</span>
+<span class="s2">            NE_ NG_ MP_ KP_ CA_NT NO_ CA_NS CA_NU OM_</span>
+<span class="s2">            CA_ON PK_ PA_ PG_ PY_ PE_ PH_ PN_ PL_</span>
+<span class="s2">            PT_ CA_PE PR_ QA_ CA_QC RO_ RU_RW_ SH_ KN_</span>
+<span class="s2">            LC_ VC_ WS_ ST_ CA_SK SA_ SN_ RS_ SC_</span>
+<span class="s2">            SL_ SG_ SK_ SI_ SB_ SO_ ZA_ KR_ ES_ LK_ SD_ SR_</span>
+<span class="s2">            SZ_ SE_ CH_ SY_ TW_ TJ_ TZ_ TH_</span>
+<span class="s2">            TG_ TO_ TT_ TU TN_ TR_ TM_ UG_ UA_ AE_ UN_ UY_</span>
+<span class="s2">            UZ_ VU_ VE_ VN_ VI_ YE_ CA_YT ZM_ ZW_</span>
+<span class="s2">            EC_ EG_ FL GA GQ_ HI HR_ IA ID IL IO_ IN KS</span>
+<span class="s2">            KH_ KY KM_ LA MA MD ME</span>
+<span class="s2">            MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK</span>
+<span class="s2">            OR PA RI SC SV_ SD TD_ TN TX UT VA VT VG_</span>
+<span class="s2">            WA WI WV WY&quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">regions</span> <span class="o">=</span> <span class="s1">&#39;_ &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
 
     <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AWOS&#39;</span><span class="p">]</span>
     <span class="n">metadata_list</span> <span class="o">=</span> <span class="p">{}</span>
