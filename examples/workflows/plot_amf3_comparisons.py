@@ -44,7 +44,7 @@ username = os.getenv('ARM_USERNAME')
 token = os.getenv('ARM_PASSWORD')
 
 # Download ARM data for the MET, OZONE, and SMPS
-if username is not None and token is not None:
+if username is not None and token is not None and len(username) > 1:
     # Example to show how easy it is to download ARM data if a username/token are set
     results = act.discovery.download_arm_data(
         username, token, 'bnfmetM1.b1', '2024-10-19', '2024-10-24'
