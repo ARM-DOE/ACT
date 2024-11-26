@@ -19,6 +19,7 @@ def test_get_ord():
 
 def test_get_region():
     my_keys = ['MDW', 'IGQ', 'ORD', '06C', 'PWK', 'LOT', 'GYY']
+    my_keys = sorted(my_keys)
     time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 12, 10, 0)]
     lat_window = (41.8781 - 0.5, 41.8781 + 0.5)
     lon_window = (-87.6298 - 0.5, -87.6298 + 0.5)
@@ -26,5 +27,5 @@ def test_get_region():
         my_asoses = act.discovery.get_asos_data(
             time_window, lat_range=lat_window, lon_range=lon_window
         )
-    asos_keys = list(my_asoses.keys())
+    asos_keys = sorted(list(my_asoses.keys()))
     assert asos_keys == my_keys
