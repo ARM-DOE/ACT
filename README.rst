@@ -38,18 +38,15 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
 
-Version 2.0
-~~~~~~~~~~~
+ACT's Third Roadmap
+~~~~~~~~~~~~~~~~~~~
 
-ACT now has a version 2.0 release. This release contains many function
-naming changes such as IO and Discovery module function naming changes. To
-prepare for this release, a `v2.0 <https://arm-doe.github.io/ACT/userguide/GUIDE_V2.html>`_
-has been provided that explains the changes and how to work with the new syntax.
-
-The new release is available on both PyPI and conda-forge.
-
-Please report any bugs of the 2.0 release to the Issue Tracker mentioned in
-the Important Links section below.
+To meet the needs of the community and stakeholders, ACT will be creating a new roadmap.
+This roadmap will continue a plan forward on features to improve on and to add in newer ACT
+versions. A part of this new roadmap is a survey from the community that will provide feedback
+for the developers on priorities for newer ACT versions. If time permitting, and you are a user of ACT
+or are considering to use ACT the survey can be found here: `ACT Roadmap Survey` <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
+The feedback would be much appreciated.
 
 Important Links
 ~~~~~~~~~~~~~~~
