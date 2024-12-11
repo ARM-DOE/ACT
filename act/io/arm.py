@@ -845,7 +845,8 @@ def read_arm_mmcr(filenames):
         if nc is not None:
             ds = xr.open_dataset(xr.backends.NetCDF4DataStore(nc))
             # Change heights name to range to read appropriately to xarray
-            ds = ds.rename_dims({"heights": "range"})
+            if 'heights' in ds.dims:
+                ds = ds.rename_dims({"heights": "range"})
             multi_ds.append(ds)
     # Concatenate datasets together
     if len(multi_ds) > 1:
