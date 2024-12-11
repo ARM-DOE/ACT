@@ -428,7 +428,7 @@ def test_add_step_change_test():
     result = ds.qcfilter.add_step_change_test(variable)
     assert result == {
         'test_number': 1,
-        'test_meaning': 'Shift in data detected with CUSUM algrithm: k=1.0',
+        'test_meaning': 'Shift in data detected with CUSUM algorithm: k=1.0',
         'test_assessment': 'Indeterminate',
         'qc_variable_name': qc_variable,
         'variable_name': variable,
@@ -436,7 +436,7 @@ def test_add_step_change_test():
     index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=1)
     assert len(np.where(index)[0]) == 0
     assert ds[qc_variable].attrs['flag_meanings'] == [
-        'Shift in data detected with CUSUM algrithm: k=1.0'
+        'Shift in data detected with CUSUM algorithm: k=1.0'
     ]
     assert ds[qc_variable].attrs['flag_assessments'] == ['Indeterminate']
 
@@ -452,7 +452,7 @@ def test_add_step_change_test():
     assert np.all(np.where(index)[0] == [99, 100, 599, 600, 799, 800, 999, 1000])
     assert (
         ds[qc_variable].attrs['flag_meanings'][1]
-        == 'Shift in data detected with CUSUM algrithm: k=1.0'
+        == 'Shift in data detected with CUSUM algorithm: k=1.0'
     )
     assert ds[qc_variable].attrs['flag_assessments'][1] == 'Indeterminate'
 
@@ -461,7 +461,7 @@ def test_add_step_change_test():
     assert np.all(np.where(index)[0] == [99, 100, 599, 600, 799, 800])
     assert (
         ds[qc_variable].attrs['flag_meanings'][2]
-        == 'ARM: Shift in data detected with CUSUM algrithm: k=4'
+        == 'ARM: Shift in data detected with CUSUM algorithm: k=4'
     )
 
     ds.qcfilter.add_step_change_test(variable, n_flagged=3)
@@ -475,7 +475,7 @@ def test_add_step_change_test():
     assert np.all(np.where(index)[0] == np.arange(799, 1440))
     assert (
         ds[qc_variable].attrs['flag_meanings'][4]
-        == 'Shift in data detected with CUSUM algrithm: k=5.1'
+        == 'Shift in data detected with CUSUM algorithm: k=5.1'
     )
     assert ds[qc_variable].attrs['flag_assessments'][4] == 'Suspect'
 
