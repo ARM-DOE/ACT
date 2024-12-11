@@ -1629,3 +1629,142 @@ class QCTests:
         )
 
         return result
+
+    def add_step_change_test(
+        self,
+        var_name,
+        k=1.0,
+        detrend=True,
+        n_flagged=2,
+        add_nan=False,
+        test_meaning=None,
+        test_assessment='Indeterminate',
+        test_number=None,
+        flag_value=False,
+        prepend_text=None,
+    ):
+        """
+        Method to detect a shift change in values using the CUSUM (cumulative sum control chart) test.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name in Dataset to use for testing. Results are inserted into
+            accompanying embedded quality control variable.
+        k : float
+            Reference value. This is typically around the value of the shift size change to
+            to be detected when detrend=True. Will typically be around half the value
+            of the shift size when no detrend is applied.
+        detrend : bool
+            Remove the trend in the data by differencing the data before
+            applying the CUSUM algorithm. Needed for most data that have atmospheric variability.
+        n_flagged : int
+            Number of time steps to flag in the quality control variable. Default is to
+            flag the point of and one after the step change since we will not know which
+            value of the two will be suspect. Can set to any number of time steps
+            or -1 to flag the remaining data after the detected step change.
+        add_nan : bool
+            Should a NaN value be added to the data where a value is missing. A value is
+            determined to be missing when the time step is larger than the mode of the
+            difference in time values. This will stop the reporting of a step when there
+            is an outage and the data normally rises/decends but with the gap is appears
+            as a step change.
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc
+            variable name, test_number, test_meaning, test_assessment
+
+        """
+
+        def cusum(data, k, mean_val, lower=False):
+            """
+            CUSUM algrithm used to detect step changes.
+
+            data : numpy array
+                1D numpy array of time series data to analze
+            k : float
+                Reference value. This is typically half the value of the shift size change to
+                to be detected.
+            mean_val : float
+                Mean value of data.
+            lower : bool
+                Option to loof for lower shifts vs. upper shifts
+
+            """
+
+            C = np.zeros(data.size)
+            if lower:
+                for ii in range(1, data.size):
+                    C[ii] = max(0, C[ii - 1] - (data[ii] - mean_val + k))
+            else:
+                for ii in range(1, data.size):
+                    C[ii] = max(0, C[ii - 1] + (data[ii] - mean_val - k))
+
+            return C
+
+        data = self._ds[var_name].values
+        time = self._ds['time'].values
+        if add_nan:
+            from act.utils.data_utils import add_in_nan
+
+            time, data = add_in_nan(time, data)
+
+        data = data.astype(float)
+        if detrend:
+            data = np.diff(data)
+            data = np.append(np.nan, data)
+
+        if n_flagged < 0:
+            n_flagged = data.size
+
+        mean_val = np.nanmean(data)
+        index = np.full(data.size, False)
+        for lower in [False, True]:
+            C = cusum(data, k, mean_val, lower=lower)
+            found_ind = np.where(np.diff(C) > 0.0)[0]
+            for ind in found_ind:
+                ind = np.arange(ind, ind + n_flagged)
+                ind = ind[ind < data.size]
+                index[ind] = True
+
+        if add_nan:
+            import xarray as xr
+
+            da = xr.DataArray(index, dims=['time'], coords=[time])
+            result = da.sel(time=self._ds['time'])
+            index = result.values
+            del result
+
+        if test_meaning is None:
+            test_meaning = f'Shift in data detected with CUSUM algrithm: k={round(k, 2)}'
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        result = self._ds.qcfilter.add_test(
+            var_name,
+            index=index,
+            test_number=test_number,
+            test_meaning=test_meaning,
+            test_assessment=test_assessment,
+            flag_value=flag_value,
+        )
+
+        return result
