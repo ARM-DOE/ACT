@@ -1,4 +1,6 @@
 """
+Plotting flagged data gaps with a step change test
+--------------------------------------------------
 
 This is an example for how to use the step change detection test.
 The test uses the cumulative sum control chart to detect when
@@ -6,6 +8,8 @@ a sudden shift in values occurs. It has an option to insert
 NaN value when there is a data gap to not have those periods
 returned as a data shift. This example produces two plots,
 one with the data gap flagged and one without.
+
+Author: Ken Kehoe
 
 """
 
