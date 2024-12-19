@@ -841,7 +841,7 @@ def read_arm_mmcr(filenames):
     # read it in with xarray
     multi_ds = []
     for f in filenames:
-        nc = Dataset(f, 'a')
+        nc = Dataset(f, 'a', diskless=True)
         # Change heights name to range to read appropriately to xarray
         if 'heights' in nc.dimensions:
             nc.renameDimension('heights', 'range')
