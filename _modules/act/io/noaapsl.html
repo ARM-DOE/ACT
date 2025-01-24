@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -417,22 +417,22 @@
 <span class="sd">Modules for reading in NOAA PSL data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">ospath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">ospath</span>
 
-<span class="kn">import</span> <span class="nn">fsspec</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fsspec</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">.text</span> <span class="kn">import</span> <span class="n">read_csv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_csv</span>
 
 
-<div class="viewcode-block" id="read_psl_wind_profiler"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psl_wind_profiler"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psl_wind_profiler</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns two `xarray.Datasets` with stored data and metadata from a</span>
 <span class="sd">    user-defined NOAA PSL wind profiler file each containing</span>
@@ -482,7 +482,7 @@
     <span class="k">return</span> <span class="n">mode_one_ds</span><span class="p">,</span> <span class="n">mode_two_ds</span></div>
 
 
-<div class="viewcode-block" id="read_psl_wind_profiler_temperature"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature">[docs]</a><span class="k">def</span> <span class="nf">read_psl_wind_profiler_temperature</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psl_wind_profiler_temperature"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psl_wind_profiler_temperature</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    NOAA PSL wind profiler temperature file.</span>
@@ -525,7 +525,7 @@
         <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">list_of_datasets</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_parse_psl_wind_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_psl_wind_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads lines related to wind in a psl file.</span>
 
@@ -686,7 +686,7 @@
     <span class="k">return</span> <span class="n">ds</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_psl_temperature_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_psl_temperature_lines</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">line_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads lines related to temperature in a psl file.</span>
 
@@ -819,14 +819,14 @@
     <span class="k">return</span> <span class="n">ds</span>
 
 
-<span class="k">def</span> <span class="nf">filter_list</span><span class="p">(</span><span class="n">list_of_strings</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_list</span><span class="p">(</span><span class="n">list_of_strings</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parses a list of strings, remove empty strings, and return a numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">list_of_strings</span><span class="p">)))</span>
 
 
-<span class="k">def</span> <span class="nf">parse_date_line</span><span class="p">(</span><span class="n">list_of_strings</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_date_line</span><span class="p">(</span><span class="n">list_of_strings</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parses the date line in PSL files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -837,7 +837,7 @@
     <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="read_psl_surface_met"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_surface_met.html#act.io.read_psl_surface_met">[docs]</a><span class="k">def</span> <span class="nf">read_psl_surface_met</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">conf_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psl_surface_met"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_surface_met.html#act.io.read_psl_surface_met">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psl_surface_met</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">conf_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    NOAA PSL SurfaceMet file.</span>
@@ -970,7 +970,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="read_psl_parsivel"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_parsivel.html#act.io.read_psl_parsivel">[docs]</a><span class="k">def</span> <span class="nf">read_psl_parsivel</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psl_parsivel"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_parsivel.html#act.io.read_psl_parsivel">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psl_parsivel</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    NOAA PSL parsivel</span>
@@ -1251,7 +1251,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="read_psl_radar_fmcw_moment"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_radar_fmcw_moment.html#act.io.read_psl_radar_fmcw_moment">[docs]</a><span class="k">def</span> <span class="nf">read_psl_radar_fmcw_moment</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psl_radar_fmcw_moment"><a class="viewcode-back" href="../../../API/generated/act.io.read_psl_radar_fmcw_moment.html#act.io.read_psl_radar_fmcw_moment">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psl_radar_fmcw_moment</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from</span>
 <span class="sd">    NOAA PSL FMCW Radar files. See References section for details.</span>
@@ -1279,7 +1279,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<span class="k">def</span> <span class="nf">read_psl_radar_sband_moment</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_psl_radar_sband_moment</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from</span>
 <span class="sd">    NOAA PSL S-band Radar files.</span>
@@ -1302,7 +1302,7 @@
     <span class="k">return</span> <span class="n">ds</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_psl_radar_moments</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from</span>
 <span class="sd">    NOAA PSL FMCW and S-Band Radar files.</span>

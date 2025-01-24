@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -419,26 +419,26 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">act.qc.qcfilter</span> <span class="kn">import</span> <span class="n">parse_bit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.qc.qcfilter</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_bit</span>
 
 
 <div class="viewcode-block" id="CleanDataset"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.html#act.qc.CleanDataset">[docs]</a><span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;clean&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CleanDataset</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CleanDataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for cleaning up QC variables to standard cf-compliance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">matched_qc_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_arm_syntax</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matched_qc_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_arm_syntax</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find variables that are QC variables and return list of names.</span>
 
@@ -498,7 +498,7 @@
 
         <span class="k">return</span> <span class="n">variables</span>
 
-<div class="viewcode-block" id="CleanDataset.cleanup"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.cleanup.html#act.qc.CleanDataset.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span>
+<div class="viewcode-block" id="CleanDataset.cleanup"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.cleanup.html#act.qc.CleanDataset.cleanup">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">clean_arm_state_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -583,7 +583,7 @@
         <span class="k">if</span> <span class="n">cleanup_cf_qc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_cf_qc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CleanDataset.handle_missing_values"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.handle_missing_values.html#act.qc.CleanDataset.handle_missing_values">[docs]</a>    <span class="k">def</span> <span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_missing_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)):</span>
+<div class="viewcode-block" id="CleanDataset.handle_missing_values"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.handle_missing_values.html#act.qc.CleanDataset.handle_missing_values">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">handle_missing_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_missing_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="o">-</span><span class="mi">9999</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Correctly handle missing_value and _FillValue in the dataset.</span>
 <span class="sd">        xarray will automatically replace missing_value and</span>
@@ -671,7 +671,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">data</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_missing_value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CleanDataset.get_attr_info"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.get_attr_info.html#act.qc.CleanDataset.get_attr_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.get_attr_info"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.get_attr_info.html#act.qc.CleanDataset.get_attr_info">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_attr_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get ARM quality control definitions from the ARM standard</span>
 <span class="sd">        bit_#_description, ... attributes and return as dictionary.</span>
@@ -881,7 +881,7 @@
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_arm_state_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_state_variables.html#act.qc.CleanDataset.clean_arm_state_variables">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_state_variables</span><span class="p">(</span>
+<div class="viewcode-block" id="CleanDataset.clean_arm_state_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_state_variables.html#act.qc.CleanDataset.clean_arm_state_variables">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clean_arm_state_variables</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">variables</span><span class="p">,</span>
         <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -956,7 +956,7 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="CleanDataset.correct_valid_minmax"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.correct_valid_minmax.html#act.qc.CleanDataset.correct_valid_minmax">[docs]</a>    <span class="k">def</span> <span class="nf">correct_valid_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.correct_valid_minmax"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.correct_valid_minmax.html#act.qc.CleanDataset.correct_valid_minmax">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">correct_valid_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qc_variable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to correct the name and location of quality control limit</span>
 <span class="sd">        variables that use valid_min and valid_max incorrectly.</span>
@@ -1002,7 +1002,7 @@
         <span class="k">if</span> <span class="n">made_change</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_meanings</span></div>
 
-<div class="viewcode-block" id="CleanDataset.link_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.link_variables.html#act.qc.CleanDataset.link_variables">[docs]</a>    <span class="k">def</span> <span class="nf">link_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.link_variables"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.link_variables.html#act.qc.CleanDataset.link_variables">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">link_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add some attributes to link and explain data to QC data relationship.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1044,7 +1044,7 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct_standard_name</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_qc.html#act.qc.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_arm_qc</span><span class="p">(</span>
+<div class="viewcode-block" id="CleanDataset.clean_arm_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_arm_qc.html#act.qc.CleanDataset.clean_arm_qc">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clean_arm_qc</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">override_cf_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">clean_units_string</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1203,7 +1203,7 @@
         <span class="k">if</span> <span class="n">SWATS_QC</span> <span class="ow">and</span> <span class="n">global_qc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">qc_attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">clean_swats_qc</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CleanDataset.normalize_assessment"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.normalize_assessment.html#act.qc.CleanDataset.normalize_assessment">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_assessment</span><span class="p">(</span>
+<div class="viewcode-block" id="CleanDataset.normalize_assessment"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.normalize_assessment.html#act.qc.CleanDataset.normalize_assessment">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_assessment</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">exclude_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1270,7 +1270,7 @@
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">continue</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_cf_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_cf_qc.html#act.qc.CleanDataset.clean_cf_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_cf_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.clean_cf_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_cf_qc.html#act.qc.CleanDataset.clean_cf_qc">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clean_cf_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to convert the CF standard for QC attributes to match internal</span>
 <span class="sd">        format expected in the Dataset. CF does not allow string attribute</span>
@@ -1351,7 +1351,7 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="CleanDataset.fix_incorrect_variable_bit_description_attributes"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes.html#act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">fix_incorrect_variable_bit_description_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.fix_incorrect_variable_bit_description_attributes"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes.html#act.qc.CleanDataset.fix_incorrect_variable_bit_description_attributes">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">fix_incorrect_variable_bit_description_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to correct incorrectly defined quality control variable attributes.</span>
 <span class="sd">        There are some datastreams with the attribute names incorrectly having &#39;qc_&#39;</span>
@@ -1381,7 +1381,7 @@
                         <span class="n">new_attr</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">new_attr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_seri_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_seri_qc.html#act.qc.CleanDataset.clean_seri_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_seri_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.clean_seri_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_seri_qc.html#act.qc.CleanDataset.clean_seri_qc">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clean_seri_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to apply SERI QC to the quality control variables. The definition of the QC</span>
 <span class="sd">        is listed in a single global attribute and not easily parsable. This method will update</span>
@@ -1508,7 +1508,7 @@
                         <span class="n">test_assessment</span><span class="o">=</span><span class="n">test_assessment</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span>
                     <span class="p">)</span></div>
 
-<div class="viewcode-block" id="CleanDataset.clean_swats_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_swats_qc.html#act.qc.CleanDataset.clean_swats_qc">[docs]</a>    <span class="k">def</span> <span class="nf">clean_swats_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fix_data_units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CleanDataset.clean_swats_qc"><a class="viewcode-back" href="../../../API/generated/act.qc.CleanDataset.clean_swats_qc.html#act.qc.CleanDataset.clean_swats_qc">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clean_swats_qc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fix_data_units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to apply SWATS global attribute quality control definition to the</span>
 <span class="sd">        quality control variables.</span>

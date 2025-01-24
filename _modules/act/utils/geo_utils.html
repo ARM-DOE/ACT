@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -419,21 +419,21 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pytz</span>
-<span class="kn">from</span> <span class="nn">skyfield</span> <span class="kn">import</span> <span class="n">almanac</span>
-<span class="kn">from</span> <span class="nn">skyfield.api</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">wgs84</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skyfield</span><span class="w"> </span><span class="kn">import</span> <span class="n">almanac</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skyfield.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">load_file</span><span class="p">,</span> <span class="n">wgs84</span>
 
-<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_units</span>
-<span class="kn">from</span> <span class="nn">act.utils.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.utils.data_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.utils.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime64_to_datetime</span>
 
 <span class="n">skyfield_bsp_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;conf&#39;</span><span class="p">,</span> <span class="s1">&#39;de421.bsp&#39;</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="destination_azimuth_distance"><a class="viewcode-back" href="../../../API/generated/act.utils.destination_azimuth_distance.html#act.utils.destination_azimuth_distance">[docs]</a><span class="k">def</span> <span class="nf">destination_azimuth_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">dist_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="destination_azimuth_distance"><a class="viewcode-back" href="../../../API/generated/act.utils.destination_azimuth_distance.html#act.utils.destination_azimuth_distance">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">destination_azimuth_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">dist_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This procedure will calculate a destination lat/lon from</span>
 <span class="sd">    an initial lat/lon and azimuth and distance.</span>
@@ -482,7 +482,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">lat2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">lon2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="add_solar_variable"><a class="viewcode-back" href="../../../API/generated/act.utils.add_solar_variable.html#act.utils.add_solar_variable">[docs]</a><span class="k">def</span> <span class="nf">add_solar_variable</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solar_angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="add_solar_variable"><a class="viewcode-back" href="../../../API/generated/act.utils.add_solar_variable.html#act.utils.add_solar_variable">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">add_solar_variable</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solar_angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add variable to the dataset to denote night (0) or sun (1). If dawk_dusk is True</span>
 <span class="sd">    will also return dawn (2) and dusk (3). If at a high latitude and there&#39;s sun, will</span>
@@ -578,7 +578,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="get_solar_azimuth_elevation"><a class="viewcode-back" href="../../../API/generated/act.utils.get_solar_azimuth_elevation.html#act.utils.get_solar_azimuth_elevation">[docs]</a><span class="k">def</span> <span class="nf">get_solar_azimuth_elevation</span><span class="p">(</span>
+<div class="viewcode-block" id="get_solar_azimuth_elevation"><a class="viewcode-back" href="../../../API/generated/act.utils.get_solar_azimuth_elevation.html#act.utils.get_solar_azimuth_elevation">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_solar_azimuth_elevation</span><span class="p">(</span>
     <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -653,7 +653,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="get_sunrise_sunset_noon"><a class="viewcode-back" href="../../../API/generated/act.utils.get_sunrise_sunset_noon.html#act.utils.get_sunrise_sunset_noon">[docs]</a><span class="k">def</span> <span class="nf">get_sunrise_sunset_noon</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sunrise_sunset_noon"><a class="viewcode-back" href="../../../API/generated/act.utils.get_sunrise_sunset_noon.html#act.utils.get_sunrise_sunset_noon">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_sunrise_sunset_noon</span><span class="p">(</span>
     <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;skyfield&#39;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -801,7 +801,7 @@
     <span class="k">return</span> <span class="n">sunrise</span><span class="p">,</span> <span class="n">sunset</span><span class="p">,</span> <span class="n">noon</span></div>
 
 
-<div class="viewcode-block" id="is_sun_visible"><a class="viewcode-back" href="../../../API/generated/act.utils.is_sun_visible.html#act.utils.is_sun_visible">[docs]</a><span class="k">def</span> <span class="nf">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="is_sun_visible"><a class="viewcode-back" href="../../../API/generated/act.utils.is_sun_visible.html#act.utils.is_sun_visible">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dawn_dusk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine if sun is above horizon at for a list of times.</span>
 

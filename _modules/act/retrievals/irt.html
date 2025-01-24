@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -418,15 +418,15 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">brentq</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">brentq</span>
 
-<span class="kn">from</span> <span class="nn">act.utils.radiance_utils</span> <span class="kn">import</span> <span class="n">planck_converter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.utils.radiance_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">planck_converter</span>
 
 
-<span class="k">def</span> <span class="nf">irt_response_function</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">irt_response_function</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to return the wavenumber and response function to use with AERI</span>
 <span class="sd">    to IRT conversion.</span>
@@ -1355,7 +1355,7 @@
     <span class="k">return</span> <span class="n">wnum</span><span class="p">,</span> <span class="n">rf</span>
 
 
-<div class="viewcode-block" id="sum_function_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sum_function_irt.html#act.retrievals.sum_function_irt">[docs]</a><span class="k">def</span> <span class="nf">sum_function_irt</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">inTotal</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rf_wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="sum_function_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sum_function_irt.html#act.retrievals.sum_function_irt">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sum_function_irt</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">inTotal</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rf_wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to calculate radiance values from temperature.</span>
 
@@ -1382,7 +1382,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span> <span class="o">-</span> <span class="n">inTotal</span></div>
 
 
-<span class="k">def</span> <span class="nf">sst_min_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sst_min_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Minimization function for sst</span>
 
@@ -1402,7 +1402,7 @@
     <span class="k">return</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">process_sst_data</span><span class="p">(</span><span class="n">sfc_t</span><span class="p">,</span> <span class="n">sky_t</span><span class="p">,</span> <span class="n">emis</span><span class="p">,</span> <span class="n">maxit</span><span class="p">,</span> <span class="n">tempLow</span><span class="p">,</span> <span class="n">tempHigh</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_sst_data</span><span class="p">(</span><span class="n">sfc_t</span><span class="p">,</span> <span class="n">sky_t</span><span class="p">,</span> <span class="n">emis</span><span class="p">,</span> <span class="n">maxit</span><span class="p">,</span> <span class="n">tempLow</span><span class="p">,</span> <span class="n">tempHigh</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function called from sst_from_irt to calculate sea surface temperatures</span>
 <span class="sd">    from Sky and Surface IRT values.  This is meant to take advantage of</span>
@@ -1461,7 +1461,7 @@
     <span class="k">return</span> <span class="n">sst</span>
 
 
-<div class="viewcode-block" id="sst_from_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a><span class="k">def</span> <span class="nf">sst_from_irt</span><span class="p">(</span>
+<div class="viewcode-block" id="sst_from_irt"><a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sst_from_irt</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
     <span class="n">sky_irt</span><span class="o">=</span><span class="s1">&#39;sky_ir_temp&#39;</span><span class="p">,</span>
     <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">&#39;sfc_ir_temp&#39;</span><span class="p">,</span>

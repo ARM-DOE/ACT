@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -418,26 +418,26 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Import third party libraries</span>
-<span class="kn">import</span> <span class="nn">metpy</span>
-<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">from</span> <span class="nn">metpy.plots</span> <span class="kn">import</span> <span class="n">Hodograph</span><span class="p">,</span> <span class="n">SkewT</span>
-<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">metpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">metpy.calc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpcalc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">metpy.plots</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hodograph</span><span class="p">,</span> <span class="n">SkewT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">metpy.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
 
-<span class="kn">from</span> <span class="nn">..retrievals</span> <span class="kn">import</span> <span class="n">calculate_stability_indicies</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..retrievals</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_stability_indicies</span>
 
 <span class="c1"># Import Local Libs</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
-<span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">Display</span>
 
 
-<div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay">[docs]</a><span class="k">class</span> <span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
+<div class="viewcode-block" id="SkewTDisplay"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.html#act.plotting.SkewTDisplay">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SkewTDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for making Skew-T plots.</span>
 
@@ -466,7 +466,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">subplot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">subplot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># We want to use our routine to handle subplot adding, not the main</span>
         <span class="c1"># one</span>
         <span class="n">new_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -475,7 +475,7 @@
         <span class="c1"># Make a SkewT object for each subplot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_subplots</span><span class="p">(</span><span class="n">subplot_shape</span><span class="p">,</span> <span class="n">set_fig</span><span class="o">=</span><span class="n">set_fig</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="n">subplot</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SkewTDisplay.add_subplots"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_subplots.html#act.plotting.SkewTDisplay.add_subplots">[docs]</a>    <span class="k">def</span> <span class="nf">add_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SkewTDisplay.add_subplots"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_subplots.html#act.plotting.SkewTDisplay.add_subplots">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">set_fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds subplots to the Display object. The current</span>
 <span class="sd">        figure in the object will be deleted and overwritten.</span>
@@ -525,7 +525,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Subplot shape must be 1 or 2D!&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.set_xrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.set_xrng.html#act.plotting.SkewTDisplay.set_xrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+<div class="viewcode-block" id="SkewTDisplay.set_xrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.set_xrng.html#act.plotting.SkewTDisplay.set_xrng">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the x range of the plot.</span>
 
@@ -549,7 +549,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.set_yrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.set_yrng.html#act.plotting.SkewTDisplay.set_yrng">[docs]</a>    <span class="k">def</span> <span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+<div class="viewcode-block" id="SkewTDisplay.set_yrng"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.set_yrng.html#act.plotting.SkewTDisplay.set_yrng">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the y range of the plot.</span>
 
@@ -581,7 +581,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yrng</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">yrng</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.plot_from_spd_and_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_from_spd_and_dir.html#act.plotting.SkewTDisplay.plot_from_spd_and_dir">[docs]</a>    <span class="k">def</span> <span class="nf">plot_from_spd_and_dir</span><span class="p">(</span>
+<div class="viewcode-block" id="SkewTDisplay.plot_from_spd_and_dir"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_from_spd_and_dir.html#act.plotting.SkewTDisplay.plot_from_spd_and_dir">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_from_spd_and_dir</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">spd_field</span><span class="p">,</span> <span class="n">dir_field</span><span class="p">,</span> <span class="n">p_field</span><span class="p">,</span> <span class="n">t_field</span><span class="p">,</span> <span class="n">td_field</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -638,7 +638,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_u&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="s1">&#39;temp_v&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">the_ax</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.plot_from_u_and_v"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_from_u_and_v.html#act.plotting.SkewTDisplay.plot_from_u_and_v">[docs]</a>    <span class="k">def</span> <span class="nf">plot_from_u_and_v</span><span class="p">(</span>
+<div class="viewcode-block" id="SkewTDisplay.plot_from_u_and_v"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_from_u_and_v.html#act.plotting.SkewTDisplay.plot_from_u_and_v">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_from_u_and_v</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">u_field</span><span class="p">,</span>
         <span class="n">v_field</span><span class="p">,</span>
@@ -898,7 +898,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.plot_hodograph"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_hodograph.html#act.plotting.SkewTDisplay.plot_hodograph">[docs]</a>    <span class="k">def</span> <span class="nf">plot_hodograph</span><span class="p">(</span>
+<div class="viewcode-block" id="SkewTDisplay.plot_hodograph"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_hodograph.html#act.plotting.SkewTDisplay.plot_hodograph">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_hodograph</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">spd_field</span><span class="p">,</span>
         <span class="n">dir_field</span><span class="p">,</span>
@@ -992,7 +992,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.add_stability_info"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_stability_info.html#act.plotting.SkewTDisplay.add_stability_info">[docs]</a>    <span class="k">def</span> <span class="nf">add_stability_info</span><span class="p">(</span>
+<div class="viewcode-block" id="SkewTDisplay.add_stability_info"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.add_stability_info.html#act.plotting.SkewTDisplay.add_stability_info">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_stability_info</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
         <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span>
@@ -1150,7 +1150,7 @@
                 <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span></div>
 
-<div class="viewcode-block" id="SkewTDisplay.plot_enhanced_skewt"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_enhanced_skewt.html#act.plotting.SkewTDisplay.plot_enhanced_skewt">[docs]</a>    <span class="k">def</span> <span class="nf">plot_enhanced_skewt</span><span class="p">(</span>
+<div class="viewcode-block" id="SkewTDisplay.plot_enhanced_skewt"><a class="viewcode-back" href="../../../API/generated/act.plotting.SkewTDisplay.plot_enhanced_skewt.html#act.plotting.SkewTDisplay.plot_enhanced_skewt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_enhanced_skewt</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">spd_name</span><span class="o">=</span><span class="s1">&#39;wspd&#39;</span><span class="p">,</span>
         <span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span>

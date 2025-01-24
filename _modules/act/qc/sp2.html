@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -413,13 +413,13 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.qc.sp2</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pysp2</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pysp2</span>
 
     <span class="n">PYSP2_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -427,7 +427,7 @@
 
 <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
 
-    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This class stores the particle crtiteria for filtering out bad particles in the SP2.</span>
 <span class="sd">        In addition, this class stores the calibration statistics for the mass calculations.</span>
@@ -482,7 +482,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxPeakHt1</span> <span class="o">=</span> <span class="mi">60000</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ScatMinPeakHt1</span> <span class="o">=</span> <span class="mi">250</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxPeakHt2</span> <span class="o">=</span> <span class="mi">60000</span>
@@ -528,8 +528,8 @@
 
 <span class="k">else</span><span class="p">:</span>
 
-<div class="viewcode-block" id="SP2ParticleCriteria"><a class="viewcode-back" href="../../../API/generated/act.qc.SP2ParticleCriteria.html#act.qc.SP2ParticleCriteria">[docs]</a>    <span class="k">class</span> <span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SP2ParticleCriteria"><a class="viewcode-back" href="../../../API/generated/act.qc.SP2ParticleCriteria.html#act.qc.SP2ParticleCriteria">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s1">&#39;Attempting to use SP2ParticleCriteria without&#39;</span>
                 <span class="s1">&#39;PySP2 installed. SP2ParticleCriteria will&#39;</span>
@@ -539,7 +539,7 @@
             <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_waveform_statistics"><a class="viewcode-back" href="../../../API/generated/act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics">[docs]</a><span class="k">def</span> <span class="nf">get_waveform_statistics</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_records</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_waveform_statistics"><a class="viewcode-back" href="../../../API/generated/act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_waveform_statistics</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_records</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates waveform statistics for each particle in the dataset</span>
 <span class="sd">    This will do the fitting for channel 0 only.</span>

@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -418,17 +418,17 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
-<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
-<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">metpy.calc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpcalc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">metpy.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
 
-<span class="kn">from</span> <span class="nn">act.utils.data_utils</span> <span class="kn">import</span> <span class="n">convert_to_potential_temp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.utils.data_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_to_potential_temp</span>
 
 
-<div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span> <span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="n">pres_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_precipitable_water"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_precipitable_water.html#act.retrievals.calculate_precipitable_water">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_precipitable_water</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">rh_name</span><span class="o">=</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="n">pres_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Function to calculate precipitable water vapor from ARM sondewnpn b1 data.</span>
@@ -506,7 +506,7 @@
     <span class="k">return</span> <span class="n">pwv</span></div>
 
 
-<div class="viewcode-block" id="calculate_stability_indicies"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_stability_indicies.html#act.retrievals.calculate_stability_indicies">[docs]</a><span class="k">def</span> <span class="nf">calculate_stability_indicies</span><span class="p">(</span>
+<div class="viewcode-block" id="calculate_stability_indicies"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_stability_indicies.html#act.retrievals.calculate_stability_indicies">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_stability_indicies</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
     <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
     <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dewpoint_temperature&#39;</span><span class="p">,</span>
@@ -631,7 +631,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="calculate_pbl_liu_liang"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_liu_liang.html#act.retrievals.calculate_pbl_liu_liang">[docs]</a><span class="k">def</span> <span class="nf">calculate_pbl_liu_liang</span><span class="p">(</span>
+<div class="viewcode-block" id="calculate_pbl_liu_liang"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_liu_liang.html#act.retrievals.calculate_pbl_liu_liang">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_pbl_liu_liang</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
     <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
     <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
@@ -828,7 +828,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<div class="viewcode-block" id="calculate_pbl_heffter"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_heffter.html#act.retrievals.calculate_pbl_heffter">[docs]</a><span class="k">def</span> <span class="nf">calculate_pbl_heffter</span><span class="p">(</span>
+<div class="viewcode-block" id="calculate_pbl_heffter"><a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_heffter.html#act.retrievals.calculate_pbl_heffter">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_pbl_heffter</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
     <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
     <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
@@ -979,7 +979,7 @@
     <span class="k">return</span> <span class="n">ds</span></div>
 
 
-<span class="k">def</span> <span class="nf">preprocess_sonde_data</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">preprocess_sonde_data</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
     <span class="n">temperature</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
     <span class="n">pressure</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span><span class="p">,</span>
