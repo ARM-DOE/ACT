@@ -45,7 +45,7 @@ To meet the needs of the community and stakeholders, ACT will be creating a new 
 This roadmap will continue a plan forward on features to improve on and to add in newer ACT
 versions. A part of this new roadmap is a survey from the community that will provide feedback
 for the developers on priorities for newer ACT versions. If time permitting, and you are a user of ACT
-or are considering to use ACT the survey can be found here: `ACT Roadmap Survey` <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
+or are considering to use ACT the survey can be found here: `ACT Roadmap Survey <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
 The feedback would be much appreciated.
 
 Important Links
