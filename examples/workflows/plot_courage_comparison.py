@@ -89,8 +89,8 @@ if username is not None and token is not None and len(username) > 1:
     if airnow:
         display.plot(
             'OZONE_sites_2',
-            dsname='EPA ',
-            label='EPA' + sites[2],
+            dsname='EPA',
+            label='EPA ' + sites[2],
             subplot_index=(1,),
             set_title=title,
         )
