@@ -305,6 +305,7 @@ class TimeSeriesDisplay(Display):
         abs_limits=(None, None),
         time_rng=None,
         y_rng=None,
+        ylabel=None,
         use_var_for_y=None,
         set_shading='auto',
         assessment_overplot=False,
@@ -318,9 +319,11 @@ class TimeSeriesDisplay(Display):
         assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
         force_line_plot=False,
         labels=False,
+        y_axis_flag_meanings=False,
         cbar_label=None,
         cbar_h_adjust=None,
-        y_axis_flag_meanings=False,
+        cbar_labelpad=5,
+        cbar_labelsize=10,
         colorbar_labels=None,
         cvd_friendly=False,
         match_line_label_color=False,
@@ -363,6 +366,9 @@ class TimeSeriesDisplay(Display):
             limits.
         y_rng : tuple or list
             List or tuple with (min, max) values to set the y-axis range
+        ylabel : str
+            Label for the y-axis of the plot.  This will take the place of the
+            default which is to get the variable name or units.
         use_var_for_y : str
             Set this to the name of a data variable in the Dataset to use as
             the y-axis variable instead of the default dimension. Useful for
@@ -394,17 +400,21 @@ class TimeSeriesDisplay(Display):
         labels : boolean or list
             Option to overwrite the legend labels. Must have same dimensions as
             number of lines plotted.
-        cbar_label : str
-            Option to overwrite default colorbar label.
-        cbar_h_adjust : float
-            Option to adjust location of colorbar horizontally. Positive values
-            move to right negative values move to left.
         y_axis_flag_meanings : boolean or int
             When set to True and plotting state variable with flag_values and
             flag_meanings attributes will replace y axis numerical values
             with flag_meanings value. Set to a positive number larger than 1
             to indicate maximum word length to use. If text is longer that the
             value and has space characters will split text over multiple lines.
+        cbar_label : str
+            Option to overwrite default colorbar label.
+        cbar_h_adjust : float
+            Option to adjust location of colorbar horizontally. Positive values
+            move to right negative values move to left.
+        cbar_labelpad : int
+            Adjusts the location of the colorbar title. Default is 5.
+        cbar_labelsize : int
+            Adjusts the fontsize of the colorbar title. Default is 10.
         colorbar_labels : dict
             A dictionary containing values for plotting a 2D array of state variables.
             The dictionary uses data values as keys and a dictionary containing keys
@@ -474,6 +484,7 @@ class TimeSeriesDisplay(Display):
 
         if cbar_label is None:
             cbar_default = ytitle
+
         if len(dim) > 1:
             if use_var_for_y is None:
                 ydata = self._ds[dsname][dim[1]]
@@ -503,6 +514,10 @@ class TimeSeriesDisplay(Display):
                 ydata = None
         else:
             ydata = None
+
+        # Set ylabel after previous default titles if ylabel is set
+        if ylabel is not None:
+            ytitle = ylabel
 
         # Get the current plotting axis
         if self.fig is None:
@@ -749,25 +764,25 @@ class TimeSeriesDisplay(Display):
             if cbar_label is None:
                 cbar_title = cbar_default
             else:
-                cbar_title = ''.join(['(', cbar_label, ')'])
+                cbar_title = cbar_label
 
             if colorbar_labels is not None:
                 cbar_title = None
                 cbar = self.add_colorbar(
                     mesh,
-                    title=cbar_title,
                     subplot_index=subplot_index,
                     values=flag_values,
                     pad=cbar_h_adjust,
                 )
+                cbar.set_label(cbar_title, labelpad=cbar_labelpad)
                 cbar.set_ticks(flag_values)
                 cbar.set_ticklabels(flag_meanings)
-                cbar.ax.tick_params(labelsize=10)
+                cbar.ax.tick_params(labelsize=cbar_labelsize)
 
             else:
-                self.add_colorbar(
-                    mesh, title=cbar_title, subplot_index=subplot_index, pad=cbar_h_adjust
-                )
+                cbar = self.add_colorbar(mesh, subplot_index=subplot_index, pad=cbar_h_adjust)
+                cbar.set_label(cbar_title, labelpad=cbar_labelpad)
+                cbar.ax.tick_params(labelsize=cbar_labelsize)
         return ax
 
     def plot_barbs_from_spd_dir(
