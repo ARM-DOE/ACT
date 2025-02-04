@@ -698,3 +698,25 @@ def test_plot_stripes():
     display.plot_stripes('temp_mean', reference_period=reference_period)
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_plot_labels():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
+
+    display = TimeSeriesDisplay(ds)
+    display.plot(
+        'backscatter',
+        ylabel='Height (m)',
+        cbar_labelpad=6,
+        cbar_labelsize=5,
+        cbar_label='Backscatter',
+    )
+
+    ds.close()
+    del ds
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
