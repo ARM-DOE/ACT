@@ -774,14 +774,14 @@ class TimeSeriesDisplay(Display):
                     values=flag_values,
                     pad=cbar_h_adjust,
                 )
-                cbar.set_label(cbar_title, labelpad=cbar_labelpad)
+                cbar.set_label(cbar_title, labelpad=cbar_labelpad, fontsize=cbar_labelsize)
                 cbar.set_ticks(flag_values)
                 cbar.set_ticklabels(flag_meanings)
                 cbar.ax.tick_params(labelsize=cbar_labelsize)
 
             else:
                 cbar = self.add_colorbar(mesh, subplot_index=subplot_index, pad=cbar_h_adjust)
-                cbar.set_label(cbar_title, labelpad=cbar_labelpad)
+                cbar.set_label(cbar_title, labelpad=cbar_labelpad, fontsize=cbar_labelsize)
                 cbar.ax.tick_params(labelsize=cbar_labelsize)
         return ax
 
