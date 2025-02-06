@@ -144,7 +144,7 @@ html_title = 'ACT Documentation'
 #
 
 html_theme_options = {
-    'google_analytics_id': 'G-8YN80YZDD8',
+    'analytics': {'google_analytics_id': 'G-8YN80YZDD8'},
     'github_url': 'https://github.com/ARM-DOE/ACT',
 }
 
