@@ -194,7 +194,9 @@ def get_arm_doi(datastream, startdate, enddate):
         Returns the citation as a string
 
     """
-
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
     # Get the DOI information
     doi_url = (
         'https://adc.arm.gov/citationservice/citation/datastream?id='
@@ -204,7 +206,7 @@ def get_arm_doi(datastream, startdate, enddate):
     doi_url += '&startDate=' + startdate
     doi_url += '&endDate=' + enddate
     try:
-        doi = requests.get(url=doi_url)
+        doi = requests.get(url=doi_url, headers=headers)
     except ValueError as err:
         return "Webservice potentially down or arguments are not valid: " + err
 
