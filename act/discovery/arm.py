@@ -150,7 +150,7 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
             save_data_url = (
                 'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
             ).format(':'.join([username, token]), fname)
-            req_save = Requests(save_data_url)
+            req_save = Request(save_data_url)
             req_save.add_header(headers)
             output_file = os.path.join(output_dir, fname)
             # make directory if it doesn't exist
