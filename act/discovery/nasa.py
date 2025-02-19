@@ -92,6 +92,11 @@ def download_mplnet_data(
         + " \n\tand maintaining sites.\n"
     )
 
+    # Add header
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
+
     # Define the base URL
     base_url = "https://mplnet.gsfc.nasa.gov/download?"
 
@@ -144,7 +149,7 @@ def download_mplnet_data(
 
     # Make a Request
     files = []
-    with requests.get(base_url, stream=True) as r:
+    with requests.get(base_url, stream=True, headers=headers) as r:
         fname = re.findall("filename=(.+)", r.headers['Content-Disposition'])
         # Check for successful file check
         if fname[0][1:-1] == "MPLNET_download_fail.txt":
@@ -204,6 +209,12 @@ def get_mplnet_meta(
     print_to_screen : Boolean
         If true, print MPLNET site identifiers to screen
     """
+
+    # Add headers
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
+
     # Define the base URL
     base_url = "https://mplnet.gsfc.nasa.gov/operations/sites?api&format=galion"
 
@@ -224,7 +235,7 @@ def get_mplnet_meta(
     if day:
         base_url += "&day=" + str(day)
 
-    with requests.get(base_url, stream=True) as r:
+    with requests.get(base_url, stream=True, headers=headers) as r:
         # Convert to JSON
         site_request = r.json()
         if print_to_screen:
