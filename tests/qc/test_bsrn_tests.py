@@ -290,7 +290,7 @@ def test_bsrn_limits_test():
             == 'Closure test indicating value outside of expected range'
         )
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=7)
-        assert np.sum(result) ==  10
+        assert np.sum(result) == 10
         assert (
             ds['qc_short_direct_normal'].attrs['flag_meanings'][6]
             == 'Closure test indicating value outside of expected range'
