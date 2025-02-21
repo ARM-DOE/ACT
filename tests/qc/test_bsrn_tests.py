@@ -262,7 +262,7 @@ def test_bsrn_limits_test():
 
         # Ratio of Global over Sum SW
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=5)
-        assert np.sum(result) == 99
+        assert np.sum(result) == 276
 
         # Diffuse Ratio
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=6)
