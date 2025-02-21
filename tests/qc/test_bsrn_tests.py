@@ -5,7 +5,6 @@ import numpy as np
 import xarray as xr
 
 from act.io.arm import read_arm_netcdf
-from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.tests import EXAMPLE_BRS
 
 
@@ -29,7 +28,6 @@ def test_bsrn_limits_test():
         ds['short_direct'] = copy.deepcopy(ds['short_direct_normal'])
         ds['short_direct'].attrs['ancillary_variables'] = 'qc_short_direct'
         ds['short_direct'].attrs['long_name'] = 'Shortwave direct irradiance, pyrheliometer'
-        _, _ = _calculate_solar_parameters(ds, 'lat', 'lon', 1360.8)
         ds['short_direct'].data = ds['short_direct'].data * 0.5
 
         # Make up long variable since BRS does not have values
@@ -51,7 +49,7 @@ def test_bsrn_limits_test():
         data[200:250] = data[200:250] - 1.9
         data[250:300] = data[250:300] - 3.9
         data[800:850] += 330
-        data[1340:1380] += 600
+        data[1340:1390] += 900
         ds['down_short_diffuse_hemisp'].data = da.from_array(data)
 
         data = ds['short_direct_normal'].values
@@ -79,6 +77,7 @@ def test_bsrn_limits_test():
         data[200:250] = data[200:250] - 355
         data[250:300] = data[250:300] - 400
         data[800:850] += 300
+        data[500:550] += 400
         data[1340:1380] += 500
         ds['up_long_hemisp'].data = da.from_array(data)
 
@@ -180,11 +179,11 @@ def test_bsrn_limits_test():
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=1)
         assert np.sum(result) == 50
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=2)
-        assert np.sum(result) == 56
+        assert np.sum(result) == 66
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=3)
         assert np.sum(result) == 100
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=4)
-        assert np.sum(result) == 90
+        assert np.sum(result) == 100
 
         # short_direct_normal
         result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=1)
@@ -224,7 +223,7 @@ def test_bsrn_limits_test():
         result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=3)
         assert np.sum(result) == 89
         result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=4)
-        assert np.sum(result) == 90
+        assert np.sum(result) == 140
 
         # Change data values to trip tests
         ds['down_short_diffuse_hemisp'].values[0:100] = (
@@ -262,11 +261,11 @@ def test_bsrn_limits_test():
 
         # Ratio of Global over Sum SW
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=5)
-        assert np.sum(result) == 276
+        assert np.sum(result) == 109
 
         # Diffuse Ratio
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=6)
-        assert np.sum(result) == 103
+        assert np.sum(result) == 25
 
         # Shortwave up comparison
         result = ds.qcfilter.get_qc_test_mask('up_short_hemisp', test_number=5)
@@ -274,7 +273,7 @@ def test_bsrn_limits_test():
 
         # Longwave up to air temperature comparison
         result = ds.qcfilter.get_qc_test_mask('up_long_hemisp', test_number=5)
-        assert np.sum(result) == 290
+        assert np.sum(result) == 240
 
         # Longwave down to air temperature compaison
         result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=5)
@@ -282,7 +281,7 @@ def test_bsrn_limits_test():
 
         # Longwave down to longwave up comparison
         result = ds.qcfilter.get_qc_test_mask('down_long_hemisp_shaded', test_number=6)
-        assert np.sum(result) == 100
+        assert np.sum(result) == 50
 
         # Closure test
         assert (
@@ -290,19 +289,19 @@ def test_bsrn_limits_test():
             == 'Closure test indicating value outside of expected range'
         )
         result = ds.qcfilter.get_qc_test_mask('down_short_hemisp', test_number=7)
-        assert np.sum(result) == 38
+        assert np.sum(result) == 10
         assert (
             ds['qc_short_direct_normal'].attrs['flag_meanings'][6]
             == 'Closure test indicating value outside of expected range'
         )
         result = ds.qcfilter.get_qc_test_mask('short_direct_normal', test_number=7)
-        assert np.sum(result) == 38
+        assert np.sum(result) == 10
         assert (
             ds['qc_down_short_diffuse_hemisp'].attrs['flag_meanings'][7]
             == 'Closure test indicating value outside of expected range'
         )
         result = ds.qcfilter.get_qc_test_mask('down_short_diffuse_hemisp', test_number=8)
-        assert np.sum(result) == 38
+        assert np.sum(result) == 10
 
 
 def test_normalized_rradiance_test():
