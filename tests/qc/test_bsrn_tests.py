@@ -5,7 +5,6 @@ import numpy as np
 import xarray as xr
 
 from act.io.arm import read_arm_netcdf
-from act.qc.bsrn_tests import _calculate_solar_parameters
 from act.tests import EXAMPLE_BRS
 
 
