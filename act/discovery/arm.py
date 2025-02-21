@@ -10,9 +10,9 @@ import requests
 import textwrap
 
 try:
-    from urllib.request import urlopen
+    from urllib.request import Request, urlopen
 except ImportError:
-    from urllib import urlopen
+    from urllib import Request, urlopen
 
 from act.utils import date_parser
 
@@ -110,9 +110,14 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
         'https://adc.arm.gov/armlive/livedata/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
     ).format(':'.join([username, token]), datastream, start, end)
 
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
+    req = Request(query_url)
+    req.add_header(headers)
     # get url response, read the body of the message,
     # and decode from bytes type to utf-8 string
-    response_body = urlopen(query_url).read().decode('utf-8')
+    response_body = urlopen(req).read().decode('utf-8')
     # if the response is an html doc, then there was an error with the user
     if response_body[1:14] == '!DOCTYPE html':
         raise ConnectionRefusedError('Error with user. Check username or token.')
@@ -145,13 +150,15 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
             save_data_url = (
                 'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
             ).format(':'.join([username, token]), fname)
+            req_save = Request(save_data_url)
+            req_save.add_header(headers)
             output_file = os.path.join(output_dir, fname)
             # make directory if it doesn't exist
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
             # create file and write bytes to file
             with open(output_file, 'wb') as open_bytes_file:
-                data = urlopen(save_data_url).read()
+                data = urlopen(req_save).read()
                 if 'This data file is not available' in str(data):
                     print(fname + ' is not available for download')
                     continue
@@ -194,7 +201,9 @@ def get_arm_doi(datastream, startdate, enddate):
         Returns the citation as a string
 
     """
-
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
     # Get the DOI information
     doi_url = (
         'https://adc.arm.gov/citationservice/citation/datastream?id='
@@ -204,7 +213,7 @@ def get_arm_doi(datastream, startdate, enddate):
     doi_url += '&startDate=' + startdate
     doi_url += '&endDate=' + enddate
     try:
-        doi = requests.get(url=doi_url)
+        doi = requests.get(url=doi_url, headers=headers)
     except ValueError as err:
         return "Webservice potentially down or arguments are not valid: " + err
 
