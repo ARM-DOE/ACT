@@ -514,6 +514,11 @@
         <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n\t</span><span class="s2">and maintaining sites.</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="p">)</span>
 
+    <span class="c1"># Add header</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
     <span class="c1"># Define the base URL</span>
     <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://mplnet.gsfc.nasa.gov/download?&quot;</span>
 
@@ -566,7 +571,7 @@
 
     <span class="c1"># Make a Request</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;filename=(.+)&quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">])</span>
         <span class="c1"># Check for successful file check</span>
         <span class="k">if</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;MPLNET_download_fail.txt&quot;</span><span class="p">:</span>
@@ -626,6 +631,12 @@
 <span class="sd">    print_to_screen : Boolean</span>
 <span class="sd">        If true, print MPLNET site identifiers to screen</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Add headers</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
     <span class="c1"># Define the base URL</span>
     <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://mplnet.gsfc.nasa.gov/operations/sites?api&amp;format=galion&quot;</span>
 
@@ -646,7 +657,7 @@
     <span class="k">if</span> <span class="n">day</span><span class="p">:</span>
         <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;day=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
         <span class="c1"># Convert to JSON</span>
         <span class="n">site_request</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">print_to_screen</span><span class="p">:</span>
