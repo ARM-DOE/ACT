@@ -113,8 +113,8 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
     headers = {
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
     }
-    req = Request(query_url)
-    req.add_header(headers)
+
+    req = Request(query_url, None, headers)
     # get url response, read the body of the message,
     # and decode from bytes type to utf-8 string
     response_body = urlopen(req).read().decode('utf-8')
@@ -150,8 +150,7 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
             save_data_url = (
                 'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
             ).format(':'.join([username, token]), fname)
-            req_save = Request(save_data_url)
-            req_save.add_header(headers)
+            req_save = Request(save_data_url, None, headers)
             output_file = os.path.join(output_dir, fname)
             # make directory if it doesn't exist
             if not os.path.isdir(output_dir):
