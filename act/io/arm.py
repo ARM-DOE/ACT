@@ -125,7 +125,6 @@ def read_arm_netcdf(
     kwargs['combine'] = combine
     kwargs['concat_dim'] = concat_dim
     kwargs['decode_times'] = decode_times
-    kwargs['use_cftime'] = use_cftime
     if len(filenames) > 1 and not isinstance(filenames, str):
         kwargs['combine_attrs'] = combine_attrs
 
