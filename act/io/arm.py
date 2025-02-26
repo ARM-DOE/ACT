@@ -118,11 +118,13 @@ def read_arm_netcdf(
         decode_times = False
         use_cftime = False
 
-    # Add funciton keywords to kwargs dictionary for passing into open_mfdataset.
+    if decode_times and use_cftime:
+        decode_times = xr.coders.CFDatetimeCoder(use_cftime=True)
+
+    # Add function keywords to kwargs dictionary for passing into open_mfdataset.
     kwargs['combine'] = combine
     kwargs['concat_dim'] = concat_dim
     kwargs['decode_times'] = decode_times
-    kwargs['use_cftime'] = use_cftime
     if len(filenames) > 1 and not isinstance(filenames, str):
         kwargs['combine_attrs'] = combine_attrs
 
