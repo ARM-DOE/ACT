@@ -540,11 +540,13 @@
         <span class="n">decode_times</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">use_cftime</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="c1"># Add funciton keywords to kwargs dictionary for passing into open_mfdataset.</span>
+    <span class="k">if</span> <span class="n">decode_times</span> <span class="ow">and</span> <span class="n">use_cftime</span><span class="p">:</span>
+        <span class="n">decode_times</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">coders</span><span class="o">.</span><span class="n">CFDatetimeCoder</span><span class="p">(</span><span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Add function keywords to kwargs dictionary for passing into open_mfdataset.</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_times</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_cftime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_cftime</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
 
