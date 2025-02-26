@@ -118,6 +118,10 @@ def read_arm_netcdf(
         decode_times = False
         use_cftime = False
 
+    if decode_times and use_cftime:
+        decode_times = xr.coders.CFDatetimeCoder(use_cftime=True)
+
+
     # Add funciton keywords to kwargs dictionary for passing into open_mfdataset.
     kwargs['combine'] = combine
     kwargs['concat_dim'] = concat_dim
