@@ -1271,6 +1271,7 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
     """
     headers = {
         'Content-Type': 'application/json',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
     }
     # Return all facilities if facility_code is None else set the query to include
     # facility search
