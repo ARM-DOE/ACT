@@ -300,8 +300,6 @@ def test_qcfilter():
 
 @pytest.mark.skipif(not SCIKIT_POSTHOCS_AVAILABLE, reason='scikit_posthocs is not installed.')
 def test_qcfilter2():
-    import scikit_posthocs
-
     ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
     expected_qc_var_name = 'qc_' + var_name
