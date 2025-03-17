@@ -325,14 +325,22 @@ def test_qcfilter2():
     )
 
     ds.qcfilter.add_gesd_test(var_name, test_assessment='Bad')
-    assert np.sum(ds[expected_qc_var_name].values) == 188
+    if scikit_posthocs.__version__ >= '0.11.3':
+        value = 188
+    else:
+        value = 204
+    assert np.sum(ds[expected_qc_var_name].values) == value
     assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
     assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.05'
     )
 
     ds.qcfilter.add_gesd_test(var_name, alpha=0.1)
-    assert np.sum(ds[expected_qc_var_name].values) == 284
+    if scikit_posthocs.__version__ >= '0.11.3':
+        value = 284
+    else:
+        value = 332
+    assert np.sum(ds[expected_qc_var_name].values) == value
     assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8, 16]
     assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.1'
