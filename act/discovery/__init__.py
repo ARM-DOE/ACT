@@ -9,7 +9,7 @@ import lazy_loader as lazy
 __getattr__, __dir__, __all__ = lazy.attach(
     __name__,
     submodules=[
-        'arm',
+        'ameriflux' 'arm',
         'asos',
         'airnow',
         'cropscape',
@@ -20,6 +20,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'nasa',
     ],
     submod_attrs={
+        'ameriflux': ['download_ameriflux_data', 'ameriflux_endpoints'],
         'arm': ['download_arm_data', 'get_arm_doi'],
         'asos': ['get_asos_data'],
         'airnow': ['get_airnow_bounded_obs', 'get_airnow_obs', 'get_airnow_forecast'],
