@@ -110,7 +110,8 @@ def download_ameriflux_data(
     if isinstance(site_ids, list):
         if any(not valid for valid in check_id):
             warnings.warn(
-                f"{', '.join([site_ids[i] for i, valid in enumerate(check_id) if not valid])} not valid AmeriFlux Site ID"
+                f"{', '.join([site_ids[i] for i, valid in enumerate(check_id) if not valid])} not valid AmeriFlux Site ID",
+                UserWarning,
             )
             site_ids = [site_ids[i] for i, valid in enumerate(check_id) if valid]
     elif isinstance(site_ids, str):
@@ -118,7 +119,7 @@ def download_ameriflux_data(
             site_ids = None
 
     if not site_ids:
-        raise ValueError("No valid Site ID in site_id...")
+        raise ValueError("No valid Site ID in site_ids...")
 
     # Obtain formal intended use category
     def intended_use_extended(intended_use):
@@ -142,35 +143,27 @@ def download_ameriflux_data(
 
     # Prompt for data policy agreement
     if data_policy == "CCBY4.0":
-        print("Data use guidelines for AmeriFlux CC-BY-4.0 Data Policy:")
-        print(
-            "(1) Data user is free to Share (copy and redistribute the material in any medium or format) and/or Adapt (remix, transform, and build upon the material) for any purpose."
-        )
-        print(
-            "(2) Provide a citation to each site data product that includes the data-product DOI and/or recommended publication."
-        )
-        print(
-            "(3) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science."
+        warnings.warn(
+            "Data use guidelines for AmeriFlux CC-BY-4.0 Data Policy:\n"
+            "(1) Data user is free to Share (copy and redistribute the material in any medium or format) and/or Adapt (remix, transform, and build upon the material) for any purpose.\n"
+            "(2) Provide a citation to each site data product that includes the data-product DOI and/or recommended publication.\n"
+            "(3) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science.",
+            PolicyWarning,
         )
     elif data_policy == "LEGACY":
-        print("Data use guidelines for AmeriFlux LEGACY License:")
-        print(
-            "(1) When you start in-depth analysis that may result in a publication, contact the data contributors directly, so that they have the opportunity to contribute substantively and become a co-author."
-        )
-        print(
-            "(2) Provide a citation to each site data product that includes the data-product DOI."
-        )
-        print(
-            "(3) Acknowledge funding for site support if it was provided in the data download information."
-        )
-        print(
-            "(4) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science."
+        warnings.warn(
+            "Data use guidelines for AmeriFlux LEGACY License:\n"
+            "(1) When you start in-depth analysis that may result in a publication, contact the data contributors directly, so that they have the opportunity to contribute substantively and become a co-author.\n"
+            "(2) Provide a citation to each site data product that includes the data-product DOI.\n"
+            "(3) Acknowledge funding for site support if it was provided in the data download information.\n"
+            "(4) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science.",
+            PolicyWarning,
         )
     else:
-        raise ValueError("Specify a valid data policy before proceed...")
+        raise ValueError("Specify a valid data policy before proceeding...")
 
     if not agree_policy:
-        raise ValueError("Acknowledge data policy before proceed...")
+        raise ValueError("Acknowledge data policy before proceeding...")
 
     # Payload for download web service
     params = {
@@ -266,3 +259,7 @@ def _check_site_id(x):
     site_ids = df['SITE_ID'].tolist()
     chk_id = [site_id in site_ids for site_id in x]
     return chk_id
+
+
+class PolicyWarning(UserWarning):
+    pass
