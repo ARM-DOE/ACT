@@ -9,6 +9,8 @@ import warnings
 
 import pandas as pd
 
+warnings.simplefilter('always')
+
 
 def download_ameriflux_data(
     user_id,
@@ -21,7 +23,7 @@ def download_ameriflux_data(
     intended_use=None,
     description=None,
     out_dir=None,
-    is_test=True,
+    **kwargs,
 ):
     """
     This tool will allows users to download Ameriflux data. This code is based on the
@@ -65,9 +67,6 @@ def download_ameriflux_data(
         The output directory for the data. Set to None to make a folder in the
         current working directory with the same name as *datastream* to place
         the files in.
-    is_test : bool
-        If using to test endpoint. Data will be excluded from download logs.
-        default is False
 
     Notes
     -----
@@ -137,26 +136,32 @@ def download_ameriflux_data(
 
     # Check if out_dir is reachable
     if out_dir is None:
-        out_dir = os.path.abspath(os.path.expanduser("~"))
-    if not os.path.exists(out_dir):
-        raise ValueError("out_dir not valid...")
+        os.makedirs(os.getcwd() + '/data/')
+        out_dir = os.getcwd() + '/data/'
+    else:
+        if not os.path.isdir(out_dir):
+            os.makedirs(out_dir)
 
     # Prompt for data policy agreement
     if data_policy == "CCBY4.0":
         warnings.warn(
+            "\n"
             "Data use guidelines for AmeriFlux CC-BY-4.0 Data Policy:\n"
             "(1) Data user is free to Share (copy and redistribute the material in any medium or format) and/or Adapt (remix, transform, and build upon the material) for any purpose.\n"
             "(2) Provide a citation to each site data product that includes the data-product DOI and/or recommended publication.\n"
-            "(3) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science.",
+            "(3) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science.\n"
+            "\n",
             PolicyWarning,
         )
     elif data_policy == "LEGACY":
         warnings.warn(
+            "\n"
             "Data use guidelines for AmeriFlux LEGACY License:\n"
             "(1) When you start in-depth analysis that may result in a publication, contact the data contributors directly, so that they have the opportunity to contribute substantively and become a co-author.\n"
             "(2) Provide a citation to each site data product that includes the data-product DOI.\n"
             "(3) Acknowledge funding for site support if it was provided in the data download information.\n"
-            "(4) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science.",
+            "(4) Acknowledge funding for supporting AmeriFlux data portal: U.S. Department of Energy Office of Science.\n"
+            "\n",
             PolicyWarning,
         )
     else:
@@ -164,6 +169,14 @@ def download_ameriflux_data(
 
     if not agree_policy:
         raise ValueError("Acknowledge data policy before proceeding...")
+
+    if "is_test" in kwargs:
+        if kwargs['is_test'] is True:
+            test_key = "true"
+        else:
+            test_key = ""
+    else:
+        test_key = ""
 
     # Payload for download web service
     params = {
@@ -175,7 +188,7 @@ def download_ameriflux_data(
         "site_ids": site_ids,
         "intended_use": intended_use_extended(intended_use),
         "description": f"{description} [Atmospheric data Community Toolkit download]",
-        "is_test": "true" if is_test else "",
+        "is_test": test_key,
     }
 
     result = requests.post(

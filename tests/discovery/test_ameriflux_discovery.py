@@ -18,7 +18,8 @@ def test_download_ameriflux_data(capsys):
     if user_id is not None and user_email is not None:
         if len(user_id) == 0 and len(user_email) == 0:
             return
-        is_test = True
+        kwargs = {}
+        kwargs['is_test'] = True
         site_ids = ['US-A37', 'US-CU1']
         data_product = 'BASE-BADM'
         data_policy = 'CCBY4.0'
@@ -40,7 +41,7 @@ def test_download_ameriflux_data(capsys):
                 intended_use=intended_use,
                 description=description,
                 out_dir=out_dir,
-                is_test=is_test,
+                **kwargs,
             )
 
         # Test if legacy data policy is printed
@@ -56,7 +57,7 @@ def test_download_ameriflux_data(capsys):
                 intended_use=intended_use,
                 description=description,
                 out_dir=out_dir,
-                is_test=is_test,
+                **kwargs,
             )
 
         # Test if BASE-BADM files are downloaded
@@ -71,7 +72,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         files = glob.glob(out_dir + '*BASE-BADM*')
@@ -95,7 +96,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         files = glob.glob(out_dir + '*BIF*xlsx')
@@ -122,7 +123,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         # Test for raised error if email is not a valid email format
@@ -139,7 +140,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         # Test for raised error if agree_policy is False
@@ -156,7 +157,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         # Test for raised error if data_policy is incorrect
@@ -173,7 +174,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         # Test for raised error if site_id is not valid
@@ -190,7 +191,7 @@ def test_download_ameriflux_data(capsys):
             intended_use=intended_use,
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
+            **kwargs,
         )
 
         # Test for raised error if intended_use category is not valid
@@ -207,24 +208,7 @@ def test_download_ameriflux_data(capsys):
             intended_use='foo',
             description=description,
             out_dir=out_dir,
-            is_test=is_test,
-        )
-
-        # Test for raised error if out_dir doesn't exist
-        pytest.raises(
-            ValueError,
-            act.discovery.ameriflux.download_ameriflux_data,
-            user_id,
-            user_email,
-            data_product=data_product,
-            data_policy=data_policy,
-            data_variant=data_variant,
-            site_ids=site_ids,
-            agree_policy=True,
-            intended_use=intended_use,
-            description=description,
-            out_dir='/foo/',
-            is_test=is_test,
+            **kwargs,
         )
 
         # Test for warning if one of the site_ids doesn't exist
@@ -240,5 +224,5 @@ def test_download_ameriflux_data(capsys):
                 intended_use=intended_use,
                 description=description,
                 out_dir=out_dir,
-                is_test=is_test,
+                **kwargs,
             )
