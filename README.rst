@@ -171,7 +171,8 @@ contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob
 
 Testing
 ~~~~~~~
-For testing, we use pytest. To install pytest::
+For testing, we use pytest for running the unit tests and arm-test-data for
+test files that are used for the unit tests. To install pytest::
 
    $ conda install -c conda-forge pytest
 
@@ -179,9 +180,13 @@ And for matplotlib image testing with pytest::
 
    $ conda install -c conda-forge pytest-mpl
 
-After installation, you can launch the test suite from outside the
-source directory (you will need to have pytest installed and for the mpl
-argument need pytest-mpl)::
+To install arm-test-data::
+
+   $ conda install -c conda-forge arm-test-data
+
+After installation of both pytest and arm-test-data, you can launch the test
+suite from outside the source directory (you will need to have pytest
+installed and for the mpl argument need pytest-mpl)::
 
    $ pytest --mpl --pyargs act
 
