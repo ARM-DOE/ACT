@@ -11,7 +11,6 @@ import pandas as pd
 import xarray as xr
 
 from act.io.text import read_csv
-from act.io.arm import read_arm_netcdf
 
 
 def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=True, **kwargs):
@@ -1312,9 +1311,17 @@ def read_gml_aerosol(filename, **kwargs):
     skiprows = 0
     names = None
     startdate = None
-    lat, lon, alt, height, station, station_code, station_gaw_id, missing_value, matrix = (
-        None, None, None, None, None, None, None, None, None)
-    instrument_type, inlet_type = None, None
+    lat = None
+    lon = None
+    alt = None
+    height = None
+    station = None
+    station_code = None
+    station_gaw_id = None
+    missing_value = None
+    matrix = None
+    instrument_type = None
+    inlet_type = None
     with open(filename[0]) as fc:
         while True:
             line = fc.readline().strip()
@@ -1352,7 +1359,9 @@ def read_gml_aerosol(filename, **kwargs):
     missing_value = list(set(missing_value))
 
     for i, f in enumerate(filename):
-        new_df = pd.read_csv(f, names=names, skiprows=skiprows, delimiter=r'\s+', na_values=missing_value)
+        new_df = pd.read_csv(
+            f, names=names, skiprows=skiprows, delimiter=r'\s+', na_values=missing_value
+        )
         if i == 0:
             df = new_df
         else:
@@ -1366,7 +1375,7 @@ def read_gml_aerosol(filename, **kwargs):
     start_time = ds['start_time'].values * 24.0 * 60.0 * 60.0
     end_time = ds['end_time'].values * 24.0 * 60.0 * 60.0
     time = (end_time + start_time) / 2.0
-    time = np.round(time / 10.) * 10.
+    time = np.round(time / 10.0) * 10.0
     time = startdate + time.astype(int)
     ds = ds.assign_coords(index=time)
     ds = ds.rename(index='time')
