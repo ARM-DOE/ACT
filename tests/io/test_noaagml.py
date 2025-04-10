@@ -134,18 +134,51 @@ def test_read_gml_aerosol():
     for datatype in ['AEROSOL', 'aerosol', None]:
         ds = read_gml(sample_files.EXAMPLE_GML_AEROSOL_NAS, datatype='AEROSOL')
 
-        assert np.all(ds['time'].values[:3] == [np.datetime64('2020-01-01T00:30:00'),
-                                                np.datetime64('2020-01-01T01:30:00'),
-                                                np.datetime64('2020-01-01T02:30:00')])
-        assert sorted(list(ds.data_vars)) == ['RH_int', 'T_int', 'alt', 'bsc450', 'bsc450pc16', 'bsc450pc84',
-                                              'bsc550', 'bsc550pc16', 'bsc550pc84', 'bsc700', 'bsc700pc16',
-                                              'bsc700pc84', 'lat', 'lon', 'numflag', 'p_int', 'sc450', 'sc450pc16',
-                                              'sc450pc84', 'sc550', 'sc550pc16', 'sc550pc84', 'sc700', 'sc700pc16',
-                                              'sc700pc84']
+        assert np.all(
+            ds['time'].values[:3]
+            == [
+                np.datetime64('2020-01-01T00:30:00'),
+                np.datetime64('2020-01-01T01:30:00'),
+                np.datetime64('2020-01-01T02:30:00'),
+            ]
+        )
+        assert sorted(list(ds.data_vars)) == [
+            'RH_int',
+            'T_int',
+            'alt',
+            'bsc450',
+            'bsc450pc16',
+            'bsc450pc84',
+            'bsc550',
+            'bsc550pc16',
+            'bsc550pc84',
+            'bsc700',
+            'bsc700pc16',
+            'bsc700pc84',
+            'lat',
+            'lon',
+            'numflag',
+            'p_int',
+            'sc450',
+            'sc450pc16',
+            'sc450pc84',
+            'sc550',
+            'sc550pc16',
+            'sc550pc84',
+            'sc700',
+            'sc700pc16',
+            'sc700pc84',
+        ]
         assert ds['RH_int'].attrs == {'long_name': 'Atmospheric relative humidity', 'units': '%'}
-        assert ds.attrs == {'height': 10.0, 'Station_GAW-Name': 'Mauna Loa, Hawaii',
-                            'Station_code': 'US1200R', 'Station_GAW-ID': 'MLO', 'Matrix': 'pm10',
-                            'Instrument type': 'nephelometer', 'Inlet type': 'Impactor--direct'}
+        assert ds.attrs == {
+            'height': 10.0,
+            'Station_GAW-Name': 'Mauna Loa, Hawaii',
+            'Station_code': 'US1200R',
+            'Station_GAW-ID': 'MLO',
+            'Matrix': 'pm10',
+            'Instrument type': 'nephelometer',
+            'Inlet type': 'Impactor--direct',
+        }
 
         assert np.isclose(np.nansum(ds['T_int'].values), 2240121.39)
         assert ds['sc450'].values.size == 8784
