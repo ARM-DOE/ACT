@@ -1,3 +1,15 @@
+"""
+Working with netCDF groups
+--------------------------
+
+This is an example about how to work with netCDF
+groups. Xarray does not natively read netCDF group
+files, but it does have the ability to read the
+data with a few independent calls.
+
+Author: Ken Kehoe
+"""
+
 import xarray as xr
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,35 +17,26 @@ from arm_test_data import DATASETS
 from act.io.arm import read_arm_netcdf
 from act.plotting import TimeSeriesDisplay
 
-"""
-Working with netCDF groups
-----------------------
 
-This is an example about how to work with netCDF
-groups. Xarray does not natively read netCDF group
-files, but it does have the ability to read the
-data with a few independent calls.
+# This data file is a bit complicated with the group organization. Each group
+# will need to be treated as a different netCDF file for reading. We can read each group
+# independently and merge into a single Dataset to use with standard Xarray or ACT methods.
 
-"""
+# Top Level:
+# data
+#
+# Groups:
+# - data
+#   - light_absorption
+#     - instrument
+#   - particle_concentration
+#     - instrument
+#   - light_scattering
+#     - instrument
 
-"""
-This data file is a bit complicated with the group organization. Each group
-will need to be treated as a different netCDF file for reading. We can read each group
-independently and merge into a single Dataset to use with standard Xarray or ACT methods.
-
-Top Level:
-data
-
-Groups:
-- data
-  - light_absorption
-    - instrument
-  - particle_concentration
-    - instrument
-  - light_scattering
-    - instrument
-"""
-filename = DATASETS.fetch('ESRL-GMD-AEROSOL_v1.0_HOUR_MLO_s20200101T000000Z_e20210101T000000Z_c20210214T053835Z.nc')
+filename = DATASETS.fetch(
+    'ESRL-GMD-AEROSOL_v1.0_HOUR_MLO_s20200101T000000Z_e20210101T000000Z_c20210214T053835Z.nc'
+)
 
 # We start by reading the location information from the top level of the netCDF file.
 # This is a standard Xarary call without a group keyword. Only the top level data is read.
@@ -99,7 +102,9 @@ del ds.attrs['_file_times']
 labels = [f"{int(wl)} {ds['wavelength'].attrs['units']}" for wl in ds['wavelength'].values]
 
 display = TimeSeriesDisplay({'ESRL ML': ds})
-display.plot('scattering_coefficient', day_night_background=True, force_line_plot=True, labels=labels)
+display.plot(
+    'scattering_coefficient', day_night_background=True, force_line_plot=True, labels=labels
+)
 plt.show()
 
 # A second option is to extract the wavelength dimension form the variable and create a new variable
