@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from .text import read_csv
+from act.io.text import read_csv
 
 
 def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=True, **kwargs):
@@ -40,11 +40,10 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
 
     """
-
     if datatype is not None:
         if datatype.upper() == 'MET':
             return read_gml_met(filename, convert_missing=convert_missing, **kwargs)
@@ -61,6 +60,8 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
             return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
         elif datatype.upper() == 'HALO':
             return read_gml_halo(filename, **kwargs)
+        elif datatype.upper() == 'AEROSOL':
+            return read_gml_aerosol(filename, **kwargs)
         else:
             raise ValueError('datatype is unknown')
 
@@ -76,6 +77,9 @@ def read_gml(filename, datatype=None, remove_time_vars=True, convert_missing=Tru
 
         if test_filename.startswith('co2_') and test_filename.endswith('.txt'):
             return read_gml_co2(filename, convert_missing=convert_missing, **kwargs)
+
+        if test_filename.endswith('.nas'):
+            return read_gml_aerosol(filename, **kwargs)
 
         result = re.match(r'([a-z]{3})([\d]{5}).dat', test_filename)
         if result is not None:
@@ -124,7 +128,7 @@ def read_gml_halo(filename, **kwargs):
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     **kwargs : keywords
         Keywords to pass through to ACT read_csv() routine.
@@ -325,7 +329,7 @@ def read_gml_co2(filename=None, convert_missing=True, **kwargs):
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     **kwargs : keywords
         Keywords to pass through to ACT read_csv() routine.
@@ -509,7 +513,7 @@ def read_gml_ozone(filename=None, **kwargs):
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
 
     """
@@ -584,7 +588,7 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     """
 
@@ -804,7 +808,7 @@ def read_gml_radiation(filename=None, convert_missing=True, remove_time_vars=Tru
         ds['alt'] = xr.DataArray(
             alt,
             attrs={
-                'long_name': 'Latitude',
+                'long_name': 'Altitude',
                 'units': alt_unit,
                 'standard_name': 'altitude',
             },
@@ -900,7 +904,7 @@ def read_gml_met(filename=None, convert_missing=True, **kwargs):
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
     """
 
@@ -1051,10 +1055,14 @@ def read_surfrad(filename, **kwargs):
     Returns
     -------
     ds : xarray.Dataset
-        Standard ARM Xarray dataset with the data cleaned up to have units,
+        Standard ACT Xarray dataset with the data cleaned up to have units,
         long_name, correct type and some other stuff.
 
     """
+
+    ds = None
+    if filename is None:
+        return ds
 
     names = [
         'year',
@@ -1271,5 +1279,237 @@ def read_surfrad(filename, **kwargs):
         ds['qc_' + v].attrs = atts
 
     ds.attrs['datastream'] = 'SURFRAD Site: ' + filename[0].split('/')[-1][0:3]
+
+    return ds
+
+
+def read_gml_aerosol(filename, **kwargs):
+    """
+    Function to read aerosol data from NOAA GML.
+
+    Parameters
+    ----------
+    filename : str or pathlib.Path
+        Data file full path name.
+
+    Returns
+    -------
+    ds : xarray.Dataset
+        Standard ACT Xarray dataset with the data cleaned up to have units,
+        long_name, correct type and some other stuff.
+    **kwargs : keywords
+        Keywords to pass through to ACT read_csv() routine.
+
+    """
+    ds = None
+    if filename is None:
+        return ds
+
+    if not isinstance(filename, list):
+        filename = [filename]
+
+    skiprows = 0
+    names = None
+    startdate = None
+    lat = None
+    lon = None
+    alt = None
+    height = None
+    station = None
+    station_code = None
+    station_gaw_id = None
+    missing_value = None
+    matrix = None
+    instrument_type = None
+    inlet_type = None
+    with open(filename[0]) as fc:
+        while True:
+            line = fc.readline().strip()
+            if line.startswith('Startdate:'):
+                startdate = line.split()[-1].strip()
+            if line.startswith('Measurement latitude:'):
+                lat = float(line.split()[-1].strip())
+            if line.startswith('Measurement longitude:'):
+                lon = float(line.split()[-1].strip())
+            if line.startswith('Measurement altitude:'):
+                alt = float(line.split()[-1].strip().replace('m', ''))
+            if line.startswith('Measurement height:'):
+                height = float(line.split()[-1].strip().replace('m', ''))
+            if line.startswith('Station GAW-Name:'):
+                station = line.split(":")[-1].strip()
+            if line.startswith('Station code:'):
+                station_code = line.split(":")[-1].strip()
+            if line.startswith('Station GAW-ID:'):
+                station_gaw_id = line.split(":")[-1].strip()
+            if line.startswith('Matrix:'):
+                matrix = line.split(":")[-1].strip()
+            if line.startswith('Instrument type:'):
+                instrument_type = line.split(":")[-1].strip()
+            if line.startswith('Inlet type:'):
+                inlet_type = line.split(":")[-1].strip()
+            if line.startswith('9999.999999'):
+                missing_value = line.split()
+            if line.startswith('start_time'):
+                names = line.split()
+                skiprows += 1
+                break
+
+            skiprows += 1
+
+    missing_value = list(set(missing_value))
+
+    for i, f in enumerate(filename):
+        new_df = pd.read_csv(
+            f, names=names, skiprows=skiprows, delimiter=r'\s+', na_values=missing_value
+        )
+        if i == 0:
+            df = new_df
+        else:
+            df = pd.concat([df, new_df])
+
+    # Create time variable and add as the coordinate. There is a start and end time
+    # for each time step. Pick a value in the middle.
+    ds = df.to_xarray()
+    startdate = np.datetime64(datetime.strptime(startdate, '%Y%m%d%H%M%S'))
+    startdate = startdate.astype('datetime64[s]')
+    start_time = ds['start_time'].values * 24.0 * 60.0 * 60.0
+    end_time = ds['end_time'].values * 24.0 * 60.0 * 60.0
+    time = (end_time + start_time) / 2.0
+    time = np.round(time / 10.0) * 10.0
+    time = startdate + time.astype(int)
+    ds = ds.assign_coords(index=time)
+    ds = ds.rename(index='time')
+
+    del ds['start_time']
+    del ds['end_time']
+
+    ds['lat'] = xr.DataArray(
+        lat,
+        attrs={
+            'long_name': 'Latitude',
+            'units': 'degree_north',
+            'standard_name': 'latitude',
+        },
+    )
+    ds['lon'] = xr.DataArray(
+        lon,
+        attrs={
+            'long_name': 'Longitude',
+            'units': 'degree_east',
+            'standard_name': 'longitude',
+        },
+    )
+    ds['alt'] = xr.DataArray(
+        alt,
+        attrs={
+            'long_name': 'Altitude',
+            'units': 'm',
+            'standard_name': 'altitude',
+        },
+    )
+    ds.attrs['height'] = height
+    ds.attrs['Station_GAW-Name'] = station
+    ds.attrs['Station_code'] = station_code
+    ds.attrs['Station_GAW-ID'] = station_gaw_id
+    ds.attrs['Matrix'] = matrix
+    ds.attrs['Instrument type'] = instrument_type
+    ds.attrs['Inlet type'] = inlet_type
+
+    # Add attributes
+    attrs = {
+        'p_int': {
+            'long_name': 'Atmospheric pressure',
+            'units': 'hPa',
+        },
+        'T_int': {
+            'long_name': 'Atmospheric temperature',
+            'units': 'K',
+        },
+        'RH_int': {
+            'long_name': 'Atmospheric relative humidity',
+            'units': '%',
+        },
+        'sc450': {
+            'long_name': 'Aerosol light scattering coefficient at 450 nm',
+            'units': '1/Mm',
+        },
+        'sc550': {
+            'long_name': 'Aerosol light scattering coefficient at 550 nm',
+            'units': '1/Mm',
+        },
+        'sc700': {
+            'long_name': 'Aerosol light scattering coefficient at 700 nm',
+            'units': '1/Mm',
+        },
+        'bsc450': {
+            'long_name': 'Aerosol light backscattering coefficient at 450 nm',
+            'units': '1/Mm',
+        },
+        'bsc550': {
+            'long_name': 'Aerosol light backscattering coefficient at 550 nm',
+            'units': '1/Mm',
+        },
+        'bsc700': {
+            'long_name': 'Aerosol light backscattering coefficient at 700 nm',
+            'units': '1/Mm',
+        },
+        'sc450pc16': {
+            'long_name': 'Aerosol light scattering coefficient at 450 nm percentile:15.87',
+            'units': '1/Mm',
+        },
+        'sc550pc16': {
+            'long_name': 'Aerosol light scattering coefficient at 550 nm percentile:15.87',
+            'units': '1/Mm',
+        },
+        'sc700pc16': {
+            'long_name': 'Aerosol light scattering coefficient at 700 nm percentile:15.87',
+            'units': '1/Mm',
+        },
+        'bsc450pc16': {
+            'long_name': 'Aerosol light backscattering coefficient at 450 nm percentile:15.87',
+            'units': '1/Mm',
+        },
+        'bsc550pc16': {
+            'long_name': 'Aerosol light backscattering coefficient at 550 nm percentile:15.87',
+            'units': '1/Mm',
+        },
+        'bsc700pc16': {
+            'long_name': 'Aerosol light backscattering coefficient at 700 nm percentile:15.87',
+            'units': '1/Mm',
+        },
+        'sc450pc84': {
+            'long_name': 'Aerosol light scattering coefficient at 450 nm percentile:84.13',
+            'units': '1/Mm',
+        },
+        'sc550pc84': {
+            'long_name': 'Aerosol light scattering coefficient at 550 nm percentile:84.13',
+            'units': '1/Mm',
+        },
+        'sc700pc84': {
+            'long_name': 'Aerosol light scattering coefficient at 700 nm percentile:84.13',
+            'units': '1/Mm',
+        },
+        'bsc450pc84': {
+            'long_name': 'Aerosol light backscattering coefficient at 450 nm percentile:84.13',
+            'units': '1/Mm',
+        },
+        'bsc550pc84': {
+            'long_name': 'Aerosol light backscattering coefficient at 550 nm percentile:84.13',
+            'units': '1/Mm',
+        },
+        'bsc700pc84': {
+            'long_name': 'Aerosol light backscattering coefficient at 700 nm percentile:84.13',
+            'units': '1/Mm',
+        },
+        'numflag': {
+            'long_name': 'Numflag',
+            'units': '1',
+        },
+    }
+
+    # Apply attributes to variables
+    for v in ds:
+        if v in attrs:
+            ds[v].attrs = attrs[v]
 
     return ds
