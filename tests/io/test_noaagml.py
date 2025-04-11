@@ -132,7 +132,7 @@ def test_read_surfrad():
 
 def test_read_gml_aerosol():
     for datatype in ['AEROSOL', 'aerosol', None]:
-        ds = read_gml(sample_files.EXAMPLE_GML_AEROSOL_NAS, datatype='AEROSOL')
+        ds = read_gml(sample_files.EXAMPLE_GML_AEROSOL_NAS, datatype=datatype)
 
         assert np.all(
             ds['time'].values[:3]
