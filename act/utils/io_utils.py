@@ -355,9 +355,9 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
 
                         duration += 0.1
 
-                    clip = clip.set_start(0)
-                    clip = clip.set_duration(duration)
-                    clip = clip.set_end(duration)
+                    clip = clip.with_start(0)
+                    clip = clip.with_duration(duration)
+                    clip = clip.with_end(duration)
                     clip.write_videofile(str(write_filename), **kwargs)
 
             else:
