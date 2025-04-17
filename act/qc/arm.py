@@ -349,9 +349,11 @@ def print_dqr(
                 print('\n')
                 print('\033[1m' + 'Description:' + '\033[0m')
                 [print(t) for t in textwrap.wrap(description, width=100)]
-                print('\n')
-                print('\033[1m' + 'Suggestions:' + '\033[0m')
-                [print(t) for t in textwrap.wrap(suggestions, width=100)]
+                if suggestions is not None:
+                    print('\n')
+                    print('\033[1m' + 'Suggestions:' + '\033[0m')
+                    [print(t) for t in textwrap.wrap(suggestions, width=100)]
+
                 print('\n')
                 print('\033[1m' + 'Variables:' + '\033[0m')
                 [print('    ', v) for v in variables]
@@ -361,6 +363,8 @@ def print_dqr(
                 [print('\t', d['start_date'], '\t', d['end_date']) for d in dates]
                 print('-' * 100)
             else:
+                if suggestions is None:
+                    suggestions = 'None'
                 text = ','.join(
                     [dqr_number, datastream, quality_category, subject, description, suggestions]
                 )
