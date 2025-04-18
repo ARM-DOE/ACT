@@ -8,6 +8,7 @@ import datetime as dt
 import numpy as np
 import requests
 import json
+import textwrap
 from dateutil import parser
 
 from act.config import DEFAULT_DATASTREAM_NAME
@@ -254,3 +255,134 @@ def add_dqr_to_qc(
                 ds.clean.normalize_assessment(variables=var_name)
 
     return ds
+
+
+def print_dqr(
+    datastream,
+    start_date,
+    end_date,
+    variable=None,
+    assessment='incorrect,suspect',
+    pretty_print=True,
+):
+    """
+    Function to query the ARM DQR web service for reports and
+    print the information out in a "pretty" format or in a format
+    conducive for pasting into a spreadsheet.
+
+    Information about the DQR web-service avaible at
+    https://adc.arm.gov/dqrws/
+
+    Parameters
+    ----------
+    datastream : string
+        Datastream name to query the API for.  Example: sgpmetE13.b1
+    start_date : string
+        Start date for querying DQR start dates in YYYYMMDD format.  Example: 20240101
+    end_date : string
+        End date for querying DQR start dates in YYYYMMDD format.  Example: 20240101
+    variable : string
+        Variable to query DQRs for.  Will only print out DQRs with similar matches.
+    assessment : string
+        assessment type to get DQRs. Current options include
+        'missing', 'suspect', 'incorrect' or any combination separated
+        by a comma.
+    pretty_print : boolean
+        Set to print out in a "pretty" format that is easy to read as default.
+        Set to False will print DQR information out in a format that can be pasted
+        into a spreadsheet and converted to columns with a comma delimiter
+
+    Returns
+    -------
+    dqr_results : dict
+        Dictionary of DQR information
+
+    """
+
+    # Create URL
+    url = 'https://dqr-web-service.svcs.arm.gov/dqr_full'
+    url += f"/{datastream}"
+    url += f"/{start_date}/{end_date}"
+    url += f"/{assessment}"
+
+    # Call web service
+    req = requests.get(url)
+
+    # Check status values and raise error if not successful
+    status = req.status_code
+    print(url, status)
+    if status == 400:
+        raise ValueError('Check parameters')
+    if status == 404:
+        raise ValueError('Check parameters - No DQRs found')
+    if status == 500:
+        raise ValueError('DQR Webservice Temporarily Down')
+
+    # Convert from string to dictionary
+    docs = json.loads(req.text)
+
+    # If no DQRs found will not have a key with datastream.
+    # The status will also be 404.
+    try:
+        docs = docs[datastream]
+    except KeyError:
+        return
+
+    # Run through results and print out DQR information
+    dqr_results = {}
+    for quality_category in docs:
+        for dqr_number in docs[quality_category]:
+            subject = docs[quality_category][dqr_number]['subject']
+            description = docs[quality_category][dqr_number]['description']
+            suggestions = docs[quality_category][dqr_number]['suggestions']
+            variables = docs[quality_category][dqr_number]['variables']
+            if variable is not None:
+                if variable not in variables:
+                    continue
+            dates = docs[quality_category][dqr_number]['dates']
+            url = 'https://adc.arm.gov/ArchiveServices/DQRService?dqrid=' + dqr_number
+            if pretty_print:
+                print('\n')
+                print(
+                    '\t'.join(
+                        ['\033[1m' + dqr_number, datastream, quality_category, subject + '\033[0m']
+                    )
+                )
+                print(url)
+                print('\n')
+                print('\033[1m' + 'Description:' + '\033[0m')
+                [print(t) for t in textwrap.wrap(description, width=100)]
+                if suggestions is not None:
+                    print('\n')
+                    print('\033[1m' + 'Suggestions:' + '\033[0m')
+                    [print(t) for t in textwrap.wrap(suggestions, width=100)]
+
+                print('\n')
+                print('\033[1m' + 'Variables:' + '\033[0m')
+                [print('    ', v) for v in variables]
+                print('\n')
+                print('\033[1m' + 'Dates:' + '\033[0m')
+                print('\t', 'Start Date:', '\t\t', 'End Date')
+                [print('\t', d['start_date'], '\t', d['end_date']) for d in dates]
+                print('-' * 100)
+            else:
+                if suggestions is None:
+                    suggestions = 'None'
+                text = ','.join(
+                    [dqr_number, datastream, quality_category, subject, description, suggestions]
+                )
+                text += ',' + ';'.join(variables)
+                text += ','
+                [print(text + ','.join([d['start_date'], d['end_date']])) for d in dates]
+
+            dqr_results[dqr_number] = {
+                'test_assessment': quality_category,
+                'subject': subject,
+                'description': description,
+                'suggestions': suggestions,
+                'variables': docs[quality_category][dqr_number]['variables'],
+                'dates': dates,
+            }
+
+    # Return base information if needed
+    return dqr_results
