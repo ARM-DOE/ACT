@@ -34,9 +34,9 @@ def test_get_attr_info():
 
 
 def test_print_dqr():
-    dqr = print_dqr('sgpmetE13.b1', '2023-01-01', '2024-01-01', variable='pwd_cumul_rain')
+    dqr = print_dqr('sgpmetE13.b1', '20230101', '20240101', variable='pwd_cumul_rain')
     assert 'D231114.33' in dqr
     assert 'pwd_cumul_rain' in dqr['D231114.33']['variables']
 
     with np.testing.assert_raises(ValueError):
-        dqr = print_dqr('spmetE13.b1', '2023-01-01', '2024-01-01', variable='pwd_cumul_rain')
+        dqr = print_dqr('spmetE13.b1', '20230101', '20240101', variable='pwd_cumul_rain')
