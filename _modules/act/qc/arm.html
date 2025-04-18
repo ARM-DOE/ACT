@@ -430,6 +430,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dateutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">parser</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">act.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
@@ -676,6 +677,137 @@
                 <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">normalize_assessment</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">var_name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
+
+
+<div class="viewcode-block" id="print_dqr"><a class="viewcode-back" href="../../../API/generated/act.qc.print_dqr.html#act.qc.print_dqr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">print_dqr</span><span class="p">(</span>
+    <span class="n">datastream</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="p">,</span>
+    <span class="n">end_date</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">assessment</span><span class="o">=</span><span class="s1">&#39;incorrect,suspect&#39;</span><span class="p">,</span>
+    <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to query the ARM DQR web service for reports and</span>
+<span class="sd">    print the information out in a &quot;pretty&quot; format or in a format</span>
+<span class="sd">    conducive for pasting into a spreadsheet.</span>
+
+<span class="sd">    Information about the DQR web-service avaible at</span>
+<span class="sd">    https://adc.arm.gov/dqrws/</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datastream : string</span>
+<span class="sd">        Datastream name to query the API for.  Example: sgpmetE13.b1</span>
+<span class="sd">    start_date : string</span>
+<span class="sd">        Start date for querying DQR start dates in YYYYMMDD format.  Example: 20240101</span>
+<span class="sd">    end_date : string</span>
+<span class="sd">        End date for querying DQR start dates in YYYYMMDD format.  Example: 20240101</span>
+<span class="sd">    variable : string</span>
+<span class="sd">        Variable to query DQRs for.  Will only print out DQRs with similar matches.</span>
+<span class="sd">    assessment : string</span>
+<span class="sd">        assessment type to get DQRs. Current options include</span>
+<span class="sd">        &#39;missing&#39;, &#39;suspect&#39;, &#39;incorrect&#39; or any combination separated</span>
+<span class="sd">        by a comma.</span>
+<span class="sd">    pretty_print : boolean</span>
+<span class="sd">        Set to print out in a &quot;pretty&quot; format that is easy to read as default.</span>
+<span class="sd">        Set to False will print DQR information out in a format that can be pasted</span>
+<span class="sd">        into a spreadsheet and converted to columns with a comma delimiter</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dqr_results : dict</span>
+<span class="sd">        Dictionary of DQR information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create URL</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://dqr-web-service.svcs.arm.gov/dqr_full&#39;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">end_date</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">assessment</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Call web service</span>
+    <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="c1"># Check status values and raise error if not successful</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">status_code</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Check parameters&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Check parameters - No DQRs found&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;DQR Webservice Temporarily Down&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convert from string to dictionary</span>
+    <span class="n">docs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># If no DQRs found will not have a key with datastream.</span>
+    <span class="c1"># The status will also be 404.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">docs</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">datastream</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Run through results and print out DQR information</span>
+    <span class="n">dqr_results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">quality_category</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">dqr_number</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">]:</span>
+            <span class="n">subject</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+            <span class="n">suggestions</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;suggestions&#39;</span><span class="p">]</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;variables&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="n">dates</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;dates&#39;</span><span class="p">]</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://adc.arm.gov/ArchiveServices/DQRService?dqrid=&#39;</span> <span class="o">+</span> <span class="n">dqr_number</span>
+            <span class="k">if</span> <span class="n">pretty_print</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span> <span class="o">+</span> <span class="n">dqr_number</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">quality_category</span><span class="p">,</span> <span class="n">subject</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span> <span class="o">+</span> <span class="s1">&#39;Description:&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="p">)</span>
+                <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">suggestions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span> <span class="o">+</span> <span class="s1">&#39;Suggestions:&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="p">)</span>
+                    <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">suggestions</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)]</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span> <span class="o">+</span> <span class="s1">&#39;Variables:&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="p">)</span>
+                <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    &#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span> <span class="o">+</span> <span class="s1">&#39;Dates:&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;Start Date:&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;End Date&#39;</span><span class="p">)</span>
+                <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;start_date&#39;</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;end_date&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">suggestions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">suggestions</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">dqr_number</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">quality_category</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">suggestions</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span>
+                <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">text</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;start_date&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;end_date&#39;</span><span class="p">]]))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]</span>
+
+            <span class="n">dqr_results</span><span class="p">[</span><span class="n">dqr_number</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;test_assessment&#39;</span><span class="p">:</span> <span class="n">quality_category</span><span class="p">,</span>
+                <span class="s1">&#39;subject&#39;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+                <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+                <span class="s1">&#39;suggestions&#39;</span><span class="p">:</span> <span class="n">suggestions</span><span class="p">,</span>
+                <span class="s1">&#39;variables&#39;</span><span class="p">:</span> <span class="n">docs</span><span class="p">[</span><span class="n">quality_category</span><span class="p">][</span><span class="n">dqr_number</span><span class="p">][</span><span class="s1">&#39;variables&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;dates&#39;</span><span class="p">:</span> <span class="n">dates</span><span class="p">,</span>
+            <span class="p">}</span>
+
+    <span class="c1"># Return base information if needed</span>
+    <span class="k">return</span> <span class="n">dqr_results</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    
