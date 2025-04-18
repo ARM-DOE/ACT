@@ -310,7 +310,6 @@ def print_dqr(
 
     # Check status values and raise error if not successful
     status = req.status_code
-    print(url, status)
     if status == 400:
         raise ValueError('Check parameters')
     if status == 404:
