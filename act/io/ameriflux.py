@@ -2,10 +2,333 @@
 This module contains I/O operations for the U.S. Department of Energy
 AmeriFlux program (https://ameriflux.lbl.gov/).
 """
+import re
+from collections import defaultdict
+import warnings
 
 import numpy as np
 import pandas as pd
-import warnings
+import xarray as xr
+
+
+def read_ameriflux_base_badm(filename, metadata_filename=None, rename_vars_dict=None):
+    """
+    Returns `xarray.Dataset` with stored data and possible metadata from a user-defined
+    Ameriflux BASE BADM csv file and metadata excel files for a single datastream.
+
+    Parameters
+    ----------
+    filename : str
+        Filename of Ameriflux BASE BADM dataset
+    metadata_filename : str
+        Excel file usually provided with Ameriflux dataset that contains the data's metadata.
+        Default is None.
+    rename_vars_dict : dict
+        A dictionary containing current variable names and new variable names to replace
+        the current variable names.
+
+    Returns
+    -------
+    ds : xarray.Dataset (or None)
+        ACT Xarray dataset (or None if no data file(s) found).
+
+    """
+    variable_units_dict = {
+        'COND_WATER': 'S cm-1',
+        'DO': 'mol L-1',
+        'PCH4': 'nmolCH4 mol-1',
+        'PCO2': 'molCO2 mol-1',
+        'PN2O': 'nmolN2O mol-1',
+        'PPFD_UW_IN': 'molPhotons m-2 s-1',
+        'TW': 'deg C',
+        'DBH': 'cm',
+        'LEAF_WET': '%',
+        'SAP_DT': 'deg C',
+        'SAP_FLOW': 'mmolH2O m-2 s-1',
+        'T_BOLE': 'deg C',
+        'T_CANOPY': 'deg C',
+        'FETCH_70': 'm',
+        'FETCH_80': 'm',
+        'FETCH_90': 'm',
+        'FETCH_FILTER': 'nondimensional',
+        'FETCH_MAX': 'm',
+        'CH4': 'nmolCH4 mol-1',
+        'CH4_MIXING_RATIO': 'nmolCH4 mol-1',
+        'CO': 'nmolCO mol-1',
+        'CO2': 'molCO2 mol-1',
+        'CO2_MIXING_RATIO': 'molCO2 mol-1',
+        'CO2_SIGMA': 'molCO2 mol-1',
+        'CO2C13': '(permil)',
+        'FC': 'molCO2 m-2 s-1',
+        'FCH4': 'nmolCH4 m-2 s-1',
+        'FN2O': 'nmolN2O m-2 s-1',
+        'FNO': 'nmolNO m-2 s-1',
+        'FNO2': 'nmolNO2 m-2 s-1',
+        'FO3': 'nmolO3 m-2 s-1',
+        'H2O': 'mmolH2O mol-1',
+        'H2O_MIXING_RATIO': 'mmolH2O mol-1',
+        'H2O_SIGMA': 'mmolH2O mol-1',
+        'N2O': 'nmolN2O mol-1',
+        'N2O_MIXING_RATIO': 'nmolN2O mol-1',
+        'NO': 'nmolNO mol-1',
+        'NO2': 'nmolNO2 mol-1',
+        'O3': 'nmolO3 mol-1',
+        'SC': 'molCO2 m-2 s-1',
+        'SCH4': 'nmolCH4 m-2 s-1',
+        'SN2O': 'nmolN2O m-2 s-1',
+        'SNO': 'nmolNO m-2 s-1',
+        'SNO2': 'nmolNO2 m-2 s-1',
+        'SO2': 'nmolSO2 mol-1',
+        'SO3': 'nmolO3 m-2 s-1',
+        'FH2O': 'mmolH2O m-2 s-1',
+        'G': 'W m-2',
+        'H': 'W m-2',
+        'LE': 'W m-2',
+        'SB': 'W m-2',
+        'SG': 'W m-2',
+        'SH': 'W m-2',
+        'SLE': 'W m-2',
+        'PA': 'kPa',
+        'PBLH': 'm',
+        'RH': '%',
+        'T_SONIC': 'deg C',
+        'T_SONIC_SIGMA': 'deg C',
+        'TA': 'deg C',
+        'VPD': 'hPa',
+        'D_SNOW': 'cm',
+        'P': 'mm',
+        'P_RAIN': 'mm',
+        'P_SNOW': 'mm',
+        'RUNOFF': 'mm',
+        'STEMFLOW': 'mm',
+        'THROUGHFALL': 'mm',
+        'ALB': '%',
+        'APAR': 'molPhoton m-2 s-1',
+        'EVI': 'nondimensional',
+        'FAPAR': '%',
+        'FIPAR': '%',
+        'LW_BC_IN': 'W m-2',
+        'LW_BC_OUT': 'W m-2',
+        'LW_IN': 'W m-2',
+        'LW_OUT': 'W m-2',
+        'MCRI': 'nondimensional',
+        'MTCI': 'nondimensional',
+        'NDVI': 'nondimensional',
+        'NETRAD': 'W m-2',
+        'NIRV': 'W m-2 sr-1 nm-1',
+        'PPFD_BC_IN': 'molPhoton m-2 s-1',
+        'PPFD_BC_OUT': 'molPhoton m-2 s-1',
+        'PPFD_DIF': 'molPhoton m-2 s-1',
+        'PPFD_DIR': 'molPhoton m-2 s-1',
+        'PPFD_IN': 'molPhoton m-2 s-1',
+        'PPFD_OUT': 'molPhoton m-2 s-1',
+        'PRI': 'nondimensional',
+        'R_UVA': 'W m-2',
+        'R_UVB': 'W m-2',
+        'REDCI': 'nondimensional',
+        'REP': 'nm',
+        'SPEC_NIR_IN': 'W m-2 nm-1',
+        'SPEC_NIR_OUT': 'W m-2 sr-1 nm-1',
+        'SPEC_NIR_REFL': 'nondimensional',
+        'SPEC_PRI_REF_IN': 'W m-2 nm-1',
+        'SPEC_PRI_REF_OUT': 'W m-2 sr-1 nm-1',
+        'SPEC_PRI_REF_REFL': 'nondimensional',
+        'SPEC_PRI_TGT_IN': 'W m-2 nm-1',
+        'SPEC_PRI_TGT_OUT': 'W m-2 sr-1 nm-1',
+        'SPEC_PRI_TGT_REFL': 'nondimensional',
+        'SPEC_RED_IN': 'W m-2 nm-1',
+        'SPEC_RED_OUT': 'W m-2 sr-1 nm-1',
+        'SPEC_RED_REFL': 'nondimensional',
+        'SR': 'nondimensional',
+        'SW_BC_IN': 'W m-2',
+        'SW_BC_OUT': 'W m-2',
+        'SW_DIF': 'W m-2',
+        'SW_DIR': 'W m-2',
+        'SW_IN': 'W m-2',
+        'SW_OUT': 'W m-2',
+        'TCARI': 'nondimensional',
+        'SWC': '%',
+        'SWP': 'kPa',
+        'TS': 'deg C',
+        'TSN': 'deg C',
+        'WTD': 'm',
+        'MO_LENGTH': 'm',
+        'TAU': 'kg m-1 s-2',
+        'U_SIGMA': 'm s-1',
+        'USTAR': 'm s-1',
+        'V_SIGMA': 'm s-1',
+        'W_SIGMA': 'm s-1',
+        'WD': 'Decimal degrees',
+        'WD_SIGMA': 'decimal degree',
+        'WS': 'm s-1',
+        'WS_MAX': 'm s-1',
+        'ZL': 'nondimensional',
+        'GPP': 'molCO2 m-2 s-1',
+        'NEE': 'molCO2 m-2 s-1',
+        'RECO': 'molCO2 m-2 s-1',
+        'FC_SSITC_TEST': 'nondimensional',
+        'FCH4_SSITC_TEST': 'nondimensional',
+        'FN2O_SSITC_TEST': 'nondimensional',
+        'FNO_SSITC_TEST': 'nondimensional',
+        'FNO2_SSITC_TEST': 'nondimensional',
+        'FO3_SSITC_TEST': 'nondimensional',
+        'H_SSITC_TEST': 'nondimensional',
+        'LE_SSITC_TEST': 'nondimensional',
+        'TAU_SSITC_TEST': 'nondimensional',
+    }
+    metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
+    site = metadata.loc['# Site']
+    version = metadata.loc['# Version']
+    _format = "%Y%m%d%H%M"
+    df = pd.read_csv(filename, skiprows=2)
+    key = 'TIMESTAMP_START'
+    df['time'] = pd.to_datetime(df[key], format=_format)
+    df = df.set_index('time')
+    df = df.drop(columns=['TIMESTAMP_START', 'TIMESTAMP_END'])
+    ds = xr.Dataset.from_dataframe(df)
+    if rename_vars_dict is not None:
+        ds = ds.rename_vars(rename_vars_dict)
+
+    ds.attrs['site'] = site.values[0].strip()
+    ds.attrs['version'] = version.values[0].strip()
+
+    # Add _FILL_VALUE attribute
+    for key in ds.variables.keys():
+        if -9999.0 in ds.variables[key].values or -9999 in ds.variables[key].values:
+            ds.variables[key].attrs['_FILL_VALUE'] = -9999
+
+    # Add nans where fill value is present
+    ds = ds.where(ds != -9999.0)
+
+    # Add units from the unit dictionary
+    # Matches keys that have different levels as well such as SWC_1_1_1
+    for key in ds.variables.keys():
+        try:
+            if re.match(r'TS_[\d]', key):
+                unit_key = 'TS'
+                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
+            elif re.match(r'SWC_[\d]', key):
+                unit_key = 'SWC'
+                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
+            elif re.match(r'G_[\d]', key):
+                unit_key = 'G'
+                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
+            elif re.match(r'VPD_', key):
+                unit_key = 'VPD'
+                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
+            else:
+                ds.variables[key].attrs['units'] = variable_units_dict[key]
+        except KeyError:
+            continue
+
+    # Read in metadata excel file if provided.
+    if metadata_filename is not None:
+        meta_df = pd.read_excel(metadata_filename)
+
+        # Create a list for attributes and their respective values
+        meta_key_list = meta_df['VARIABLE'].to_list()
+        meta_value_list = meta_df['DATAVALUE'].to_list()
+
+        # Add attrs that are non duplicates as duplicates require more processing below
+        non_duplicates = [item for item in meta_key_list if meta_key_list.count(item) == 1]
+        data_dict = defaultdict(list)
+        for i, j in zip(meta_key_list, meta_value_list):
+            data_dict[i].append(j)
+        for key in non_duplicates:
+            ds.attrs[key] = data_dict[key][0]
+
+        # The code below to retrieve group metadata was done so that
+        # If the order changes of these attributes, which it can, it will find them regardless
+        # Also checks if a specific attribute is missing for a team member but not others
+        meta_arr = np.array(meta_key_list)
+        # Retrieve team_member metadata
+        team_indices = np.where(meta_arr == 'TEAM_MEMBER_NAME')[0]
+        team_members = {}
+        valid_names = [
+            'TEAM_MEMBER_EMAIL',
+            'TEAM_MEMBER_INSTITUTION',
+            'TEAM_MEMBER_ROLE',
+            'TEAM_MEMBER_ORCID',
+        ]
+        for i, j in enumerate(team_indices):
+            if j == team_indices[-1]:
+                team_info_range = np.arange(team_indices[i], team_indices[i] + 5)
+                team_members[meta_value_list[j]] = {
+                    meta_key_list[k]: meta_value_list[k]
+                    for k in team_info_range
+                    if meta_key_list[k] in valid_names
+                }
+                break
+            else:
+                team_info_range = np.arange(team_indices[i], team_indices[i + 1])
+                team_members[meta_value_list[j]] = {
+                    meta_key_list[k]: meta_value_list[k]
+                    for k in team_info_range
+                    if meta_key_list[k] in valid_names
+                }
+        ds.attrs['team_members'] = team_members
+
+        # Retrieve doi contributor metadata
+        doi_indices = np.where(meta_arr == 'DOI_CONTRIBUTOR_NAME')[0]
+        doi_members = {}
+        valid_doi_names = [
+            'DOI_CONTRIBUTOR_ROLE',
+            'DOI_CONTRIBUTOR_INSTITUTION',
+            'DOI_CONTRIBUTOR_EMAIL',
+            'DOI_CONTRIBUTOR_ORCID',
+        ]
+        for i, j in enumerate(doi_indices):
+            if j == doi_indices[-1]:
+                doi_info_range = np.arange(doi_indices[i], doi_indices[i] + 5)
+                doi_members[meta_value_list[j]] = {
+                    meta_key_list[k]: meta_value_list[k]
+                    for k in doi_info_range
+                    if meta_key_list[k] in valid_doi_names
+                }
+                doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[
+                    j - 1
+                ]
+                break
+            else:
+                doi_info_range = np.arange(doi_indices[i], doi_indices[i + 1])
+                doi_members[meta_value_list[j]] = {
+                    meta_key_list[k]: meta_value_list[k]
+                    for k in doi_info_range
+                    if meta_key_list[k] in valid_doi_names
+                }
+                doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[
+                    j - 1
+                ]
+        ds.attrs['DOI_CONTRIBUTOR_NAME'] = doi_members
+
+        # Retrieve flux method metadata
+        flux_indices = np.where(meta_arr == 'FLUX_MEASUREMENTS_VARIABLE')[0]
+        flux_members = {}
+        valid_flux_names = ['FLUX_MEASUREMENTS_DATE_START', 'FLUX_MEASUREMENTS_OPERATIONS']
+        for i, j in enumerate(flux_indices):
+            if j == flux_indices[-1]:
+                flux_info_range = np.arange(flux_indices[i], flux_indices[i] + 5)
+                flux_members[meta_value_list[j]] = {
+                    meta_key_list[k]: meta_value_list[k]
+                    for k in flux_info_range
+                    if meta_key_list[k] in valid_flux_names
+                }
+                flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[
+                    j - 1
+                ]
+                break
+            else:
+                flux_info_range = np.arange(flux_indices[i], flux_indices[i + 1])
+                flux_members[meta_value_list[j]] = {
+                    meta_key_list[k]: meta_value_list[k]
+                    for k in flux_info_range
+                    if meta_key_list[k] in valid_flux_names
+                }
+                flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[
+                    j - 1
+                ]
+        ds.attrs['FLUX_MEASUREMENTS_VARIABLE'] = flux_members
+    return ds
 
 
 def convert_to_ameriflux(
