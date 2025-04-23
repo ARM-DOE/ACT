@@ -249,7 +249,8 @@ def read_ameriflux(
 
     # Add units from the unit dictionary
     # Matches keys that have different levels as well such as SWC_1_1_1
-    if variable_units_dict is None:
+    # Only works for base dataset
+    if variable_units_dict is None and data_type.lower() == 'base':
         for key in ds.variables.keys():
             try:
                 if re.match(r'TS_[\d]', key):
