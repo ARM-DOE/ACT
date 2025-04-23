@@ -307,6 +307,7 @@ def _ameriflux_metadata_processing(ds, metadata_filename):
         'TEAM_MEMBER_INSTITUTION',
         'TEAM_MEMBER_ROLE',
         'TEAM_MEMBER_ORCID',
+        'TEAM_MEMBER_ADDRESS',
     ]
     for i, j in enumerate(team_indices):
         if j == team_indices[-1]:
@@ -334,6 +335,8 @@ def _ameriflux_metadata_processing(ds, metadata_filename):
         'DOI_CONTRIBUTOR_INSTITUTION',
         'DOI_CONTRIBUTOR_EMAIL',
         'DOI_CONTRIBUTOR_ORCID',
+        'DOI_CONTRIBUTOR_DATE_START',
+        'DOI_CONTRIBUTOR_DATE_END',
     ]
     for i, j in enumerate(doi_indices):
         if j == doi_indices[-1]:
@@ -358,7 +361,11 @@ def _ameriflux_metadata_processing(ds, metadata_filename):
     # Retrieve flux method metadata
     flux_indices = np.where(meta_arr == 'FLUX_MEASUREMENTS_VARIABLE')[0]
     flux_members = {}
-    valid_flux_names = ['FLUX_MEASUREMENTS_DATE_START', 'FLUX_MEASUREMENTS_OPERATIONS']
+    valid_flux_names = [
+        'FLUX_MEASUREMENTS_DATE_START',
+        'FLUX_MEASUREMENTS_DATE_END',
+        'FLUX_MEASUREMENTS_OPERATIONS',
+    ]
     for i, j in enumerate(flux_indices):
         if j == flux_indices[-1]:
             flux_info_range = np.arange(flux_indices[i], flux_indices[i] + 5)
