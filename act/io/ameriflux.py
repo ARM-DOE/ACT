@@ -194,21 +194,38 @@ def read_ameriflux(
         'LE_SSITC_TEST': 'nondimensional',
         'TAU_SSITC_TEST': 'nondimensional',
     }
-
+    # Reader section for BASE BADM datasets
+    # Differs from fluxnet as there is metadata in the first few lines
+    # of the csv file.
     if data_type.lower() == 'base':
+        # Grab site and version metadata
         metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
         site = metadata.loc['# Site']
         version = metadata.loc['# Version']
+
+        # Files are hourly, set the time format
         _format = "%Y%m%d%H%M"
+
+        # Read in actual data
         df = pd.read_csv(filename, skiprows=2)
+
+        # Set time and format time to datetime64
         key = 'TIMESTAMP_START'
         df['time'] = pd.to_datetime(df[key], format=_format)
         df = df.set_index('time')
         df = df.drop(columns=['TIMESTAMP_START', 'TIMESTAMP_END'])
+
+        # Convert dataframe to xarray dataset
         ds = xr.Dataset.from_dataframe(df)
+
+        # Add site and version to attributes
         ds.attrs['site'] = site.values[0].strip()
         ds.attrs['version'] = version.values[0].strip()
+
+    # Reader for fluxnet files
+    # Fluxnet files can be formatted in different time samplings
     elif data_type.lower() == 'fluxnet':
+        # Checks timestep in filename, if not, will check timestep parameter
         if 'YY' in filename or timestep == 'year':
             _format = "%Y"
         elif 'MM' in filename or timestep == 'month':
@@ -222,7 +239,10 @@ def read_ameriflux(
                 "Incorrect timestep provided or no timestep determined from filename, "
                 "please provide either year, month, week, day or hour for the timestep parameter."
             )
+        # Read data into a pandas dataframe
         df = pd.read_csv(filename)
+
+        # Set time and convert to datetime64
         if 'TIMESTAMP_START' in df:
             key = 'TIMESTAMP_START'
             df['time'] = pd.to_datetime(df[key], format=_format)
@@ -234,8 +254,10 @@ def read_ameriflux(
             df = df.set_index('time')
             df = df.drop(columns=[key])
 
+        # Convert to xarray dataset
         ds = xr.Dataset.from_dataframe(df)
 
+    # Renames variables if user provides new names
     if rename_vars_dict is not None:
         ds = ds.rename_vars(rename_vars_dict)
 
@@ -273,6 +295,7 @@ def read_ameriflux(
         for key in ds.variables.keys():
             ds.variables[key].attrs['units'] = variable_units_dict[key]
 
+    # Adds metadata to the dataset if a metadata file is provided
     if metadata_filename is not None:
         ds = _ameriflux_metadata_processing(ds, metadata_filename)
 
