@@ -11,29 +11,47 @@ import pandas as pd
 import xarray as xr
 
 
-def read_ameriflux_base_badm(filename, metadata_filename=None, rename_vars_dict=None):
+def read_ameriflux(
+    filename,
+    metadata_filename=None,
+    data_type='base',
+    timestep=None,
+    rename_vars_dict=None,
+    variable_units_dict=None,
+):
     """
-    Returns `xarray.Dataset` with stored data and possible metadata from a user-defined
-    Ameriflux BASE BADM csv file and metadata excel files for a single datastream.
+    Returns `xarray.Dataset` with stored data from FLUXNET or BASE-BADM and
+    possible metadata from a user-defined metadata excel files for a single datastream.
 
     Parameters
     ----------
     filename : str
-        Filename of Ameriflux BASE BADM dataset
+        Filename of Ameriflux dataset
     metadata_filename : str
         Excel file usually provided with Ameriflux dataset that contains the data's metadata.
         Default is None.
+    data_type : str
+        Type of data file to be read. Valid options are 'fluxnet' and 'base'.
+    timestep : str
+        Timestep of data, this parameter is only used for 'fluxnet' data types and if
+        the time format can't be determined by the filename.
+        Default is None, options are 'year', 'month', 'week', 'day', and 'hour'.
     rename_vars_dict : dict
         A dictionary containing current variable names and new variable names to replace
         the current variable names.
+        Default is None and variables are not renamed.
+    variable_units_dict : dict
+        A dictionary containing current variable names and units to be added to that variable.
+        Default is None and uses current units from Ameriflux's unit database.
+
 
     Returns
     -------
-    ds : xarray.Dataset (or None)
-        ACT Xarray dataset (or None if no data file(s) found).
+    ds : xarray.Dataset
+        ACT Xarray dataset.
 
     """
-    variable_units_dict = {
+    default_units_dict = {
         'COND_WATER': 'S cm-1',
         'DO': 'mol L-1',
         'PCH4': 'nmolCH4 mol-1',
@@ -176,21 +194,50 @@ def read_ameriflux_base_badm(filename, metadata_filename=None, rename_vars_dict=
         'LE_SSITC_TEST': 'nondimensional',
         'TAU_SSITC_TEST': 'nondimensional',
     }
-    metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
-    site = metadata.loc['# Site']
-    version = metadata.loc['# Version']
-    _format = "%Y%m%d%H%M"
-    df = pd.read_csv(filename, skiprows=2)
-    key = 'TIMESTAMP_START'
-    df['time'] = pd.to_datetime(df[key], format=_format)
-    df = df.set_index('time')
-    df = df.drop(columns=['TIMESTAMP_START', 'TIMESTAMP_END'])
-    ds = xr.Dataset.from_dataframe(df)
+
+    if data_type.lower() == 'base':
+        metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
+        site = metadata.loc['# Site']
+        version = metadata.loc['# Version']
+        _format = "%Y%m%d%H%M"
+        df = pd.read_csv(filename, skiprows=2)
+        key = 'TIMESTAMP_START'
+        df['time'] = pd.to_datetime(df[key], format=_format)
+        df = df.set_index('time')
+        df = df.drop(columns=['TIMESTAMP_START', 'TIMESTAMP_END'])
+        ds = xr.Dataset.from_dataframe(df)
+        ds.attrs['site'] = site.values[0].strip()
+        ds.attrs['version'] = version.values[0].strip()
+    elif data_type.lower() == 'fluxnet':
+        if 'YY' in filename or timestep == 'year':
+            _format = "%Y"
+        elif 'MM' in filename or timestep == 'month':
+            _format = "%Y%m"
+        elif 'DD' in filename or 'WW' in filename or timestep == 'week' or timestep == 'day':
+            _format = "%Y%m%d"
+        elif 'HH' in filename or timestep == 'day':
+            _format = "%Y%m%d%H%M"
+        else:
+            raise ValueError(
+                "Incorrect timestep provided or no timestep determined from filename, "
+                "please provide either year, month, week, day or hour for the timestep parameter."
+            )
+        df = pd.read_csv(filename)
+        if 'TIMESTAMP_START' in df:
+            key = 'TIMESTAMP_START'
+            df['time'] = pd.to_datetime(df[key], format=_format)
+            df = df.set_index('time')
+            df = df.drop(columns=['TIMESTAMP_START', 'TIMESTAMP_END'])
+        else:
+            key = 'TIMESTAMP'
+            df['time'] = pd.to_datetime(df[key], format=_format)
+            df = df.set_index('time')
+            df = df.drop(columns=[key])
+
+        ds = xr.Dataset.from_dataframe(df)
+
     if rename_vars_dict is not None:
         ds = ds.rename_vars(rename_vars_dict)
-
-    ds.attrs['site'] = site.values[0].strip()
-    ds.attrs['version'] = version.values[0].strip()
 
     # Add _FILL_VALUE attribute
     for key in ds.variables.keys():
@@ -202,132 +249,135 @@ def read_ameriflux_base_badm(filename, metadata_filename=None, rename_vars_dict=
 
     # Add units from the unit dictionary
     # Matches keys that have different levels as well such as SWC_1_1_1
-    for key in ds.variables.keys():
-        try:
-            if re.match(r'TS_[\d]', key):
-                unit_key = 'TS'
-                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
-            elif re.match(r'SWC_[\d]', key):
-                unit_key = 'SWC'
-                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
-            elif re.match(r'G_[\d]', key):
-                unit_key = 'G'
-                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
-            elif re.match(r'VPD_', key):
-                unit_key = 'VPD'
-                ds.variables[key].attrs['units'] = variable_units_dict[unit_key]
-            else:
-                ds.variables[key].attrs['units'] = variable_units_dict[key]
-        except KeyError:
-            continue
+    if variable_units_dict is None:
+        for key in ds.variables.keys():
+            try:
+                if re.match(r'TS_[\d]', key):
+                    unit_key = 'TS'
+                    ds.variables[key].attrs['units'] = default_units_dict[unit_key]
+                elif re.match(r'SWC_[\d]', key):
+                    unit_key = 'SWC'
+                    ds.variables[key].attrs['units'] = default_units_dict[unit_key]
+                elif re.match(r'G_[\d]', key):
+                    unit_key = 'G'
+                    ds.variables[key].attrs['units'] = default_units_dict[unit_key]
+                elif re.match(r'VPD_', key):
+                    unit_key = 'VPD'
+                    ds.variables[key].attrs['units'] = default_units_dict[unit_key]
+                else:
+                    ds.variables[key].attrs['units'] = default_units_dict[key]
+            except KeyError:
+                continue
+    else:
+        for key in ds.variables.keys():
+            ds.variables[key].attrs['units'] = variable_units_dict[key]
 
-    # Read in metadata excel file if provided.
     if metadata_filename is not None:
-        meta_df = pd.read_excel(metadata_filename)
+        ds = ameriflux_metadata_processing(ds, metadata_filename)
 
-        # Create a list for attributes and their respective values
-        meta_key_list = meta_df['VARIABLE'].to_list()
-        meta_value_list = meta_df['DATAVALUE'].to_list()
+    return ds
 
-        # Add attrs that are non duplicates as duplicates require more processing below
-        non_duplicates = [item for item in meta_key_list if meta_key_list.count(item) == 1]
-        data_dict = defaultdict(list)
-        for i, j in zip(meta_key_list, meta_value_list):
-            data_dict[i].append(j)
-        for key in non_duplicates:
-            ds.attrs[key] = data_dict[key][0]
 
-        # The code below to retrieve group metadata was done so that
-        # If the order changes of these attributes, which it can, it will find them regardless
-        # Also checks if a specific attribute is missing for a team member but not others
-        meta_arr = np.array(meta_key_list)
-        # Retrieve team_member metadata
-        team_indices = np.where(meta_arr == 'TEAM_MEMBER_NAME')[0]
-        team_members = {}
-        valid_names = [
-            'TEAM_MEMBER_EMAIL',
-            'TEAM_MEMBER_INSTITUTION',
-            'TEAM_MEMBER_ROLE',
-            'TEAM_MEMBER_ORCID',
-        ]
-        for i, j in enumerate(team_indices):
-            if j == team_indices[-1]:
-                team_info_range = np.arange(team_indices[i], team_indices[i] + 5)
-                team_members[meta_value_list[j]] = {
-                    meta_key_list[k]: meta_value_list[k]
-                    for k in team_info_range
-                    if meta_key_list[k] in valid_names
-                }
-                break
-            else:
-                team_info_range = np.arange(team_indices[i], team_indices[i + 1])
-                team_members[meta_value_list[j]] = {
-                    meta_key_list[k]: meta_value_list[k]
-                    for k in team_info_range
-                    if meta_key_list[k] in valid_names
-                }
-        ds.attrs['team_members'] = team_members
+def ameriflux_metadata_processing(ds, metadata_filename):
+    """Adds metadata to an ameriflux dataset if a metadata file is provided."""
+    # Read in metadata excel file if provided.
+    meta_df = pd.read_excel(metadata_filename)
 
-        # Retrieve doi contributor metadata
-        doi_indices = np.where(meta_arr == 'DOI_CONTRIBUTOR_NAME')[0]
-        doi_members = {}
-        valid_doi_names = [
-            'DOI_CONTRIBUTOR_ROLE',
-            'DOI_CONTRIBUTOR_INSTITUTION',
-            'DOI_CONTRIBUTOR_EMAIL',
-            'DOI_CONTRIBUTOR_ORCID',
-        ]
-        for i, j in enumerate(doi_indices):
-            if j == doi_indices[-1]:
-                doi_info_range = np.arange(doi_indices[i], doi_indices[i] + 5)
-                doi_members[meta_value_list[j]] = {
-                    meta_key_list[k]: meta_value_list[k]
-                    for k in doi_info_range
-                    if meta_key_list[k] in valid_doi_names
-                }
-                doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[
-                    j - 1
-                ]
-                break
-            else:
-                doi_info_range = np.arange(doi_indices[i], doi_indices[i + 1])
-                doi_members[meta_value_list[j]] = {
-                    meta_key_list[k]: meta_value_list[k]
-                    for k in doi_info_range
-                    if meta_key_list[k] in valid_doi_names
-                }
-                doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[
-                    j - 1
-                ]
-        ds.attrs['DOI_CONTRIBUTOR_NAME'] = doi_members
+    # Create a list for attributes and their respective values
+    meta_key_list = meta_df['VARIABLE'].to_list()
+    meta_value_list = meta_df['DATAVALUE'].to_list()
 
-        # Retrieve flux method metadata
-        flux_indices = np.where(meta_arr == 'FLUX_MEASUREMENTS_VARIABLE')[0]
-        flux_members = {}
-        valid_flux_names = ['FLUX_MEASUREMENTS_DATE_START', 'FLUX_MEASUREMENTS_OPERATIONS']
-        for i, j in enumerate(flux_indices):
-            if j == flux_indices[-1]:
-                flux_info_range = np.arange(flux_indices[i], flux_indices[i] + 5)
-                flux_members[meta_value_list[j]] = {
-                    meta_key_list[k]: meta_value_list[k]
-                    for k in flux_info_range
-                    if meta_key_list[k] in valid_flux_names
-                }
-                flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[
-                    j - 1
-                ]
-                break
-            else:
-                flux_info_range = np.arange(flux_indices[i], flux_indices[i + 1])
-                flux_members[meta_value_list[j]] = {
-                    meta_key_list[k]: meta_value_list[k]
-                    for k in flux_info_range
-                    if meta_key_list[k] in valid_flux_names
-                }
-                flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[
-                    j - 1
-                ]
-        ds.attrs['FLUX_MEASUREMENTS_VARIABLE'] = flux_members
+    # Add attrs that are non duplicates as duplicates require more processing below
+    non_duplicates = [item for item in meta_key_list if meta_key_list.count(item) == 1]
+    data_dict = defaultdict(list)
+    for i, j in zip(meta_key_list, meta_value_list):
+        data_dict[i].append(j)
+    for key in non_duplicates:
+        ds.attrs[key] = data_dict[key][0]
+
+    # The code below to retrieve group metadata was done so that
+    # If the order changes of these attributes, which it can, it will find them regardless
+    # Also checks if a specific attribute is missing for a team member but not others
+    meta_arr = np.array(meta_key_list)
+    # Retrieve team_member metadata
+    team_indices = np.where(meta_arr == 'TEAM_MEMBER_NAME')[0]
+    team_members = {}
+    valid_names = [
+        'TEAM_MEMBER_EMAIL',
+        'TEAM_MEMBER_INSTITUTION',
+        'TEAM_MEMBER_ROLE',
+        'TEAM_MEMBER_ORCID',
+    ]
+    for i, j in enumerate(team_indices):
+        if j == team_indices[-1]:
+            team_info_range = np.arange(team_indices[i], team_indices[i] + 5)
+            team_members[meta_value_list[j]] = {
+                meta_key_list[k]: meta_value_list[k]
+                for k in team_info_range
+                if meta_key_list[k] in valid_names
+            }
+            break
+        else:
+            team_info_range = np.arange(team_indices[i], team_indices[i + 1])
+            team_members[meta_value_list[j]] = {
+                meta_key_list[k]: meta_value_list[k]
+                for k in team_info_range
+                if meta_key_list[k] in valid_names
+            }
+    ds.attrs['TEAM_MEMBERS'] = team_members
+
+    # Retrieve doi contributor metadata
+    doi_indices = np.where(meta_arr == 'DOI_CONTRIBUTOR_NAME')[0]
+    doi_members = {}
+    valid_doi_names = [
+        'DOI_CONTRIBUTOR_ROLE',
+        'DOI_CONTRIBUTOR_INSTITUTION',
+        'DOI_CONTRIBUTOR_EMAIL',
+        'DOI_CONTRIBUTOR_ORCID',
+    ]
+    for i, j in enumerate(doi_indices):
+        if j == doi_indices[-1]:
+            doi_info_range = np.arange(doi_indices[i], doi_indices[i] + 5)
+            doi_members[meta_value_list[j]] = {
+                meta_key_list[k]: meta_value_list[k]
+                for k in doi_info_range
+                if meta_key_list[k] in valid_doi_names
+            }
+            doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[j - 1]
+            break
+        else:
+            doi_info_range = np.arange(doi_indices[i], doi_indices[i + 1])
+            doi_members[meta_value_list[j]] = {
+                meta_key_list[k]: meta_value_list[k]
+                for k in doi_info_range
+                if meta_key_list[k] in valid_doi_names
+            }
+            doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[j - 1]
+    ds.attrs['DOI_CONTRIBUTOR_NAME'] = doi_members
+
+    # Retrieve flux method metadata
+    flux_indices = np.where(meta_arr == 'FLUX_MEASUREMENTS_VARIABLE')[0]
+    flux_members = {}
+    valid_flux_names = ['FLUX_MEASUREMENTS_DATE_START', 'FLUX_MEASUREMENTS_OPERATIONS']
+    for i, j in enumerate(flux_indices):
+        if j == flux_indices[-1]:
+            flux_info_range = np.arange(flux_indices[i], flux_indices[i] + 5)
+            flux_members[meta_value_list[j]] = {
+                meta_key_list[k]: meta_value_list[k]
+                for k in flux_info_range
+                if meta_key_list[k] in valid_flux_names
+            }
+            flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[j - 1]
+            break
+        else:
+            flux_info_range = np.arange(flux_indices[i], flux_indices[i + 1])
+            flux_members[meta_value_list[j]] = {
+                meta_key_list[k]: meta_value_list[k]
+                for k in flux_info_range
+                if meta_key_list[k] in valid_flux_names
+            }
+            flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[j - 1]
+    ds.attrs['FLUX_MEASUREMENTS_VARIABLE'] = flux_members
     return ds
 
 
