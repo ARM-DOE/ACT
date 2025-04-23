@@ -273,12 +273,12 @@ def read_ameriflux(
             ds.variables[key].attrs['units'] = variable_units_dict[key]
 
     if metadata_filename is not None:
-        ds = ameriflux_metadata_processing(ds, metadata_filename)
+        ds = _ameriflux_metadata_processing(ds, metadata_filename)
 
     return ds
 
 
-def ameriflux_metadata_processing(ds, metadata_filename):
+def _ameriflux_metadata_processing(ds, metadata_filename):
     """Adds metadata to an ameriflux dataset if a metadata file is provided."""
     # Read in metadata excel file if provided.
     meta_df = pd.read_excel(metadata_filename)
