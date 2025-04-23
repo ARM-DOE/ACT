@@ -352,7 +352,7 @@ To install pytest::
 
         conda install -c conda-forge pytest
 
-To run all tests in pyart with pytest from outside the pyart directory::
+To run all tests in act with pytest from outside the act directory::
 
         pytest --pyargs act
 
@@ -405,7 +405,7 @@ a more in depth description on what your commiting.
 
 A set of recommended acronymns can be found at:
 
-- https://docs.scipy.org/doc/numpy/dev/gitwash/development_workflow.html
+- https://numpy.org/doc/stable/dev/development_workflow.html#writing-the-commit-message
 
 If you would like to type your commit in the terminal and skip the default
 editor::
