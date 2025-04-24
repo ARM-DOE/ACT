@@ -198,9 +198,25 @@ def read_ameriflux(
     # Reader section for BASE BADM datasets
     # Differs from fluxnet as there is metadata in the first few lines
     # of the csv file.
-    if data_type.lower() == 'base' or 'BASE-BADM' in filename:
-        file_datatype = 'base'
+    if data_type is not None:
+        if data_type.lower() == 'base':
+            file_data_type = 'base'
+        elif data_type.lower() == 'fluxnet':
+            file_data_type = 'fluxnet'
+        else:
+            raise ValueError("Must choose a valid data_type, either 'base' or 'fluxnet'")
+    # Try to automatically get data type if data type isn't provided
+    elif data_type is None and 'FLUXNET' in filename:
+        file_data_type = 'fluxnet'
+    elif data_type is None and 'BASE-BADM' in filename:
+        file_data_type = 'base'
+    else:
+        raise ValueError(
+            'Could not determine the data type from the filename '
+            ' Please provide a valid data type to the data_type parameter!'
+        )
 
+    if file_data_type == 'base':
         # Grab site and version metadata
         metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
         site = metadata.loc['# Site']
@@ -227,7 +243,7 @@ def read_ameriflux(
 
     # Reader for fluxnet files
     # Fluxnet files can be formatted in different time samplings
-    elif data_type.lower() == 'fluxnet' or 'FLUXNET' in filename:
+    elif file_data_type == 'fluxnet':
         # Checks timestep in filename, if not, will check timestep parameter
         if 'YY' in filename or timestep == 'year':
             _format = "%Y"
@@ -275,7 +291,7 @@ def read_ameriflux(
     # Add units from the unit dictionary
     # Matches keys that have different levels as well such as SWC_1_1_1
     # Only works for base dataset
-    if variable_units_dict is None and file_datatype == 'base':
+    if variable_units_dict is None and file_data_type == 'base':
         for key in ds.variables.keys():
             try:
                 if re.match(r'TS_[\d]', key):
@@ -294,7 +310,8 @@ def read_ameriflux(
                     ds.variables[key].attrs['units'] = default_units_dict[key]
             except KeyError:
                 continue
-    else:
+
+    if variable_units_dict is not None:
         for key in ds.variables.keys():
             ds.variables[key].attrs['units'] = variable_units_dict[key]
 
