@@ -14,7 +14,7 @@ import xarray as xr
 def read_ameriflux(
     filename,
     metadata_filename=None,
-    data_type='base',
+    data_type=None,
     timestep=None,
     rename_vars_dict=None,
     variable_units_dict=None,
@@ -32,6 +32,7 @@ def read_ameriflux(
         Default is None.
     data_type : str
         Type of data file to be read. Valid options are 'fluxnet' and 'base'.
+        Default is None and will try to determine data type from filename.
     timestep : str
         Timestep of data, this parameter is only used for 'fluxnet' data types and if
         the time format can't be determined by the filename.
@@ -197,7 +198,7 @@ def read_ameriflux(
     # Reader section for BASE BADM datasets
     # Differs from fluxnet as there is metadata in the first few lines
     # of the csv file.
-    if data_type.lower() == 'base':
+    if data_type.lower() == 'base' or 'BASE-BADM' in filename:
         # Grab site and version metadata
         metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
         site = metadata.loc['# Site']
@@ -224,7 +225,7 @@ def read_ameriflux(
 
     # Reader for fluxnet files
     # Fluxnet files can be formatted in different time samplings
-    elif data_type.lower() == 'fluxnet':
+    elif data_type.lower() == 'fluxnet' or 'FLUXNET' in filename:
         # Checks timestep in filename, if not, will check timestep parameter
         if 'YY' in filename or timestep == 'year':
             _format = "%Y"
