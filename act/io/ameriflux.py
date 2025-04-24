@@ -199,6 +199,8 @@ def read_ameriflux(
     # Differs from fluxnet as there is metadata in the first few lines
     # of the csv file.
     if data_type.lower() == 'base' or 'BASE-BADM' in filename:
+        file_datatype = 'base'
+
         # Grab site and version metadata
         metadata = pd.read_csv(filename, header=None, nrows=2, sep=':', index_col=0)
         site = metadata.loc['# Site']
@@ -273,7 +275,7 @@ def read_ameriflux(
     # Add units from the unit dictionary
     # Matches keys that have different levels as well such as SWC_1_1_1
     # Only works for base dataset
-    if variable_units_dict is None and data_type.lower() == 'base':
+    if variable_units_dict is None and file_datatype == 'base':
         for key in ds.variables.keys():
             try:
                 if re.match(r'TS_[\d]', key):
