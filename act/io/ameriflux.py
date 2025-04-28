@@ -345,8 +345,9 @@ def _ameriflux_metadata_processing(ds, metadata_filename):
     meta_arr = np.array(meta_key_list)
     # Retrieve team_member metadata
     team_indices = np.where(meta_arr == 'TEAM_MEMBER_NAME')[0]
-    team_members = {}
+    team_members = []
     valid_names = [
+        'TEAM_MEMBER_NAME',
         'TEAM_MEMBER_EMAIL',
         'TEAM_MEMBER_INSTITUTION',
         'TEAM_MEMBER_ROLE',
@@ -356,56 +357,71 @@ def _ameriflux_metadata_processing(ds, metadata_filename):
     for i, j in enumerate(team_indices):
         if j == team_indices[-1]:
             team_info_range = np.arange(team_indices[i], team_indices[i] + 5)
-            team_members[meta_value_list[j]] = {
-                meta_key_list[k]: meta_value_list[k]
+            team_members_str = []
+            [
+                team_members_str.append(str(meta_key_list[k]) + ':' + str(meta_value_list[k]))
                 for k in team_info_range
                 if meta_key_list[k] in valid_names
-            }
+            ]
+            result_str = ", ".join(team_members_str)
+            team_members.append(result_str)
             break
         else:
             team_info_range = np.arange(team_indices[i], team_indices[i + 1])
-            team_members[meta_value_list[j]] = {
-                meta_key_list[k]: meta_value_list[k]
+            team_members_str = []
+            [
+                team_members_str.append(str(meta_key_list[k]) + ':' + str(meta_value_list[k]))
                 for k in team_info_range
                 if meta_key_list[k] in valid_names
-            }
+            ]
+            result_str = ", ".join(team_members_str)
+            team_members.append(result_str)
     ds.attrs['TEAM_MEMBERS'] = team_members
 
     # Retrieve doi contributor metadata
-    doi_indices = np.where(meta_arr == 'DOI_CONTRIBUTOR_NAME')[0]
-    doi_members = {}
+    doi_indices = np.where(meta_arr == 'DOI_CONTRIBUTOR_DATAPRODUCT')[0]
+    doi_members = []
     valid_doi_names = [
+        'DOI_CONTRIBUTOR_DATAPRODUCT',
+        'DOI_CONTRIBUTOR_NAME',
         'DOI_CONTRIBUTOR_ROLE',
         'DOI_CONTRIBUTOR_INSTITUTION',
         'DOI_CONTRIBUTOR_EMAIL',
         'DOI_CONTRIBUTOR_ORCID',
         'DOI_CONTRIBUTOR_DATE_START',
         'DOI_CONTRIBUTOR_DATE_END',
+        'DOI CONTRIBUTOR_ADDRESS',
     ]
     for i, j in enumerate(doi_indices):
         if j == doi_indices[-1]:
             doi_info_range = np.arange(doi_indices[i], doi_indices[i] + 5)
-            doi_members[meta_value_list[j]] = {
-                meta_key_list[k]: meta_value_list[k]
+            doi_contrib_str = []
+            [
+                doi_contrib_str.append(str(meta_key_list[k]) + ':' + str(meta_value_list[k]))
                 for k in doi_info_range
                 if meta_key_list[k] in valid_doi_names
-            }
-            doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[j - 1]
+            ]
+            result_doi_str = ", ".join(doi_contrib_str)
+            doi_members.append(result_doi_str)
             break
         else:
             doi_info_range = np.arange(doi_indices[i], doi_indices[i + 1])
-            doi_members[meta_value_list[j]] = {
-                meta_key_list[k]: meta_value_list[k]
+            doi_contrib_str = []
+            [
+                doi_contrib_str.append(str(meta_key_list[k]) + ':' + str(meta_value_list[k]))
                 for k in doi_info_range
                 if meta_key_list[k] in valid_doi_names
-            }
-            doi_members[meta_value_list[j]]['DOI_CONTRIBUTOR_DATAPRODUCT'] = meta_value_list[j - 1]
-    ds.attrs['DOI_CONTRIBUTOR_NAME'] = doi_members
+            ]
+            result_doi_str = ", ".join(doi_contrib_str)
+            doi_members.append(result_doi_str)
+    ds.attrs['DOI_CONTRIBUTORS'] = doi_members
 
     # Retrieve flux method metadata
-    flux_indices = np.where(meta_arr == 'FLUX_MEASUREMENTS_VARIABLE')[0]
-    flux_members = {}
+    flux_indices = np.where(meta_arr == 'FLUX_MEASUREMENTS_METHOD')[0]
+    flux_members = []
     valid_flux_names = [
+        'FLUX_MEASUREMENTS_METHOD',
+        'FLUX_MEASUREMENTS_VARIABLE',
         'FLUX_MEASUREMENTS_DATE_START',
         'FLUX_MEASUREMENTS_DATE_END',
         'FLUX_MEASUREMENTS_OPERATIONS',
@@ -413,22 +429,26 @@ def _ameriflux_metadata_processing(ds, metadata_filename):
     for i, j in enumerate(flux_indices):
         if j == flux_indices[-1]:
             flux_info_range = np.arange(flux_indices[i], flux_indices[i] + 5)
-            flux_members[meta_value_list[j]] = {
-                meta_key_list[k]: meta_value_list[k]
+            flux_str = []
+            [
+                flux_str.append(str(meta_key_list[k]) + ':' + str(meta_value_list[k]))
                 for k in flux_info_range
                 if meta_key_list[k] in valid_flux_names
-            }
-            flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[j - 1]
+            ]
+            result_flux_str = ", ".join(flux_str)
+            flux_members.append(result_flux_str)
             break
         else:
             flux_info_range = np.arange(flux_indices[i], flux_indices[i + 1])
-            flux_members[meta_value_list[j]] = {
-                meta_key_list[k]: meta_value_list[k]
+            flux_str = []
+            [
+                flux_str.append(str(meta_key_list[k]) + ':' + str(meta_value_list[k]))
                 for k in flux_info_range
                 if meta_key_list[k] in valid_flux_names
-            }
-            flux_members[meta_value_list[j]]['FLUX_MEASUREMENTS_METHOD'] = meta_value_list[j - 1]
-    ds.attrs['FLUX_MEASUREMENTS_VARIABLE'] = flux_members
+            ]
+            result_flux_str = ", ".join(flux_str)
+            flux_members.append(result_flux_str)
+    ds.attrs['FLUX_MEASUREMENTS_METHODS'] = flux_members
     return ds
 
 
