@@ -41,32 +41,20 @@ def test_read_ameriflux():
     assert ds.attrs['SITE_NAME'] == 'UIC Plant Research Laboratory Chicago'
 
     assert len(ds.attrs['TEAM_MEMBERS']) == 9
-    assert 'Bhupendra Raut' in ds.attrs['TEAM_MEMBERS']
-    assert 'Matt Tuftedal' in ds.attrs['TEAM_MEMBERS']
-    assert 'TEAM_MEMBER_EMAIL' in ds.attrs['TEAM_MEMBERS']['Bhupendra Raut']
-    assert 'TEAM_MEMBER_INSTITUTION' in ds.attrs['TEAM_MEMBERS']['Bhupendra Raut']
-    assert (
-        ds.attrs['TEAM_MEMBERS']['Bhupendra Raut']['TEAM_MEMBER_INSTITUTION']
-        == 'Argonne National Laboratory'
-    )
+    assert 'Bhupendra Raut' in ds.attrs['TEAM_MEMBERS'][0]
+    assert 'Matt Tuftedal' in ds.attrs['TEAM_MEMBERS'][6]
+    assert 'TEAM_MEMBER_EMAIL' in ds.attrs['TEAM_MEMBERS'][0]
+    assert 'TEAM_MEMBER_INSTITUTION' in ds.attrs['TEAM_MEMBERS'][0]
+    assert 'TEAM_MEMBER_INSTITUTION:Argonne National Laboratory' in ds.attrs['TEAM_MEMBERS'][0]
 
-    assert 'CO2' in ds.attrs['FLUX_MEASUREMENTS_VARIABLE']
-    assert 'H' in ds.attrs['FLUX_MEASUREMENTS_VARIABLE']
-    assert (
-        ds.attrs['FLUX_MEASUREMENTS_VARIABLE']['H']['FLUX_MEASUREMENTS_DATE_START']
-        == '202407010000'
-    )
-    assert (
-        ds.attrs['FLUX_MEASUREMENTS_VARIABLE']['H']['FLUX_MEASUREMENTS_METHOD'] == 'Eddy Covariance'
-    )
+    assert 'FLUX_MEASUREMENTS_VARIABLE:CO2' in ds.attrs['FLUX_MEASUREMENTS_METHODS'][0]
+    assert 'FLUX_MEASUREMENTS_VARIABLE:H' in ds.attrs['FLUX_MEASUREMENTS_METHODS'][1]
+    assert 'FLUX_MEASUREMENTS_METHOD:Eddy Covariance' in ds.attrs['FLUX_MEASUREMENTS_METHODS'][0]
 
-    assert 'Bhupendra Raut' in ds.attrs['DOI_CONTRIBUTOR_NAME']
-    assert 'Sujan Pal' in ds.attrs['DOI_CONTRIBUTOR_NAME']
-    assert (
-        ds.attrs['DOI_CONTRIBUTOR_NAME']['Bhupendra Raut']['DOI_CONTRIBUTOR_DATAPRODUCT']
-        == 'AmeriFlux'
-    )
-    assert ds.attrs['DOI_CONTRIBUTOR_NAME']['Bhupendra Raut']['DOI_CONTRIBUTOR_ROLE'] == 'Author'
+    assert 'DOI_CONTRIBUTOR_NAME:Bhupendra Raut' in ds.attrs['DOI_CONTRIBUTORS'][0]
+    assert 'DOI_CONTRIBUTOR_NAME:Sujan Pal' in ds.attrs['DOI_CONTRIBUTORS'][1]
+    assert 'DOI_CONTRIBUTOR_DATAPRODUCT:AmeriFlux' in ds.attrs['DOI_CONTRIBUTORS'][0]
+    assert 'DOI_CONTRIBUTOR_ROLE:Author' in ds.attrs['DOI_CONTRIBUTORS'][0]
 
 
 def test_convert_to_ameriflux():
