@@ -1,7 +1,7 @@
 import numpy as np
 
 from act.io.arm import read_arm_netcdf
-from act.qc.arm import add_dqr_to_qc
+from act.qc.arm import add_dqr_to_qc, print_dqr
 from act.tests import EXAMPLE_ENA_MET, EXAMPLE_OLD_QC
 
 
@@ -31,3 +31,12 @@ def test_get_attr_info():
     assert 'fail_min' in ds['qc_lv'].attrs
     assert ds['qc_lv'].attrs['flag_assessments'][0] == 'Bad'
     assert ds['qc_lv'].attrs['flag_masks'][-1] == 4
+
+
+def test_print_dqr():
+    dqr = print_dqr('sgpmetE13.b1', '20230101', '20240101', variable='pwd_cumul_rain')
+    assert 'D231114.33' in dqr
+    assert 'pwd_cumul_rain' in dqr['D231114.33']['variables']
+
+    with np.testing.assert_raises(ValueError):
+        dqr = print_dqr('spmetE13.b1', '20230101', '20240101', variable='pwd_cumul_rain')

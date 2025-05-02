@@ -12,7 +12,7 @@ import tempfile
 import types
 
 try:
-    import moviepy.editor as moviepy_editor
+    from moviepy import VideoFileClip
     import moviepy.video.io.ImageSequenceClip
 
     MOVIEPY_AVAILABLE = True
@@ -307,7 +307,7 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
 
     """
     if not MOVIEPY_AVAILABLE:
-        raise ImportError('MoviePy needs to be installed on your system to make movies.')
+        raise ImportError('MoviePy v2.X needs to be installed on your system to make movies.')
 
     # Set default movie name
     if write_filename is None:
@@ -329,7 +329,7 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
     write_directory.mkdir(parents=True, exist_ok=True)
 
     if IS_MOVIE:
-        with moviepy_editor.VideoFileClip(images) as clip:
+        with VideoFileClip(images) as clip:
             # There can be an issue converting mpeg to other movie format because the
             # duration parameter in the movie file is not set. So moviepy guesses and
             # can get the duration wrong. This will find the correct duration (correct to 0.2 seconds)
@@ -355,9 +355,9 @@ def generate_movie(images, write_filename=None, fps=10, **kwargs):
 
                         duration += 0.1
 
-                    clip = clip.set_start(0)
-                    clip = clip.set_duration(duration)
-                    clip = clip.set_end(duration)
+                    clip = clip.with_start(0)
+                    clip = clip.with_duration(duration)
+                    clip = clip.with_end(duration)
                     clip.write_videofile(str(write_filename), **kwargs)
 
             else:

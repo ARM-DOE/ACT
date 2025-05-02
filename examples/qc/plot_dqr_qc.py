@@ -2,8 +2,11 @@
 Query the ARM DQR webservice
 ----------------------------
 
-Simple example for querying the ARM DQR webservice
-and plotting up the results
+This example shows how to query the ARM Data Quality Report (DQR) webservice,
+to retrieve the machine readable DQR information.  This function adds the
+DQR information to corresponding QC variables (qc_[variablename]) in the
+dataset.  The example then shows how to visualize this information as we
+do with the normal QC variables.
 
 Author: Adam Theisen
 """

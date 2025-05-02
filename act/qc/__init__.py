@@ -21,7 +21,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'sp2',
     ],
     submod_attrs={
-        'arm': ['add_dqr_to_qc'],
+        'arm': ['add_dqr_to_qc', 'print_dqr'],
         'qcfilter': [
             'QCFilter',
             'parse_bit',
