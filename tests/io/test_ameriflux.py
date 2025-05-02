@@ -11,7 +11,7 @@ def test_read_ameriflux():
 
     ds = act.io.read_ameriflux(
         act.tests.EXAMPLE_AMERIFLUX_BASE,
-        metadata_filename=act.tests.EXAMPLE_AMERIFLUX_BIF,
+        metadata_filename=act.tests.EXAMPLE_AMERIFLUX_META,
         date_type='BASE',
         rename_vars_dict=rename_vars_dict,
     )
