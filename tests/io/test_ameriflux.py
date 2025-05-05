@@ -12,7 +12,7 @@ def test_read_ameriflux():
     ds = act.io.read_ameriflux(
         act.tests.EXAMPLE_AMERIFLUX_BASE,
         metadata_filename=act.tests.EXAMPLE_AMERIFLUX_META,
-        date_type='BASE',
+        data_type='BASE',
         rename_vars_dict=rename_vars_dict,
     )
     # Test if variables are correct and units and fill values were added

@@ -20,7 +20,7 @@ def test_download_ameriflux_data(capsys):
             return
         kwargs = {}
         kwargs['is_test'] = True
-        site_ids = ['US-A37', 'US-CU1']
+        site_ids = ['US-CU1']
         data_product = 'BASE-BADM'
         data_policy = 'CCBY4.0'
         data_variant = 'FULLSET'
@@ -219,7 +219,7 @@ def test_download_ameriflux_data(capsys):
                 data_product=data_product,
                 data_policy=data_policy,
                 data_variant=data_variant,
-                site_ids=['US-A37', 'foo'],
+                site_ids=['US-CU1', 'foo'],
                 agree_policy=True,
                 intended_use=intended_use,
                 description=description,
