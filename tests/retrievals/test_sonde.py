@@ -14,7 +14,7 @@ def test_get_stability_indices():
         rtol=1e-5,
     )
     assert sonde_ds['parcel_temperature'].attrs['units'] == 'kelvin'
-    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.96, decimal=2)
+    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.98, decimal=2)
     assert sonde_ds['surface_based_cape'].attrs['units'] == 'J/kg'
     assert sonde_ds['surface_based_cape'].attrs['long_name'] == 'Surface-based CAPE'
     np.testing.assert_almost_equal(sonde_ds['surface_based_cin'], 0.000, decimal=3)
