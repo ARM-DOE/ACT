@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 
 # Pull the data using the site_id from IMPROVE
 # https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&siidse=244
+# Data from the IMPROVE station next to ARM's BNF deployment
+# can be found using site_id='21'
 ds = act.discovery.get_improve_data(site_id='244', start_date='1/1/2023', end_date='12/31/2023')
 
 # Remove all data that's set to the FillValue
