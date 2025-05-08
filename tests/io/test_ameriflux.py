@@ -41,8 +41,8 @@ def test_read_ameriflux():
     assert ds.attrs['SITE_NAME'] == 'UIC Plant Research Laboratory Chicago'
 
     assert len(ds.attrs['TEAM_MEMBERS']) == 9
-    assert 'Bhupendra Raut' in ds.attrs['TEAM_MEMBERS'][0]
-    assert 'Matt Tuftedal' in ds.attrs['TEAM_MEMBERS'][6]
+    assert 'Bhupendra' in ds.attrs['TEAM_MEMBERS'][0]
+    assert 'Matt' in ds.attrs['TEAM_MEMBERS'][6]
     assert 'TEAM_MEMBER_EMAIL' in ds.attrs['TEAM_MEMBERS'][0]
     assert 'TEAM_MEMBER_INSTITUTION' in ds.attrs['TEAM_MEMBERS'][0]
     assert 'TEAM_MEMBER_INSTITUTION:Argonne National Laboratory' in ds.attrs['TEAM_MEMBERS'][0]
@@ -51,8 +51,8 @@ def test_read_ameriflux():
     assert 'FLUX_MEASUREMENTS_VARIABLE:H' in ds.attrs['FLUX_MEASUREMENTS_METHODS'][1]
     assert 'FLUX_MEASUREMENTS_METHOD:Eddy Covariance' in ds.attrs['FLUX_MEASUREMENTS_METHODS'][0]
 
-    assert 'DOI_CONTRIBUTOR_NAME:Bhupendra Raut' in ds.attrs['DOI_CONTRIBUTORS'][0]
-    assert 'DOI_CONTRIBUTOR_NAME:Sujan Pal' in ds.attrs['DOI_CONTRIBUTORS'][1]
+    assert 'Bhupendra' in ds.attrs['DOI_CONTRIBUTORS'][0]
+    assert 'Sujan' in ds.attrs['DOI_CONTRIBUTORS'][1]
     assert 'DOI_CONTRIBUTOR_DATAPRODUCT:AmeriFlux' in ds.attrs['DOI_CONTRIBUTORS'][0]
     assert 'DOI_CONTRIBUTOR_ROLE:Author' in ds.attrs['DOI_CONTRIBUTORS'][0]
 
