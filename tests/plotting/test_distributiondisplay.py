@@ -361,7 +361,7 @@ def test_violin2():
     display = DistributionDisplay(ds)
 
     # Create violin display of mean temperature
-    display.plot_violin('temp_mean', vert=False)
+    display.plot_violin('temp_mean', orientation='horizontal')
 
     ds.close()
 

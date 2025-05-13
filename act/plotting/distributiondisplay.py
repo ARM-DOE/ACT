@@ -777,8 +777,9 @@ class DistributionDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        vert : Boolean, Default: True
-            Display violin plot vertical. False will display horizontal.
+        orientation : str
+            Orientation of the violin plot. Options are 'vertical' and 'horizontal'.
+            Default is vertical.
         showmeans : Boolean; Default: False
             If True, will display the mean of the datastream.
         showmedians : Boolean; Default: False
@@ -829,7 +830,7 @@ class DistributionDisplay(Display):
         scc = self.axes[subplot_index].violinplot(
             ndata,
             positions=positions,
-            vert=vert,
+            orientation='vertical',
             showmeans=showmeans,
             showmedians=showmedians,
             showextrema=showextrema,
