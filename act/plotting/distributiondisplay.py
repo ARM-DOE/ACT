@@ -756,7 +756,7 @@ class DistributionDisplay(Display):
         field,
         positions=None,
         dsname=None,
-        vert=True,
+        orientation='vertical',
         showmeans=True,
         showmedians=True,
         showextrema=True,
@@ -830,7 +830,7 @@ class DistributionDisplay(Display):
         scc = self.axes[subplot_index].violinplot(
             ndata,
             positions=positions,
-            orientation='vertical',
+            orientation=orientation,
             showmeans=showmeans,
             showmedians=showmedians,
             showextrema=showextrema,
@@ -854,7 +854,7 @@ class DistributionDisplay(Display):
 
         # Define the axe title, x-axis label, y-axis label
         self.axes[subplot_index].set_title(set_title)
-        if vert is True:
+        if orientation == 'vertical':
             self.axes[subplot_index].set_ylabel(axtitle)
             if positions is None:
                 self.axes[subplot_index].set_xticks([])
