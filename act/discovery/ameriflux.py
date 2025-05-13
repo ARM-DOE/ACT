@@ -192,7 +192,7 @@ def download_ameriflux_data(
     }
 
     result = requests.post(
-        ameriflux_endpoints("data_download"),
+        _ameriflux_endpoints("data_download"),
         json=params,
         headers={"Content-Type": "application/json"},
     )
@@ -247,7 +247,7 @@ def download_ameriflux_data(
 
 
 # Return AmeriFlux server endpoints
-def ameriflux_endpoints(endpoint="sitemap"):
+def _ameriflux_endpoints(endpoint="sitemap"):
     """Retrieves urls for different ameriflux server endpoints. Options include"
     sitemap, site_ccby4, data_year, data_download, and variables"""
     # base urls
@@ -258,16 +258,14 @@ def ameriflux_endpoints(endpoint="sitemap"):
     url = {
         "sitemap": os.path.join(api_url, "site_display/AmeriFlux"),
         "site_ccby4": os.path.join(api_url, "site_availability/AmeriFlux/BIF/CCBY4.0"),
-        "data_year": os.path.join(api_url, "data_availability/AmeriFlux"),
         "data_download": os.path.join(api_url, "data_download"),
-        "variables": os.path.join(api_url, "fp_var?limits=True"),
     }.get(endpoint)
     return url
 
 
 def _check_site_id(x):
     """Checks if user provided site_ids are valid."""
-    response = requests.get(ameriflux_endpoints("sitemap"))
+    response = requests.get(_ameriflux_endpoints("sitemap"))
     df = pd.json_normalize(response.json())
     site_ids = df['SITE_ID'].tolist()
     chk_id = [site_id in site_ids for site_id in x]
