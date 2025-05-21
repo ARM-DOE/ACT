@@ -152,6 +152,10 @@ stamp_wildcard_list = [
 EXAMPLE_STAMP_WILDCARD = [DATASETS.fetch(file) for file in stamp_wildcard_list]
 mmcr_list = ['sgpmmcrC1.b1.1.cdf', 'sgpmmcrC1.b1.2.cdf']
 EXAMPLE_MMCR = [DATASETS.fetch(file) for file in mmcr_list]
+
+EXAMPLE_AMERIFLUX_BASE = DATASETS.fetch('AMF_US-CU1_BASE_HH_1-5.csv')
+EXAMPLE_AMERIFLUX_META = DATASETS.fetch('AMF_US-CU1_BIF_20250318.xlsx')
+
 EXAMPLE_GML_AEROSOL_NAS = DATASETS.fetch(
     'US1200R.20200101000000.20210214053818.nephelometer.aerosol_light_scattering_coefficient.pm10.1y.1h.US06L_TSI_3563_MLO.US06L_scat_coef.lev2.nas'
 )
