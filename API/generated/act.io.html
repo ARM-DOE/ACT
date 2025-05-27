@@ -385,6 +385,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="act.discovery.html">act.discovery</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="act.discovery.download_ameriflux_data.html">act.discovery.download_ameriflux_data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.discovery.download_arm_data.html">act.discovery.download_arm_data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.discovery.download_mplnet_data.html">act.discovery.download_mplnet_data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.discovery.download_neon_data.html">act.discovery.download_neon_data</a></li>
@@ -412,6 +413,7 @@
 <li class="toctree-l2"><a class="reference internal" href="act.io.convert_to_ameriflux.html">act.io.convert_to_ameriflux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.io.create_ds_from_arm_dod.html">act.io.create_ds_from_arm_dod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.io.proc_sigma_mplv5_read.html">act.io.proc_sigma_mplv5_read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.io.read_ameriflux.html">act.io.read_ameriflux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.io.read_arm_mmcr.html">act.io.read_arm_mmcr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.io.read_arm_netcdf.html">act.io.read_arm_netcdf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.io.read_csv.html">act.io.read_csv</a></li>
@@ -786,73 +788,76 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="act.io.proc_sigma_mplv5_read.html#act.io.proc_sigma_mplv5_read" title="act.io.proc_sigma_mplv5_read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proc_sigma_mplv5_read</span></code></a>(f[, save_nc, ...])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined SIGMA MPL V5 files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_arm_mmcr.html#act.io.read_arm_mmcr" title="act.io.read_arm_mmcr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_arm_mmcr</span></code></a>(filenames)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_ameriflux.html#act.io.read_ameriflux" title="act.io.read_ameriflux"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_ameriflux</span></code></a>(filename[, ...])</p></td>
+<td><p>Returns <cite>xarray.Dataset</cite> with stored data from FLUXNET or BASE-BADM and possible metadata from a user-defined metadata excel files for a single datastream.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_arm_mmcr.html#act.io.read_arm_mmcr" title="act.io.read_arm_mmcr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_arm_mmcr</span></code></a>(filenames)</p></td>
 <td><p>Reads in ARM MMCR files and splits up the variables into specific mode variables based on what's in the files.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_arm_netcdf.html#act.io.read_arm_netcdf" title="act.io.read_arm_netcdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_arm_netcdf</span></code></a>(filenames[, concat_dim, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_arm_netcdf.html#act.io.read_arm_netcdf" title="act.io.read_arm_netcdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_arm_netcdf</span></code></a>(filenames[, concat_dim, ...])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined query of ARM-standard netCDF files from a single datastream.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_csv.html#act.io.read_csv" title="act.io.read_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_csv</span></code></a>(filename[, sep, engine, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_csv.html#act.io.read_csv" title="act.io.read_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_csv</span></code></a>(filename[, sep, engine, ...])</p></td>
 <td><p>Returns an <cite>xarray.Dataset</cite> with stored data and metadata from user-defined query of CSV files.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_gml.html#act.io.read_gml" title="act.io.read_gml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml</span></code></a>(filename[, datatype, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_gml.html#act.io.read_gml" title="act.io.read_gml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml</span></code></a>(filename[, datatype, ...])</p></td>
 <td><p>Function to call or guess what reading NOAA GML daga routine to use.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_gml_co2.html#act.io.read_gml_co2" title="act.io.read_gml_co2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_co2</span></code></a>([filename, convert_missing])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_gml_co2.html#act.io.read_gml_co2" title="act.io.read_gml_co2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_co2</span></code></a>([filename, convert_missing])</p></td>
 <td><p>Function to read carbon dioxide data from NOAA GML.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_gml_halo.html#act.io.read_gml_halo" title="act.io.read_gml_halo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_halo</span></code></a>(filename, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_gml_halo.html#act.io.read_gml_halo" title="act.io.read_gml_halo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_halo</span></code></a>(filename, **kwargs)</p></td>
 <td><p>Function to read Halocarbon data from NOAA GML.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_gml_met.html#act.io.read_gml_met" title="act.io.read_gml_met"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_met</span></code></a>([filename, convert_missing])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_gml_met.html#act.io.read_gml_met" title="act.io.read_gml_met"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_met</span></code></a>([filename, convert_missing])</p></td>
 <td><p>Function to read meteorological data from NOAA GML.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_gml_ozone.html#act.io.read_gml_ozone" title="act.io.read_gml_ozone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_ozone</span></code></a>([filename])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_gml_ozone.html#act.io.read_gml_ozone" title="act.io.read_gml_ozone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_ozone</span></code></a>([filename])</p></td>
 <td><p>Function to read ozone data from NOAA GML.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_gml_radiation.html#act.io.read_gml_radiation" title="act.io.read_gml_radiation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_radiation</span></code></a>([filename, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_gml_radiation.html#act.io.read_gml_radiation" title="act.io.read_gml_radiation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gml_radiation</span></code></a>([filename, ...])</p></td>
 <td><p>Function to read radiation data from NOAA GML.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_hk_file.html#act.io.read_hk_file" title="act.io.read_hk_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hk_file</span></code></a>(file_name)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_hk_file.html#act.io.read_hk_file" title="act.io.read_hk_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hk_file</span></code></a>(file_name)</p></td>
 <td><p>This procedure will read in an SP2 housekeeping file and then store the timeseries data into a pandas DataFrame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_hysplit.html#act.io.read_hysplit" title="act.io.read_hysplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hysplit</span></code></a>(filename[, base_year, skiprows])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_hysplit.html#act.io.read_hysplit" title="act.io.read_hysplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hysplit</span></code></a>(filename[, base_year, skiprows])</p></td>
 <td><p>Reads an input HYSPLIT trajectory for plotting in ACT.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_icartt.html#act.io.read_icartt" title="act.io.read_icartt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_icartt</span></code></a>(filename[, format, return_None])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_icartt.html#act.io.read_icartt" title="act.io.read_icartt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_icartt</span></code></a>(filename[, format, return_None])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined query of ICARTT from a single datastream.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_mfas_sodar.html#act.io.read_mfas_sodar" title="act.io.read_mfas_sodar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mfas_sodar</span></code></a>(filepath)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_mfas_sodar.html#act.io.read_mfas_sodar" title="act.io.read_mfas_sodar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mfas_sodar</span></code></a>(filepath)</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined Flat Array MFAS Sodar file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_neon_csv.html#act.io.read_neon_csv" title="act.io.read_neon_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_neon_csv</span></code></a>(files[, variable_files, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_neon_csv.html#act.io.read_neon_csv" title="act.io.read_neon_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_neon_csv</span></code></a>(files[, variable_files, ...])</p></td>
 <td><p>Reads in the NEON formatted csv files from local paths or urls and returns an Xarray dataset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_psl_parsivel.html#act.io.read_psl_parsivel" title="act.io.read_psl_parsivel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_parsivel</span></code></a>(files)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_psl_parsivel.html#act.io.read_psl_parsivel" title="act.io.read_psl_parsivel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_parsivel</span></code></a>(files)</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined NOAA PSL parsivel</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_psl_radar_fmcw_moment.html#act.io.read_psl_radar_fmcw_moment" title="act.io.read_psl_radar_fmcw_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_radar_fmcw_moment</span></code></a>(files)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_psl_radar_fmcw_moment.html#act.io.read_psl_radar_fmcw_moment" title="act.io.read_psl_radar_fmcw_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_radar_fmcw_moment</span></code></a>(files)</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from NOAA PSL FMCW Radar files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_psl_surface_met.html#act.io.read_psl_surface_met" title="act.io.read_psl_surface_met"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_surface_met</span></code></a>(filenames[, conf_file])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_psl_surface_met.html#act.io.read_psl_surface_met" title="act.io.read_psl_surface_met"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_surface_met</span></code></a>(filenames[, conf_file])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined NOAA PSL SurfaceMet file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler" title="act.io.read_psl_wind_profiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_wind_profiler</span></code></a>(filepath[, transpose])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_psl_wind_profiler.html#act.io.read_psl_wind_profiler" title="act.io.read_psl_wind_profiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_wind_profiler</span></code></a>(filepath[, transpose])</p></td>
 <td><p>Returns two <cite>xarray.Datasets</cite> with stored data and metadata from a user-defined NOAA PSL wind profiler file each containing a different mode.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature" title="act.io.read_psl_wind_profiler_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_wind_profiler_temperature</span></code></a>(filepath)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_psl_wind_profiler_temperature.html#act.io.read_psl_wind_profiler_temperature" title="act.io.read_psl_wind_profiler_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_psl_wind_profiler_temperature</span></code></a>(filepath)</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined NOAA PSL wind profiler temperature file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_sigma_mplv5.html#act.io.read_sigma_mplv5" title="act.io.read_sigma_mplv5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sigma_mplv5</span></code></a>(filename[, save_nc, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_sigma_mplv5.html#act.io.read_sigma_mplv5" title="act.io.read_sigma_mplv5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sigma_mplv5</span></code></a>(filename[, save_nc, ...])</p></td>
 <td><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined SIGMA MPL V5 files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_sp2.html#act.io.read_sp2" title="act.io.read_sp2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sp2</span></code></a>(file_name[, debug, arm_convention])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_sp2.html#act.io.read_sp2" title="act.io.read_sp2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sp2</span></code></a>(file_name[, debug, arm_convention])</p></td>
 <td><p>Loads a binary SP2 raw data file and returns all of the wave forms into an xarray Dataset.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_sp2_dat.html#act.io.read_sp2_dat" title="act.io.read_sp2_dat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sp2_dat</span></code></a>(file_name, type)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_sp2_dat.html#act.io.read_sp2_dat" title="act.io.read_sp2_dat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sp2_dat</span></code></a>(file_name, type)</p></td>
 <td><p>This reads the .dat files that generate the intermediate parameters used by the Igor processing.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="act.io.read_surfrad.html#act.io.read_surfrad" title="act.io.read_surfrad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_surfrad</span></code></a>(filename, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="act.io.read_surfrad.html#act.io.read_surfrad" title="act.io.read_surfrad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_surfrad</span></code></a>(filename, **kwargs)</p></td>
 <td><p>Function to read in NOAA SurfRad data</p></td>
 </tr>
 </tbody>

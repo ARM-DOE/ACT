@@ -1178,7 +1178,7 @@
         <span class="n">field</span><span class="p">,</span>
         <span class="n">positions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span>
         <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">showmedians</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">showextrema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1199,8 +1199,9 @@
 <span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
-<span class="sd">        vert : Boolean, Default: True</span>
-<span class="sd">            Display violin plot vertical. False will display horizontal.</span>
+<span class="sd">        orientation : str</span>
+<span class="sd">            Orientation of the violin plot. Options are &#39;vertical&#39; and &#39;horizontal&#39;.</span>
+<span class="sd">            Default is vertical.</span>
 <span class="sd">        showmeans : Boolean; Default: False</span>
 <span class="sd">            If True, will display the mean of the datastream.</span>
 <span class="sd">        showmedians : Boolean; Default: False</span>
@@ -1251,7 +1252,7 @@
         <span class="n">scc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span>
             <span class="n">ndata</span><span class="p">,</span>
             <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
-            <span class="n">vert</span><span class="o">=</span><span class="n">vert</span><span class="p">,</span>
+            <span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">,</span>
             <span class="n">showmeans</span><span class="o">=</span><span class="n">showmeans</span><span class="p">,</span>
             <span class="n">showmedians</span><span class="o">=</span><span class="n">showmedians</span><span class="p">,</span>
             <span class="n">showextrema</span><span class="o">=</span><span class="n">showextrema</span><span class="p">,</span>
@@ -1275,7 +1276,7 @@
 
         <span class="c1"># Define the axe title, x-axis label, y-axis label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">vert</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="s1">&#39;vertical&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">axtitle</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">positions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
