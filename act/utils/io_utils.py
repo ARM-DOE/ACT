@@ -132,7 +132,7 @@ def unpack_tar(
     for tar_file in tar_files:
         try:
             tar = tarfile.open(tar_file)
-            tar.extractall(path=out_dir)
+            tar.extractall(path=out_dir, filter='data')
             result = [str(Path(out_dir, ii.name)) for ii in tar.getmembers()]
             files.extend(result)
             tar.close()
