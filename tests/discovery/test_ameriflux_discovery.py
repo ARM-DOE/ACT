@@ -7,7 +7,7 @@ import act
 from act.discovery.ameriflux import PolicyWarning
 
 
-def test_download_ameriflux_data(capsys):
+def test_download_ameriflux_data():
     if not os.path.isdir(os.getcwd() + '/data/'):
         os.makedirs(os.getcwd() + '/data/')
 
