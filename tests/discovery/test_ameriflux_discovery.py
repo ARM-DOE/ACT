@@ -15,6 +15,9 @@ if user_id is not None and user_email is not None:
     if len(user_id) == 0 and len(user_email) == 0:
         ameriflux_available = False
 
+if user_id is None and user_email is None:
+    ameriflux_available = False
+
 
 @pytest.mark.skipif(not ameriflux_available, reason="Can't download files")
 def test_download_ameriflux_data():
