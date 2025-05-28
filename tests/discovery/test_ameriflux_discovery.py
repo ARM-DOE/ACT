@@ -6,6 +6,7 @@ import pytest
 import act
 from act.discovery.ameriflux import PolicyWarning
 
+
 # Place your username and token here
 user_id = os.getenv('AMERIFLUX_USERNAME')
 user_email = os.getenv('AMERIFLUX_EMAIL')
