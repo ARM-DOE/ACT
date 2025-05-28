@@ -8,12 +8,8 @@ from act.discovery.ameriflux import PolicyWarning
 
 
 # Place your username and token here
-user_id = os.getenv('AMERIFLUX_USERNAME')
-user_email = os.getenv('AMERIFLUX_EMAIL')
-
-if user_id is not None and user_email is not None:
-    if len(user_id) == 0 and len(user_email) == 0:
-        ameriflux_available = False
+user_id = os.getenv('AMERIFLUX_EMAIL')
+user_email = os.getenv('AMERIFLUX_USERNAME')
 
 if user_id is None and user_email is None:
     ameriflux_available = False
