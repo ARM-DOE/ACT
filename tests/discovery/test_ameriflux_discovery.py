@@ -6,7 +6,16 @@ import pytest
 import act
 from act.discovery.ameriflux import PolicyWarning
 
+# Place your username and token here
+user_id = os.getenv('AMERIFLUX_USERNAME')
+user_email = os.getenv('AMERIFLUX_EMAIL')
 
+if user_id is not None and user_email is not None:
+    if len(user_id) == 0 and len(user_email) == 0:
+        ameriflux_available = False
+
+
+@pytest.mark.skipif(not ameriflux_available, reason="Can't download files")
 def test_download_ameriflux_data():
     if not os.path.isdir(os.getcwd() + '/data/'):
         os.makedirs(os.getcwd() + '/data/')
