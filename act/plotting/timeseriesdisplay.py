@@ -307,6 +307,8 @@ class TimeSeriesDisplay(Display):
         y_rng=None,
         ylabel=None,
         use_var_for_y=None,
+        yerror=None,
+        error_kw={},
         set_shading='auto',
         assessment_overplot=False,
         overplot_marker='.',
@@ -375,6 +377,12 @@ class TimeSeriesDisplay(Display):
             instances where data has an index-based dimension instead of a
             height-based dimension. If shapes of arrays do not match it will
             automatically revert back to the original ydata.
+        yerror : float or array-like, shape(N,) or shape(2,N)
+            Option to add y-error bars to timeseries plots using
+            matplotlib.errorbar functionality.
+        error_kw : dict
+            The keyword arguments for :func`plt.errorbar` if yerror is not
+            None.
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
@@ -564,7 +572,15 @@ class TimeSeriesDisplay(Display):
             if 'marker' not in kwargs.keys():
                 kwargs['marker'] = '.'
 
-            lines = ax.plot(xdata, data, **kwargs)
+            if yerror is not None:
+                # If kwargs in error_kw and kwargs, error_kw takes precedence
+                for key in error_kw.keys():
+                    if key in kwargs:
+                        kwargs.pop(key)
+
+                lines = ax.errorbar(xdata.values, data, yerr=yerror, **error_kw, **kwargs)
+            else:
+                lines = ax.plot(xdata, data, **kwargs)
 
             # Check if we need to call legend method after plotting. This is only
             # called when no assessment overplot is called.
@@ -1300,6 +1316,8 @@ class TimeSeriesDisplay(Display):
         self,
         data_field=None,
         alt_field='alt',
+        yerror=None,
+        error_kw={},
         dsname=None,
         cmap='rainbow',
         alt_label=None,
@@ -1323,6 +1341,12 @@ class TimeSeriesDisplay(Display):
             Name of data field in the dataset to plot on second y-axis.
         alt_field : str
             Variable to use for y-axis.
+        yerror : float or array-like, shape(N,) or shape(2,N)
+            Option to add y-error bars to time-height plots using
+            matplotlib.errorbar functionality.
+        error_kw : dict
+            The keyword arguments for :func`plt.errorbar` if yerror is not
+            None.
         dsname : str or None
             The name of the datastream to plot.
         cmap : str
@@ -1417,6 +1441,42 @@ class TimeSeriesDisplay(Display):
 
         # Plot scatter data
         sc = ax.scatter(xdata.values, data.values, c=data.values, cmap=cmap, **kwargs)
+
+        # Optional overlay of errorbars
+        if yerror is not None:
+            # if 'ecolor not specified', bar color same as scatter colors
+            if 'ecolor' not in error_kw:
+                colormap = sc.get_cmap()
+                norm = sc.norm
+                bar_colors = colormap(norm(data.values))
+
+                # Handle errorevery subsetting
+                if 'errorevery' in error_kw:
+                    errorevery = error_kw['errorevery']
+                    if isinstance(errorevery, int):
+                        bar_colors = bar_colors[::errorevery]
+                    elif isinstance(errorevery, tuple):
+                        bar_colors = bar_colors[errorevery[0] :: errorevery[1]]
+
+                error_kw['ecolor'] = bar_colors
+
+            # Prevent overwritting of scatter
+            error_kw['fmt'] = 'none'
+            for key in [
+                'marker',
+                'markersize',
+                'markerfacecolor',
+                'markeredgecolor',
+                'markeredgewidth',
+                'markevery',
+                'fillstyle',
+                'linestyle',
+                'linewidth',
+                'color',
+            ]:
+                error_kw.pop(key, None)
+
+            ax.errorbar(xdata.values, data.values, yerr=yerror, **error_kw)
 
         ax.set_title(set_title)
         if plot_alt_field:
