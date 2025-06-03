@@ -720,3 +720,39 @@ def test_plot_labels():
         return display.fig
     finally:
         matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_time_height_scatter_errorbars():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+
+    yerrors = []
+    for val in sonde_ds['tdry'].values:
+        yerrors.append(abs(val) * 0.1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(10, 6))
+    display.time_height_scatter(
+        'tdry', yerror=yerrors, error_kw={'ecolor': 'black', 'errorevery': 50}
+    )
+
+    sonde_ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_timeseries_errorbars():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(10, 6))
+    display.plot('wspd', yerror=20, error_kw={'color': 'purple', 'marker': '^', 'errorevery': 75})
+
+    sonde_ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
