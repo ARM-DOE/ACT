@@ -729,6 +729,8 @@
         <span class="n">y_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ylabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">use_var_for_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">yerror</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">error_kw</span><span class="o">=</span><span class="p">{},</span>
         <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
         <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">overplot_marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
@@ -797,6 +799,12 @@
 <span class="sd">            instances where data has an index-based dimension instead of a</span>
 <span class="sd">            height-based dimension. If shapes of arrays do not match it will</span>
 <span class="sd">            automatically revert back to the original ydata.</span>
+<span class="sd">        yerror : float or array-like, shape(N,) or shape(2,N)</span>
+<span class="sd">            Option to add y-error bars to timeseries plots using</span>
+<span class="sd">            matplotlib.errorbar functionality.</span>
+<span class="sd">        error_kw : dict</span>
+<span class="sd">            The keyword arguments for :func`plt.errorbar` if yerror is not</span>
+<span class="sd">            None.</span>
 <span class="sd">        set_shading : string</span>
 <span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
 <span class="sd">            Default to &#39;auto&#39;</span>
@@ -986,7 +994,15 @@
             <span class="k">if</span> <span class="s1">&#39;marker&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
 
-            <span class="n">lines</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">yerror</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># If kwargs in error_kw and kwargs, error_kw takes precedence</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">error_kw</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerror</span><span class="p">,</span> <span class="o">**</span><span class="n">error_kw</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># Check if we need to call legend method after plotting. This is only</span>
             <span class="c1"># called when no assessment overplot is called.</span>
@@ -1722,6 +1738,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">alt_field</span><span class="o">=</span><span class="s1">&#39;alt&#39;</span><span class="p">,</span>
+        <span class="n">yerror</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">error_kw</span><span class="o">=</span><span class="p">{},</span>
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;rainbow&#39;</span><span class="p">,</span>
         <span class="n">alt_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1745,6 +1763,12 @@
 <span class="sd">            Name of data field in the dataset to plot on second y-axis.</span>
 <span class="sd">        alt_field : str</span>
 <span class="sd">            Variable to use for y-axis.</span>
+<span class="sd">        yerror : float or array-like, shape(N,) or shape(2,N)</span>
+<span class="sd">            Option to add y-error bars to time-height plots using</span>
+<span class="sd">            matplotlib.errorbar functionality.</span>
+<span class="sd">        error_kw : dict</span>
+<span class="sd">            The keyword arguments for :func`plt.errorbar` if yerror is not</span>
+<span class="sd">            None.</span>
 <span class="sd">        dsname : str or None</span>
 <span class="sd">            The name of the datastream to plot.</span>
 <span class="sd">        cmap : str</span>
@@ -1839,6 +1863,42 @@
 
         <span class="c1"># Plot scatter data</span>
         <span class="n">sc</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Optional overlay of errorbars</span>
+        <span class="k">if</span> <span class="n">yerror</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># if &#39;ecolor not specified&#39;, bar color same as scatter colors</span>
+            <span class="k">if</span> <span class="s1">&#39;ecolor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">error_kw</span><span class="p">:</span>
+                <span class="n">colormap</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">()</span>
+                <span class="n">norm</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">norm</span>
+                <span class="n">bar_colors</span> <span class="o">=</span> <span class="n">colormap</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+                <span class="c1"># Handle errorevery subsetting</span>
+                <span class="k">if</span> <span class="s1">&#39;errorevery&#39;</span> <span class="ow">in</span> <span class="n">error_kw</span><span class="p">:</span>
+                    <span class="n">errorevery</span> <span class="o">=</span> <span class="n">error_kw</span><span class="p">[</span><span class="s1">&#39;errorevery&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">errorevery</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                        <span class="n">bar_colors</span> <span class="o">=</span> <span class="n">bar_colors</span><span class="p">[::</span><span class="n">errorevery</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">errorevery</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="n">bar_colors</span> <span class="o">=</span> <span class="n">bar_colors</span><span class="p">[</span><span class="n">errorevery</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">::</span> <span class="n">errorevery</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+                <span class="n">error_kw</span><span class="p">[</span><span class="s1">&#39;ecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar_colors</span>
+
+            <span class="c1"># Prevent overwritting of scatter</span>
+            <span class="n">error_kw</span><span class="p">[</span><span class="s1">&#39;fmt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s1">&#39;marker&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;markersize&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;markerfacecolor&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;markeredgecolor&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;markeredgewidth&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;markevery&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;fillstyle&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;linestyle&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;linewidth&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;color&#39;</span><span class="p">,</span>
+            <span class="p">]:</span>
+                <span class="n">error_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerror</span><span class="p">,</span> <span class="o">**</span><span class="n">error_kw</span><span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">plot_alt_field</span><span class="p">:</span>
