@@ -1,10 +1,13 @@
 import os
 import glob
+import warnings
 
 import pytest
 
 import act
 from act.discovery.ameriflux import PolicyWarning
+
+warnings.simplefilter('always')
 
 
 def test_download_ameriflux_data():
