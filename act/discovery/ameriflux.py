@@ -196,7 +196,6 @@ def download_ameriflux_data(
         json=params,
         headers={"Content-Type": "application/json"},
     )
-
     # Check if FTP returns correctly
     if result.status_code == 200:
         link = result.json()
@@ -265,7 +264,11 @@ def _ameriflux_endpoints(endpoint="sitemap"):
 
 def _check_site_id(x):
     """Checks if user provided site_ids are valid."""
-    response = requests.get(_ameriflux_endpoints("sitemap"))
+    headers = {
+        'Content-Type': 'application/json',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
+    response = requests.get(_ameriflux_endpoints("sitemap"), headers=headers)
     df = pd.json_normalize(response.json())
     site_ids = df['SITE_ID'].tolist()
     chk_id = [site_id in site_ids for site_id in x]
