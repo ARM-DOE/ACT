@@ -672,14 +672,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves urls for different ameriflux server endpoints. Options include&quot;</span>
 <span class="sd">    sitemap, site_ccby4, data_year, data_download, and variables&quot;&quot;&quot;</span>
     <span class="c1"># base urls</span>
-    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://amfcdn.lbl.gov/&quot;</span>
-    <span class="n">api_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="s2">&quot;api/v1&quot;</span><span class="p">)</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://amfcdn.lbl.gov/api/v1/&quot;</span>
 
     <span class="c1"># what to return</span>
     <span class="n">url</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;sitemap&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="s2">&quot;site_display/AmeriFlux&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;site_ccby4&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="s2">&quot;site_availability/AmeriFlux/BIF/CCBY4.0&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;data_download&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="s2">&quot;data_download&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;sitemap&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;site_display/AmeriFlux&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;site_ccby4&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;site_availability/AmeriFlux/BIF/CCBY4.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_download&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;data_download&quot;</span><span class="p">,</span>
     <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">url</span>
 
