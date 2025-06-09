@@ -250,14 +250,13 @@ def _ameriflux_endpoints(endpoint="sitemap"):
     """Retrieves urls for different ameriflux server endpoints. Options include"
     sitemap, site_ccby4, data_year, data_download, and variables"""
     # base urls
-    base_url = "https://amfcdn.lbl.gov/"
-    api_url = os.path.join(base_url, "api/v1")
+    base_url = "https://amfcdn.lbl.gov/api/v1/"
 
     # what to return
     url = {
-        "sitemap": os.path.join(api_url, "site_display/AmeriFlux"),
-        "site_ccby4": os.path.join(api_url, "site_availability/AmeriFlux/BIF/CCBY4.0"),
-        "data_download": os.path.join(api_url, "data_download"),
+        "sitemap": base_url + "site_display/AmeriFlux",
+        "site_ccby4": base_url + "site_availability/AmeriFlux/BIF/CCBY4.0",
+        "data_download": base_url + "data_download",
     }.get(endpoint)
     return url
 
