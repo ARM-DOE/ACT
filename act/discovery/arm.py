@@ -174,8 +174,15 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
         print('')
     else:
         print(
-            'No files returned or url status error.\n' 'Check datastream name, start, and end date.'
+            'No files returned or url status error.\n'
+            'Check datastream name, start, and end date. \n'
         )
+        if datastream.split('.')[-1] == 'a0':
+            print(
+                '---------------------ATTENTION--------------------\n',
+                'ARM does not generally make a0-level data discoverable\n',
+                'Please reach out through the ARM Help link to request access',
+            )
 
     return file_names
 
