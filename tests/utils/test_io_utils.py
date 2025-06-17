@@ -253,8 +253,9 @@ def test_generate_movie():
             assert np.isclose(Path(write_filename).stat().st_size, 173189, 1000)
 
             # Test PosixPath generator for making movie
-            file_generator = basepath.glob('test_contour[!_]*.png')
-            result = act.utils.generate_movie(file_generator, write_filename=write_filename)
+            result = act.utils.generate_movie(
+                list(basepath.glob('test_contour[!_]*.png')), write_filename=write_filename
+            )
             assert result == str(write_filename)
             assert np.isclose(Path(write_filename).stat().st_size, 173189, 1000)
 
