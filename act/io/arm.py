@@ -128,6 +128,12 @@ def read_arm_netcdf(
     if len(filenames) > 1 and not isinstance(filenames, str):
         kwargs['combine_attrs'] = combine_attrs
 
+    # An update to xarray.open_dataset is changing from allowing decode_timedelta to be set to None
+    # (the current default) and if so set to match decode_times. This code is to set the keyword to
+    # make the warning go away.
+    if 'decode_timedelta' not in kwargs.keys():
+        kwargs['decode_timedelta'] = kwargs['decode_times']
+
     # Check if keep_variables is set. If so determine correct drop_variables
     if keep_variables is not None:
         drop_variables = None
