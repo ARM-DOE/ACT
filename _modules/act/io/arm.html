@@ -550,6 +550,12 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
 
+    <span class="c1"># An update to xarray.open_dataset is changing from allowing decode_timedelta to be set to None</span>
+    <span class="c1"># (the current default) and if so set to match decode_times. This code is to set the keyword to</span>
+    <span class="c1"># make the warning go away.</span>
+    <span class="k">if</span> <span class="s1">&#39;decode_timedelta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_timedelta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_times&#39;</span><span class="p">]</span>
+
     <span class="c1"># Check if keep_variables is set. If so determine correct drop_variables</span>
     <span class="k">if</span> <span class="n">keep_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">drop_variables</span> <span class="o">=</span> <span class="kc">None</span>
