@@ -133,6 +133,27 @@ def test_plot_datarose():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
+def test_missing_axes_fig():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+
+    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
+    WindDisplay.fig = None
+    WindDisplay.axes = None
+    WindDisplay.plot(
+        'deg',
+        'wspd',
+        spd_bins=None,
+        num_dirs=30,
+        tick_interval=2,
+        cmap='viridis',
+    )
+    try:
+        return WindDisplay.fig
+    finally:
+        matplotlib.pyplot.close(WindDisplay.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_groupby_plot():
     ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_MET_WILDCARD)
 
@@ -156,3 +177,11 @@ def test_groupby_plot():
             display.axes[i, j].tick_params(pad=-20)
     ds.close()
     return display.fig
+
+
+def test_windrose_errors():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
+    WindDisplay.axes = None
+    pytest.raises(RuntimeError, WindDisplay.set_thetarng)
+    pytest.raises(RuntimeError, WindDisplay.set_rrng, (50, 80))
