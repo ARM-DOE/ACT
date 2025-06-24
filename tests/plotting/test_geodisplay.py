@@ -108,14 +108,14 @@ def test_geo_errors():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
     pytest.raises(ValueError, display.geoplot, 'tdry')
-    pytest.raises(ValueError, display.geoplot)
+    pytest.raises(ValueError, display.geoplot, dsname='thing1')
 
     del sonde_ds['lat']
     display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
-    pytest.raises(ValueError, display.geoplot, 'tdry')
+    pytest.raises(ValueError, display.geoplot, 'tdry', dsname='thing1')
 
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     del sonde_ds['lon']
     del sonde_ds['tdry'].attrs['units']
     display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
-    pytest.raises(ValueError, display.geoplot, 'tdry')
+    pytest.raises(ValueError, display.geoplot, 'tdry', dsname='thing1')

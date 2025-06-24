@@ -124,6 +124,7 @@ def test_plot_datarose():
             'wspd_vec_mean',
             'temp_mean',
             num_dirs=12,
+            dsname='ds1',
             plot_type='groovy',
             subplot_index=(0, 0),
         )
