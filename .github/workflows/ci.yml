@@ -34,18 +34,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
         os: [macOS, ubuntu, Windows]
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v2.0.5
         with:
           create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
-          environment-name: act_env
-          micromamba-version: 1.5.10-0
+          init-shell: >-
+            bash
+          cache-downloads: true
+          post-cleanup: "all"
 
       - name: Fetch all history for all tags and branches
         run: |
