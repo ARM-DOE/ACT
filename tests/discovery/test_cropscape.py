@@ -1,3 +1,5 @@
+import pytest
+
 import act
 
 
@@ -18,3 +20,11 @@ def test_croptype():
     if crop2 is not None:
         # assert crop2 == 'Sorghum'
         assert crop2 in ['Soybeans', 'Winter Wheat']
+
+    pytest.raises(
+        RuntimeError,
+        act.discovery.cropscape.get_crop_type,
+        lat=None,
+        lon=None,
+        year=year,
+    )
