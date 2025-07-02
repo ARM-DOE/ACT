@@ -1312,8 +1312,8 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
         },
     }
 
-    # Uses requests to grab metadata from arm.gov.
-    response = requests.get(
+    # Uses requests to grab metadata from adc.arm.gov.
+    response = requests.post(
         'https://adc.arm.gov/elastic/metadata/_search', headers=headers, json=json_data
     )
     # Loads the text to a dictionary
