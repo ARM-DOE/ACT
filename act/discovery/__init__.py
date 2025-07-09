@@ -22,7 +22,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
     ],
     submod_attrs={
         'ameriflux': ['download_ameriflux_data'],
-        'arm': ['download_arm_data', 'get_arm_doi'],
+        'arm': ['download_arm_data', 'download_arm_data_mod', 'get_arm_doi'],
         'asos': ['get_asos_data'],
         'airnow': ['get_airnow_bounded_obs', 'get_airnow_obs', 'get_airnow_forecast'],
         'cropscape': ['get_crop_type'],

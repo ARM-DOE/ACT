@@ -8,6 +8,7 @@ import os
 from datetime import timedelta
 import requests
 import textwrap
+import warnings
 
 try:
     from urllib.request import Request, urlopen
@@ -107,7 +108,7 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
         end = f'&end={end}'
     # build the url to query the web service using the arguments provided
     query_url = (
-        'https://adc.arm.gov/armlive/livedata/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
+        'https://adc.arm.gov/armlive/data/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
     ).format(':'.join([username, token]), datastream, start, end)
 
     headers = {
@@ -148,7 +149,7 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
                     continue
             # construct link to web service saveData function
             save_data_url = (
-                'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
+                'https://adc.arm.gov/armlive/data/' + 'saveData?user={0}&file={1}'
             ).format(':'.join([username, token]), fname)
             req_save = Request(save_data_url, None, headers)
             output_file = os.path.join(output_dir, fname)
@@ -185,6 +186,78 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
             )
 
     return file_names
+
+
+def download_arm_data_mod(username, token, file_list, variables=None, filetype='cdf', output=None):
+    """
+    This function allows for downloading ARM data from ARM's data discovery mod API:
+    https://adc.arm.gov/armlive/
+
+    This function will then provide a concatenated file of the file list in csv or
+    cdf file format with all variables or user provided variables.
+
+    Parameters
+    ----------
+    username : str
+        ARM username.
+    token : str
+        ARM user token.
+    file_list : list
+        A list of files by datetime of the same datastream to concatenate.
+    variables : list
+        A list of desired variables that exist in the datastream.
+        Default is None and will provide all variables.
+    file_type : str
+        File type to download file as. Valid options are 'csv' and 'cdf'.
+        Default is 'cdf'
+    output : str
+        The output directory for the data. Set to None to make a folder in the
+        current working directory with the same name as filename to place
+        the files in.
+
+    Returns
+    -------
+    filename : str
+        Concatenated filename
+    """
+    if variables is not None:
+        variables_str = ",".join(variables)
+        url = f'https://adc.arm.gov/armlive/mod?user={username}:{token}&variables={variables_str}&wt={filetype}'
+    else:
+        url = f'https://adc.arm.gov/armlive/mod?user={username}:{token}&wt={filetype}'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, data=json.dumps(file_list))
+
+    if response.status_code == 200:
+        # Save the response content to a file
+        filename = response.headers.get('Content-Disposition').split('filename=')[1]
+        filename = filename.replace('"', '')
+
+        if output is not None:
+            # output files to directory specified
+            output_dir = os.path.join(output)
+        else:
+            # if no folder given, set current directory as folder
+            output_dir = os.getcwd()
+
+        # make directory if it doesn't exist and its a user provided folder.
+        if not os.path.isdir(output_dir) and output is not None:
+            os.makedirs(output_dir)
+
+        output_file = os.path.join(output_dir, filename)
+
+        with open(output_file, 'wb') as file:
+            file.write(response.content)
+
+        print(f"File saved as {filename}")
+        return filename
+    else:
+        warnings.warn(
+            'No files returned or url status error.\n'
+            'Check if username, token, file list are valid. \n',
+            UserWarning,
+        )
+        return
 
 
 def get_arm_doi(datastream, startdate, enddate):

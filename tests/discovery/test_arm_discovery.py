@@ -2,6 +2,7 @@ import glob
 import os
 
 import numpy as np
+import pytest
 
 import act
 
@@ -98,6 +99,74 @@ def test_download_armdata_hourly():
             username, token, datastream, startdate, enddate
         )
         assert len(results) == 1
+
+
+def test_download_arm_data_mod_with_variables():
+    # Call the function
+    username = os.getenv('ARM_USERNAME')
+    token = os.getenv('ARM_PASSWORD')
+    if username is not None and token is not None:
+        if len(username) == 0 and len(token) == 0:
+            return
+
+        file_list = [
+            "sgpmetE13.b1.20200101.000000.cdf",
+            "sgpmetE13.b1.20200102.000000.cdf",
+        ]
+        variables = [
+            "temp_mean",
+            "rh_mean",
+        ]
+
+        act.discovery.download_arm_data_mod(username, token, file_list, variables=variables)
+        # Check if the file was saved correctly
+        assert os.path.exists('sgpmetE13.b1.20200101-20200102.cdf')
+
+        # Check if variables are only what was selected
+        ds = act.io.read_arm_netcdf('sgpmetE13.b1.20200101-20200102.cdf')
+        assert len(ds.variables.keys()) == 3
+
+        # Check if all variables are present
+        act.discovery.download_arm_data_mod(username, token, file_list)
+        ds = act.io.read_arm_netcdf('sgpmetE13.b1.20200101-20200102.cdf')
+        assert len(ds.variables.keys()) == 50
+
+        # Check if custom output path exist and directory is created.
+        act.discovery.download_arm_data_mod(
+            username, token, file_list, output=os.getcwd() + '/data/'
+        )
+        ds = act.io.read_arm_netcdf(os.getcwd() + '/data/' + 'sgpmetE13.b1.20200101-20200102.cdf')
+        assert len(ds.variables.keys()) == 50
+
+
+def test_download_arm_data_mod_csv():
+    username = os.getenv('ARM_USERNAME')
+    token = os.getenv('ARM_PASSWORD')
+    if username is not None and token is not None:
+        if len(username) == 0 and len(token) == 0:
+            return
+
+        file_list = [
+            "sgpmetE13.b1.20200101.000000.cdf",
+            "sgpmetE13.b1.20200102.000000.cdf",
+        ]
+        # Test if csv file is created
+        act.discovery.download_arm_data_mod(username, token, file_list, filetype='csv')
+
+        # Check if the file was saved correctly
+        assert os.path.exists('sgpmetE13.b1.20200101-20200102.csv')
+
+
+def test_download_arm_data_mod_warn():
+    # Check for warning if parameters are wrong
+    with pytest.warns(UserWarning):
+        username = 'foo'
+        token = 'bar'
+        file_list = [
+            "sgpmetE13.b1.20200101.000000.cdf",
+            "sgpmetE13.b1.20200102.000000.cdf",
+        ]
+        act.discovery.download_arm_data_mod(username, token, file_list, filetype='csv')
 
 
 def test_arm_doi():
