@@ -715,49 +715,26 @@ class TimeSeriesDisplay(Display):
             self.set_yrng(y_rng)
 
         if hasattr(self, 'yrng'):
-            # Make sure that the yrng is not just the default
-            if ydata is None:
-                if abs_limits[0] is not None or abs_limits[1] is not None:
-                    our_data = data
-                else:
-                    our_data = data.values
-            else:
-                our_data = ydata
+            # Set autoscate to True. Needed because we may override with set_yrng() below.
+            ax.autoscale(enable=True, axis='y')
 
-            finite = np.isfinite(our_data)
-            # If finite is returned as DataArray or Dask array extract values.
-            try:
-                finite = finite.values
-            except AttributeError:
-                pass
-
-            if finite.any():
-                our_data = our_data[finite]
-                if invert_y_axis is False:
-                    yrng = [np.min(our_data), np.max(our_data)]
-                else:
-                    yrng = [np.max(our_data), np.min(our_data)]
-            else:
-                yrng = [0, 1]
-
-            # Check if current range is outside of new range an only set
-            # values that work for all data plotted.
-            if isinstance(yrng[0], np.datetime64):
-                yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
-
+            # If all the data is NaN for only plot then the range should be updated. Default sets the range
+            # to (-0.055, 0.055). This will set to (0, 1) when all data are NaN. If a second call with non-NaN
+            # data is made the ax.autoscale() will allow the ylim to be updated to match that data.
             current_yrng = ax.get_ylim()
-            if invert_y_axis is False:
-                if yrng[0] > current_yrng[0]:
-                    yrng[0] = current_yrng[0]
-                if yrng[1] < current_yrng[1]:
-                    yrng[1] = current_yrng[1]
-            else:
-                if yrng[0] < current_yrng[0]:
-                    yrng[0] = current_yrng[0]
-                if yrng[1] > current_yrng[1]:
-                    yrng[1] = current_yrng[1]
+            if np.sum(current_yrng) == 0.0 and np.diff(current_yrng) < 0.12:
+                self.set_yrng([0, 1], subplot_index)
 
-            self.set_yrng(yrng, subplot_index)
+            # When requested invert y-axis
+            if invert_y_axis:
+                try:
+                    ax.ACT_y_axis_is_inverted
+                except AttributeError:
+                    ax.ACT_y_axis_is_inverted = False
+
+                if not ax.ACT_y_axis_is_inverted:
+                    ax.invert_yaxis()
+                    ax.ACT_y_axis_is_inverted = True
 
         # Set X Format
         if len(subplot_index) == 1:
