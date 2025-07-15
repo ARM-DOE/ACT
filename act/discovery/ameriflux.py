@@ -7,7 +7,6 @@ import os
 import requests
 import warnings
 
-import pandas as pd
 
 warnings.simplefilter('always')
 
@@ -120,18 +119,17 @@ def download_ameriflux_data(
     if not site_ids:
         raise ValueError("No valid Site ID in site_ids...")
 
-    # Obtain formal intended use category
-    def intended_use_extended(intended_use):
-        return {
-            "synthesis": "Research - Multi-site synthesis",
-            "remote_sensing": "Research - Remote sensing",
-            "model": "Research - Land model/Earth system model",
-            "other_research": "Research - Other",
-            "education": "Education (Teacher or Student)",
-            "other": "Other",
-        }.get(intended_use)
+    # Check if intended use is valid
+    intended_use_list = [
+        "synthesis",
+        "remote_sensing",
+        "model",
+        "other_research",
+        "education",
+        "other",
+    ]
 
-    if not intended_use_extended(intended_use):
+    if intended_use not in intended_use_list:
         raise ValueError("Invalid intended_use input...")
 
     # Check if out_dir is reachable
@@ -186,7 +184,7 @@ def download_ameriflux_data(
         "data_product": data_product,
         "data_variant": data_variant,
         "site_ids": site_ids,
-        "intended_use": intended_use_extended(intended_use),
+        "intended_use": intended_use,
         "description": f"{description} [Atmospheric data Community Toolkit download]",
         "is_test": test_key,
     }
@@ -194,7 +192,10 @@ def download_ameriflux_data(
     result = requests.post(
         _ameriflux_endpoints("data_download"),
         json=params,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "content-type": "application/json",
+            "accept": "applicaton/json",
+        },
     )
     # Check if FTP returns correctly
     if result.status_code == 200:
@@ -250,11 +251,11 @@ def _ameriflux_endpoints(endpoint="sitemap"):
     """Retrieves urls for different ameriflux server endpoints. Options include"
     sitemap, site_ccby4, data_year, data_download, and variables"""
     # base urls
-    base_url = "https://amfcdn.lbl.gov/api/v1/"
+    base_url = "https://amfcdn.lbl.gov/api/v2/"
 
     # what to return
     url = {
-        "sitemap": base_url + "site_display/AmeriFlux",
+        "sitemap": base_url + "site_info_display/AmeriFlux",
         "site_ccby4": base_url + "site_availability/AmeriFlux/BIF/CCBY4.0",
         "data_download": base_url + "data_download",
     }.get(endpoint)
@@ -268,8 +269,8 @@ def _check_site_id(x):
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
     }
     response = requests.get(_ameriflux_endpoints("sitemap"), headers=headers)
-    df = pd.json_normalize(response.json())
-    site_ids = df['SITE_ID'].tolist()
+    response_json = response.json()
+    site_ids = [i['site_id'] for i in response_json['values']]
     chk_id = [site_id in site_ids for site_id in x]
     return chk_id
 
