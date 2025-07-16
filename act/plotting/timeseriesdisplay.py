@@ -359,6 +359,8 @@ class TimeSeriesDisplay(Display):
         day_night_background : bool
             Set to True to fill in a color coded background.
             according to the time of day.
+        invert_y_axis : bool
+            Invert the y-axix.
         abs_limits : tuple or list
             Sets the bounds on plot limits even if data values exceed
             those limits. Set to (ymin,ymax). Use None if only setting
@@ -655,6 +657,11 @@ class TimeSeriesDisplay(Display):
                 ax.set_yticks(flag_values)
                 ax.set_yticklabels(flag_meanings)
 
+                # Setting autoscale() below causes issues with this plot. Setting y_rng here
+                # means the current range will be reset after autoscale() is set.
+                if y_rng is None:
+                    y_rng = ax.get_ylim()
+
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
@@ -673,6 +680,15 @@ class TimeSeriesDisplay(Display):
                 cmap=cmap,
                 **kwargs,
             )
+
+            # The pcolormesh plot is rounding the ylimit. To have just the data in the plotting
+            # window need to set the ylimits. If the y_lim keyword is set that will overwrite
+            # this after.
+            ydata_diff = np.diff(ydata.values)
+            if y_rng is None and np.all(np.isfinite([ydata[0], ydata[-1]])):
+                lower_limit = ydata.values[0] - ydata_diff[0] / 2.0
+                upper_limit = ydata.values[-1] + ydata_diff[-1] / 2.0
+                y_rng = (lower_limit, upper_limit)
 
         # Set Title
         if set_title is None:
@@ -709,10 +725,6 @@ class TimeSeriesDisplay(Display):
                 self.time_rng = [xdata.min().values, xdata.max().values]
 
         self.set_xrng(self.time_rng, subplot_index)
-
-        # Set Y Limit
-        if y_rng is not None:
-            self.set_yrng(y_rng)
 
         if hasattr(self, 'yrng'):
             # Set autoscate to True. Needed because we may override with set_yrng() below.
@@ -776,6 +788,11 @@ class TimeSeriesDisplay(Display):
                 cbar = self.add_colorbar(mesh, subplot_index=subplot_index, pad=cbar_h_adjust)
                 cbar.set_label(cbar_title, labelpad=cbar_labelpad, fontsize=cbar_labelsize)
                 cbar.ax.tick_params(labelsize=cbar_labelsize)
+
+        # Set Y Limit
+        if y_rng is not None:
+            self.set_yrng(y_rng)
+
         return ax
 
     def plot_barbs_from_spd_dir(
