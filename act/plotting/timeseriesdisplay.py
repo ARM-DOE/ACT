@@ -359,6 +359,8 @@ class TimeSeriesDisplay(Display):
         day_night_background : bool
             Set to True to fill in a color coded background.
             according to the time of day.
+        invert_y_axis : bool
+            Invert the y-axix.
         abs_limits : tuple or list
             Sets the bounds on plot limits even if data values exceed
             those limits. Set to (ymin,ymax). Use None if only setting
@@ -655,6 +657,11 @@ class TimeSeriesDisplay(Display):
                 ax.set_yticks(flag_values)
                 ax.set_yticklabels(flag_meanings)
 
+                # Setting autoscale() below causes issues with this plot. Setting y_rng here
+                # means the current range will be reset after autoscale() is set.
+                if y_rng is None:
+                    y_rng = ax.get_ylim()
+
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
@@ -673,6 +680,15 @@ class TimeSeriesDisplay(Display):
                 cmap=cmap,
                 **kwargs,
             )
+
+            # The pcolormesh plot is rounding the ylimit. To have just the data in the plotting
+            # window need to set the ylimits. If the y_lim keyword is set that will overwrite
+            # this after.
+            ydata_diff = np.diff(ydata.values)
+            if y_rng is None and np.all(np.isfinite([ydata[0], ydata[-1]])):
+                lower_limit = ydata.values[0] - ydata_diff[0] / 2.0
+                upper_limit = ydata.values[-1] + ydata_diff[-1] / 2.0
+                y_rng = (lower_limit, upper_limit)
 
         # Set Title
         if set_title is None:
@@ -710,54 +726,27 @@ class TimeSeriesDisplay(Display):
 
         self.set_xrng(self.time_rng, subplot_index)
 
-        # Set Y Limit
-        if y_rng is not None:
-            self.set_yrng(y_rng)
-
         if hasattr(self, 'yrng'):
-            # Make sure that the yrng is not just the default
-            if ydata is None:
-                if abs_limits[0] is not None or abs_limits[1] is not None:
-                    our_data = data
-                else:
-                    our_data = data.values
-            else:
-                our_data = ydata
+            # Set autoscate to True. Needed because we may override with set_yrng() below.
+            ax.autoscale(enable=True, axis='y')
 
-            finite = np.isfinite(our_data)
-            # If finite is returned as DataArray or Dask array extract values.
-            try:
-                finite = finite.values
-            except AttributeError:
-                pass
-
-            if finite.any():
-                our_data = our_data[finite]
-                if invert_y_axis is False:
-                    yrng = [np.min(our_data), np.max(our_data)]
-                else:
-                    yrng = [np.max(our_data), np.min(our_data)]
-            else:
-                yrng = [0, 1]
-
-            # Check if current range is outside of new range an only set
-            # values that work for all data plotted.
-            if isinstance(yrng[0], np.datetime64):
-                yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
-
+            # If all the data is NaN for only plot then the range should be updated. Default sets the range
+            # to (-0.055, 0.055). This will set to (0, 1) when all data are NaN. If a second call with non-NaN
+            # data is made the ax.autoscale() will allow the ylim to be updated to match that data.
             current_yrng = ax.get_ylim()
-            if invert_y_axis is False:
-                if yrng[0] > current_yrng[0]:
-                    yrng[0] = current_yrng[0]
-                if yrng[1] < current_yrng[1]:
-                    yrng[1] = current_yrng[1]
-            else:
-                if yrng[0] < current_yrng[0]:
-                    yrng[0] = current_yrng[0]
-                if yrng[1] > current_yrng[1]:
-                    yrng[1] = current_yrng[1]
+            if np.sum(current_yrng) == 0.0 and np.diff(current_yrng) < 0.12:
+                self.set_yrng([0, 1], subplot_index)
 
-            self.set_yrng(yrng, subplot_index)
+            # When requested invert y-axis
+            if invert_y_axis:
+                try:
+                    ax.ACT_y_axis_is_inverted
+                except AttributeError:
+                    ax.ACT_y_axis_is_inverted = False
+
+                if not ax.ACT_y_axis_is_inverted:
+                    ax.invert_yaxis()
+                    ax.ACT_y_axis_is_inverted = True
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -799,6 +788,11 @@ class TimeSeriesDisplay(Display):
                 cbar = self.add_colorbar(mesh, subplot_index=subplot_index, pad=cbar_h_adjust)
                 cbar.set_label(cbar_title, labelpad=cbar_labelpad, fontsize=cbar_labelsize)
                 cbar.ax.tick_params(labelsize=cbar_labelsize)
+
+        # Set Y Limit
+        if y_rng is not None:
+            self.set_yrng(y_rng)
+
         return ax
 
     def plot_barbs_from_spd_dir(

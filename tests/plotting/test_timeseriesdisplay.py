@@ -506,10 +506,21 @@ def test_plot_barbs_from_u_v5():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
-def test_2D_timeseries_plot():
+def test_2D_timeseries_plot_y_rng():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(ds)
     display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_2D_timeseries_plot():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
+    display = TimeSeriesDisplay(ds)
+    display.plot('backscatter')
     try:
         return display.fig
     finally:
