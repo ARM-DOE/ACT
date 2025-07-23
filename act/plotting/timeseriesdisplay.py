@@ -1136,6 +1136,130 @@ class TimeSeriesDisplay(Display):
 
         return self.axes[subplot_index]
 
+    def wind_quiver_plot(
+        self,
+        field_wspd='wspd_vec_mean',
+        field_wdir='wdir_vec_mean',
+        dsname=None,
+        scale=125,
+        cmap='cividis',
+        arrow_legend=True,
+        day_night_background=False,
+        set_title=None,
+        subplot_index=(0,),
+        figsize=(12, 3),
+        **kwargs
+    ):
+        """
+        Creates a time series quiver plot showing wind speed and direction.
+
+        Parameters
+        ----------
+        field_wspd : str
+            Field name for wind speed (in m/s).
+        field_wdir : str
+            Field name for wind direction (in degrees).
+        dsname : str
+            Name of datastream to plot.
+        scale : float
+            Scale factor for quiver arrows.
+        cmap : str
+            Colormap for arrow colors representing wind speed.
+        arrow_legend : bool
+            Whether to add a legend for arrow lengths.
+        day_night_background : bool
+            If True, overlays day/night background shading.
+        set_title : str or None
+            Title to set on the plot. If None, generates automatically.
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to plot in.
+        figsize : tuple
+            Size of the figure.
+        **kwargs : keyword arguments
+            Additional keyword arguments passed to matplotlib's quiver function.
+
+        Returns
+        -------
+        ax : matplotlib.axes.Axes
+            The axis with the wind quiver plot.
+        """
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError('You must choose a datastream when there are 2 or more datasets.')
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        ds = self._ds[dsname]
+        ax = self.axes[subplot_index]
+
+        # Set up figure and axes if not already done
+        if self.fig is None:
+            self.fig = plt.figure(figsize=figsize)
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        self.fig.set_size_inches(figsize)
+        self.fig.subplots_adjust(left=0.08, right=0.94, bottom=0.15, top=0.90, hspace=0.3)
+
+        time = ds['time'].values
+        wind_speed = ds[field_wspd].values
+        wind_direction = ds[field_wdir].values
+
+        u = -wind_speed * np.sin(np.radians(wind_direction))
+        v = -wind_speed * np.cos(np.radians(wind_direction))
+
+        x = mdates.date2num(time)
+        y = np.zeros_like(x)
+
+        quiver = ax.quiver(x, y, u, v, wind_speed,
+                           cmap=cmap, scale=scale, width=0.005, **kwargs)
+
+        ax.set_xlim([x.min(), x.max()])
+        ax.set_yticks([])
+        ax.set_ylim([-0.5, 0.5])
+        ax.set_ylabel('Wind Direction Over Time')
+
+        self.fig.colorbar(quiver, ax=ax, orientation='vertical',
+                          shrink=0.8, pad=0.02).set_label('Wind Speed (m/s)')
+
+        if arrow_legend:
+            # Place legend arrows near end of time range and above baseline
+            legend_x = x.max() + 0.14 * (x.max() - x.min())  # 5% to the right
+            legend_y_base = 1.3
+
+            for i, speed in enumerate((2, 5, 10)):
+                y_offset = i * 0.2
+                ax.quiver(legend_x, legend_y_base - y_offset, speed, 0,
+                          color='black', scale=scale, width=0.005,
+                          transform=ax.transData, clip_on=False)
+                ax.text(legend_x - 0.01 * (x.max() - x.min()), legend_y_base - y_offset,
+                        f"{speed} m/s", fontsize=9,
+                        verticalalignment='center', ha='right',
+                        transform=ax.transData)
+
+            # Extend x and y limits to fit legend
+            ax.set_xlim(x.min(), legend_x + 0.05 * (x.max() - x.min()))
+            ax.set_ylim(-0.5, 0.5 + y_offset + 0.3)
+
+        if set_title is None:
+            if isinstance(time[0], np.datetime64):
+                set_title = f"{dsname} Wind Speed and Direction on {time[0].astype('M8[D]')}"
+        ax.set_title(set_title)
+
+        # Set up time format
+        days = (x.max() - x.min())
+        myFmt = common.get_date_format(days)
+        ax.xaxis.set_major_formatter(myFmt)
+        ax.tick_params(axis='x', labelsize=8)
+
+        if day_night_background is True:
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
+
+        self.set_xrng([x.min(), x.max()], subplot_index)
+        self.axes[subplot_index] = ax
+
+        return ax
+
     def plot_time_height_xsection_from_1d_data(
         self,
         data_field,

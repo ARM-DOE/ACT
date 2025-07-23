@@ -767,3 +767,52 @@ def test_timeseries_errorbars():
         return display.fig
     finally:
         matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=20)
+def test_wind_quiver_plot_basic():
+    # Create a simple dataset
+    times = pd.date_range("2025-07-01", periods=8, freq="3h")
+    wspd = np.linspace(1, 8, len(times))
+    wdir = np.linspace(0, 360, len(times), endpoint=False)
+    ds = xr.Dataset({
+        "time": ("time", times),
+        "wspd_vec_mean": ("time", wspd),
+        "wdir_vec_mean": ("time", wdir),
+    })
+
+    tsd = TimeSeriesDisplay({"test": ds})
+    tsd.wind_quiver_plot(dsname="test", arrow_legend=True)
+
+    tsd.fig.tight_layout()
+    return tsd.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=20)
+def test_wind_quiver_plot_daynight_and_custom_title():
+    times = pd.date_range("2025-07-01", periods=8, freq="3h")
+    wspd = np.linspace(2, 16, len(times))
+    wdir = np.linspace(45, 405, len(times), endpoint=False)
+    ds = xr.Dataset(
+        {
+            "wspd_vec_mean": ("time", wspd),
+            "wdir_vec_mean": ("time", wdir),
+            "latitude": ("time", [36.605] * len(times)),  # repeated to match time dim
+            "longitude": ("time", [-97.485] * len(times)),
+        },
+        coords={"time": times}
+    )
+
+    tsd = TimeSeriesDisplay({"test2": ds})
+    custom_title = "Custom Wind Plot"
+    ax = tsd.wind_quiver_plot(
+        dsname="test2",
+        arrow_legend=True,
+        day_night_background=True,
+        set_title=custom_title
+    )
+
+    ax.xaxis.set_tick_params(labelsize=6)
+    tsd.fig.tight_layout()
+    return tsd.fig
+
