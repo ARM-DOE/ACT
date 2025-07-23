@@ -815,4 +815,3 @@ def test_wind_quiver_plot_daynight_and_custom_title():
     ax.xaxis.set_tick_params(labelsize=6)
     tsd.fig.tight_layout()
     return tsd.fig
-
