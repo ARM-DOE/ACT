@@ -775,11 +775,13 @@ def test_wind_quiver_plot_basic():
     times = pd.date_range("2025-07-01", periods=8, freq="3h")
     wspd = np.linspace(1, 8, len(times))
     wdir = np.linspace(0, 360, len(times), endpoint=False)
-    ds = xr.Dataset({
+    ds = xr.Dataset(
+        {
         "time": ("time", times),
         "wspd_vec_mean": ("time", wspd),
         "wdir_vec_mean": ("time", wdir),
-    })
+        }
+    )
 
     tsd = TimeSeriesDisplay({"test": ds})
     tsd.wind_quiver_plot(dsname="test", arrow_legend=True)
@@ -797,19 +799,16 @@ def test_wind_quiver_plot_daynight_and_custom_title():
         {
             "wspd_vec_mean": ("time", wspd),
             "wdir_vec_mean": ("time", wdir),
-            "latitude": ("time", [36.605] * len(times)),  # repeated to match time dim
+            "latitude": ("time", [36.605] * len(times)),
             "longitude": ("time", [-97.485] * len(times)),
         },
-        coords={"time": times}
+        coords={"time": times},
     )
 
     tsd = TimeSeriesDisplay({"test2": ds})
     custom_title = "Custom Wind Plot"
     ax = tsd.wind_quiver_plot(
-        dsname="test2",
-        arrow_legend=True,
-        day_night_background=True,
-        set_title=custom_title
+        dsname="test2", arrow_legend=True, day_night_background=True, set_title=custom_title
     )
 
     ax.xaxis.set_tick_params(labelsize=6)

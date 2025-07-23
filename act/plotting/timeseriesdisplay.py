@@ -1148,7 +1148,7 @@ class TimeSeriesDisplay(Display):
         set_title=None,
         subplot_index=(0,),
         figsize=(12, 3),
-        **kwargs
+        **kwargs,
     ):
         """
         Creates a time series quiver plot showing wind speed and direction.
@@ -1211,16 +1211,15 @@ class TimeSeriesDisplay(Display):
         x = mdates.date2num(time)
         y = np.zeros_like(x)
 
-        quiver = ax.quiver(x, y, u, v, wind_speed,
-                           cmap=cmap, scale=scale, width=0.005, **kwargs)
+        quiver = ax.quiver(x, y, u, v, wind_speed, cmap=cmap, scale=scale, width=0.005, **kwargs)
 
         ax.set_xlim([x.min(), x.max()])
         ax.set_yticks([])
         ax.set_ylim([-0.5, 0.5])
         ax.set_ylabel('Wind Direction Over Time')
 
-        self.fig.colorbar(quiver, ax=ax, orientation='vertical',
-                          shrink=0.8, pad=0.02).set_label('Wind Speed (m/s)')
+        self.fig.colorbar(quiver, ax=ax, orientation='vertical', shrink=0.8, pad=0.02).set_label(
+            'Wind Speed (m/s)')
 
         if arrow_legend:
             # Place legend arrows near end of time range and above baseline
@@ -1229,13 +1228,24 @@ class TimeSeriesDisplay(Display):
 
             for i, speed in enumerate((2, 5, 10)):
                 y_offset = i * 0.2
-                ax.quiver(legend_x, legend_y_base - y_offset, speed, 0,
-                          color='black', scale=scale, width=0.005,
-                          transform=ax.transData, clip_on=False)
-                ax.text(legend_x - 0.01 * (x.max() - x.min()), legend_y_base - y_offset,
-                        f"{speed} m/s", fontsize=9,
-                        verticalalignment='center', ha='right',
-                        transform=ax.transData)
+                ax.quiver(legend_x,
+                          legend_y_base - y_offset,
+                          speed,
+                          0,
+                          color='black',
+                          scale=scale,
+                          width=0.005,
+                          transform=ax.transData,
+                          clip_on=False,
+                )
+                ax.text(legend_x - 0.01 * (x.max() - x.min()),
+                        legend_y_base - y_offset,
+                        f"{speed} m/s",
+                        fontsize=9,
+                        verticalalignment='center',
+                        ha='right',
+                        transform=ax.transData,
+                )
 
             # Extend x and y limits to fit legend
             ax.set_xlim(x.min(), legend_x + 0.05 * (x.max() - x.min()))
@@ -1247,7 +1257,7 @@ class TimeSeriesDisplay(Display):
         ax.set_title(set_title)
 
         # Set up time format
-        days = (x.max() - x.min())
+        days = x.max() - x.min()
         myFmt = common.get_date_format(days)
         ax.xaxis.set_major_formatter(myFmt)
         ax.tick_params(axis='x', labelsize=8)
