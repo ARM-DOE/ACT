@@ -1228,23 +1228,25 @@ class TimeSeriesDisplay(Display):
 
             for i, speed in enumerate((2, 5, 10)):
                 y_offset = i * 0.2
-                ax.quiver(legend_x,
-                          legend_y_base - y_offset,
-                          speed,
-                          0,
-                          color='black',
-                          scale=scale,
-                          width=0.005,
-                          transform=ax.transData,
-                          clip_on=False,
+                ax.quiver(
+                    legend_x,
+                    legend_y_base - y_offset,
+                    speed,
+                    0,
+                    color='black',
+                    scale=scale,
+                    width=0.005,
+                    transform=ax.transData,
+                    clip_on=False,
                 )
-                ax.text(legend_x - 0.01 * (x.max() - x.min()),
-                        legend_y_base - y_offset,
-                        f"{speed} m/s",
-                        fontsize=9,
-                        verticalalignment='center',
-                        ha='right',
-                        transform=ax.transData,
+                ax.text(
+                    legend_x - 0.01 * (x.max() - x.min()),
+                    legend_y_base - y_offset,
+                    f"{speed} m/s",
+                    fontsize=9,
+                    verticalalignment='center',
+                    ha='right',
+                    transform=ax.transData,
                 )
 
             # Extend x and y limits to fit legend

@@ -777,9 +777,9 @@ def test_wind_quiver_plot_basic():
     wdir = np.linspace(0, 360, len(times), endpoint=False)
     ds = xr.Dataset(
         {
-        "time": ("time", times),
-        "wspd_vec_mean": ("time", wspd),
-        "wdir_vec_mean": ("time", wdir),
+            "time": ("time", times),
+            "wspd_vec_mean": ("time", wspd),
+            "wdir_vec_mean": ("time", wdir),
         }
     )
 
