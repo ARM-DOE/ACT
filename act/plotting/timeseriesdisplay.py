@@ -1220,7 +1220,7 @@ class TimeSeriesDisplay(Display):
 
         self.fig.colorbar(quiver, ax=ax, orientation='vertical', shrink=0.8, pad=0.02).set_label(
             'Wind Speed (m/s)'
-            )
+        )
 
         if arrow_legend:
             # Place legend arrows near end of time range and above baseline
