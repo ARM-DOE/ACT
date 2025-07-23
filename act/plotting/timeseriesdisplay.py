@@ -791,7 +791,7 @@ class TimeSeriesDisplay(Display):
 
         # Set Y Limit
         if y_rng is not None:
-            self.set_yrng(y_rng)
+            self.set_yrng(y_rng, subplot_index=subplot_index)
 
         return ax
 
