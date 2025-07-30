@@ -429,7 +429,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;always&#39;</span><span class="p">)</span>
 
@@ -542,18 +541,17 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">site_ids</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No valid Site ID in site_ids...&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Obtain formal intended use category</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">intended_use_extended</span><span class="p">(</span><span class="n">intended_use</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;synthesis&quot;</span><span class="p">:</span> <span class="s2">&quot;Research - Multi-site synthesis&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;remote_sensing&quot;</span><span class="p">:</span> <span class="s2">&quot;Research - Remote sensing&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;Research - Land model/Earth system model&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;other_research&quot;</span><span class="p">:</span> <span class="s2">&quot;Research - Other&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;education&quot;</span><span class="p">:</span> <span class="s2">&quot;Education (Teacher or Student)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="s2">&quot;Other&quot;</span><span class="p">,</span>
-        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">intended_use</span><span class="p">)</span>
+    <span class="c1"># Check if intended use is valid</span>
+    <span class="n">intended_use_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;synthesis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;remote_sensing&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;other_research&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;education&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">intended_use_extended</span><span class="p">(</span><span class="n">intended_use</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">intended_use</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">intended_use_list</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid intended_use input...&quot;</span><span class="p">)</span>
 
     <span class="c1"># Check if out_dir is reachable</span>
@@ -608,7 +606,7 @@
         <span class="s2">&quot;data_product&quot;</span><span class="p">:</span> <span class="n">data_product</span><span class="p">,</span>
         <span class="s2">&quot;data_variant&quot;</span><span class="p">:</span> <span class="n">data_variant</span><span class="p">,</span>
         <span class="s2">&quot;site_ids&quot;</span><span class="p">:</span> <span class="n">site_ids</span><span class="p">,</span>
-        <span class="s2">&quot;intended_use&quot;</span><span class="p">:</span> <span class="n">intended_use_extended</span><span class="p">(</span><span class="n">intended_use</span><span class="p">),</span>
+        <span class="s2">&quot;intended_use&quot;</span><span class="p">:</span> <span class="n">intended_use</span><span class="p">,</span>
         <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2"> [Atmospheric data Community Toolkit download]&quot;</span><span class="p">,</span>
         <span class="s2">&quot;is_test&quot;</span><span class="p">:</span> <span class="n">test_key</span><span class="p">,</span>
     <span class="p">}</span>
@@ -616,7 +614,10 @@
     <span class="n">result</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="n">_ameriflux_endpoints</span><span class="p">(</span><span class="s2">&quot;data_download&quot;</span><span class="p">),</span>
         <span class="n">json</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">},</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;applicaton/json&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="c1"># Check if FTP returns correctly</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
@@ -672,11 +673,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves urls for different ameriflux server endpoints. Options include&quot;</span>
 <span class="sd">    sitemap, site_ccby4, data_year, data_download, and variables&quot;&quot;&quot;</span>
     <span class="c1"># base urls</span>
-    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://amfcdn.lbl.gov/api/v1/&quot;</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://amfcdn.lbl.gov/api/v2/&quot;</span>
 
     <span class="c1"># what to return</span>
     <span class="n">url</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;sitemap&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;site_display/AmeriFlux&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sitemap&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;site_info_display/AmeriFlux&quot;</span><span class="p">,</span>
         <span class="s2">&quot;site_ccby4&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;site_availability/AmeriFlux/BIF/CCBY4.0&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_download&quot;</span><span class="p">:</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;data_download&quot;</span><span class="p">,</span>
     <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
@@ -690,8 +691,8 @@
         <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_ameriflux_endpoints</span><span class="p">(</span><span class="s2">&quot;sitemap&quot;</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-    <span class="n">site_ids</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;SITE_ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">response_json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">site_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;site_id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">response_json</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]]</span>
     <span class="n">chk_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">site_id</span> <span class="ow">in</span> <span class="n">site_ids</span> <span class="k">for</span> <span class="n">site_id</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">chk_id</span>
 
