@@ -1767,3 +1767,86 @@ class QCTests:
         )
 
         return result
+
+    def add_relative_variability_test(
+        self,
+        var_names,
+        threshold,
+        test_assessment='Suspect',
+        test_number=None,
+        flag_value=False,
+        prepend_text=None,
+        window=60,
+        min_period=1,
+    ):
+        """
+        Method to calculate the variability of a variable relative to
+        other variables that are passed in.  The process includes
+        1.) Calculating a rolling standard deviation for all variables passed in
+        2.) For each variable it will subtract the mean standard deviation of all
+            the other variables
+        3.) Variability relative to the mean greater than the threshold passed in
+            will be flagged.
+
+        Parameters
+        ----------
+        var_names : list
+            List of data variable names.  At least 2 are required.
+        threshold : int or float
+            Threshold value to use in test.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will ues next
+            available test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+        window : int or float
+            Window to calculate rolling standard deviation
+        min_periods : int
+            Minimum number of samples to use for rolling standard deviation
+
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment
+
+        """
+        test_meaning = 'Standard deviation of variable is greater than the mean standard deviation of other like variables'
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        if len(var_names) < 2:
+            raise ValueError('More than 1 variable is needed to run test')
+
+        # Copy data and perform rolling average in new dataset
+        ds_std = self._ds[var_names].copy(deep=True)
+        ds_std = ds_std.rolling(time=window, min_periods=min_period).std()
+
+        result = {}
+        for v in var_names:
+            # Get variables and remove current variable to calculate means from
+            dummy_var = var_names.copy()
+            dummy_var.remove(v)
+
+            std_data = np.abs(
+                ds_std[v].values - np.nanmean([ds_std[d].values for d in dummy_var], axis=0)
+            )
+            index = np.where(std_data > threshold)
+            result[v] = self._ds.qcfilter.add_test(
+                v,
+                index=index,
+                test_number=test_number,
+                test_meaning=test_meaning,
+                test_assessment=test_assessment,
+            )
+
+        return result
