@@ -1,8 +1,9 @@
 import dask.array as da
 import numpy as np
 
+import act
 from act.io.arm import read_arm_netcdf
-from act.tests import EXAMPLE_MET1, EXAMPLE_IRT25m20s
+from act.tests import EXAMPLE_MET1, EXAMPLE_IRT25m20s, EXAMPLE_MFRSR
 
 
 def test_qctests():
@@ -505,3 +506,23 @@ def test_add_step_change_test():
     assert np.all(np.where(index)[0] == [419, 420])
 
     del ds
+
+
+def test_add_relative_variability_test():
+    ds = read_arm_netcdf(EXAMPLE_MFRSR)
+    ds.clean.cleanup()
+    variables = [v for v in list(ds) if v.startswith('diffuse_hemisp_narrowband_filter')]
+
+    # Modify data to trip the test
+    data = ds[variables[0]].values
+    data[1000:1200] += 20
+    ds[variables[0]].values = data
+
+    # Apply the test and have threshold of 1
+    thresh = 1.0
+    result = ds.qcfilter.add_relative_variability_test(variables, thresh)
+
+    assert result[variables[0]]['test_number'] == 4
+    assert np.nansum(ds['qc_' + variables[0]]) == 2030
+    assert ds['qc_' + variables[0]].values[1200] == 8
+    assert act.qc.qcfilter.parse_bit(ds['qc_' + variables[0]].values[1000]) == [4]
