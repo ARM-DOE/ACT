@@ -77,13 +77,14 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         qc_var_name = None
         try:
             ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
+            var_dims = self._ds[var_name].dims
             if isinstance(ancillary_variables, str):
                 ancillary_variables = ancillary_variables.split()
-
             for var in ancillary_variables:
                 for attr, value in self._ds[var].attrs.items():
                     if attr == 'standard_name' and 'quality_flag' in value:
-                        qc_var_name = var
+                        if var_dims == self._ds[var].dims:
+                            qc_var_name = var
 
             if add_if_missing and qc_var_name is None:
                 qc_var_name = self._ds.qcfilter.create_qc_variable(var_name, flag_type=flag_type)
