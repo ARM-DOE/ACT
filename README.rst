@@ -58,7 +58,9 @@ Important Links
 Citing
 ~~~~~~
 
-If you use ACT to prepare a publication, please cite the DOI listed in the badge above, which is updated with every version release to ensure that contributors get appropriate credit.  DOI is provided through Zenodo.
+If you use ACT to prepare a publication, please cite the DOI listed in the badge above,
+which is updated with every version release to ensure that contributors get appropriate
+credit. DOI is provided through Zenodo.
 
 Dependencies
 ~~~~~~~~~~~~
