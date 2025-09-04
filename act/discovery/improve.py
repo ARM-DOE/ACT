@@ -309,6 +309,7 @@ def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=
     ct = 0
     site = np.unique(df.Site)[0]
     attrs = {'url': base_url, 'datastream': site + ' IMPROVE'}
+
     for v in variables:
         # Find data for just the variable in question
         poc_attrs = {'units': '1', 'long_name': 'Parameter Occurrence Code for ' + v}
@@ -400,5 +401,7 @@ def get_improve_data(site_id=None, parameter_id=None, start_date=None, end_date=
             [df[-1]['EventDate'][i], df[-1]['EventType'][i], df[-1]['Notes'][i], '\n']
         )
     ds.attrs['site_problems'] = problem
+
+    ds = ds.sortby('time')
 
     return ds
