@@ -1656,6 +1656,7 @@ class TimeSeriesDisplay(Display):
         edgecolor='face',
         set_shading='auto',
         cvd_friendly=False,
+        ylabel=None,
         **kwargs,
     ):
         """
@@ -1687,6 +1688,9 @@ class TimeSeriesDisplay(Display):
         cvd_friendly : boolean
             Set to true if you want to use the integrated color vision deficiency (CVD) friendly
             colors for green/red based on the Homeyer colormap
+        ylabel : str
+            Label for the y-axis of the plot.  This will take the place of the
+            default which is to get the variable name or units.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
 
@@ -1854,6 +1858,9 @@ class TimeSeriesDisplay(Display):
             dim_name = list(set(self._ds[dsname][qc_data_field].dims) - {'time'})
             try:
                 ytitle = f"{dim_name[0]} ({self._ds[dsname][dim_name[0]].attrs['units']})"
+                # Set ylabel after previous default titles if ylabel is set
+                if ylabel is not None:
+                    ytitle = ylabel
                 ax.set_ylabel(ytitle)
             except KeyError:
                 pass
