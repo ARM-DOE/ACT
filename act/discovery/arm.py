@@ -71,10 +71,9 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
     <https://adc.arm.gov/armlive/#scripts>`_.
 
     To login/register for an access token click `here
-    <https://adc.arm.gov/armlive/livedata/home>`_.
+    <https://adc.arm.gov/armlive/>`_.
 
     Author: Michael Giansiracusa
-    Email: giansiracumt@ornl.gov
 
     Examples
     --------
