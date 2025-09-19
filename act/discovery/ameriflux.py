@@ -75,7 +75,7 @@ def download_ameriflux_data(
     the criteria will be returned to the user and downloaded.
 
     To login/register for an Ameriflux account:
-    https://ameriflux-data.lbl.gov/Pages/RequestAccount.aspx
+    https://amfcdn.lbl.gov/create
 
     Examples
     --------
