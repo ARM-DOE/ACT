@@ -2078,6 +2078,7 @@
         <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">,</span>
         <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
         <span class="n">cvd_friendly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2109,6 +2110,9 @@
 <span class="sd">        cvd_friendly : boolean</span>
 <span class="sd">            Set to true if you want to use the integrated color vision deficiency (CVD) friendly</span>
 <span class="sd">            colors for green/red based on the Homeyer colormap</span>
+<span class="sd">        ylabel : str</span>
+<span class="sd">            Label for the y-axis of the plot.  This will take the place of the</span>
+<span class="sd">            default which is to get the variable name or units.</span>
 <span class="sd">        **kwargs : keyword arguments</span>
 <span class="sd">            The keyword arguments for :func:`plt.broken_barh`.</span>
 
@@ -2276,6 +2280,9 @@
             <span class="n">dim_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dim_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">dim_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="c1"># Set ylabel after previous default titles if ylabel is set</span>
+                <span class="k">if</span> <span class="n">ylabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">ytitle</span> <span class="o">=</span> <span class="n">ylabel</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
