@@ -1,7 +1,10 @@
 import numpy as np
+import pytest
+
 import act
 
 
+@pytest.mark.skip(reason="NASA MPLNET is down due to funding.")
 def test_get_mplnet_meta():
     output = act.discovery.get_mplnet_meta(
         sites="GSFC", method="data", year="2024", month="09", day="12"
@@ -17,6 +20,7 @@ def test_get_mplnet_meta():
         output = act.discovery.get_mplnet_meta(sites=10)
 
 
+@pytest.mark.skip(reason="NASA MPLNET is down due to funding.")
 def test_download_mplnet_data():
     output = act.discovery.download_mplnet_data(
         version=3, level=1, product="NRB", site="GSFC", year="2020", month="09", day="01"
