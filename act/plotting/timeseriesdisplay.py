@@ -1756,12 +1756,15 @@ class TimeSeriesDisplay(Display):
         xdata = self._ds[dsname][dim[0]]
 
         # Get data and attributes
-        qc_data_field = self._ds[dsname].qcfilter.check_for_ancillary_qc(
-            data_field, add_if_missing=False, cleanup=False
-        )
+        if f'qc_{data_field}_dummy' not in self._ds[dsname].variables:
+            qc_data_field = self._ds[dsname].qcfilter.check_for_ancillary_qc(
+                data_field, add_if_missing=False, cleanup=False
+            )
+        else:
+            qc_data_field = f'qc_{data_field}_dummy'
         if qc_data_field is None:
             raise ValueError(f'No quality control ancillary variable in Dataset for {data_field}')
-
+        
         flag_masks = self._ds[dsname][qc_data_field].attrs['flag_masks']
         flag_meanings = self._ds[dsname][qc_data_field].attrs['flag_meanings']
         flag_assessments = self._ds[dsname][qc_data_field].attrs['flag_assessments']

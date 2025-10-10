@@ -7,6 +7,8 @@ import pytest
 import xarray as xr
 
 import act
+
+from matplotlib import colors 
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.tests import sample_files
 from act.utils.data_utils import accumulate_precip
@@ -270,6 +272,29 @@ def test_qc_bar_plot():
     finally:
         matplotlib.pyplot.close(display.fig)
 
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_qc_bar_plot_dummy_qc():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SMPS, 
+                                    cleanup_qc=True)
+    var_name = 'merged_dN_dlogDp'
+    expected_qc_var_name = 'qc_' + var_name
+    title = 'Merged Number Size Distribution'
+    cbar_title = 'dN/dlogD$_p$ (1/cm$^{3}$)'
+    ds.qcfilter.create_dummy_qc_variable(var_name, 
+                                         rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect'])
+    display = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(2,))
+
+    display.plot('merged_dN_dlogDp', cvd_friendly=True,
+                norm=colors.LogNorm(vmin=100., vmax=10000.), set_title=title, cbar_label=cbar_title,
+                ylabel='Pariticle Diameter (nm)', subplot_index=(0,))
+    display.axes[0].set_yscale('log')
+    display.qc_flag_block_plot('merged_dN_dlogDp', subplot_index=(1,))
+    display.axes[1].set_ylim([0, 21000])
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
 
 @pytest.mark.mpl_image_compare(tolerance=10)
 def test_2d_as_1d():
