@@ -762,13 +762,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 'You need to provide a value for test_number '
                 'keyword when calling the get_qc_test_mask() method'
             )
-        
+
         if var_name is not None and qc_var_name is None:
             if f'qc_{var_name}_dummy' in self._ds.data_vars:
                 qc_var_name = f'qc_{var_name}_dummy'
             else:
                 qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
-        
+
         qc_variable = self._ds[qc_var_name]
         if var_name is not None:
             # Ensure that the qc_variable matches the data variable shape
@@ -1049,7 +1049,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             if f'qc_{var_name}_dummy' in self._ds:
                 qc_var_name = f'qc_{var_name}_dummy'
             else:
-                qc_var_name = self.check_for_ancillary_qc(var_name, add_if_missing=False, cleanup=False)
+                qc_var_name = self.check_for_ancillary_qc(
+                    var_name, add_if_missing=False, cleanup=False
+                )
             if qc_var_name is None:
                 if verbose:
                     if var_name in ['base_time', 'time_offset']:
@@ -1144,11 +1146,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 if verbose:
                     print(f'Deleting {qc_var_name} from dataset')
 
-    def create_dummy_qc_variable(self, 
-                                 var_name,
-                                 rm_assessments=None,
-                                 rm_tests=None,
-                                 qc_var_names=None):
+    def create_dummy_qc_variable(
+        self, var_name, rm_assessments=None, rm_tests=None, qc_var_names=None
+    ):
         """
         Function to create a dummy quality control variable for a data variable
         that has more than one ancillary qc variable. The dummy quality control
@@ -1173,31 +1173,33 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             List of quality control variable names to use to create the dummy
             quality control variable. If None will look for ancillary variables
             attribute on data variable and use those variables.
-        
+
         Returns
         -------
         qc_var_name : str
             The name of the created quality control variable.
 
-        
+
         """
         if rm_assessments is None and rm_tests is None:
             raise ValueError('Need to set rm_assessments or rm_tests option')
-        
+
         ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
         ancillary_variables = ancillary_variables.split()
         if len(ancillary_variables) < 2:
             raise ValueError('Data variable must have more than one ancillary variable.')
-        
+
         if qc_var_names is None:
             qc_var_names = ancillary_variables
 
         qc_var_name = 'qc_' + var_name + '_dummy'
         if qc_var_name in self._ds.variables:
             # Clear the dummy variable if it already exists
-            warnings.warn(f'Dummy quality control variable {qc_var_name} already exists. It will be cleared and recreated.')
-            del self._ds[qc_var_name]   
-         
+            warnings.warn(
+                f'Dummy quality control variable {qc_var_name} already exists. It will be cleared and recreated.'
+            )
+            del self._ds[qc_var_name]
+
         # Create the quality control variable with same dimensions as data variable.
         qc_data = np.zeros(self._ds[var_name].shape, dtype=bool)
         for qc_var in qc_var_names:
@@ -1238,13 +1240,13 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                     for ii, assessment in enumerate(flag_assessments):
                         if assessment.lower() in rm_assessments:
                             test_numbers.append(test_nums[ii])
-                
 
             # Make the list of test numbers to mask unique
             test_numbers = list(set(test_numbers))
             for test in test_numbers:
                 qc_test_mask = self._ds.qcfilter.get_qc_test_mask(
-                    var_name, test, qc_var_name=qc_var, flag_value=flag_value)
+                    var_name, test, qc_var_name=qc_var, flag_value=flag_value
+                )
                 qc_data = qc_data | qc_test_mask
             # If data was orginally stored as Dask array return values to Dataset as Dask array
             # else set as Numpy array.
@@ -1263,7 +1265,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         self._ds[qc_var_name].attrs['ancillary_variables'] = var_name
         return qc_var_name
 
-        
+
 def set_bit(array, bit_number):
     """
     Function to set a quality control bit given a scalar or
