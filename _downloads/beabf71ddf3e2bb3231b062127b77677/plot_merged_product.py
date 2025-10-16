@@ -24,9 +24,9 @@ ecor_file = DATASETS.fetch('sgp30ecorE14.b1.20190601.000000.cdf')
 sebs_file = DATASETS.fetch('sgpsebsE14.b1.20190601.000000.cdf')
 
 # Read data into datasets
-ds_ebbr = act.io.arm.read_arm_netcdf(ebbr_file)
-ds_ecor = act.io.arm.read_arm_netcdf(ecor_file)
-ds_sebs = act.io.arm.read_arm_netcdf(sebs_file)
+ds_ebbr = act.io.arm.read_arm_netcdf(ebbr_file, use_base_time=True)
+ds_ecor = act.io.arm.read_arm_netcdf(ecor_file, use_base_time=True)
+ds_sebs = act.io.arm.read_arm_netcdf(sebs_file, use_base_time=True)
 
 # Check for ARM DQRs and add them to the QC variables
 ds_ebbr = act.qc.arm.add_dqr_to_qc(ds_ebbr)
