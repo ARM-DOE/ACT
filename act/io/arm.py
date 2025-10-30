@@ -150,6 +150,8 @@ def read_arm_netcdf(
     if return_None:
         except_tuple = except_tuple + (FileNotFoundError, OSError)
 
+    kwargs['data_vars'] = 'all'
+
     try:
         # Read data file with Xarray function
         ds = xr.open_mfdataset(filenames, **kwargs)
