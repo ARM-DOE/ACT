@@ -860,7 +860,7 @@ def read_arm_mmcr(filenames):
             multi_ds.append(ds)
     # Concatenate datasets together
     if len(multi_ds) > 1:
-        ds = xr.concat(multi_ds, dim='time')
+        ds = xr.concat(multi_ds, dim='time', data_vars='all')
     else:
         ds = multi_ds[0]
 
