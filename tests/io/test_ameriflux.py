@@ -70,7 +70,7 @@ def test_convert_to_ameriflux():
     files = glob.glob(act.tests.sample_files.EXAMPLE_SEBS_E39)
     ds_sebs = act.io.arm.read_arm_netcdf(files)
 
-    ds = xr.merge([ds_ecor, ds_sebs])
+    ds = xr.merge([ds_ecor, ds_sebs], compat='override')
     with pytest.warns(UserWarning, match="mapping was not provided"):
         df = act.io.ameriflux.convert_to_ameriflux(ds)
 
