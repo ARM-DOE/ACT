@@ -15,6 +15,13 @@ def calculate_gradient_pbl(ds, parm="beta_att", dis_parm="range", min_height=100
     through a gradient method, where the PBL height is identified through the
     sharpest negative gradient.
 
+    Note:
+    This retrieval method should be applied under a cloud-free, well-mixed PBL condition.
+
+    It is not expected perform well in cloud capped boundary layers.
+    Additional PRs will be included within the near future to address more PBL
+    environmental conditions.
+
     Parameters
     ----------
     ds : xarray.Dataset
@@ -94,6 +101,16 @@ def calculate_modified_gradient_pbl(
     Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR
     through a modified gradient method, where the first significant inflection point
     within the profile is identified rather than the traditional sharpest negative gradient.
+
+    Also conforms to the depolarization ratio threshold PBL height estimate when
+    the `parm` input is properly selected.
+
+    Note:
+    This retrieval method should be applied under a cloud-free, well-mixed PBL condition.
+
+    It is not expected perform well in cloud capped boundary layers.
+    Additional PRs will be included within the near future to address more PBL
+    environmental conditions.
 
     Parameters
     ----------
