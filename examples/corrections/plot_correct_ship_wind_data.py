@@ -29,7 +29,7 @@ ds = xr.merge([nav_ds, aosmet_ds], compat='override')
 
 # Call the correction for the winds.  Note, that this only
 # corrects for ship course and speed, not roll and pitch.
-ds = act.corrections.ship.correct_wind(ds)
+ds = act.corrections.ship.correct_wind_for_ship_motion(ds)
 
 nav_ds.close()
 aosmet_ds.close()
