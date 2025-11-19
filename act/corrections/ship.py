@@ -5,7 +5,7 @@ This module contains functions for correcting data for ship motion
 import numpy as np
 
 
-def correct_wind(
+def correct_wind_for_ship_motion(
     ds,
     wspd_name='wind_speed',
     wdir_name='wind_direction',
