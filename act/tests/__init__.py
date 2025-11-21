@@ -65,6 +65,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_SWATS',
             'EXAMPLE_AMERIFLUX_BASE',
             'EXAMPLE_AMERIFLUX_META',
+            'EXAMPLE_SMPS',
         ]
     },
 )
