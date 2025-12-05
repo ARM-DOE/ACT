@@ -60,7 +60,7 @@
                 gtag('js', new Date());
                 gtag('config', 'G-8YN80YZDD8');
             </script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'source/auto_examples/discovery/download_mplnet';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/auto_examples/discovery/plot_mplnet';</script>
     <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -529,33 +529,82 @@
                 <article class="bd-article">
                    <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-discovery-download-mplnet-py"><span class="std std-ref">Go to the end</span></a>
+<p><a class="reference internal" href="#sphx-glr-download-source-auto-examples-discovery-plot-mplnet-py"><span class="std std-ref">Go to the end</span></a>
 to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="nasa-mplnet">
-<span id="sphx-glr-source-auto-examples-discovery-download-mplnet-py"></span><h1>NASA MPLNET<a class="headerlink" href="#nasa-mplnet" title="Permalink to this heading">#</a></h1>
+<span id="sphx-glr-source-auto-examples-discovery-plot-mplnet-py"></span><h1>NASA MPLNET<a class="headerlink" href="#nasa-mplnet" title="Permalink to this heading">#</a></h1>
 <p>This example shows how to download data from
 NASA’s MicroPulsed Lidar Network</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>MPLNET.Appalachian_State
+MPLNET.Barcelona
+MPLNET.CARTEL
+MPLNET.Cambridge_Bay
+MPLNET.Douliu
+MPLNET.EPA-NCU
+MPLNET.El_Arenosillo
+MPLNET.GSFC
+MPLNET.Izana
+MPLNET.KAUST_Campus
+MPLNET.Kaohsiung
+MPLNET.King_George_Island
+MPLNET.London-CDN
+MPLNET.OPAL
+MPLNET.SEDE_BOKER
+MPLNET.Sandy_Cove
+MPLNET.Santa_Cruz_Tenerife
+MPLNET.Sao_Paolo
+MPLNET.Silpakorn_Univ
+MPLNET.Singapore
+MPLNET.South_Pole
+MPLNET.Stony_Plain
+MPLNET.Toronto_Downtown
+MPLNET.UH_Liberty
+MPLNET.UMBC
+MPLNET.Univ_of_Nevada-Reno
+MPLNET.Univ_of_Saskatchewan
+MPLNET.Xitun
+
+Please Review the MPLNET Data Policy Prior to Use of MPLNET Data
+The MPLNET Data Policy can be found at:
+        https://mplnet.gsfc.nasa.gov/data-policy
+
+Please Include the Following Acknowledgements in Any Publication
+or presentation of MPLNET data, regardless of co-authorship status:
+
+        The MPLNET project is funded by the NASA Radiation Sciences Program
+        and Earth Observing System.
+
+        We thank the MPLNET (PI) for (its/theirs) effort in establishing
+        and maintaining sites.
+
+[DOWNLOADING]  MPLNET_V3_L1_NRB_20220901_MPL44258_GSFC.nc4
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
 
 <span class="c1"># Determine MPLNET site of interest</span>
-<span class="n">meta</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_mplnet_meta</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">print_to_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">meta</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_mplnet_meta</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">print_to_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Download MPLNET data for site of interest</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_mplnet_data</span><span class="p">(</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_mplnet_data</span><span class="p">(</span>
     <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s2">&quot;NRB&quot;</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="s2">&quot;GSFC&quot;</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="s2">&quot;2022&quot;</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="s2">&quot;09&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="s2">&quot;01&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-discovery-download-mplnet-py">
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 28.668 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-source-auto-examples-discovery-plot-mplnet-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<p><a class="reference download internal" download="" href="../../../_downloads/fbf7b261dc4838fa6ba79c2e58560248/download_mplnet.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">download_mplnet.ipynb</span></code></a></p>
+<p><a class="reference download internal" download="" href="../../../_downloads/d86929a9d1278050eba5387dc4e42d62/plot_mplnet.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_mplnet.ipynb</span></code></a></p>
 </div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
-<p><a class="reference download internal" download="" href="../../../_downloads/d5899479edfffd0638b2f54cc24c6d01/download_mplnet.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">download_mplnet.py</span></code></a></p>
+<p><a class="reference download internal" download="" href="../../../_downloads/c56e5239908647cbc41fc74ec5529702/plot_mplnet.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_mplnet.py</span></code></a></p>
 </div>
 <div class="sphx-glr-download sphx-glr-download-zip docutils container">
-<p><a class="reference download internal" download="" href="../../../_downloads/8b14add930eca692f90b7a80a647243f/download_mplnet.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">download_mplnet.zip</span></code></a></p>
+<p><a class="reference download internal" download="" href="../../../_downloads/012ceca060b2fa5ee39161be8835d61c/plot_mplnet.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_mplnet.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
@@ -607,7 +656,7 @@ NASA’s MicroPulsed Lidar Network</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../../_sources/source/auto_examples/discovery/download_mplnet.rst.txt"
+      <li><a href="../../../_sources/source/auto_examples/discovery/plot_mplnet.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
