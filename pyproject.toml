@@ -2,6 +2,52 @@
 requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "act-atmos"
+description = "Package for working with atmospheric time series datasets"
+authors = [
+    {name = "Adam Theisen", email = "atheisen@anl.gov"},
+]
+license = "BSD (3-clause)"
+license-files = ["LICENSE.txt"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+]
+urls = {Homepage = "https://github.com/ARM-DOE/ACT"}
+
+dynamic = ["readme", "version", "dependencies", "optional-dependencies"]
+
+[dependency-groups]
+test = [
+    "pytest>=9.0.1",
+]
+
+[tool.setuptools]
+include-package-data = true
+platforms = [
+    "Linux",
+    "Mac OS-X",
+    "Unix",
+    "Windows",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["docs"]
+namespaces = false
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "dirty-tag"
+
+[tool.setuptools.dynamic]
+dependencies = {file= ["requirements.txt"]}
+readme = {file = ["README.rst"], content-type = "text/x-rst"}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = ["requirements_dev.txt"]}
+
 [tool.black]
 line-length = 100
 target-version = ['py38']
