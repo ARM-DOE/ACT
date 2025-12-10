@@ -5,10 +5,11 @@ Script for downloading data from ARM's Live Data Webservice
 
 import json
 import os
-from datetime import timedelta
-import requests
 import textwrap
 import warnings
+from datetime import timedelta
+
+import requests
 
 try:
     from urllib.request import Request, urlopen

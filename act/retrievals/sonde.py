@@ -3,11 +3,12 @@ Functions for radiosonde related calculations.
 
 """
 
+from itertools import groupby
+from operator import itemgetter
+
+import metpy.calc as mpcalc
 import numpy as np
 import xarray as xr
-from operator import itemgetter
-from itertools import groupby
-import metpy.calc as mpcalc
 from metpy.units import units
 
 from act.utils.data_utils import convert_to_potential_temp

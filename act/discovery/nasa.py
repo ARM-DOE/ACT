@@ -5,9 +5,10 @@ Ground Observation Network.
 
 """
 import os
-import requests
 import re
 import shutil
+
+import requests
 
 
 def download_mplnet_data(

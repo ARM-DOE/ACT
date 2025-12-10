@@ -7,10 +7,11 @@ description.
 
 """
 
-import datetime
 import copy
-import xarray as xr
+import datetime
 import warnings
+
+import xarray as xr
 
 
 class QCSummary:

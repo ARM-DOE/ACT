@@ -9,8 +9,8 @@ plot multiple datasets at a time.
 
 import os
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 

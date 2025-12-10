@@ -7,22 +7,24 @@ import datetime as dt
 import textwrap
 import warnings
 from copy import deepcopy
-from re import search, search as re_search
+from re import search
+from re import search as re_search
 
-import numpy as np
-import pandas as pd
-from scipy import stats
 import matplotlib as mpl
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-from matplotlib.collections import PatchCollection
+import numpy as np
+import pandas as pd
 from matplotlib import colors as mplcolors
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from scipy import stats
 from scipy.interpolate import NearestNDInterpolator
 
 from ..qc.qcfilter import parse_bit
-from ..utils import data_utils, datetime_utils as dt_utils
+from ..utils import data_utils
+from ..utils import datetime_utils as dt_utils
 from ..utils.datetime_utils import determine_time_delta, reduce_time_ranges
 from ..utils.geo_utils import get_sunrise_sunset_noon
 from . import common

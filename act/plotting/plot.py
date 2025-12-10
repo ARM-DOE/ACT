@@ -3,13 +3,13 @@ Class for creating timeseries plots from ACT datasets.
 
 """
 
+import inspect
 import warnings
 
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-import inspect
 
 
 class Display:
@@ -321,7 +321,7 @@ class DisplayGroupby:
         num_groups = 0
         datastreams = list(display._ds.keys())
         for key in datastreams:
-            self._groupby[key] = display._ds[key].groupby('time.%s' % units)
+            self._groupby[key] = display._ds[key].groupby(f'time.{units}')
             num_groups = max([num_groups, len(self._groupby[key])])
 
     def plot_group(self, func_name, dsname=None, **kwargs):

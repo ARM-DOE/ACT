@@ -4,18 +4,18 @@ Module containing utilities for the data.
 """
 
 import importlib
-import warnings
-
 import json
+import re
+import warnings
+from os import PathLike
+from pathlib import Path
+
 import metpy
 import numpy as np
 import pint
+import requests
 import scipy.stats as stats
 import xarray as xr
-from pathlib import Path
-import re
-import requests
-from os import PathLike
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:

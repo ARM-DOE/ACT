@@ -7,7 +7,9 @@ Chicago O'Hare airport.
 
 """
 from datetime import datetime
+
 import matplotlib.pyplot as plt
+
 import act
 
 time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 10, 10, 0)]

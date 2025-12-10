@@ -7,8 +7,9 @@ system located at ARM's Southern Great Plains site.
 
 """
 
-import act
 import matplotlib.pyplot as plt
+
+import act
 
 # Pull the data using the site_id from IMPROVE
 # https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&siidse=244

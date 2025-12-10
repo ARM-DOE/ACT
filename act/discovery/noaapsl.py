@@ -2,9 +2,10 @@
 Function for downloading data from NOAA PSL Profiler Network
 
 """
-from datetime import datetime
-import pandas as pd
 import os
+from datetime import datetime
+
+import pandas as pd
 
 try:
     from urllib.request import urlopen

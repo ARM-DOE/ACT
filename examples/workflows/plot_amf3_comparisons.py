@@ -7,11 +7,13 @@ datasets to support ARM's AMF3.
 
 """
 
-import act
+import os
 from datetime import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
-import os
+
+import act
 
 # Get Surface Meteorology data from the ASOS stations
 station = '1M4'

@@ -8,8 +8,8 @@ file but called under the qcfilter method.
 
 """
 
-from arm_test_data import DATASETS
 import numpy as np
+from arm_test_data import DATASETS
 
 from act.io.arm import read_arm_netcdf
 from act.qc.qcfilter import parse_bit

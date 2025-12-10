@@ -3,8 +3,8 @@ Function for downloading data from
 NOAA Surface Radiation Budget network
 
 """
-from datetime import datetime
 import os
+from datetime import datetime
 
 try:
     from urllib.request import urlopen

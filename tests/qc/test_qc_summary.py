@@ -1,13 +1,14 @@
-import numpy as np
+import datetime
+import random
 from os import environ
 from pathlib import Path
-import random
+
+import numpy as np
 import pytest
-import datetime
 
 from act.io.arm import read_arm_netcdf
-from act.tests import EXAMPLE_MET1
 from act.qc.qcfilter import set_bit
+from act.tests import EXAMPLE_MET1
 from act.utils.data_utils import DatastreamParserARM
 
 

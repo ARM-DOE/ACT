@@ -1,19 +1,20 @@
-import act
-import numpy as np
-import pandas as pd
-from pathlib import Path
-import tarfile
-from os import sep
-from os import PathLike
-from shutil import rmtree
 import gzip
 import shutil
+import tarfile
 import tempfile
 import types
+from os import PathLike, sep
+from pathlib import Path
+from shutil import rmtree
+
+import numpy as np
+import pandas as pd
+
+import act
 
 try:
-    from moviepy import VideoFileClip
     import moviepy.video.io.ImageSequenceClip
+    from moviepy import VideoFileClip
 
     MOVIEPY_AVAILABLE = True
 except (ImportError, RuntimeError):

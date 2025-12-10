@@ -1,6 +1,8 @@
 # Place python module imports here, example:
 import os
+
 import matplotlib.pyplot as plt
+
 import act
 
 # Place arm username and token or example file if username and token

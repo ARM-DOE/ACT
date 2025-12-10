@@ -8,8 +8,8 @@ of wind speed and temperature grouped by day.
 Author: Bobby Jackson
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 

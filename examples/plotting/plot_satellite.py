@@ -9,10 +9,11 @@ satellite specific libraries suchas SatPy.
 Author: Adam Theisen
 """
 
-import act
 import matplotlib.pyplot as plt
 import numpy as np
 from arm_test_data import DATASETS
+
+import act
 
 # Read in VISST Data
 files = DATASETS.fetch('enavisstgridm11minnisX1.c1.20230307.000000.cdf')

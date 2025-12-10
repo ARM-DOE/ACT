@@ -7,6 +7,7 @@ plot function that's part of the TimeSeries Display.
 """
 
 import matplotlib.pyplot as plt
+
 import act
 from act.tests import sample_files
 

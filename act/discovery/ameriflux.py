@@ -4,9 +4,9 @@ Script for downloading data from Ameriflux's Data Webservice
 """
 
 import os
-import requests
 import warnings
 
+import requests
 
 warnings.simplefilter('always')
 

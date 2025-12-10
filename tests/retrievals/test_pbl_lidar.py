@@ -1,7 +1,7 @@
 import numpy as np
+from arm_test_data import DATASETS
 
 import act
-from arm_test_data import DATASETS
 
 
 def test_calculate_gradient_pbl():

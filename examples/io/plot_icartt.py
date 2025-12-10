@@ -9,8 +9,8 @@ Author: Joe O'Brien
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 from act.io.icartt import read_icartt

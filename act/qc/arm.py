@@ -5,10 +5,11 @@ the Atmospheric Radiation Measurement Program (ARM).
 """
 
 import datetime as dt
-import numpy as np
-import requests
 import json
 import textwrap
+
+import numpy as np
+import requests
 from dateutil import parser
 
 from act.config import DEFAULT_DATASTREAM_NAME
