@@ -234,7 +234,7 @@ class WindRoseDisplay(Display):
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
         rticks = np.arange(0, tick_max, tick_interval)
-        rticklabels = [('%d' % x + '%') for x in rticks]
+        rticklabels = [f'{x}%' for x in rticks]
         ax.set_rticks(rticks)
         ax.set_yticklabels(rticklabels)
 
