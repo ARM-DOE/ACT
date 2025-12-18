@@ -10,8 +10,8 @@ Written: Zach Sherman
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 from act.io.arm import read_arm_netcdf

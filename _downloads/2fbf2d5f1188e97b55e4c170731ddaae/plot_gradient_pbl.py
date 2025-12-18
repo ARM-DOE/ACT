@@ -9,8 +9,9 @@ Author: Joe O'Brien
 """
 
 
-import act
 from arm_test_data import DATASETS
+
+import act
 
 # Read Ceilometer data for an example
 filename_ceil = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')

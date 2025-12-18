@@ -11,9 +11,9 @@ Author: Adam Theisen
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import numpy as np
+from arm_test_data import DATASETS
 
 import act
 

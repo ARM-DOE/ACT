@@ -7,8 +7,8 @@ and calculate stability indicies.
 
 """
 
-from arm_test_data import DATASETS
 import xarray as xr
+from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
 
 import act

@@ -429,22 +429,24 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">re</span><span class="w"> </span><span class="kn">import</span> <span class="n">search</span><span class="p">,</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">re</span><span class="w"> </span><span class="kn">import</span> <span class="n">search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">re</span><span class="w"> </span><span class="kn">import</span> <span class="n">search</span> <span class="k">as</span> <span class="n">re_search</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mdates</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rectangle</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">PatchCollection</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors</span> <span class="k">as</span> <span class="n">mplcolors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">PatchCollection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rectangle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits.axes_grid1</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_axes_locatable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">NearestNDInterpolator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..qc.qcfilter</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_bit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">data_utils</span><span class="p">,</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">data_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_utils</span> <span class="k">as</span> <span class="n">dt_utils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">determine_time_delta</span><span class="p">,</span> <span class="n">reduce_time_ranges</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils.geo_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_sunrise_sunset_noon</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">common</span>

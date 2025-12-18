@@ -429,10 +429,10 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
@@ -518,7 +518,7 @@
         <span class="n">site_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
             <span class="c1"># Get metadata</span>
-            <span class="n">uri</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://mesonet.agron.iastate.edu/&#39;</span> <span class="s1">&#39;geojson/network/</span><span class="si">%s</span><span class="s1">.geojson&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">network</span><span class="p">,)</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;https://mesonet.agron.iastate.edu/&#39;</span> <span class="sa">f</span><span class="s1">&#39;geojson/network/</span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s1">.geojson&#39;</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
             <span class="n">jdict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">jdict</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]:</span>
@@ -539,7 +539,7 @@
             <span class="n">networks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_ASOS&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
             <span class="c1"># Get metadata</span>
-            <span class="n">uri</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://mesonet.agron.iastate.edu/&#39;</span> <span class="s1">&#39;geojson/network/</span><span class="si">%s</span><span class="s1">.geojson&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">network</span><span class="p">,)</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;https://mesonet.agron.iastate.edu/&#39;</span> <span class="sa">f</span><span class="s1">&#39;geojson/network/</span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s1">.geojson&#39;</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
             <span class="n">jdict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">jdict</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]:</span>
@@ -551,8 +551,8 @@
                     <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">&#39;site_longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
                     <span class="k">for</span> <span class="n">my_keys</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]:</span>
                         <span class="k">if</span> <span class="n">my_keys</span> <span class="o">==</span> <span class="s1">&#39;elevation&#39;</span><span class="p">:</span>
-                            <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                                <span class="s1">&#39;</span><span class="si">%f</span><span class="s1"> meter&#39;</span> <span class="o">%</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="n">my_keys</span><span class="p">]</span>
+                            <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1"> meter&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">site</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="n">my_keys</span><span class="p">]</span>
                             <span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">station_metadata_dict</span><span class="p">[</span><span class="n">my_keys</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="n">my_keys</span><span class="p">]</span>
@@ -584,8 +584,7 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">my_df</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;No data available at station </span><span class="si">%s</span><span class="s1"> between time </span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">&#39;</span>
-                <span class="o">%</span> <span class="p">(</span>
+                <span class="s1">&#39;No data available at station </span><span class="si">{}</span><span class="s1"> between time </span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">stations</span><span class="p">,</span>
                     <span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span>
                     <span class="n">end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span>

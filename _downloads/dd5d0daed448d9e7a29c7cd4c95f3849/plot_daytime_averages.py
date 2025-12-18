@@ -8,8 +8,8 @@ temperature averages using the add_solar_variable function
 Author: Adam Theisen
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 

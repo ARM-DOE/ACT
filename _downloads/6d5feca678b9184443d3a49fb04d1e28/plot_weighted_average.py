@@ -9,9 +9,9 @@ accumulated precipitation and displays it
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import xarray as xr
+from arm_test_data import DATASETS
 
 import act
 

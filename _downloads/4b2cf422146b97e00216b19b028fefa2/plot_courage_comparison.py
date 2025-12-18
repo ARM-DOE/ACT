@@ -8,11 +8,13 @@ Baltimore, MD.  Example uses ARM, EPA, and ASOS data.
 
 """
 
-import act
+import os
 from datetime import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
-import os
+
+import act
 
 # Get Surface Meteorology data
 lat = (39.04, 39.6)

@@ -14,8 +14,9 @@ Author: Adam Theisen
 
 """
 
-import act
 from matplotlib import pyplot as plt
+
+import act
 from act.tests import EXAMPLE_MFRSR
 
 # Read in some sample MFRSR data

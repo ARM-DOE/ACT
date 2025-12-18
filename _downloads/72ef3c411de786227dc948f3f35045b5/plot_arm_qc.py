@@ -13,8 +13,8 @@ known failures to clean up the data variable.
 
 import os
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 
