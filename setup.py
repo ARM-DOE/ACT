@@ -1,8 +1,7 @@
 import glob
-from os import path
-from setuptools import setup, find_packages
 import sys
 
+from setuptools import setup
 
 # NOTE: This file must remain Python 2 compatible for the foreseeable future,
 # to ensure that we error out properly for people with outdated setuptools
@@ -24,41 +23,7 @@ pip install --upgrade pip
     )
     sys.exit(error)
 
-here = path.abspath(path.dirname(__file__))
-
-with open(path.join(here, 'README.rst'), encoding='utf-8') as readme_file:
-    readme = readme_file.read()
-
-with open(path.join(here, 'requirements.txt')) as requirements_file:
-    # Parse requirements.txt, ignoring any commented-out lines.
-    requirements = [
-        line for line in requirements_file.read().splitlines() if not line.startswith('#')
-    ]
-
-
 setup(
-    name='act-atmos',
-    description='Package for working with atmospheric time series datasets',
-    long_description=readme,
-    long_description_content_type='text/x-rst',
-    author='Adam Theisen',
-    author_email='atheisen@anl.gov',
-    url='https://github.com/ARM-DOE/ACT',
-    packages=find_packages(exclude=['docs']),
     entry_points={'console_scripts': []},
-    include_package_data=True,
-    package_data={'act': []},
     scripts=glob.glob("scripts/*"),
-    setup_requires=["setuptools_scm", "setuptools"],
-    use_scm_version={
-        "version_scheme": "post-release",
-        "local_scheme": "dirty-tag",
-    },
-    install_requires=requirements,
-    license='BSD (3-clause)',
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-    ],
 )

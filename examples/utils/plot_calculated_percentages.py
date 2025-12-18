@@ -8,8 +8,8 @@ obtaining percentages of each aerosol from the dataset.
 Author: Zach Sherman
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 

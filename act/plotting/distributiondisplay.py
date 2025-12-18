@@ -2,10 +2,11 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import xarray as xr
 import pandas as pd
+import xarray as xr
 
-from ..utils import datetime_utils as dt_utils, calculate_percentages
+from ..utils import calculate_percentages
+from ..utils import datetime_utils as dt_utils
 from .plot import Display
 
 

@@ -8,9 +8,9 @@ of Meteorological data, while using hist_kwargs parameter.
 Author: Zachary Sherman
 """
 
+import numpy as np
 from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
-import numpy as np
 
 import act
 

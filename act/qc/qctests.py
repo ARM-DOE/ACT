@@ -9,11 +9,11 @@ qcfilter class definition to make it callable.
 import warnings
 
 import dask.array as da
-from metpy.units import units
-from metpy.calc import add_height_to_pressure
 import numpy as np
 import pandas as pd
 import xarray as xr
+from metpy.calc import add_height_to_pressure
+from metpy.units import units
 
 from act.utils.data_utils import convert_units, get_missing_value
 
@@ -205,7 +205,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value less than {}.').format(attr_name)
+            test_meaning = f'Data value less than {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -299,7 +299,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value greater than {}.').format(attr_name)
+            test_meaning = f'Data value greater than {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -394,7 +394,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value less than ' 'or equal to {}.').format(attr_name)
+            test_meaning = 'Data value less than ' f'or equal to {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -493,7 +493,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value greater than ' 'or equal to {}.').format(attr_name)
+            test_meaning = 'Data value greater than ' f'or equal to {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -782,8 +782,8 @@ class QCTests:
             attr_name_upper = limit_attr_names[1]
 
         if test_meaning is None:
-            test_meaning = ('Data value less than {} ' 'or greater than {}.').format(
-                attr_name_lower, attr_name_upper
+            test_meaning = (
+                f'Data value less than {attr_name_lower} ' f'or greater than {attr_name_upper}.'
             )
 
         if prepend_text is not None:
@@ -895,8 +895,8 @@ class QCTests:
             attr_name_upper = limit_attr_names[1]
 
         if test_meaning is None:
-            test_meaning = ('Data value greater than {} ' 'or less than {}.').format(
-                attr_name_lower, attr_name_upper
+            test_meaning = (
+                f'Data value greater than {attr_name_lower} ' f'or less than {attr_name_upper}.'
             )
 
         if prepend_text is not None:
@@ -1004,9 +1004,9 @@ class QCTests:
         if test_meaning is None:
             test_meaning = (
                 'Data failing persistence test. '
-                'Standard Deviation over a window of {} values '
-                'less than {}.'
-            ).format(window, test_limit)
+                f'Standard Deviation over a window of {window} values '
+                f'less than {test_limit}.'
+            )
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))

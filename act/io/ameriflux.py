@@ -3,8 +3,8 @@ This module contains I/O operations for the U.S. Department of Energy
 AmeriFlux program (https://ameriflux.lbl.gov/).
 """
 import re
-from collections import defaultdict
 import warnings
+from collections import defaultdict
 
 import numpy as np
 import pandas as pd

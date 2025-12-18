@@ -13,12 +13,11 @@ Author: Ken Kehoe
 
 """
 
-from matplotlib import pyplot as plt
 import numpy as np
-
 from arm_test_data import DATASETS
-from act.io.arm import read_arm_netcdf
+from matplotlib import pyplot as plt
 
+from act.io.arm import read_arm_netcdf
 
 # Get example data from ARM Test Data repository
 EXAMPLE_MET = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')

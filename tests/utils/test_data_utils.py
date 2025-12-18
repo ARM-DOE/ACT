@@ -1,12 +1,12 @@
 import importlib
+from contextlib import redirect_stdout
+from io import StringIO
+from pathlib import Path
 
 import numpy as np
 import pytest
 import xarray as xr
 from numpy.testing import assert_almost_equal
-from contextlib import redirect_stdout
-from io import StringIO
-from pathlib import Path
 
 import act
 from act.utils.data_utils import DatastreamParserARM as DatastreamParser

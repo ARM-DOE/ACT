@@ -1,9 +1,11 @@
-import act
 import glob
+
 import numpy as np
-from numpy.testing import assert_equal
-import xarray as xr
 import pytest
+import xarray as xr
+from numpy.testing import assert_equal
+
+import act
 
 
 def test_read_ameriflux():

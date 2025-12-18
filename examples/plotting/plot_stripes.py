@@ -8,8 +8,9 @@ Author: Adam Theisen
 
 """
 
-import act
 import matplotlib.pyplot as plt
+
+import act
 
 # SGP E13 MET data has already been processed to yearly averages,
 # removing data flagged by embedded qc and DQRs

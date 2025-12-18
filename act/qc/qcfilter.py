@@ -9,7 +9,7 @@ import dask
 import numpy as np
 import xarray as xr
 
-from act.qc import comparison_tests, qctests, bsrn_tests, qc_summary
+from act.qc import bsrn_tests, comparison_tests, qc_summary, qctests
 from act.utils.data_utils import get_missing_value
 
 

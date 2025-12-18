@@ -104,6 +104,7 @@ def test_geoplot_tile():
     sonde_ds.close()
 
 
+@pytest.mark.skipif(not CARTOPY_AVAILABLE, reason='Cartopy is not installed.')
 def test_geo_errors():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
     display = GeographicPlotDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})

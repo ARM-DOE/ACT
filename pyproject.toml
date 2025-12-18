@@ -2,6 +2,52 @@
 requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "act-atmos"
+description = "Package for working with atmospheric time series datasets"
+authors = [
+    {name = "Adam Theisen", email = "atheisen@anl.gov"},
+]
+license = "BSD-3-Clause"
+license-files = ["LICENSE.txt"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+]
+urls = {Homepage = "https://github.com/ARM-DOE/ACT"}
+
+dynamic = ["readme", "version", "dependencies", "optional-dependencies"]
+
+[dependency-groups]
+test = [
+    "pytest>=9.0.1",
+]
+
+[tool.setuptools]
+include-package-data = true
+platforms = [
+    "Linux",
+    "Mac OS-X",
+    "Unix",
+    "Windows",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["docs"]
+namespaces = false
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "dirty-tag"
+
+[tool.setuptools.dynamic]
+dependencies = {file= ["requirements.txt"]}
+readme = {file = ["README.rst"], content-type = "text/x-rst"}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = ["requirements_dev.txt"]}
+
 [tool.black]
 line-length = 100
 target-version = ['py38']
@@ -13,6 +59,51 @@ ignore = ["docs/*", "ci/*"]
 
 [tool.ruff]
 target-version = "py39"
+builtins = ["ellipsis"]
+exclude = [
+    "act/tests/data/",
+    "docs",
+    "*__init__.py*",
+    "setup.cfg",
+    ".eggs"]
+
+[tool.ruff.lint]
 ignore = [
+    "E203",
+    "E266",
     "E501",
+    "F503",
+    "E722",
+    "E402",
+    "C901",
+    "E731",
+    "F401"
+]
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I",
+    # Pyupgrade
+    "UP",
+]
+
+[tool.isort]
+profile = "black"
+known_first_party = ["act"]
+known_third_party = []
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+combine_as_imports = true
+line_length = 100
+skip = ["docs/source/conf.py", "setup.py"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=./ --cov-report=xml --verbose"
+markers = [
+    "mpl_image_compare: Just registering the third party marker test so pytest stops issuing a warning.",
 ]

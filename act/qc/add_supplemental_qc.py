@@ -1,6 +1,7 @@
-import yaml
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+import yaml
 from dateutil import parser
 
 #   Example of the YAML file and how to construct.

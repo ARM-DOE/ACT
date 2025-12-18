@@ -10,12 +10,14 @@ Author: Jason Hemedinger
 """
 
 import argparse
-import json
-import glob
 import ast
+import glob
+import json
 import pathlib
+
 import matplotlib.pyplot as plt
 import numpy as np
+
 import act
 
 try:

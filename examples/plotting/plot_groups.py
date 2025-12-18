@@ -10,13 +10,13 @@ data with a few independent calls.
 Author: Ken Kehoe
 """
 
-import xarray as xr
 import matplotlib.pyplot as plt
 import numpy as np
+import xarray as xr
 from arm_test_data import DATASETS
+
 from act.io.arm import read_arm_netcdf
 from act.plotting import TimeSeriesDisplay
-
 
 # This data file is a bit complicated with the group organization. Each group
 # will need to be treated as a different netCDF file for reading. We can read each group

@@ -3,8 +3,8 @@ Script for downloading data from the IMPROVE network
 
 """
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import xarray as xr
 
 

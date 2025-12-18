@@ -1,7 +1,8 @@
 import copy
-import pytest
+
 import dask.array as da
 import numpy as np
+import pytest
 import xarray as xr
 
 from act.io.arm import read_arm_netcdf

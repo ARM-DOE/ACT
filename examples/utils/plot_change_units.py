@@ -7,8 +7,8 @@ units in the xarray dataset.
 
 """
 
-from arm_test_data import DATASETS
 import numpy as np
+from arm_test_data import DATASETS
 
 import act
 

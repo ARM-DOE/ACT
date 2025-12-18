@@ -3,13 +3,13 @@ Class for creating timeseries plots from ACT datasets.
 
 """
 
+import inspect
 import warnings
 
 # Import third party libraries
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-import inspect
 
 
 class Display:
@@ -321,7 +321,7 @@ class DisplayGroupby:
         num_groups = 0
         datastreams = list(display._ds.keys())
         for key in datastreams:
-            self._groupby[key] = display._ds[key].groupby('time.%s' % units)
+            self._groupby[key] = display._ds[key].groupby(f'time.{units}')
             num_groups = max([num_groups, len(self._groupby[key])])
 
     def plot_group(self, func_name, dsname=None, **kwargs):
@@ -358,7 +358,7 @@ class DisplayGroupby:
                 self.display._ds = {}
                 for k, ds in self._groupby[key]:
                     num_years = len(np.unique(ds.time.dt.year))
-                    self.display._ds[key + '_%d' % k] = ds
+                    self.display._ds[f'{key}_{k}'] = ds
                     if i >= np.prod(subplot_shape):
                         i = 0
                         wrap_around = True
@@ -383,19 +383,19 @@ class DisplayGroupby:
                                 [np.timedelta64(x * days_in_year, 'D') for x in year_diff.values]
                             )
                             ds1['time'] = ds1.time - time_diff
-                            self.display._ds[key + '%d_%d' % (k, yr)] = ds1
-                            func(dsname=key + '%d_%d' % (k, yr), label=str(yr), **kwargs)
-                            self.mapping[key + '%d_%d' % (k, yr)] = subplot_index
-                            self.xlims[key + '%d_%d' % (k, yr)] = (
+                            self.display._ds[f'{key}{k}_{yr}'] = ds1
+                            func(dsname=f'{key}{k}_{yr}', label=str(yr), **kwargs)
+                            self.mapping[f'{key}{k}_{yr}'] = subplot_index
+                            self.xlims[f'{key}{k}_{yr}'] = (
                                 ds1.time.values.min(),
                                 ds1.time.values.max(),
                             )
-                        del self.display._ds[key + '_%d' % k]
+                        del self.display._ds[f'{key}_{k}']
                     else:
-                        func(dsname=key + '_%d' % k, **kwargs)
-                        self.mapping[key + '_%d' % k] = subplot_index
+                        func(dsname=f'{key}_{k}', **kwargs)
+                        self.mapping[f'{key}_{k}'] = subplot_index
                         if self.isTimeSeriesDisplay:
-                            self.xlims[key + '_%d' % k] = (
+                            self.xlims[f'{key}_{k}'] = (
                                 ds.time.values.min(),
                                 ds.time.values.max(),
                             )

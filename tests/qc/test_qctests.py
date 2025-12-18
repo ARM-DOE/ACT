@@ -3,7 +3,7 @@ import numpy as np
 
 import act
 from act.io.arm import read_arm_netcdf
-from act.tests import EXAMPLE_MET1, EXAMPLE_IRT25m20s, EXAMPLE_MFRSR
+from act.tests import EXAMPLE_MET1, EXAMPLE_MFRSR, EXAMPLE_IRT25m20s
 
 
 def test_qctests():

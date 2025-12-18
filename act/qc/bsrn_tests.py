@@ -7,12 +7,13 @@ https://bsrn.awi.de
 """
 
 import warnings
-import numpy as np
+
 import dask.array as da
+import numpy as np
 from scipy.constants import Stefan_Boltzmann
 
-from act.utils.geo_utils import get_solar_azimuth_elevation
 from act.utils.data_utils import convert_units
+from act.utils.geo_utils import get_solar_azimuth_elevation
 
 
 def _calculate_solar_parameters(ds, lat_name, lon_name, solar_constant=1360.8):

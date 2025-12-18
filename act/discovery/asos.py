@@ -7,10 +7,10 @@ import json
 import time
 import warnings
 from datetime import datetime
+from io import StringIO
 
 import numpy as np
 import pandas as pd
-from io import StringIO
 
 try:
     from urllib.request import urlopen
@@ -96,7 +96,7 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None, reg
         site_list = []
         for network in networks:
             # Get metadata
-            uri = ('https://mesonet.agron.iastate.edu/' 'geojson/network/%s.geojson') % (network,)
+            uri = 'https://mesonet.agron.iastate.edu/' f'geojson/network/{network}.geojson'
             data = urlopen(uri)
             jdict = json.load(data)
             for site in jdict['features']:
@@ -117,7 +117,7 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None, reg
             networks.append(f'{region}_ASOS')
         for network in networks:
             # Get metadata
-            uri = ('https://mesonet.agron.iastate.edu/' 'geojson/network/%s.geojson') % (network,)
+            uri = 'https://mesonet.agron.iastate.edu/' f'geojson/network/{network}.geojson'
             data = urlopen(uri)
             jdict = json.load(data)
             for site in jdict['features']:
@@ -129,8 +129,8 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None, reg
                     station_metadata_dict['site_longitude'] = lon
                     for my_keys in site['properties']:
                         if my_keys == 'elevation':
-                            station_metadata_dict['elevation'] = (
-                                '%f meter' % site['properties'][my_keys]
+                            station_metadata_dict['elevation'] = '{:f} meter'.format(
+                                site['properties'][my_keys]
                             )
                         else:
                             station_metadata_dict[my_keys] = site['properties'][my_keys]
@@ -162,8 +162,7 @@ def get_asos_data(time_window, lat_range=None, lon_range=None, station=None, reg
 
         if len(my_df['lat'].values) == 0:
             warnings.warn(
-                'No data available at station %s between time %s and %s'
-                % (
+                'No data available at station {} between time {} and {}'.format(
                     stations,
                     start_time.strftime('%Y-%m-%d %H:%M:%S'),
                     end_time.strftime('%Y-%m-%d %H:%M:%S'),

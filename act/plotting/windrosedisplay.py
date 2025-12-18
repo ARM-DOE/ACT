@@ -190,7 +190,7 @@ class WindRoseDisplay(Display):
             units = self._ds[dsname][spd_field].attrs['units']
         else:
             units = ''
-        the_label = '%3.1f' % spd_bins[0] + '-' + '%3.1f' % spd_bins[1] + ' ' + units
+        the_label = f'{spd_bins[0]:3.1f}' + '-' + f'{spd_bins[1]:3.1f}' + ' ' + units
         our_cmap = matplotlib.colormaps.get_cmap(cmap)
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
@@ -208,7 +208,7 @@ class WindRoseDisplay(Display):
             )
         ]
         for i in range(1, len(spd_bins) - 1):
-            the_label = '%3.1f' % spd_bins[i] + '-' + '%3.1f' % spd_bins[i + 1] + ' ' + units
+            the_label = f'{spd_bins[i]:3.1f}' + '-' + f'{spd_bins[i + 1]:3.1f}' + ' ' + units
             # Changing the bottom to be a sum of the previous speeds so that
             # it positions it correctly - Adam Theisen
             bars.append(
@@ -229,12 +229,12 @@ class WindRoseDisplay(Display):
         # Add an annulus with text stating % of time calm
         pct_calm = np.sum(spd_data <= calm_threshold) / len(spd_data) * 100
         ax.set_rorigin(-2.5)
-        ax.annotate('%3.2f%%\n calm' % pct_calm, xy=(0, -2.5), ha='center', va='center')
+        ax.annotate(f'{pct_calm:3.2f}%\n calm', xy=(0, -2.5), ha='center', va='center')
 
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
         rticks = np.arange(0, tick_max, tick_interval)
-        rticklabels = [('%d' % x + '%') for x in rticks]
+        rticklabels = [f'{x}%' for x in rticks]
         ax.set_rticks(rticks)
         ax.set_yticklabels(rticklabels)
 
