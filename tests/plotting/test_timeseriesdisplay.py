@@ -6,6 +6,9 @@ import pandas as pd
 import pytest
 import xarray as xr
 
+import sys
+sys.path.insert(0,'/Users/atheisen/Code/sandbox/ACT')
+
 import act
 
 from matplotlib import colors
@@ -274,14 +277,12 @@ def test_qc_bar_plot():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
-def test_qc_bar_plot_dummy_qc():
+def test_qc_bar_plot_merge_qc():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SMPS, cleanup_qc=True)
     var_name = 'merged_dN_dlogDp'
     title = 'Merged Number Size Distribution'
     cbar_title = 'dN/dlogD$_p$ (1/cm$^{3}$)'
-    ds.qcfilter.create_dummy_qc_variable(
-        var_name, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']
-    )
+    ds.qcfilter.merge_qc_variables(var_name)
     display = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(2,))
 
     display.plot(
@@ -339,7 +340,7 @@ def test_fill_between():
 
 @pytest.mark.mpl_image_compare(tolerance=10)
 def test_qc_flag_block_plot():
-    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER, cleanup_qc=True)
 
     display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(10, 8))
 
