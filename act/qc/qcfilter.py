@@ -28,7 +28,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         """initialize"""
         self._ds = ds
 
-    def check_for_ancillary_qc(self, var_name, add_if_missing=True, cleanup=False, flag_type=False):
+    def check_for_ancillary_qc(self, var_name, add_if_missing=True, cleanup=False, flag_type=False, ignore_dims=False):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -50,9 +50,11 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             Option to run qc.clean.cleanup() method on the dataset
             to ensure the dataset was updated from ARM QC to the
             correct standardized QC.
-        flag_type : boolean
+        flag_type : booleany
             Indicating the QC variable uses flag_values instead of
             flag_masks.
+        ignore_dims : booleany
+            Boolean to ignore ancillary variables that match dimensionally
 
         Returns
         -------
@@ -75,7 +77,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 print(f'qc_var_name: {qc_var_name}')
 
         """
-        qc_var_name = None
+        qc_var_name = []
         try:
             ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
             var_dims = self._ds[var_name].dims
@@ -84,9 +86,10 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             for var in ancillary_variables:
                 for attr, value in self._ds[var].attrs.items():
                     if attr == 'standard_name' and 'quality_flag' in value:
-                        if var_dims == self._ds[var].dims:
-                            qc_var_name = var
-
+                        if ignore_dims == True:
+                            qc_var_name.append(var)
+                        elif var_dims == self._ds[var].dims:
+                            qc_var_name.append(var)
             if add_if_missing and qc_var_name is None:
                 qc_var_name = self._ds.qcfilter.create_qc_variable(var_name, flag_type=flag_type)
 
@@ -103,6 +106,8 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                         var_name, flag_type=flag_type
                     )
 
+        if len(qc_var_name) == 1:
+            qc_var_name = qc_var_name[0]
         # Make sure data varaible has a variable attribute linking
         # data variable to QC variable.
         if add_if_missing:
@@ -251,8 +256,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
 
         try:
             ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
-            if qc_var_name not in ancillary_variables:
-                ancillary_variables = ' '.join([ancillary_variables, qc_var_name])
+            for qc_var in qc_var_name:
+                if qc_var not in ancillary_variables:
+                    ancillary_variables = ' '.join([ancillary_variables, qc_var])
         except KeyError:
             ancillary_variables = qc_var_name
 
@@ -331,7 +337,6 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         test_assessment = test_assessment.capitalize()
 
         qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name, flag_type=flag_value)
-
         if test_number is None:
             test_number = self._ds.qcfilter.available_bit(qc_var_name, recycle=recycle)
 
@@ -764,10 +769,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             )
 
         if var_name is not None and qc_var_name is None:
-            if f'qc_{var_name}_dummy' in self._ds.data_vars:
-                qc_var_name = f'qc_{var_name}_dummy'
-            else:
-                qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
+            qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name)
 
         qc_variable = self._ds[qc_var_name]
         if var_name is not None:
@@ -872,10 +874,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 )
 
         """
-        if f'qc_{var_name}_dummy' in self._ds.data_vars:
-            qc_var_name = f'qc_{var_name}_dummy'
-        else:
-            qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False)
+        qc_var_name = self._ds.qcfilter.check_for_ancillary_qc(var_name, add_if_missing=False)
 
         flag_value = False
         flag_values = None
@@ -1046,12 +1045,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             variables = list(self._ds.data_vars)
 
         for var_name in variables:
-            if f'qc_{var_name}_dummy' in self._ds:
-                qc_var_name = f'qc_{var_name}_dummy'
-            else:
-                qc_var_name = self.check_for_ancillary_qc(
-                    var_name, add_if_missing=False, cleanup=False
-                )
+            qc_var_name = self.check_for_ancillary_qc(
+                var_name, add_if_missing=False, cleanup=False
+            )
             if qc_var_name is None:
                 if verbose:
                     if var_name in ['base_time', 'time_offset']:
@@ -1146,124 +1142,55 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 if verbose:
                     print(f'Deleting {qc_var_name} from dataset')
 
-    def create_dummy_qc_variable(
-        self, var_name, rm_assessments=None, rm_tests=None, qc_var_names=None
+    def merge_qc_variables(
+        self, var_name, qc_var_names=None
     ):
         """
-        Function to create a dummy quality control variable for a data variable
-        that has more than one ancillary qc variable. The dummy quality control
-        variable will be set to the logical OR of the ancillary variables. If the
-        dummy variable already exists it will be cleared and recreated.
+        Function to merge QC variables together based on what's defined in as
+        ancillary variables.  Behaviour is to merge the qc into the first
+        qc variable listed in the ancillary_variables attribute unless otherwise
+        passed in as a keyword argument.
 
         Parameters
         ----------
-        ds : xarray Dataset
-            The xarray Dataset to add the dummy quality control variable to.
         var_name : str
-            The data variable name to add the dummy quality control variable for.
-        rm_assessments : str or list of str or None
-            Assessment names listed under quality control varible flag_assessments
-            to exclude from returned data. Examples include
-            ['Bad', 'Incorrect', 'Indeterminate', 'Suspect']
-        rm_tests : int or list of int or None
-            Test numbers listed under quality control variable to exclude from
-            returned data. This is the test
-            number (or bit position number) not the mask number.
+            The data variable name to merge QC for
         qc_var_names : list of str or None
-            List of quality control variable names to use to create the dummy
-            quality control variable. If None will look for ancillary variables
+            List of quality control variable names merge together.
+            If None will look for ancillary variables
             attribute on data variable and use those variables.
 
         Returns
         -------
-        qc_var_name : str
-            The name of the created quality control variable.
+        merge_qc_var_name : str
+            The name of the quality control variable the other variables were
+            merged in to.
 
 
         """
-        if rm_assessments is None and rm_tests is None:
-            raise ValueError('Need to set rm_assessments or rm_tests option')
-
-        ancillary_variables = self._ds[var_name].attrs['ancillary_variables']
-        ancillary_variables = ancillary_variables.split()
-        if len(ancillary_variables) < 2:
-            raise ValueError('Data variable must have more than one ancillary variable.')
-
         if qc_var_names is None:
-            qc_var_names = ancillary_variables
+            qc_var_names = self._ds.qcfilter.check_for_ancillary_qc(var_name, ignore_dims=True)
+            if len(qc_var_names) < 2:
+                raise ValueError('Data variable must have more than one ancillary variable.')
 
-        qc_var_name = 'qc_' + var_name + '_dummy'
-        if qc_var_name in self._ds.variables:
-            # Clear the dummy variable if it already exists
-            warnings.warn(
-                f'Dummy quality control variable {qc_var_name} already exists. It will be cleared and recreated.'
-            )
-            del self._ds[qc_var_name]
-
-        # Create the quality control variable with same dimensions as data variable.
-        qc_data = np.zeros(self._ds[var_name].shape, dtype=bool)
-        for qc_var in qc_var_names:
-            flag_value = False
-            flag_values = None
-            flag_masks = None
-            flag_assessments = None
-            try:
-                flag_assessments = self._ds[qc_var].attrs['flag_assessments']
-                flag_masks = self._ds[qc_var].attrs['flag_masks']
-            except KeyError:
-                pass
-
-            try:
-                flag_values = self._ds[qc_var].attrs['flag_values']
-                flag_value = True
-            except KeyError:
-                pass
-
-            test_numbers = []
-            if rm_tests is not None:
-                if isinstance(rm_tests, (int, float, str)):
-                    rm_tests = [int(rm_tests)]
-                test_numbers.extend(rm_tests)
-
-            if rm_assessments is not None:
-                if isinstance(rm_assessments, str):
-                    rm_assessments = [rm_assessments]
-
-                if flag_masks is not None:
-                    test_nums = [parse_bit(mask)[0] for mask in flag_masks]
-
-                if flag_values is not None:
-                    test_nums = flag_values
-
-                rm_assessments = [x.lower() for x in rm_assessments]
-                if flag_assessments is not None:
-                    for ii, assessment in enumerate(flag_assessments):
-                        if assessment.lower() in rm_assessments:
-                            test_numbers.append(test_nums[ii])
-
-            # Make the list of test numbers to mask unique
-            test_numbers = list(set(test_numbers))
-            for test in test_numbers:
-                qc_test_mask = self._ds.qcfilter.get_qc_test_mask(
-                    var_name, test, qc_var_name=qc_var, flag_value=flag_value
+        merge_qc_var_name = qc_var_names[0]
+        for i in range(len(qc_var_names) - 1):
+            qc_var = self._ds[qc_var_names[i + 1]]
+            flag_masks = qc_var.attrs['flag_masks']
+            for j, flag in enumerate(flag_masks):
+                flag_index = self._ds.qcfilter.get_qc_test_mask(
+                    qc_var_name=qc_var_names[i + 1],
+                    test_number=flag,
+                    return_index=True,
                 )
-                qc_data = qc_data | qc_test_mask
-            # If data was orginally stored as Dask array return values to Dataset as Dask array
-            # else set as Numpy array.
-        try:
-            self._ds[qc_var_name] = (self._ds[var_name].dims, dask.array.from_array(qc_data))
-        except AttributeError:
-            self._ds[qc_var_name] = (self._ds[var_name].dims, qc_data)
+                result = self._ds.qcfilter.add_test(
+                    var_name,
+                    index=flag_index,
+                    test_meaning=qc_var.attrs['flag_meanings'][j],
+                    test_assessment=qc_var.attrs['flag_assessments'][j],
+                )
 
-        # Add attributes to the quality control variable.
-        self._ds[qc_var_name].attrs['long_name'] = f'Quality control for {var_name}'
-        self._ds[qc_var_name].attrs['standard_name'] = 'quality_flag'
-        self._ds[qc_var_name].attrs['flag_values'] = [1]
-        self._ds[qc_var_name].attrs['flag_masks'] = [1]
-        self._ds[qc_var_name].attrs['flag_meanings'] = ["Bad"]
-        self._ds[qc_var_name].attrs['flag_assessments'] = ["Bad"]
-        self._ds[qc_var_name].attrs['ancillary_variables'] = var_name
-        return qc_var_name
+        return merge_qc_var_name
 
 
 def set_bit(array, bit_number):
