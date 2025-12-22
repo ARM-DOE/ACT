@@ -5,10 +5,9 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from matplotlib import colors
 
 import act
-
-from matplotlib import colors
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
 from act.tests import sample_files
 from act.utils.data_utils import accumulate_precip
