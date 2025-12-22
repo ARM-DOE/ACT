@@ -6,9 +6,6 @@ import pandas as pd
 import pytest
 import xarray as xr
 
-import sys
-sys.path.insert(0,'/Users/atheisen/Code/sandbox/ACT')
-
 import act
 
 from matplotlib import colors
