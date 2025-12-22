@@ -8,7 +8,6 @@ routines in ACT.
 import dask
 import numpy as np
 import xarray as xr
-import warnings
 
 from act.qc import comparison_tests, qctests, bsrn_tests, qc_summary
 from act.utils.data_utils import get_missing_value
@@ -28,7 +27,9 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
         """initialize"""
         self._ds = ds
 
-    def check_for_ancillary_qc(self, var_name, add_if_missing=True, cleanup=False, flag_type=False, ignore_dims=False):
+    def check_for_ancillary_qc(
+        self, var_name, add_if_missing=True, cleanup=False, flag_type=False, ignore_dims=False
+    ):
         """
         Method to check if a quality control variable exist in the dataset
         and return the quality control varible name.
@@ -86,7 +87,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             for var in ancillary_variables:
                 for attr, value in self._ds[var].attrs.items():
                     if attr == 'standard_name' and 'quality_flag' in value:
-                        if ignore_dims == True:
+                        if ignore_dims is True:
                             qc_var_name.append(var)
                         elif var_dims == self._ds[var].dims:
                             qc_var_name.append(var)
@@ -1045,9 +1046,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
             variables = list(self._ds.data_vars)
 
         for var_name in variables:
-            qc_var_name = self.check_for_ancillary_qc(
-                var_name, add_if_missing=False, cleanup=False
-            )
+            qc_var_name = self.check_for_ancillary_qc(var_name, add_if_missing=False, cleanup=False)
             if qc_var_name is None:
                 if verbose:
                     if var_name in ['base_time', 'time_offset']:
@@ -1142,9 +1141,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                 if verbose:
                     print(f'Deleting {qc_var_name} from dataset')
 
-    def merge_qc_variables(
-        self, var_name, qc_var_names=None
-    ):
+    def merge_qc_variables(self, var_name, qc_var_names=None):
         """
         Function to merge QC variables together based on what's defined in as
         ancillary variables.  Behaviour is to merge the qc into the first
@@ -1183,7 +1180,7 @@ class QCFilter(qctests.QCTests, comparison_tests.QCTests, bsrn_tests.QCTests, qc
                     test_number=flag,
                     return_index=True,
                 )
-                result = self._ds.qcfilter.add_test(
+                self._ds.qcfilter.add_test(
                     var_name,
                     index=flag_index,
                     test_meaning=qc_var.attrs['flag_meanings'][j],
