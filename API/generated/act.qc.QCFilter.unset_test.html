@@ -598,6 +598,7 @@
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.datafilter.html">act.qc.QCFilter.datafilter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.get_masked_data.html">act.qc.QCFilter.get_masked_data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.get_qc_test_mask.html">act.qc.QCFilter.get_qc_test_mask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.merge_qc_variables.html">act.qc.QCFilter.merge_qc_variables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.normalized_rradiance_test.html">act.qc.QCFilter.normalized_rradiance_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.remove_test.html">act.qc.QCFilter.remove_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="act.qc.QCFilter.set_test.html">act.qc.QCFilter.set_test</a></li>
@@ -772,18 +773,19 @@
 <h1>act.qc.QCFilter.unset_test<a class="headerlink" href="#act-qc-qcfilter-unset-test" title="Permalink to this heading">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="act.qc.QCFilter.unset_test">
-<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">unset_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qc_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_values_reset_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.unset_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.QCFilter.unset_test" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">unset_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_values_reset_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qc_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/qc/qcfilter.html#QCFilter.unset_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.qc.QCFilter.unset_test" title="Permalink to this definition">#</a></dt>
 <dd><p>Method to unset a test/filter from a quality control variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>var_name</strong> (<em>str or None</em>) – Data variable name.</p></li>
-<li><p><strong>qc_var_name</strong> (<em>str or None</em>) – Quality control variable name. Ignored if var_name is set.</p></li>
 <li><p><strong>index</strong> (<em>int or list or numpy array</em>) – Index to unset test in quality control array. If want to
 unset all values will need to pass in index of all values.</p></li>
 <li><p><strong>test_number</strong> (<em>int</em>) – Test number to remove.</p></li>
 <li><p><strong>flag_value</strong> (<em>boolean</em>) – Switch to use flag_values integer quality control.</p></li>
 <li><p><strong>flag_values_reset_value</strong> (<em>int</em>) – Value to use when resetting a flag_values value to not be set.</p></li>
+<li><p><strong>qc_var_name</strong> (<em>str or None</em>) – Quality control variable name. Ignored if var_name is set.
+Will default to first ancillary QC variable</p></li>
 </ul>
 </dd>
 </dl>
