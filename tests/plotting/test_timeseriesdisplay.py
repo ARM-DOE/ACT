@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from matplotlib import colors
 
 import act
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
@@ -272,6 +273,34 @@ def test_qc_bar_plot():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
+def test_qc_bar_plot_merge_qc():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SMPS, cleanup_qc=True)
+    var_name = 'merged_dN_dlogDp'
+    title = 'Merged Number Size Distribution'
+    cbar_title = 'dN/dlogD$_p$ (1/cm$^{3}$)'
+    ds.qcfilter.merge_qc_variables(var_name)
+    display = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(2,))
+
+    display.plot(
+        'merged_dN_dlogDp',
+        cvd_friendly=True,
+        norm=colors.LogNorm(vmin=100.0, vmax=10000.0),
+        set_title=title,
+        cbar_label=cbar_title,
+        ylabel='Pariticle Diameter (nm)',
+        subplot_index=(0,),
+    )
+    display.axes[0].set_yscale('log')
+    display.qc_flag_block_plot('merged_dN_dlogDp', subplot_index=(1,))
+    display.axes[1].set_ylim([0, 21000])
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_2d_as_1d():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
@@ -307,7 +336,7 @@ def test_fill_between():
 
 @pytest.mark.mpl_image_compare(tolerance=10)
 def test_qc_flag_block_plot():
-    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER, cleanup_qc=True)
 
     display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(10, 8))
 

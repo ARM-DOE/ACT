@@ -159,3 +159,5 @@ EXAMPLE_AMERIFLUX_META = DATASETS.fetch('AMF_US-CU1_BIF_20250318.xlsx')
 EXAMPLE_GML_AEROSOL_NAS = DATASETS.fetch(
     'US1200R.20200101000000.20210214053818.nephelometer.aerosol_light_scattering_coefficient.pm10.1y.1h.US06L_TSI_3563_MLO.US06L_scat_coef.lev2.nas'
 )
+
+EXAMPLE_SMPS = DATASETS.fetch('houmergedsmpsapsmlM1.c1.20220801.000000.nc')

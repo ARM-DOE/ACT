@@ -1763,7 +1763,6 @@ class TimeSeriesDisplay(Display):
         )
         if qc_data_field is None:
             raise ValueError(f'No quality control ancillary variable in Dataset for {data_field}')
-
         flag_masks = self._ds[dsname][qc_data_field].attrs['flag_masks']
         flag_meanings = self._ds[dsname][qc_data_field].attrs['flag_meanings']
         flag_assessments = self._ds[dsname][qc_data_field].attrs['flag_assessments']
