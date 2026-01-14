@@ -451,12 +451,9 @@ def add_in_nan(time, data):
         # diff = np.diff(time.astype('datetime64[s]'), 1)
         diff = np.diff(time, 1)
 
-        # Wrapping in a try to catch error while switching between numpy 1.10 to 1.11
-        try:
-            mode = stats.mode(diff, keepdims=True).mode[0]
-        except TypeError:
-            mode = stats.mode(diff).mode[0]
-
+        # Use np.unique instead of stats.mode for timedelta arrays (scipy 1.11+ compatibility)
+        unique_vals, counts = np.unique(diff, return_counts=True)
+        mode = unique_vals[np.argmax(counts)]
         index = np.where(diff > (2.0 * mode))
 
         # If the data is not float time and we try to insert a NaN it will
