@@ -88,7 +88,26 @@ class DistributionDisplay(Display):
     def _get_data(self, dsname, fields):
         if isinstance(fields, str):
             fields = [fields]
-        return self._ds[dsname][fields].dropna('time')
+
+        if not fields:
+            raise ValueError("At least one field must be specified")
+
+        ds = self._ds[dsname][fields]
+
+        if 'time' not in ds.dims:
+            return ds
+
+        # Try modern xarray API first
+        try:
+            return ds.dropna('time', how='all')
+        except TypeError as e:
+            if 'how' not in str(e):
+                raise
+
+            # Fallback for older xarray versions
+            arr = ds.to_array()
+            valid_times = arr.notnull().any(dim=[d for d in arr.dims if d != 'time'])
+            return ds.sel(time=valid_times)
 
     def plot_stacked_bar(
         self,
