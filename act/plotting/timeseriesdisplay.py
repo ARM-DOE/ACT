@@ -19,7 +19,6 @@ from matplotlib import colors as mplcolors
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from scipy import stats
 from scipy.interpolate import NearestNDInterpolator
 
 from ..qc.qcfilter import parse_bit

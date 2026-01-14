@@ -8,7 +8,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 
 def dates_between(sdate, edate):

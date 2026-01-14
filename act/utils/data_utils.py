@@ -14,7 +14,6 @@ import metpy
 import numpy as np
 import pint
 import requests
-import scipy.stats as stats
 import xarray as xr
 
 spec = importlib.util.find_spec('pyart')
@@ -777,10 +776,9 @@ def accumulate_precip(ds, variable, time_delta=None):
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
     if time_delta is None:
         diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
-        try:
-            t_delta = stats.mode(diff, keepdims=False).mode
-        except TypeError:
-            t_delta = stats.mode(diff).mode
+        # Use np.unique instead of stats.mode (scipy 1.11+ compatibility)
+        unique_vals, counts = np.unique(diff, return_counts=True)
+        t_delta = unique_vals[np.argmax(counts)]
     else:
         t_delta = time_delta
 
