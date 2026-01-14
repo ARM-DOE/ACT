@@ -14,7 +14,6 @@ import metpy
 import numpy as np
 import pint
 import requests
-import scipy.stats as stats
 import xarray as xr
 
 spec = importlib.util.find_spec('pyart')
@@ -451,12 +450,9 @@ def add_in_nan(time, data):
         # diff = np.diff(time.astype('datetime64[s]'), 1)
         diff = np.diff(time, 1)
 
-        # Wrapping in a try to catch error while switching between numpy 1.10 to 1.11
-        try:
-            mode = stats.mode(diff, keepdims=True).mode[0]
-        except TypeError:
-            mode = stats.mode(diff).mode[0]
-
+        # Use np.unique instead of stats.mode for timedelta arrays (scipy 1.11+ compatibility)
+        unique_vals, counts = np.unique(diff, return_counts=True)
+        mode = unique_vals[np.argmax(counts)]
         index = np.where(diff > (2.0 * mode))
 
         # If the data is not float time and we try to insert a NaN it will
@@ -780,10 +776,9 @@ def accumulate_precip(ds, variable, time_delta=None):
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
     if time_delta is None:
         diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
-        try:
-            t_delta = stats.mode(diff, keepdims=False).mode
-        except TypeError:
-            t_delta = stats.mode(diff).mode
+        # Use np.unique instead of stats.mode (scipy 1.11+ compatibility)
+        unique_vals, counts = np.unique(diff, return_counts=True)
+        t_delta = unique_vals[np.argmax(counts)]
     else:
         t_delta = time_delta
 

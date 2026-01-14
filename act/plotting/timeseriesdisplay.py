@@ -19,7 +19,6 @@ from matplotlib import colors as mplcolors
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from scipy import stats
 from scipy.interpolate import NearestNDInterpolator
 
 from ..qc.qcfilter import parse_bit
@@ -2129,7 +2128,9 @@ class TimeSeriesDisplay(Display):
 
         start = int(mdates.date2num(xdata.values[0]))
         end = int(mdates.date2num(xdata.values[-1]))
-        delta = stats.mode(xdata.diff('time').values)[0] / np.timedelta64(1, 'D')
+        diff_vals = xdata.diff('time').values
+        unique_vals, counts = np.unique(diff_vals, return_counts=True)
+        delta = unique_vals[np.argmax(counts)] / np.timedelta64(1, 'D')
 
         # Calculate mean for reference period and subtract from the data
         if reference_period is not None:

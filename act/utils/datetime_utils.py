@@ -8,7 +8,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 
 def dates_between(sdate, edate):
@@ -135,15 +134,10 @@ def determine_time_delta(time, default=60):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=RuntimeWarning)
         if time.size > 1:
-            try:
-                mode = stats.mode(np.diff(time), keepdims=True)
-            except TypeError:
-                mode = stats.mode(np.diff(time))
-            time_delta = mode.mode[0]
-            time_delta = time_delta.astype('timedelta64[s]').astype(float)
+            unique, count = np.unique(np.diff(time), return_counts=True)
+            time_delta = unique[np.argmax(count)].astype('timedelta64[s]').astype(float)
         else:
             time_delta = default
-
     return float(time_delta)
 
 
