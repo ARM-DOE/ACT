@@ -320,7 +320,9 @@ def test_arm_standards_validator():
     assert len(errors) == 54
 
     ds2 = act.io.read_arm_netcdf(met_files)
-    ds2['time'].values[1] = ds2['time'].values[10]
+    t = ds2['time'].values.copy()
+    t[1] = t[10]
+    ds2 = ds2.assign_coords(time=t)
     errors = act.utils.arm_standards_validator(dataset=ds2)
 
     assert 'Duplicate' in errors[0]

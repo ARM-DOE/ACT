@@ -9,7 +9,7 @@ def test_read_sodar():
 
     # Test coordinates.
     assert ds.time.shape[0] == 96
-    assert ds.time[0].dtype == 'datetime64[ns]'
+    assert ds.time[0].dtype in ['datetime64[ns]', 'datetime64[us]']
 
     assert ds.height.shape[0] == 58
     assert ds.height[0] == 30.0
