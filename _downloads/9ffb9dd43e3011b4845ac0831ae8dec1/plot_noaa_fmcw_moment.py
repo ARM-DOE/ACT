@@ -10,7 +10,6 @@ observing the same event.
 Author: Zach Sherman, Adam Theisen
 """
 
-
 import matplotlib.pyplot as plt
 
 import act

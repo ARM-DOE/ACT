@@ -7,7 +7,6 @@ plot up cross-sectional slices through the
 multi-dimensional dataset
 """
 
-
 import matplotlib.pyplot as plt
 from arm_test_data import DATASETS
 
