@@ -2,7 +2,6 @@
 Modules for reading in NOAA PSL data.
 """
 
-
 import pandas as pd
 import xarray as xr
 

@@ -9,7 +9,6 @@ Author: Adam Theisen
 
 """
 
-
 import matplotlib.pyplot as plt
 from arm_test_data import DATASETS
 

@@ -6,6 +6,7 @@ This example shows how to calculate course and speed
 over ground of the ship and use it to correct the
 wind speed and direction data.
 """
+
 import xarray as xr
 from arm_test_data import DATASETS
 

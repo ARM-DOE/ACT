@@ -4,7 +4,6 @@ be used for testing ACT.
 
 """
 
-
 from arm_test_data import DATASETS
 
 # Single files

@@ -2,6 +2,7 @@
 This module contains functions for correcting data for ship motion
 
 """
+
 import numpy as np
 
 
