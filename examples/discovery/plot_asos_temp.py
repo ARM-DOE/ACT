@@ -6,6 +6,7 @@ This example shows how to plot timeseries of ASOS data from
 Chicago O'Hare airport.
 
 """
+
 from datetime import datetime
 
 import matplotlib.pyplot as plt

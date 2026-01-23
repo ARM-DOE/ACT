@@ -1,4 +1,4 @@
-""" Module for Distribution Plotting. """
+"""Module for Distribution Plotting."""
 
 import matplotlib.pyplot as plt
 import numpy as np

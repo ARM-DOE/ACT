@@ -8,7 +8,6 @@ height via a gradient method retrieval
 Author: Joe O'Brien
 """
 
-
 from arm_test_data import DATASETS
 
 import act
