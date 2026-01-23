@@ -77,7 +77,7 @@ plt.show()
 # Check out the xarray documentation for more information
 # on the resample function. Options include mean, median,
 # max, min, sum, nearest, and more.
-ds = ds.resample(time='H').mean(keep_attrs=True)
+ds = ds.resample(time='h').mean(keep_attrs=True)
 
 # Plot up data from the hourly merged dataset for ECOR and EBBR
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))

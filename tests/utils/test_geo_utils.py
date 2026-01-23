@@ -1,8 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 import pytest
-import pytz
 
 import act
 
@@ -85,9 +84,11 @@ def test_get_sunrise_sunset_noon():
         library='skyfield',
         timezone=True,
     )
-    assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32, tzinfo=pytz.UTC)
-    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4, tzinfo=pytz.UTC)
-    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10, tzinfo=pytz.UTC)
+    assert sunrise[0].replace(microsecond=0) == datetime(
+        2018, 1, 31, 22, 36, 32, tzinfo=timezone.utc
+    )
+    assert sunset[0].replace(microsecond=0) == datetime(2018, 2, 1, 17, 24, 4, tzinfo=timezone.utc)
+    assert noon[0].replace(microsecond=0) == datetime(2018, 2, 1, 8, 2, 10, tzinfo=timezone.utc)
 
     sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
         latitude=ds['lat'].values[0],
@@ -122,7 +123,7 @@ def test_get_sunrise_sunset_noon():
     sunrise, sunset, noon = act.utils.geo_utils.get_sunrise_sunset_noon(
         latitude=ds['lat'].values[0],
         longitude=ds['lon'].values[0],
-        date=datetime(2018, 2, 1, tzinfo=pytz.UTC),
+        date=datetime(2018, 2, 1, tzinfo=timezone.utc),
         library='skyfield',
     )
     assert sunrise[0].replace(microsecond=0) == datetime(2018, 1, 31, 22, 36, 32)
