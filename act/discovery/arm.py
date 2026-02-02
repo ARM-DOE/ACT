@@ -6,6 +6,7 @@ Script for downloading data from ARM's Live Data Webservice
 import json
 import os
 import textwrap
+import urllib.error
 import warnings
 from datetime import timedelta
 
@@ -157,14 +158,19 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
             # create file and write bytes to file
-            with open(output_file, 'wb') as open_bytes_file:
-                data = urlopen(req_save).read()
-                if 'This data file is not available' in str(data):
-                    print(fname + ' is not available for download')
-                    continue
-                else:
-                    print(f'[DOWNLOADING] {fname}')
-                    open_bytes_file.write(data)
+            try:
+                with open(output_file, 'wb') as open_bytes_file:
+                    data = urlopen(req_save).read()
+                    if 'This data file is not available' in str(data):
+                        print(fname + ' is not available for download')
+                        continue
+                    else:
+                        print(f'[DOWNLOADING] {fname}')
+                        open_bytes_file.write(data)
+            except urllib.error.HTTPError:
+                print('Unable to download file: ' + fname)
+                os.remove(output_file)
+                continue
             file_names.append(output_file)
         # Get ARM DOI and print it out
         doi = get_arm_doi(
