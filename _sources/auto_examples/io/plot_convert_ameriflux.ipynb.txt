@@ -1,0 +1,43 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "\n# Convert Data to AmeriFlux Format\n\nThis script shows how to convert ARM data to AmeriFlux format\nusing an ACT function, and write it out to csv.  More information\non AmeriFlux and their file formats and naming conventions can be\nfound here: https://ameriflux.lbl.gov/\n\nAuthor: Adam Theisen\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "collapsed": false
+      },
+      "outputs": [],
+      "source": [
+        "import glob\nimport os\n\nimport matplotlib.pyplot as plt\nimport xarray as xr\n\nimport act\n\n# Read in the ECOR data\nfiles = glob.glob(act.tests.sample_files.EXAMPLE_ECORSF_E39)\nds_ecor = act.io.arm.read_arm_netcdf(files)\n\n# The ECOR time stamp as at the end of the Averaging period so adjusting\n# it to be consistent with the other systems\nds_ecor = act.utils.datetime_utils.adjust_timestamp(ds_ecor)\n\n# Clean up and QC the data based on embedded QC and ARM DQRs\nds_ecor.clean.cleanup()\nds_ecor = act.qc.arm.add_dqr_to_qc(ds_ecor)\nds_ecor.qcfilter.datafilter(\n    del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']\n)\n\n# Then we do this same thing for the other instruments\n# SEBS\nfiles = glob.glob(act.tests.sample_files.EXAMPLE_SEBS_E39)\nds_sebs = act.io.arm.read_arm_netcdf(files)\n# SEBS does not have a time_bounds variable so we have to manually adjust it\nds_sebs = act.utils.datetime_utils.adjust_timestamp(ds_sebs, offset=-30 * 60)\nds_sebs.clean.cleanup()\nds_sebs = act.qc.arm.add_dqr_to_qc(ds_sebs)\nds_sebs.qcfilter.datafilter(\n    del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']\n)\n\n# STAMP\nfiles = glob.glob(act.tests.sample_files.EXAMPLE_STAMP_E39)\nds_stamp = act.io.arm.read_arm_netcdf(files)\nds_stamp.clean.cleanup()\nds_stamp = act.qc.arm.add_dqr_to_qc(ds_stamp)\nds_stamp.qcfilter.datafilter(\n    del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']\n)\n\n# STAMP Precipitation\nfiles = glob.glob(act.tests.sample_files.EXAMPLE_STAMPPCP_E39)\nds_stamppcp = act.io.arm.read_arm_netcdf(files)\nds_stamppcp.clean.cleanup()\nds_stamppcp = act.qc.arm.add_dqr_to_qc(ds_stamppcp)\nds_stamppcp.qcfilter.datafilter(\n    del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']\n)\n# These are minute data so we need to resample and sum up to 30 minutes\nds_stamppcp = ds_stamppcp['precip'].resample(time='30Min').sum()\n\n# AMC\nfiles = glob.glob(act.tests.sample_files.EXAMPLE_AMC_E39)\nds_amc = act.io.arm.read_arm_netcdf(files)\nds_amc.clean.cleanup()\nds_amc = act.qc.arm.add_dqr_to_qc(ds_amc)\nds_amc.qcfilter.datafilter(\n    del_qc_var=False, rm_assessments=['Bad', 'Incorrect', 'Indeterminate', 'Suspect']\n)\n\n# Merge these datasets together\nds = xr.merge([ds_ecor, ds_sebs, ds_stamp, ds_stamppcp, ds_amc], compat='override')\n\n# Convert the data to AmeriFlux format and get a DataFrame in return\n# Note, this does not return an xarray Dataset as it's assumed the data\n# will just be written out to csv format.\ndf = act.io.ameriflux.convert_to_ameriflux(ds)\n\n# Write the data out to file\nsite = 'US-A14'\ndirectory = './' + site + 'mergedflux/'\nif not os.path.exists(directory):\n    os.makedirs(directory)\n\n# Following the AmeriFlux file naming convention\nfilename = (\n    site\n    + '_HH_'\n    + str(df['TIMESTAMP_START'].iloc[0])\n    + '_'\n    + str(df['TIMESTAMP_END'].iloc[-1])\n    + '.csv'\n)\ndf.to_csv(directory + filename, index=False)\n\n\n# Plot up merged data for visualization\ndisplay = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(4,), figsize=(12, 10))\ndisplay.plot('latent_flux', subplot_index=(0,))\ndisplay.plot('co2_flux', subplot_index=(0,))\ndisplay.plot('sensible_heat_flux', subplot_index=(0,))\ndisplay.day_night_background(subplot_index=(0,))\n\ndisplay.plot('precip', subplot_index=(1,))\ndisplay.day_night_background(subplot_index=(1,))\n\ndisplay.plot('surface_soil_heat_flux_1', subplot_index=(2,))\ndisplay.plot('surface_soil_heat_flux_2', subplot_index=(2,))\ndisplay.plot('surface_soil_heat_flux_3', subplot_index=(2,))\ndisplay.day_night_background(subplot_index=(2,))\n\ndisplay.plot('soil_specific_water_content_west', subplot_index=(3,))\ndisplay.axes[3].set_ylim(display.axes[3].get_ylim()[::-1])\n\ndisplay.day_night_background(subplot_index=(3,))\n\nplt.subplots_adjust(hspace=0.35)\nplt.show()"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.14.3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}

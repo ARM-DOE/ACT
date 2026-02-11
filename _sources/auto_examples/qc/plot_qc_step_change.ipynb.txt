@@ -1,0 +1,43 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "\n# Plotting flagged data gaps with a step change test\n\nThis is an example for how to use the step change detection test.\nThe test uses the cumulative sum control chart to detect when\na sudden shift in values occurs. It has an option to insert\nNaN value when there is a data gap to not have those periods\nreturned as a data shift. This example produces two plots,\none with the data gap flagged and one without.\n\nAuthor: Ken Kehoe\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "collapsed": false
+      },
+      "outputs": [],
+      "source": [
+        "import numpy as np\nfrom arm_test_data import DATASETS\nfrom matplotlib import pyplot as plt\n\nfrom act.io.arm import read_arm_netcdf\n\n# Get example data from ARM Test Data repository\nEXAMPLE_MET = DATASETS.fetch('sgpmetE13.b1.20190101.000000.cdf')\nvariable = 'temp_mean'\nds = read_arm_netcdf(EXAMPLE_MET, keep_variables=variable)\n\n# Add shifts in the data\ndata = ds[variable].values\ndata[600:] += 2\ndata[1000:] -= 2\nds[variable].values = data\n\n# Remove data from the Dataset to simulate instrument being off-line\nds = ds.where((ds[\"time.hour\"] < 3) | (ds[\"time.hour\"] > 5), drop=True)\n\n# Add step change test\nds.qcfilter.add_step_change_test(variable)\n\n# Add step change test but insert NaN values during period of missing data\n# so it does not trip the test.\nds.qcfilter.add_step_change_test(variable, add_nan=True)\n\n# Make plot with results from the step change test for when the missing data\n# is included and a second plot without including the missing data gap.\ntitle = 'Step change detection'\nfor ii in range(1, 3):\n    plt.figure(figsize=(10, 6))\n    plt.plot(ds['time'].values, ds[variable].values, label='Data')\n    plt.xlabel('Time')\n    plt.ylabel(f\"{ds[variable].attrs['long_name']} ({ds[variable].attrs['units']})\")\n    plt.title(title)\n    plt.grid(lw=2, ls=':')\n\n    label = 'Step change'\n    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=ii)\n    for jj in np.where(index)[0]:\n        plt.axvline(x=ds['time'].values[jj], color='orange', linestyle='--', label=label)\n        label = None\n\n    title += ' with NaN added in data gaps'\n\n    plt.legend()\n    plt.show()"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.14.3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
