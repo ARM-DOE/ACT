@@ -24,7 +24,7 @@
    :hidden:
    :caption: Example Gallery
 
-   source/auto_examples/index.rst
+   auto_examples/index.rst
 
 .. toctree::
    :maxdepth: 1
