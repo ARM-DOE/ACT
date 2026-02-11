@@ -51,7 +51,7 @@ extensions = [
 exclude_patterns = ['_build', '**.ipynb_checkpoints']
 sphinx_gallery_conf = {
     'examples_dirs': '../../examples',
-    'gallery_dirs': 'source/auto_examples',
+    'gallery_dirs': 'auto_examples',
 }
 
 # Configuration options for plot_directive. See:
