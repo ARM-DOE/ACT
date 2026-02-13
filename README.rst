@@ -52,7 +52,7 @@ Important Links
 ~~~~~~~~~~~~~~~
 
 * Documentation: https://arm-doe.github.io/ACT/
-* Examples: https://arm-doe.github.io/ACT/source/auto_examples/index.html
+* Examples: https://arm-doe.github.io/ACT/auto_examples/index.html
 * Issue Tracker: https://github.com/ARM-DOE/ACT/issues
 
 Citing
