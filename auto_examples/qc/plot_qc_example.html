@@ -527,14 +527,59 @@
                 
 <div id="searchbox"></div>
                 <article class="bd-article">
-                   <section id="working-with-embedded-quality-control-variables">
-<h1>Working with embedded quality control variables<a class="headerlink" href="#working-with-embedded-quality-control-variables" title="Link to this heading">#</a></h1>
+                   <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-qc-plot-qc-example-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="working-with-embedded-quality-control-variables">
+<span id="sphx-glr-auto-examples-qc-plot-qc-example-py"></span><h1>Working with embedded quality control variables<a class="headerlink" href="#working-with-embedded-quality-control-variables" title="Link to this heading">#</a></h1>
 <p>This is an example of how to use existing or create new quality
 control varibles. All the tests are located in act/qc/qctests.py
 file but called under the qcfilter method.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>result = {&#39;test_number&#39;: 1, &#39;test_meaning&#39;: &#39;Value is set to missing_value.&#39;, &#39;test_assessment&#39;: &#39;Bad&#39;, &#39;qc_variable_name&#39;: &#39;qc_inst_up_long_dome_resist&#39;, &#39;variable_name&#39;: &#39;inst_up_long_dome_resist&#39;}
+
+Data type = &lt;class &#39;numpy.ma.MaskedArray&#39;&gt;
+
+data = [-- 7.877699851989746 7.896500110626221 ... -- -- --]
+
+data filled with masked array fill_value = [   nan 7.8777 7.8965 ...    nan    nan    nan]
+
+Data type = &lt;class &#39;numpy.ndarray&#39;&gt;
+data = [   nan 7.8777 7.8965 ...    nan    nan    nan]
+
+QC Variable = &lt;xarray.DataArray &#39;qc_inst_up_long_dome_resist&#39; (time: 4320)&gt; Size: 17kB
+array([1, 0, 0, ..., 2, 2, 2], shape=(4320,), dtype=int32)
+Coordinates:
+  * time     (time) datetime64[ns] 35kB 2019-06-01 ... 2019-06-01T23:59:40
+Attributes:
+    long_name:         Quality check results on field: Instantaneous Upwellin...
+    units:             1
+    flag_masks:        [np.uint32(1), np.uint32(2), np.uint32(4), np.uint32(16)]
+    flag_meanings:     [&#39;Value is set to missing_value.&#39;, &#39;Data value less th...
+    flag_assessments:  [&#39;Bad&#39;, &#39;Bad&#39;, &#39;Suspect&#39;, &#39;Suspect&#39;]
+    standard_name:     quality_flag
+    fail_min:          7.8
+    warn_max:          12.0
+
+mask : test
+-----------
+1  :  [1]
+2  :  [2]
+4  :  [3]
+16  :  [5]
+
+Normal numpy array data values: [   nan 7.8777 7.8965 ... 7.6705 7.6892 7.6892]
+Mask associated with values: [False False False ... False False False]
+
+At least one less than test set = True
+At least one difference test set = False
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">arm_test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATASETS</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">act.io.arm</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_arm_netcdf</span>
@@ -655,8 +700,19 @@ file but called under the qcfilter method.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;At least one difference test set =&#39;</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/maskedarray.baseclass.html#numpy.ma.MaskedArray.mask" title="numpy.ma.MaskedArray.mask" class="sphx-glr-backref-module-numpy-ma sphx-glr-backref-type-py-attribute"><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">any</span></a><span class="p">())</span>
 </pre></div>
 </div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.127 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-qc-plot-qc-example-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/a0d7de0bf8c780eea3e26334406c21fe/plot_qc_example.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_qc_example.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/bcc15a37ce6d72abbf9bfd16d7c992a9/plot_qc_example.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_qc_example.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/c44a2d0c56a8e454481e6b8b44e4e1f4/plot_qc_example.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_qc_example.zip</span></code></a></p>
 </div>
 </div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 
 <div class="section ablog__blog_comments">
@@ -705,7 +761,7 @@ file but called under the qcfilter method.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/auto_examples/qc/plot_qc_example.ipynb.txt"
+      <li><a href="../../_sources/auto_examples/qc/plot_qc_example.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

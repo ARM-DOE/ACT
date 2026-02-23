@@ -527,14 +527,57 @@
                 
 <div id="searchbox"></div>
                 <article class="bd-article">
-                   <section id="neon-data">
-<h1>NEON Data<a class="headerlink" href="#neon-data" title="Link to this heading">#</a></h1>
+                   <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-discovery-plot-neon-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="neon-data">
+<span id="sphx-glr-auto-examples-discovery-plot-neon-py"></span><h1>NEON Data<a class="headerlink" href="#neon-data" title="Link to this heading">#</a></h1>
 <p>This example shows how to download data from
 NEON and ARM 2m surface meteorology stations
 on the North Slope and plot them</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<img src="../../_images/sphx_glr_plot_neon_001.png" srcset="../../_images/sphx_glr_plot_neon_001.png" alt="NEON tempSingleMean on 20221001" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[DOWNLOADING] nsametC1.b1.20221001.000000.cdf
+[DOWNLOADING] nsametC1.b1.20221002.000000.cdf
+[DOWNLOADING] nsametC1.b1.20221003.000000.cdf
+[DOWNLOADING] nsametC1.b1.20221004.000000.cdf
+[DOWNLOADING] nsametC1.b1.20221005.000000.cdf
+[DOWNLOADING] nsametC1.b1.20221006.000000.cdf
+[DOWNLOADING] nsametC1.b1.20221007.000000.cdf
+
+If you use these data to prepare a publication, please cite:
+
+Kyrouac, J., Shi, Y., &amp; Tuftedal, M. Surface Meteorological Instrumentation
+(MET), 2022-10-01 to 2022-10-07, North Slope Alaska (NSA), Central Facility,
+Barrow AK (C1). Atmospheric Radiation Measurement (ARM) User Facility.
+https://doi.org/10.5439/1786358
+
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.variables.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.sensor_positions.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.010.030.SAAT_30min.2022-10.basic.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.EML.20221001-20221101.20260123T000749Z.xml
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.basic.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.020.001.SAAT_1min.2022-10.basic.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.030.001.SAAT_1min.2022-10.basic.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.readme.20260123T000749Z.txt
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.030.030.SAAT_30min.2022-10.basic.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.020.030.SAAT_30min.2022-10.basic.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.variables.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.020.030.SAAT_30min.2022-10.expanded.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.020.001.SAAT_1min.2022-10.expanded.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.EML.20221001-20221101.20260123T000749Z.xml
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.sensor_positions.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.010.030.SAAT_30min.2022-10.expanded.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.010.001.SAAT_1min.2022-10.expanded.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.readme.20260123T000749Z.txt
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.030.001.SAAT_1min.2022-10.expanded.20230220T172200Z.csv
+[DOWNLOADING]  NEON.D18.BARR.DP1.00002.001.000.030.030.SAAT_30min.2022-10.expanded.20230220T172200Z.csv
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -590,8 +633,19 @@ on the North Slope and plot them</p>
     <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 15.217 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-discovery-plot-neon-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/21b363e84b4e4eb026dc98fa70124d80/plot_neon.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_neon.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/5d51baa8125aab24df8a97817807a9eb/plot_neon.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_neon.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/95fd6f2153274f5c84f5447bccde4436/plot_neon.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_neon.zip</span></code></a></p>
 </div>
 </div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 
 <div class="section ablog__blog_comments">
@@ -640,7 +694,7 @@ on the North Slope and plot them</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/auto_examples/discovery/plot_neon.ipynb.txt"
+      <li><a href="../../_sources/auto_examples/discovery/plot_neon.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
