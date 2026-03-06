@@ -413,6 +413,57 @@ def test_assessment_overplot_multi():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
+def test_overplot_bit():
+    files = sample_files.EXAMPLE_MET1
+    ds = act.io.arm.read_arm_netcdf(files)
+    ds.load()
+    ds.clean.cleanup()
+
+    ds.qcfilter.set_test('temp_mean', index=np.arange(100, 300, dtype=int), test_number=2)
+
+    plotted_bit = 2
+
+    # Plot data
+    display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
+    display.plot('temp_mean', day_night_background=True, assessment_overplot_bit=plotted_bit)
+
+    ds.close()
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_overplot_bit_multi():
+    files = sample_files.EXAMPLE_MET1
+    ds = act.io.arm.read_arm_netcdf(files)
+    ds.load()
+    ds.clean.cleanup()
+
+    ds.qcfilter.set_test('temp_mean', index=np.arange(100, 300, dtype=int), test_number=2)
+    ds.qcfilter.add_test(
+        'temp_mean',
+        index=np.arange(900, 950, dtype=int),
+        test_meaning='DQO added test',
+        test_assessment='Indeterminate',
+    )
+
+    highest_bit = ds.qcfilter.available_bit('qc_temp_mean') - 1
+    plotted_bits = [2, highest_bit]
+
+    # Plot data
+    display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
+    display.plot('temp_mean', day_night_background=True, assessment_overplot_bit=plotted_bits)
+
+    ds.close()
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_plot_barbs_from_u_v():
     sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
     BarbDisplay = TimeSeriesDisplay({'sonde_darwin': sonde_ds})

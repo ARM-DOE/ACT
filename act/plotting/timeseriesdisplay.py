@@ -312,6 +312,7 @@ class TimeSeriesDisplay(Display):
         error_kw={},
         set_shading='auto',
         assessment_overplot=False,
+        assessment_overplot_bit=None,
         overplot_marker='.',
         overplot_behind=False,
         overplot_markersize=6,
@@ -392,6 +393,9 @@ class TimeSeriesDisplay(Display):
         assessment_overplot : boolean
             Option to overplot quality control colored symbols over plotted
             data using flag_assessment categories.
+        assessment_overplot_bit : int or list of int
+            Option to overplot quality control colored symbols for specific
+            quality control tests using flag_assessments categories.
         overplot_marker : str
             Marker to use for overplot symbol.
         overplot_behind : bool
@@ -592,6 +596,12 @@ class TimeSeriesDisplay(Display):
                 add_legend = True
 
             # Overplot failing data if requested
+            if assessment_overplot_bit:
+                assessment_overplot = True
+                if not isinstance(assessment_overplot_bit, list):
+                    assessment_overplot_bit = [assessment_overplot_bit]
+                    if not all(isinstance(bit, int) for bit in assessment_overplot_bit):
+                        raise TypeError('All passed bits must be integers')
             if assessment_overplot:
                 # If we are doing forced line plot from 2D data need to manage
                 # legend lables. Will make arrays to hold labels of QC failing
@@ -607,35 +617,128 @@ class TimeSeriesDisplay(Display):
                     zorder = 0
                     overplot_markersize *= 2.0
 
-                for assessment, categories in assessment_overplot_category.items():
-                    flag_data = self._ds[dsname].qcfilter.get_masked_data(
-                        field, rm_assessments=categories, return_inverse=True
-                    )
-                    if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
-                        try:
-                            flag_data.mask = np.logical_or(data.mask, flag_data.mask)
-                        except AttributeError:
-                            pass
-                        qc_ax = ax.plot(
-                            xdata,
-                            flag_data,
-                            marker=overplot_marker,
-                            linestyle='',
-                            markersize=overplot_markersize,
-                            color=assessment_overplot_category_color[assessment],
-                            label=assessment,
-                            zorder=zorder,
+                # Get name of QC variable for overplot
+                qc_data_field = self._ds[dsname].qcfilter.check_for_ancillary_qc(
+                    field, add_if_missing=False, cleanup=False
+                )
+
+                # Checks to ensure that valid QC test numbers are being passed
+                if assessment_overplot_bit:
+                    # Test number must be greater than 1 (Bit 1 is missing data)
+                    if any(bit <= 1 for bit in assessment_overplot_bit):
+                        raise ValueError('Bit numbers must be greater than 1')
+                    num_bits = self._ds[dsname].qcfilter.available_bit(qc_data_field) - 1
+                    # Check that passed numbers are currently assigned to QC tests
+                    if any(bit > num_bits for bit in assessment_overplot_bit):
+                        raise ValueError(
+                            f'One or more passed bits are not a set QC bit for {qc_data_field}'
                         )
-                        # If labels keyword is set need to add labels for calling legend
-                        if isinstance(labels, list):
-                            # If plotting forced_line_plot need to subset the Line2D object
-                            # so we don't have more than one added to legend.
-                            if len(qc_ax) > 1:
-                                lines.extend(qc_ax[:1])
+
+                for assessment, categories in assessment_overplot_category.items():
+                    rm_tests = None
+                    qc_label = assessment
+                    if assessment_overplot_bit:
+                        # Overplot by test number(s)
+                        # Want to make sure that we are not removing assessments since we want to search all
+                        # assessment types
+                        rm_assessments = None
+
+                        # If test bit does not match the assessment then go to next
+                        # assessment in the loop
+                        for bit in assessment_overplot_bit:
+                            bit_assessment = self._ds[dsname][qc_data_field].attrs[
+                                'flag_assessments'
+                            ][bit - 1]
+
+                            # Get the proper keys for plot color
+                            if 'Bad' in bit_assessment:
+                                plot_color = 'Incorrect'
+                            elif 'Indeterminate' in bit_assessment:
+                                plot_color = 'Suspect'
                             else:
-                                lines.extend(qc_ax)
-                            labels.append(assessment)
-                        add_legend = True
+                                plot_color = assessment_overplot_category_color[bit_assessment]
+
+                            # If assessment in iteration does not match QC bit assessment then
+                            # exit current iteration
+                            if bit_assessment not in categories:
+                                continue
+
+                            # Get labels for legend
+                            try:
+                                test_desc = ":" + str(
+                                    self._ds[dsname][qc_data_field].attrs['flag_meanings'][bit - 1]
+                                )
+                            except KeyError:
+                                test_desc = ''
+                            qc_label = f'Bit {bit}{test_desc}'
+
+                            # Get QC data in mask
+                            flag_data = self._ds[dsname].qcfilter.get_masked_data(
+                                field,
+                                rm_assessments=rm_assessments,
+                                rm_tests=bit,
+                                return_inverse=True,
+                            )
+                            if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                                try:
+                                    flag_data.mask = np.logical_or(data.mask, flag_data.mask)
+                                except AttributeError:
+                                    pass
+                                qc_ax = ax.plot(
+                                    xdata,
+                                    flag_data,
+                                    marker=overplot_marker,
+                                    linestyle='',
+                                    markersize=overplot_markersize,
+                                    color=assessment_overplot_category_color[plot_color],
+                                    label=qc_label,
+                                    zorder=zorder,
+                                )
+                                # If labels keyword is set need to add labels for calling legend
+                                if isinstance(labels, list):
+                                    # If plotting forced_line_plot need to subset the Line2D object
+                                    # so we don't have more than one added to legend.
+                                    if len(qc_ax) > 1:
+                                        lines.extend(qc_ax[:1])
+                                    else:
+                                        lines.extend(qc_ax)
+                                    labels.append(qc_label)
+                                add_legend = True
+                    else:
+                        # Overplot by category
+                        # Set keyword to keep assessment categories in flag data
+                        rm_assessments = categories
+                        flag_data = self._ds[dsname].qcfilter.get_masked_data(
+                            field,
+                            rm_assessments=rm_assessments,
+                            rm_tests=rm_tests,
+                            return_inverse=True,
+                        )
+                        if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                            try:
+                                flag_data.mask = np.logical_or(data.mask, flag_data.mask)
+                            except AttributeError:
+                                pass
+                            qc_ax = ax.plot(
+                                xdata,
+                                flag_data,
+                                marker=overplot_marker,
+                                linestyle='',
+                                markersize=overplot_markersize,
+                                color=assessment_overplot_category_color[assessment],
+                                label=qc_label,
+                                zorder=zorder,
+                            )
+                            # If labels keyword is set need to add labels for calling legend
+                            if isinstance(labels, list):
+                                # If plotting forced_line_plot need to subset the Line2D object
+                                # so we don't have more than one added to legend.
+                                if len(qc_ax) > 1:
+                                    lines.extend(qc_ax[:1])
+                                else:
+                                    lines.extend(qc_ax)
+                                labels.append(qc_label)
+                            add_legend = True
 
             # Add legend if labels are available
             if isinstance(labels, list):
