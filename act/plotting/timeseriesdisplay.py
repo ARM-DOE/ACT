@@ -650,13 +650,21 @@ class TimeSeriesDisplay(Display):
                                 'flag_assessments'
                             ][bit - 1]
 
-                            # Get the proper keys for plot color
-                            if 'Bad' in bit_assessment:
-                                plot_color = 'Incorrect'
-                            elif 'Indeterminate' in bit_assessment:
-                                plot_color = 'Suspect'
+                            # Get the proper keyword for overplot assessment color
+                            if any(
+                                ba in bit_assessment
+                                for ba in assessment_overplot_category['Incorrect']
+                            ):
+                                plot_assessment_category = 'Incorrect'
+                            elif any(
+                                ba in bit_assessment
+                                for ba in assessment_overplot_category['Suspect']
+                            ):
+                                plot_assessment_category = 'Suspect'
                             else:
-                                plot_color = assessment_overplot_category_color[bit_assessment]
+                                raise ValueError(
+                                    f'{bit_assessment} not detected in assessment overplot categories'
+                                )
 
                             # If assessment in iteration does not match QC bit assessment then
                             # exit current iteration
@@ -690,7 +698,9 @@ class TimeSeriesDisplay(Display):
                                     marker=overplot_marker,
                                     linestyle='',
                                     markersize=overplot_markersize,
-                                    color=assessment_overplot_category_color[plot_color],
+                                    color=assessment_overplot_category_color[
+                                        plot_assessment_category
+                                    ],
                                     label=qc_label,
                                     zorder=zorder,
                                 )
