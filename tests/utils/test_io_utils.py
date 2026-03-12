@@ -224,10 +224,10 @@ def test_gunzip():
 @pytest.mark.skipif(not MOVIEPY_AVAILABLE, reason='MoviePy is not installed.')
 def test_generate_movie():
     files = [
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contour.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contour2.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contourf.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contourf2.png?raw=true',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260312/sgpmetE12.b1.precip.20260312.png',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260311/sgpmetE12.b1.precip.20260311.png',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260310/sgpmetE12.b1.precip.20260310.png',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260309/sgpmetE12.b1.precip.20260309.png',
     ]
     cwd = Path.cwd()
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -239,12 +239,14 @@ def test_generate_movie():
             assert Path(result).name == 'movie.mp4'
 
             # Test list of files for making movie
-            files = [
-                'test_contour.png',
-                'test_contour2.png',
-                'test_contourf.png',
-                'test_contourf2.png',
-            ]
+            files = sorted(
+                [
+                    'sgpmetE12.b1.precip.20260312.png',
+                    'sgpmetE12.b1.precip.20260311.png',
+                    'sgpmetE12.b1.precip.20260310.png',
+                    'sgpmetE12.b1.precip.20260309.png',
+                ]
+            )
             basepath = Path(Path(__file__).parents[1], 'plotting', 'baseline')
             files = [Path(basepath, fl) for fl in files]
             write_filename = Path(tmpdirname, 'one', 'two', 'three', 'movie_filename_testing.mp4')
