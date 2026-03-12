@@ -241,10 +241,10 @@ def test_generate_movie():
             # Test list of files for making movie
             files = sorted(
                 [
-                    'sgpmetE12.b1.precip.20260312.png',
-                    'sgpmetE12.b1.precip.20260311.png',
-                    'sgpmetE12.b1.precip.20260310.png',
-                    'sgpmetE12.b1.precip.20260309.png',
+                    'test_contour.png',
+                    'test_contour2.png',
+                    'test_contourf.png',
+                    'test_contourf2.png',
                 ]
             )
             basepath = Path(Path(__file__).parents[1], 'plotting', 'baseline')
