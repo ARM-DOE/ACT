@@ -457,6 +457,9 @@ class QCTests:
 
         Examples
         --------
+
+        An example on how to add BSRN comparison tests:
+
         .. code-block:: python
 
             ds = act.io.arm.read_arm_netcdf(act.tests.EXAMPLE_BRS, cleanup_qc=True)
@@ -467,9 +470,10 @@ class QCTests:
                 glb_SW_up_name='up_short_hemisp',
                 glb_LW_dn_name='down_long_hemisp_shaded',
                 glb_LW_up_name='up_long_hemisp',
-                use_dask=True)
-        """
+                use_dask=True
+            )
 
+        """
         if isinstance(test, str):
             test = [test]
 
