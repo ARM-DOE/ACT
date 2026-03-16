@@ -42,13 +42,15 @@ def download_mplnet_data(
         https://mplnet.gsfc.nasa.gov/product-info/
         Level 1 data should never be used for publication.
     product : str
-        MPLNet Product (NRB, CLD, PBL, AER).
-            NRB - Lidar signals; volume depolarization ratos, diagnostics
-            CLD - Cloud Heights, thin cloud extinction and optical depths, cloud
-                    phase
-            AER - Aerosol heights; extinction, backscatter, and aerosol
-                    depolarization ratio profiles; lidar ratio
-            PBL - Surface-Attached Mixed Layer Top and estimated mixed layer AOD
+         MPLNet Product (NRB, CLD, PBL, AER).
+
+        * NRB - Lidar signals; volume depolarization ratios, diagnostics
+        * CLD - Cloud Heights, thin cloud extinction and optical depths, cloud
+          phase
+        * AER - Aerosol heights; extinction, backscatter, and aerosol
+          depolarization ratio profiles; lidar ratio
+        * PBL - Surface-Attached Mixed Layer Top and estimated mixed layer AOD
+
         Information on the MPLNet Products can be found here:
         https://mplnet.gsfc.nasa.gov/product-info/
     year : str
@@ -177,20 +179,21 @@ def get_mplnet_meta(
     Returns a list of meta data from the NASA MPL Network Data
     https://mplnet.gsfc.nasa.gov/mplnet_web_services.cgi?metadata
 
-
     Parameters
     ----------
     sites : str
         How to return MPLNET Site Information
-            all        - produces output on all sites (active and inactive)
-            active     - produces output file containing only active sites
-                       (if year, month, or day are not set then uses today's date)
-            inactive   - produces output file containing only inactive sites
-                       (if year, month, or day are not set then uses today's date)
-            planned    - produces output file containing only planned sites
-            site_name  - produces output file containing only requested site
-            collection - produces output file containing sites in pre-defined
-                         collections (e.g. field campaigns or regions)
+
+        * all        - produces output on all sites (active and inactive)
+        * active     - produces output file containing only active sites
+          (if year, month, or day are not set then uses today's date)
+        * inactive   - produces output file containing only inactive sites
+          (if year, month, or day are not set then uses today's date)
+        * planned    - produces output file containing only planned sites
+        * site_name  - produces output file containing only requested site
+        * collection - produces output file containing sites in pre-defined
+          collections (e.g. field campaigns or regions)
+
     year : str
         Four digit Year for desired product download (YYYY).
         Note Level 1 and 1.5 products are available for
@@ -205,11 +208,13 @@ def get_mplnet_meta(
         in a zip file.
     method : str
         Method for returning JSON list of MPLNET GALION format parameters.
-            station - returns GALION JSON with only station and PI contact info
-            data - return GALION JSON with data elements, station, date and PI
-                contact information
-    print_to_screen : Boolean
-        If true, print MPLNET site identifiers to screen
+
+        * station - returns GALION JSON with only station and PI contact info
+        * data    - returns GALION JSON with data elements, station, date and
+          PI contact information
+
+    print_to_screen : bool
+        If true, print MPLNET site identifiers to screen.
     """
 
     # Add headers

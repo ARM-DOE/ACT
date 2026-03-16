@@ -1781,42 +1781,42 @@ class QCTests:
     ):
         """
         Method to calculate the variability of a variable relative to
-        other variables that are passed in.  The process includes
-        1.) Calculating a rolling standard deviation for all variables passed in
-        2.) For each variable it will subtract the mean standard deviation of all
-            the other variables
-        3.) Variability relative to the mean greater than the threshold passed in
-            will be flagged.
+        other variables that are passed in. The process includes:
+
+        1. Calculating a rolling standard deviation for all variables passed in.
+        2. For each variable it will subtract the mean standard deviation of all
+           the other variables.
+        3. Variability relative to the mean greater than the threshold passed in
+           will be flagged.
 
         Parameters
         ----------
         var_names : list
-            List of data variable names.  At least 2 are required.
+            List of data variable names. At least 2 are required.
         threshold : int or float
             Threshold value to use in test.
         test_assessment : str
             Optional single word describing the assessment of the test.
             Will set a default if not set.
         test_number : int
-            Optional test number to use. If not set will ues next
+            Optional test number to use. If not set will use next
             available test number.
-        flag_value : boolean
+        flag_value : bool
             Indicates that the tests are stored as integers
             not bit packed values in quality control variable.
         prepend_text : str
             Optional text to prepend to the test meaning.
-            Example is indicate what institution added the test.
+            Example is to indicate what institution added the test.
         window : int or float
-            Window to calculate rolling standard deviation
+            Window to calculate rolling standard deviation.
         min_periods : int
-            Minimum number of samples to use for rolling standard deviation
-
+            Minimum number of samples to use for rolling standard deviation.
 
         Returns
         -------
         test_info : tuple
             A tuple containing test information including var_name, qc variable name,
-            test_number, test_meaning, test_assessment
+            test_number, test_meaning, test_assessment.
 
         """
         test_meaning = 'Standard deviation of variable is greater than the mean standard deviation of other like variables'

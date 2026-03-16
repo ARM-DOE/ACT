@@ -46,7 +46,6 @@ def read_ameriflux(
         A dictionary containing current variable names and units to be added to that variable.
         Default is None and uses current units from Ameriflux's unit database.
 
-
     Returns
     -------
     ds : xarray.Dataset
@@ -462,40 +461,40 @@ def convert_to_ameriflux(
     **kwargs,
 ):
     """
-
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ARM-standard netCDF files from a single datastream. Has some procedures
-    to ensure time is correctly fomatted in returned Dataset.
+    to ensure time is correctly formatted in returned Dataset.
 
     Parameters
     ----------
     ds : xarray.Dataset
         Dataset of data to convert to AmeriFlux format
     variable_mapping : dict
-        Dictionary of variables mappings.  The key should be the name of the variable
+        Dictionary of variables mappings. The key should be the name of the variable
         in the Dataset with the values being dictionaries of the AmeriFlux name and units.
-        For example:
+        For example::
+
             var_mapping = {
                 'co2_flux': {'name': 'FC', 'units': 'umol/(m^2 s)'},
             }
+
     soil_mapping : dict
         Dictionary of soil variables mappings following the same formatting as variable_mapping.
-        It is understood that the AmeriFlux name may be the same for some variables.  This
+        It is understood that the AmeriFlux name may be the same for some variables. This
         script attempts to automatically name these measurements. If a variable is not dimensioned
         by a depth nor has a sensor_height attribute, it will automatically assume that it's
         at the first depth in the depth_profile variable.
     depth_profile : list
-        List of depths that the variables will be mapped to.  If a depth is not in this list,
+        List of depths that the variables will be mapped to. If a depth is not in this list,
         the index chosen will be the one closest to the depth value.
-    include_missing_variables : boolean
-        If there variables that are completely missing (-9999) chose whether or not to include
-        them in the DataFrame.
+    include_missing_variables : bool
+        If there are variables that are completely missing (-9999) choose whether or not to
+        include them in the DataFrame.
 
     Returns
     -------
-    df : pandas.DataFrame (or None)
-        Returns a pandas dataframe for easy writing to csv
-
+    df : pandas.DataFrame or None
+        Returns a pandas dataframe for easy writing to csv.
     """
     # Use ARM variable mappings if none provided
     if variable_mapping is None:

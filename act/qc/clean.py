@@ -939,16 +939,15 @@ class CleanDataset:
     def fix_incorrect_variable_bit_description_attributes(self):
         """
         Method to correct incorrectly defined quality control variable attributes.
-        There are some datastreams with the attribute names incorrectly having 'qc_'
-        prepended to the attribute name. This will fix those attributes so the cleanqc
+        There are some datastreams with the attribute names incorrectly having ``qc_``
+        prepended to the attribute name. This will fix those attributes so the ``cleanqc``
         method can correctly read the attributes.
 
         If the variable long_name starts with the string "Quality check results on"
-        and a variable attribute follows the pattern qc_bit_#_description the 'qc_' part of
-        the variable attribute will be removed.
+        and a variable attribute follows the pattern ``qc_bit_#_description`` the ``qc_``
+        part of the variable attribute will be removed.
 
         """
-
         attr_description_pattern = r'^qc_bit_([0-9]+)_description$'
         attr_assessment_pattern = r'^qc_bit_([0-9]+)_assessment$'
 

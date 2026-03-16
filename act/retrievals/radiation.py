@@ -289,10 +289,10 @@ def calculate_irradiance_stats(
         Name of the second irradiance variable
     diff_output_variable : str
         Variable name to store the difference results
-        Defaults to 'diff_' + variable
+        Defaults to ``diff_ + variable``
     ratio_output_variable : str
         Variable name to store the ratio results
-        Defaults to 'ratio_' + variable
+        Defaults to ``ratio_ + variable``
 
     Returns
     -------
