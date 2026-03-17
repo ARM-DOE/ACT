@@ -453,7 +453,7 @@ class QCTests:
         ----------
         Long, Charles N., and Ellsworth G. Dutton. "BSRN Global Network recommended QC tests, V2. x." (2010).
         Long, Charles N., and Y. Shi.  “An Automated Quality Assessment and Control Algorithm for Surface
-            Radiation Measurements.” (2008) https://doi.org/10.2174/1874282300802010023
+        Radiation Measurements.” (2008) https://doi.org/10.2174/1874282300802010023
 
         Examples
         --------
