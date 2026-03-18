@@ -775,36 +775,34 @@
 <dt class="sig sig-object py" id="act.qc.QCFilter.add_relative_variability_test">
 <span class="sig-prename descclassname"><span class="pre">QCFilter.</span></span><span class="sig-name descname"><span class="pre">add_relative_variability_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_assessment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Suspect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepend_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#act.qc.QCFilter.add_relative_variability_test" title="Link to this definition">#</a></dt>
 <dd><p>Method to calculate the variability of a variable relative to
-other variables that are passed in.  The process includes
-1.) Calculating a rolling standard deviation for all variables passed in
-2.) For each variable it will subtract the mean standard deviation of all</p>
-<blockquote>
-<div><p>the other variables</p>
-</div></blockquote>
-<dl class="simple">
-<dt>3.) Variability relative to the mean greater than the threshold passed in</dt><dd><p>will be flagged.</p>
-</dd>
-</dl>
+other variables that are passed in. The process includes:</p>
+<ol class="arabic simple">
+<li><p>Calculating a rolling standard deviation for all variables passed in.</p></li>
+<li><p>For each variable it will subtract the mean standard deviation of all
+the other variables.</p></li>
+<li><p>Variability relative to the mean greater than the threshold passed in
+will be flagged.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>var_names</strong> (<em>list</em>) – List of data variable names.  At least 2 are required.</p></li>
+<li><p><strong>var_names</strong> (<em>list</em>) – List of data variable names. At least 2 are required.</p></li>
 <li><p><strong>threshold</strong> (<em>int or float</em>) – Threshold value to use in test.</p></li>
 <li><p><strong>test_assessment</strong> (<em>str</em>) – Optional single word describing the assessment of the test.
 Will set a default if not set.</p></li>
-<li><p><strong>test_number</strong> (<em>int</em>) – Optional test number to use. If not set will ues next
+<li><p><strong>test_number</strong> (<em>int</em>) – Optional test number to use. If not set will use next
 available test number.</p></li>
-<li><p><strong>flag_value</strong> (<em>boolean</em>) – Indicates that the tests are stored as integers
+<li><p><strong>flag_value</strong> (<em>bool</em>) – Indicates that the tests are stored as integers
 not bit packed values in quality control variable.</p></li>
 <li><p><strong>prepend_text</strong> (<em>str</em>) – Optional text to prepend to the test meaning.
-Example is indicate what institution added the test.</p></li>
-<li><p><strong>window</strong> (<em>int or float</em>) – Window to calculate rolling standard deviation</p></li>
-<li><p><strong>min_periods</strong> (<em>int</em>) – Minimum number of samples to use for rolling standard deviation</p></li>
+Example is to indicate what institution added the test.</p></li>
+<li><p><strong>window</strong> (<em>int or float</em>) – Window to calculate rolling standard deviation.</p></li>
+<li><p><strong>min_periods</strong> (<em>int</em>) – Minimum number of samples to use for rolling standard deviation.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>test_info</strong> (<em>tuple</em>) – A tuple containing test information including var_name, qc variable name,
-test_number, test_meaning, test_assessment</p>
+test_number, test_meaning, test_assessment.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -773,35 +773,33 @@
 <span class="sig-prename descclassname"><span class="pre">act.io.</span></span><span class="sig-name descname"><span class="pre">convert_to_ameriflux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soil_mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[2.5,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">15,</span> <span class="pre">20,</span> <span class="pre">30,</span> <span class="pre">35,</span> <span class="pre">50,</span> <span class="pre">75,</span> <span class="pre">100]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_missing_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/io/ameriflux.html#convert_to_ameriflux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.io.convert_to_ameriflux" title="Link to this definition">#</a></dt>
 <dd><p>Returns <cite>xarray.Dataset</cite> with stored data and metadata from a user-defined
 query of ARM-standard netCDF files from a single datastream. Has some procedures
-to ensure time is correctly fomatted in returned Dataset.</p>
+to ensure time is correctly formatted in returned Dataset.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
 <li><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Dataset of data to convert to AmeriFlux format</p></li>
-<li><p><strong>variable_mapping</strong> (<em>dict</em>) – Dictionary of variables mappings.  The key should be the name of the variable
+<li><p><strong>variable_mapping</strong> (<em>dict</em>) – Dictionary of variables mappings. The key should be the name of the variable
 in the Dataset with the values being dictionaries of the AmeriFlux name and units.
 For example:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>var_mapping = {</dt><dd><p>‘co2_flux’: {‘name’: ‘FC’, ‘units’: ‘umol/(m^2 s)’},</p>
-</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">var_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;co2_flux&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;FC&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;umol/(m^2 s)&#39;</span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </li>
 <li><p><strong>soil_mapping</strong> (<em>dict</em>) – Dictionary of soil variables mappings following the same formatting as variable_mapping.
-It is understood that the AmeriFlux name may be the same for some variables.  This
+It is understood that the AmeriFlux name may be the same for some variables. This
 script attempts to automatically name these measurements. If a variable is not dimensioned
 by a depth nor has a sensor_height attribute, it will automatically assume that it’s
 at the first depth in the depth_profile variable.</p></li>
-<li><p><strong>depth_profile</strong> (<em>list</em>) – List of depths that the variables will be mapped to.  If a depth is not in this list,
+<li><p><strong>depth_profile</strong> (<em>list</em>) – List of depths that the variables will be mapped to. If a depth is not in this list,
 the index chosen will be the one closest to the depth value.</p></li>
-<li><p><strong>include_missing_variables</strong> (<em>boolean</em>) – If there variables that are completely missing (-9999) chose whether or not to include
-them in the DataFrame.</p></li>
+<li><p><strong>include_missing_variables</strong> (<em>bool</em>) – If there are variables that are completely missing (-9999) choose whether or not to
+include them in the DataFrame.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>df</strong> (<em>pandas.DataFrame (or None)</em>) – Returns a pandas dataframe for easy writing to csv</p>
+<dd class="field-even"><p><strong>df</strong> (<em>pandas.DataFrame or None</em>) – Returns a pandas dataframe for easy writing to csv.</p>
 </dd>
 </dl>
 </dd></dl>

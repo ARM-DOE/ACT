@@ -470,7 +470,6 @@
 <span class="sd">        A dictionary containing current variable names and units to be added to that variable.</span>
 <span class="sd">        Default is None and uses current units from Ameriflux&#39;s unit database.</span>
 
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ds : xarray.Dataset</span>
@@ -889,40 +888,40 @@
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    query of ARM-standard netCDF files from a single datastream. Has some procedures</span>
-<span class="sd">    to ensure time is correctly fomatted in returned Dataset.</span>
+<span class="sd">    to ensure time is correctly formatted in returned Dataset.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Dataset of data to convert to AmeriFlux format</span>
 <span class="sd">    variable_mapping : dict</span>
-<span class="sd">        Dictionary of variables mappings.  The key should be the name of the variable</span>
+<span class="sd">        Dictionary of variables mappings. The key should be the name of the variable</span>
 <span class="sd">        in the Dataset with the values being dictionaries of the AmeriFlux name and units.</span>
-<span class="sd">        For example:</span>
+<span class="sd">        For example::</span>
+
 <span class="sd">            var_mapping = {</span>
 <span class="sd">                &#39;co2_flux&#39;: {&#39;name&#39;: &#39;FC&#39;, &#39;units&#39;: &#39;umol/(m^2 s)&#39;},</span>
 <span class="sd">            }</span>
+
 <span class="sd">    soil_mapping : dict</span>
 <span class="sd">        Dictionary of soil variables mappings following the same formatting as variable_mapping.</span>
-<span class="sd">        It is understood that the AmeriFlux name may be the same for some variables.  This</span>
+<span class="sd">        It is understood that the AmeriFlux name may be the same for some variables. This</span>
 <span class="sd">        script attempts to automatically name these measurements. If a variable is not dimensioned</span>
 <span class="sd">        by a depth nor has a sensor_height attribute, it will automatically assume that it&#39;s</span>
 <span class="sd">        at the first depth in the depth_profile variable.</span>
 <span class="sd">    depth_profile : list</span>
-<span class="sd">        List of depths that the variables will be mapped to.  If a depth is not in this list,</span>
+<span class="sd">        List of depths that the variables will be mapped to. If a depth is not in this list,</span>
 <span class="sd">        the index chosen will be the one closest to the depth value.</span>
-<span class="sd">    include_missing_variables : boolean</span>
-<span class="sd">        If there variables that are completely missing (-9999) chose whether or not to include</span>
-<span class="sd">        them in the DataFrame.</span>
+<span class="sd">    include_missing_variables : bool</span>
+<span class="sd">        If there are variables that are completely missing (-9999) choose whether or not to</span>
+<span class="sd">        include them in the DataFrame.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    df : pandas.DataFrame (or None)</span>
-<span class="sd">        Returns a pandas dataframe for easy writing to csv</span>
-
+<span class="sd">    df : pandas.DataFrame or None</span>
+<span class="sd">        Returns a pandas dataframe for easy writing to csv.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Use ARM variable mappings if none provided</span>
     <span class="k">if</span> <span class="n">variable_mapping</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

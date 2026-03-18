@@ -1,6 +1,6 @@
 """
 IMPROVE Data
------------
+------------
 
 This example shows how to get IMPROVE data for the
 system located at ARM's Southern Great Plains site.

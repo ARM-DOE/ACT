@@ -747,6 +747,7 @@
         <span class="n">error_kw</span><span class="o">=</span><span class="p">{},</span>
         <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
         <span class="n">assessment_overplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">assessment_overplot_bit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">overplot_marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
         <span class="n">overplot_behind</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">overplot_markersize</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
@@ -827,6 +828,9 @@
 <span class="sd">        assessment_overplot : boolean</span>
 <span class="sd">            Option to overplot quality control colored symbols over plotted</span>
 <span class="sd">            data using flag_assessment categories.</span>
+<span class="sd">        assessment_overplot_bit : int or list of int</span>
+<span class="sd">            Option to overplot quality control colored symbols for specific</span>
+<span class="sd">            quality control tests using flag_assessments categories.</span>
 <span class="sd">        overplot_marker : str</span>
 <span class="sd">            Marker to use for overplot symbol.</span>
 <span class="sd">        overplot_behind : bool</span>
@@ -1027,6 +1031,12 @@
                 <span class="n">add_legend</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># Overplot failing data if requested</span>
+            <span class="k">if</span> <span class="n">assessment_overplot_bit</span><span class="p">:</span>
+                <span class="n">assessment_overplot</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assessment_overplot_bit</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">assessment_overplot_bit</span> <span class="o">=</span> <span class="p">[</span><span class="n">assessment_overplot_bit</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">assessment_overplot_bit</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;All passed bits must be integers&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">assessment_overplot</span><span class="p">:</span>
                 <span class="c1"># If we are doing forced line plot from 2D data need to manage</span>
                 <span class="c1"># legend lables. Will make arrays to hold labels of QC failing</span>
@@ -1042,35 +1052,138 @@
                     <span class="n">zorder</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="n">overplot_markersize</span> <span class="o">*=</span> <span class="mf">2.0</span>
 
-                <span class="k">for</span> <span class="n">assessment</span><span class="p">,</span> <span class="n">categories</span> <span class="ow">in</span> <span class="n">assessment_overplot_category</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
-                        <span class="n">field</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                            <span class="k">pass</span>
-                        <span class="n">qc_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                            <span class="n">xdata</span><span class="p">,</span>
-                            <span class="n">flag_data</span><span class="p">,</span>
-                            <span class="n">marker</span><span class="o">=</span><span class="n">overplot_marker</span><span class="p">,</span>
-                            <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                            <span class="n">markersize</span><span class="o">=</span><span class="n">overplot_markersize</span><span class="p">,</span>
-                            <span class="n">color</span><span class="o">=</span><span class="n">assessment_overplot_category_color</span><span class="p">[</span><span class="n">assessment</span><span class="p">],</span>
-                            <span class="n">label</span><span class="o">=</span><span class="n">assessment</span><span class="p">,</span>
-                            <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
+                <span class="c1"># Get name of QC variable for overplot</span>
+                <span class="n">qc_data_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">check_for_ancillary_qc</span><span class="p">(</span>
+                    <span class="n">field</span><span class="p">,</span> <span class="n">add_if_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Checks to ensure that valid QC test numbers are being passed</span>
+                <span class="k">if</span> <span class="n">assessment_overplot_bit</span><span class="p">:</span>
+                    <span class="c1"># Test number must be greater than 1 (Bit 1 is missing data)</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">bit</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">assessment_overplot_bit</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Bit numbers must be greater than 1&#39;</span><span class="p">)</span>
+                    <span class="n">num_bits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">available_bit</span><span class="p">(</span><span class="n">qc_data_field</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="c1"># Check that passed numbers are currently assigned to QC tests</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">bit</span> <span class="o">&gt;</span> <span class="n">num_bits</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">assessment_overplot_bit</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;One or more passed bits are not a set QC bit for </span><span class="si">{</span><span class="n">qc_data_field</span><span class="si">}</span><span class="s1">&#39;</span>
                         <span class="p">)</span>
-                        <span class="c1"># If labels keyword is set need to add labels for calling legend</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                            <span class="c1"># If plotting forced_line_plot need to subset the Line2D object</span>
-                            <span class="c1"># so we don&#39;t have more than one added to legend.</span>
-                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="k">for</span> <span class="n">assessment</span><span class="p">,</span> <span class="n">categories</span> <span class="ow">in</span> <span class="n">assessment_overplot_category</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">rm_tests</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">qc_label</span> <span class="o">=</span> <span class="n">assessment</span>
+                    <span class="k">if</span> <span class="n">assessment_overplot_bit</span><span class="p">:</span>
+                        <span class="c1"># Overplot by test number(s)</span>
+                        <span class="c1"># Want to make sure that we are not removing assessments since we want to search all</span>
+                        <span class="c1"># assessment types</span>
+                        <span class="n">rm_assessments</span> <span class="o">=</span> <span class="kc">None</span>
+
+                        <span class="c1"># If test bit does not match the assessment then go to next</span>
+                        <span class="c1"># assessment in the loop</span>
+                        <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">assessment_overplot_bit</span><span class="p">:</span>
+                            <span class="n">bit_assessment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+                                <span class="s1">&#39;flag_assessments&#39;</span>
+                            <span class="p">][</span><span class="n">bit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+                            <span class="c1"># Get the proper keyword for overplot assessment color</span>
+                            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                                <span class="n">ba</span> <span class="ow">in</span> <span class="n">bit_assessment</span>
+                                <span class="k">for</span> <span class="n">ba</span> <span class="ow">in</span> <span class="n">assessment_overplot_category</span><span class="p">[</span><span class="s1">&#39;Incorrect&#39;</span><span class="p">]</span>
+                            <span class="p">):</span>
+                                <span class="n">plot_assessment_category</span> <span class="o">=</span> <span class="s1">&#39;Incorrect&#39;</span>
+                            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span>
+                                <span class="n">ba</span> <span class="ow">in</span> <span class="n">bit_assessment</span>
+                                <span class="k">for</span> <span class="n">ba</span> <span class="ow">in</span> <span class="n">assessment_overplot_category</span><span class="p">[</span><span class="s1">&#39;Suspect&#39;</span><span class="p">]</span>
+                            <span class="p">):</span>
+                                <span class="n">plot_assessment_category</span> <span class="o">=</span> <span class="s1">&#39;Suspect&#39;</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">)</span>
-                            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assessment</span><span class="p">)</span>
-                        <span class="n">add_legend</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bit_assessment</span><span class="si">}</span><span class="s1"> not detected in assessment overplot categories&#39;</span>
+                                <span class="p">)</span>
+
+                            <span class="c1"># If assessment in iteration does not match QC bit assessment then</span>
+                            <span class="c1"># exit current iteration</span>
+                            <span class="k">if</span> <span class="n">bit_assessment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+                                <span class="k">continue</span>
+
+                            <span class="c1"># Get labels for legend</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">test_desc</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">qc_data_field</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">][</span><span class="n">bit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                                <span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                                <span class="n">test_desc</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                            <span class="n">qc_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Bit </span><span class="si">{</span><span class="n">bit</span><span class="si">}{</span><span class="n">test_desc</span><span class="si">}</span><span class="s1">&#39;</span>
+
+                            <span class="c1"># Get QC data in mask</span>
+                            <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
+                                <span class="n">field</span><span class="p">,</span>
+                                <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span>
+                                <span class="n">rm_tests</span><span class="o">=</span><span class="n">bit</span><span class="p">,</span>
+                                <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                                <span class="k">try</span><span class="p">:</span>
+                                    <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                                    <span class="k">pass</span>
+                                <span class="n">qc_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                                    <span class="n">xdata</span><span class="p">,</span>
+                                    <span class="n">flag_data</span><span class="p">,</span>
+                                    <span class="n">marker</span><span class="o">=</span><span class="n">overplot_marker</span><span class="p">,</span>
+                                    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                    <span class="n">markersize</span><span class="o">=</span><span class="n">overplot_markersize</span><span class="p">,</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="n">assessment_overplot_category_color</span><span class="p">[</span>
+                                        <span class="n">plot_assessment_category</span>
+                                    <span class="p">],</span>
+                                    <span class="n">label</span><span class="o">=</span><span class="n">qc_label</span><span class="p">,</span>
+                                    <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
+                                <span class="p">)</span>
+                                <span class="c1"># If labels keyword is set need to add labels for calling legend</span>
+                                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                                    <span class="c1"># If plotting forced_line_plot need to subset the Line2D object</span>
+                                    <span class="c1"># so we don&#39;t have more than one added to legend.</span>
+                                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                                        <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">)</span>
+                                    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qc_label</span><span class="p">)</span>
+                                <span class="n">add_legend</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Overplot by category</span>
+                        <span class="c1"># Set keyword to keep assessment categories in flag data</span>
+                        <span class="n">rm_assessments</span> <span class="o">=</span> <span class="n">categories</span>
+                        <span class="n">flag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
+                            <span class="n">field</span><span class="p">,</span>
+                            <span class="n">rm_assessments</span><span class="o">=</span><span class="n">rm_assessments</span><span class="p">,</span>
+                            <span class="n">rm_tests</span><span class="o">=</span><span class="n">rm_tests</span><span class="p">,</span>
+                            <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">flag_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">flag_data</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                                <span class="k">pass</span>
+                            <span class="n">qc_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                                <span class="n">xdata</span><span class="p">,</span>
+                                <span class="n">flag_data</span><span class="p">,</span>
+                                <span class="n">marker</span><span class="o">=</span><span class="n">overplot_marker</span><span class="p">,</span>
+                                <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                <span class="n">markersize</span><span class="o">=</span><span class="n">overplot_markersize</span><span class="p">,</span>
+                                <span class="n">color</span><span class="o">=</span><span class="n">assessment_overplot_category_color</span><span class="p">[</span><span class="n">assessment</span><span class="p">],</span>
+                                <span class="n">label</span><span class="o">=</span><span class="n">qc_label</span><span class="p">,</span>
+                                <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="c1"># If labels keyword is set need to add labels for calling legend</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                                <span class="c1"># If plotting forced_line_plot need to subset the Line2D object</span>
+                                <span class="c1"># so we don&#39;t have more than one added to legend.</span>
+                                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">qc_ax</span><span class="p">)</span>
+                                <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qc_label</span><span class="p">)</span>
+                            <span class="n">add_legend</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># Add legend if labels are available</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>

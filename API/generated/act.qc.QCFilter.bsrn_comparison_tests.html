@@ -797,17 +797,16 @@ in longwave tests.</p></li>
 <li><p><strong>lon_name</strong> (<em>str</em>) – Variable name in the Dataset for longitude</p></li>
 <li><p><strong>LWdn_lt_LWup_component</strong> (<em>int or float</em>) – Value used in longwave down less than longwave up test.</p></li>
 <li><p><strong>LWdn_gt_LWup_component</strong> (<em>int or float</em>) – Value used in longwave down greater than longwave up test.</p></li>
-<li><p><strong>use_dask</strong> (<em>boolean</em>) – Option to use Dask for processing if data is stored in a Dask array</p></li>
+<li><p><strong>use_dask</strong> (<em>bool</em>) – Option to use Dask for processing if data is stored in a Dask array</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">References</p>
 <p>Long, Charles N., and Ellsworth G. Dutton. “BSRN Global Network recommended QC tests, V2. x.” (2010).
-Long, Charles N., and Y. Shi.  “An Automated Quality Assessment and Control Algorithm for Surface</p>
-<blockquote>
-<div><p>Radiation Measurements.” (2008) <a class="reference external" href="https://doi.org/10.2174/1874282300802010023">https://doi.org/10.2174/1874282300802010023</a></p>
-</div></blockquote>
+Long, Charles N., and Y. Shi.  “An Automated Quality Assessment and Control Algorithm for Surface
+Radiation Measurements.” (2008) <a class="reference external" href="https://doi.org/10.2174/1874282300802010023">https://doi.org/10.2174/1874282300802010023</a></p>
 <p class="rubric">Examples</p>
+<p>An example on how to add BSRN comparison tests:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">EXAMPLE_BRS</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">bsrn_comparison_tests</span><span class="p">(</span>
     <span class="n">gbl_SW_dn_name</span><span class="o">=</span><span class="s1">&#39;down_short_hemisp&#39;</span><span class="p">,</span>
@@ -816,7 +815,8 @@ Long, Charles N., and Y. Shi.  “An Automated Quality Assessment and Control Al
     <span class="n">glb_SW_up_name</span><span class="o">=</span><span class="s1">&#39;up_short_hemisp&#39;</span><span class="p">,</span>
     <span class="n">glb_LW_dn_name</span><span class="o">=</span><span class="s1">&#39;down_long_hemisp_shaded&#39;</span><span class="p">,</span>
     <span class="n">glb_LW_up_name</span><span class="o">=</span><span class="s1">&#39;up_long_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">use_dask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">use_dask</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
