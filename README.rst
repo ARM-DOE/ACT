@@ -169,7 +169,7 @@ forking the repository is highly recommended.
 We welcome contributions for all uses of ACT, provided the code can be
 distributed under the BSD 3-clause license. A copy of this license is
 available in the **LICENSE.txt** file in this directory. For more on
-contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob/master/CONTRIBUTING.rst>`_
+contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob/main/CONTRIBUTING.rst>`_ as well as the `code of conduct. <https://github.com/ARM-DOE/ACT/blob/main/CODE_OF_CONDUCT.md>`_
 
 Testing
 ~~~~~~~
