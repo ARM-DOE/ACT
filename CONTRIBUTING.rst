@@ -57,7 +57,7 @@ Get Started!
 Ready to contribute? Here's are a few steps we will go over for contributing
 to `act`.
 
-1. Fork the `arm-community-toolkit` repo on GitHub and clone your fork locally.
+1. Fork the `atmospheric-data-community-toolkit` repo on GitHub and clone your fork locally.
 
 2. Install your local copy into an Anaconda environment. Assuming you have
    anaconda installed.
@@ -77,7 +77,7 @@ to `act`.
 
 Fork and Cloning the ACT Repository
 -----------------------------------
-To start, you will first fork the `arm-community-toolkit` repo on GitHub by
+To start, you will first fork the `atmospheric-data-community-toolkit` repo on GitHub by
 clicking the fork icon button found on the main page here:
 
 - https://github.com/ARM-DOE/ACT
