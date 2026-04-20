@@ -162,7 +162,7 @@ class WindRoseDisplay(Display):
         # We need to wrap around
 
         deg_width = 360.0 / num_dirs
-        dir_bins_mid = np.linspace(0.0, 360.0 - 3 * deg_width / 2.0, num_dirs)
+        dir_bins_mid = np.linspace(deg_width / 2.0, 360.0 - deg_width / 2.0, num_dirs)
         wind_hist = np.zeros((num_dirs, len(spd_bins) - 1))
 
         for i in range(num_dirs):
