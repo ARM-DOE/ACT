@@ -52,21 +52,21 @@ def test_errors():
 
     display = TimeSeriesDisplay(ds)
     display.axes = None
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         display.day_night_background()
 
     display = TimeSeriesDisplay({'met': ds, 'met2': ds})
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot('temp_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.qc_flag_block_plot('qc_temp_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot_barbs_from_spd_dir('wdir_vec_mean', 'wspd_vec_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot_barbs_from_u_v('wdir_vec_mean', 'wspd_vec_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot_time_height_xsection_from_1d_data('wdir_vec_mean', 'wspd_vec_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.time_height_scatter('wdir_vec_mean')
 
     del ds.attrs['_file_dates']
@@ -80,16 +80,16 @@ def test_errors():
     display = TimeSeriesDisplay(ds)
     display.plot('temp_mean')
     display.set_yrng([0, 0])
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
     ds['lat'].values = lat
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
     ds['lon'].values = lon * 100.0
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
     ds['lat'].values = lat * 100.0
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
 
     ds.close()
@@ -99,9 +99,9 @@ def test_errors():
     del ds['temp_mean'].attrs['units']
     display = TimeSeriesDisplay(ds)
     display.axes = None
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         display.set_yrng([0, 10])
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         display.set_xrng([0, 10])
     display.fig = None
     display.plot('temp_mean', add_nan=True)
@@ -109,7 +109,7 @@ def test_errors():
     assert display.fig is not None
     assert display.axes is not None
 
-    with np.testing.assert_raises(AttributeError):
+    with pytest.raises(AttributeError):
         display = TimeSeriesDisplay([])
 
     fig, ax = matplotlib.pyplot.subplots()
