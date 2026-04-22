@@ -8,7 +8,7 @@ import act
 
 @pytest.mark.skipif(
     not sys.platform.startswith('linux'),
-    reason='To avoid exceeeded downloads for testing, only test on linux',
+    reason='To avoid exceeded downloads for testing, only test on linux',
 )
 def test_get_mplnet_meta():
     output = act.discovery.get_mplnet_meta(
@@ -27,7 +27,7 @@ def test_get_mplnet_meta():
 
 @pytest.mark.skipif(
     not sys.platform.startswith('linux'),
-    reason='To avoid exceeeded downloads for testing, only test on linux',
+    reason='To avoid exceeded downloads for testing, only test on linux',
 )
 def test_download_mplnet_data():
     output = act.discovery.download_mplnet_data(
