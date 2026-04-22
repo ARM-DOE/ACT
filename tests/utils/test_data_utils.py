@@ -97,7 +97,7 @@ def test_convert_units():
     data = act.utils.data_utils.convert_units(r_data, 'K', 'C')
     assert np.ceil(data[0]) == 12
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds.utils.change_units()
 
     desired_unit = 'degF'
@@ -142,10 +142,10 @@ def test_convert_units():
 
     # Test if exception or print statement is issued when an error occurs with units string
     ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds.utils.change_units('home_signal_15', 'not_a_real_unit_string', raise_error=True)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds.utils.change_units('not_a_real_variable_name', 'degC', raise_error=True)
 
     f = StringIO()
@@ -256,14 +256,14 @@ def test_convert_to_potential_temp():
     )
     assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.0011)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.convert_to_potential_temp(
             temperature=ds[temp_var_name].values,
             pressure=ds[press_var_name].values,
             temp_var_units=ds[temp_var_name].attrs['units'],
         )
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.convert_to_potential_temp(
             temperature=ds[temp_var_name].values,
             pressure=ds[press_var_name].values,
@@ -311,7 +311,7 @@ def test_height_adjusted_temperature():
     )
     assert np.isclose(np.nansum(temp), -5847.511, rtol=0.001, atol=0.001)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.height_adjusted_temperature(
             height_difference=25.2,
             height_units='m',
@@ -339,7 +339,7 @@ def test_height_adjusted_pressure():
     )
     assert np.isclose(np.nansum(temp), 142877.69, rtol=0.001, atol=0.001)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.height_adjusted_pressure(
             height_difference=-100,
             height_units='ft',

@@ -1,4 +1,4 @@
-import numpy as np
+import pytest
 
 import act
 
@@ -13,8 +13,8 @@ def test_decode_present_weather():
     assert data[100] == result
     assert data[600] == result
 
-    np.testing.assert_raises(ValueError, act.utils.inst_utils.decode_present_weather, ds)
-    np.testing.assert_raises(
+    pytest.raises(ValueError, act.utils.inst_utils.decode_present_weather, ds)
+    pytest.raises(
         ValueError,
         act.utils.inst_utils.decode_present_weather,
         ds,

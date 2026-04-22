@@ -42,7 +42,7 @@ def test_download_armdata():
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 
-        with np.testing.assert_raises(ConnectionRefusedError):
+        with pytest.raises(ConnectionRefusedError):
             act.discovery.arm.download_arm_data(
                 username, token + '1234', datastream, startdate, enddate, output=outdir
             )
@@ -89,7 +89,7 @@ def test_download_armdata_hourly():
         files = glob.glob(outdir + datastream + '*20200101*cdf')
         assert len(files) == 0
 
-        with np.testing.assert_raises(ConnectionRefusedError):
+        with pytest.raises(ConnectionRefusedError):
             act.discovery.arm.download_arm_data(
                 username, token + '1234', datastream, startdate, enddate, output=outdir
             )

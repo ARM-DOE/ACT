@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 import act
 
@@ -87,7 +88,7 @@ def test_calculate_pbl_liu_liang():
 
     ds = act.io.arm.read_arm_netcdf(files[-2:])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
     ds = act.io.arm.read_arm_netcdf(files[0])
@@ -99,15 +100,15 @@ def test_calculate_pbl_liu_liang():
     ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, land_parameter=False)
     assert ds['pblht_regime_liu_liang'].values == 'SBL'
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds2 = ds.where(ds['alt'].load() < 1000.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds2 = ds.where(ds['pres'].load() < 200.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp[0:5] = -40
         ds['tdry'].values = temp
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
@@ -117,7 +118,7 @@ def test_calculate_pbl_liu_liang():
     temp = ds['tdry'].values
     temp[20:50] = 100.0
     ds['tdry'].values = temp
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
 

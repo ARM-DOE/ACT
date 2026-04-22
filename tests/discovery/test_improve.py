@@ -1,4 +1,4 @@
-import numpy as np
+import pytest
 
 import act
 
@@ -13,9 +13,9 @@ def test_get_improve():
     assert 'aluminum_fine' in ds
     assert ds['ammonium_nitrate_fine'].values[0] == 1.41363
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.discovery.get_improve_data()
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.discovery.get_improve_data(site_id='244')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.discovery.get_improve_data(site_id='244', start_date='1/1/2023')

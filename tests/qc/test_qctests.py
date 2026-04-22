@@ -1,5 +1,6 @@
 import dask.array as da
 import numpy as np
+import pytest
 
 import act
 from act.io.arm import read_arm_netcdf
@@ -306,10 +307,10 @@ def test_qctests():
     assert 'fail_delta' in ds[result['qc_variable_name']].attrs.keys()
 
     comp_ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         result = ds.qcfilter.add_difference_test(var_name, 'test')
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         result = ds.qcfilter.add_difference_test(
             var_name,
             {comp_ds.attrs['datastream']: comp_ds},

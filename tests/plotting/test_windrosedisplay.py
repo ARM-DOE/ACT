@@ -98,7 +98,7 @@ def test_plot_datarose():
     display2 = act.plotting.WindRoseDisplay(
         {'ds1': ds, 'ds2': ds}, subplot_shape=(2, 3), figsize=(16, 10)
     )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display2.plot_data(
             'wdir_vec_mean',
             'wspd_vec_mean',
@@ -109,7 +109,7 @@ def test_plot_datarose():
             line_plot_calc='T',
             subplot_index=(0, 0),
         )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display2.plot_data(
             'wdir_vec_mean',
             'wspd_vec_mean',
@@ -118,7 +118,7 @@ def test_plot_datarose():
             plot_type='line',
             subplot_index=(0, 0),
         )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display2.plot_data(
             'wdir_vec_mean',
             'wspd_vec_mean',

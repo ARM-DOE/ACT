@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import pytest
 
 import act
 
@@ -32,9 +33,9 @@ def test_get_airnow():
         results = act.discovery.get_airnow_obs(token, latlon=[41.958, -88.12], distance=50)
         assert results['StateCode'].values[0] == 'IL'
 
-        with np.testing.assert_raises(NameError):
+        with pytest.raises(NameError):
             results = act.discovery.get_airnow_obs(token)
-        with np.testing.assert_raises(NameError):
+        with pytest.raises(NameError):
             results = act.discovery.get_airnow_forecast(token, '2022-05-01')
 
         results = act.discovery.get_airnow_obs(

@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from act.io.arm import read_arm_netcdf
 from act.qc.arm import add_dqr_to_qc, print_dqr
@@ -38,5 +39,5 @@ def test_print_dqr():
     assert 'D231114.33' in dqr
     assert 'pwd_cumul_rain' in dqr['D231114.33']['variables']
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         dqr = print_dqr('spmetE13.b1', '20230101', '20240101', variable='pwd_cumul_rain')

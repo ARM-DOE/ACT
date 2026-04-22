@@ -90,7 +90,7 @@ def test_arm_qc():
     assert 'Suspect' in ds[qc_variable].attrs['flag_assessments']
 
     # Test that an error is raised when no datastream global attributes
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds4 = copy.deepcopy(ds)
         del ds4.attrs['datastream']
         del ds4.attrs['_datastream']
