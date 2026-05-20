@@ -98,7 +98,7 @@ def test_plot_datarose():
     display2 = act.plotting.WindRoseDisplay(
         {'ds1': ds, 'ds2': ds}, subplot_shape=(2, 3), figsize=(16, 10)
     )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display2.plot_data(
             'wdir_vec_mean',
             'wspd_vec_mean',
@@ -109,7 +109,7 @@ def test_plot_datarose():
             line_plot_calc='T',
             subplot_index=(0, 0),
         )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display2.plot_data(
             'wdir_vec_mean',
             'wspd_vec_mean',
@@ -118,17 +118,39 @@ def test_plot_datarose():
             plot_type='line',
             subplot_index=(0, 0),
         )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display2.plot_data(
             'wdir_vec_mean',
             'wspd_vec_mean',
             'temp_mean',
             num_dirs=12,
+            dsname='ds1',
             plot_type='groovy',
             subplot_index=(0, 0),
         )
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_missing_axes_fig():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+
+    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
+    WindDisplay.fig = None
+    WindDisplay.axes = None
+    WindDisplay.plot(
+        'deg',
+        'wspd',
+        spd_bins=None,
+        num_dirs=30,
+        tick_interval=2,
+        cmap='viridis',
+    )
+    try:
+        return WindDisplay.fig
+    finally:
+        matplotlib.pyplot.close(WindDisplay.fig)
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
@@ -138,15 +160,16 @@ def test_groupby_plot():
     # Create Plot Display
     display = WindRoseDisplay(ds, figsize=(15, 15), subplot_shape=(3, 3))
     groupby = display.group_by('day')
-    groupby.plot_group(
-        'plot_data',
-        None,
-        dir_field='wdir_vec_mean',
-        spd_field='wspd_vec_mean',
-        data_field='temp_mean',
-        num_dirs=12,
-        plot_type='line',
-    )
+    with pytest.warns(RuntimeWarning):
+        groupby.plot_group(
+            'plot_data',
+            None,
+            dir_field='wdir_vec_mean',
+            spd_field='wspd_vec_mean',
+            data_field='temp_mean',
+            num_dirs=12,
+            plot_type='line',
+        )
 
     # Set theta tick markers for each axis inside display to be inside the polar axes
     for i in range(3):
@@ -154,3 +177,11 @@ def test_groupby_plot():
             display.axes[i, j].tick_params(pad=-20)
     ds.close()
     return display.fig
+
+
+def test_windrose_errors():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_TWP_SONDE_WILDCARD)
+    WindDisplay = WindRoseDisplay(sonde_ds, figsize=(10, 10))
+    WindDisplay.axes = None
+    pytest.raises(RuntimeError, WindDisplay.set_thetarng)
+    pytest.raises(RuntimeError, WindDisplay.set_rrng, (50, 80))

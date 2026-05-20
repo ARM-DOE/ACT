@@ -5,14 +5,17 @@ Script for downloading data from ARM's Live Data Webservice
 
 import json
 import os
-from datetime import timedelta
-import requests
 import textwrap
+import urllib.error
+import warnings
+from datetime import timedelta
+
+import requests
 
 try:
-    from urllib.request import urlopen
+    from urllib.request import Request, urlopen
 except ImportError:
-    from urllib import urlopen
+    from urllib import Request, urlopen
 
 from act.utils import date_parser
 
@@ -70,10 +73,9 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
     <https://adc.arm.gov/armlive/#scripts>`_.
 
     To login/register for an access token click `here
-    <https://adc.arm.gov/armlive/livedata/home>`_.
+    <https://adc.arm.gov/armlive/>`_.
 
     Author: Michael Giansiracusa
-    Email: giansiracumt@ornl.gov
 
     Examples
     --------
@@ -107,12 +109,17 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
         end = f'&end={end}'
     # build the url to query the web service using the arguments provided
     query_url = (
-        'https://adc.arm.gov/armlive/livedata/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
+        'https://adc.arm.gov/armlive/data/query?' + 'user={0}&ds={1}{2}{3}&wt=json'
     ).format(':'.join([username, token]), datastream, start, end)
 
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
+
+    req = Request(query_url, None, headers)
     # get url response, read the body of the message,
     # and decode from bytes type to utf-8 string
-    response_body = urlopen(query_url).read().decode('utf-8')
+    response_body = urlopen(req).read().decode('utf-8')
     # if the response is an html doc, then there was an error with the user
     if response_body[1:14] == '!DOCTYPE html':
         raise ConnectionRefusedError('Error with user. Check username or token.')
@@ -143,21 +150,27 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
                     continue
             # construct link to web service saveData function
             save_data_url = (
-                'https://adc.arm.gov/armlive/livedata/' + 'saveData?user={0}&file={1}'
+                'https://adc.arm.gov/armlive/data/' + 'saveData?user={0}&file={1}'
             ).format(':'.join([username, token]), fname)
+            req_save = Request(save_data_url, None, headers)
             output_file = os.path.join(output_dir, fname)
             # make directory if it doesn't exist
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
             # create file and write bytes to file
-            with open(output_file, 'wb') as open_bytes_file:
-                data = urlopen(save_data_url).read()
-                if 'This data file is not available' in str(data):
-                    print(fname + ' is not available for download')
-                    continue
-                else:
-                    print(f'[DOWNLOADING] {fname}')
-                    open_bytes_file.write(data)
+            try:
+                with open(output_file, 'wb') as open_bytes_file:
+                    data = urlopen(req_save).read()
+                    if 'This data file is not available' in str(data):
+                        print(fname + ' is not available for download')
+                        continue
+                    else:
+                        print(f'[DOWNLOADING] {fname}')
+                        open_bytes_file.write(data)
+            except urllib.error.HTTPError:
+                print('Unable to download file: ' + fname)
+                os.remove(output_file)
+                continue
             file_names.append(output_file)
         # Get ARM DOI and print it out
         doi = get_arm_doi(
@@ -168,10 +181,89 @@ def download_arm_data(username, token, datastream, startdate, enddate, time=None
         print('')
     else:
         print(
-            'No files returned or url status error.\n' 'Check datastream name, start, and end date.'
+            'No files returned or url status error.\n'
+            'Check datastream name, start, and end date. \n'
         )
+        if datastream.split('.')[-1] == 'a0':
+            print(
+                '---------------------ATTENTION--------------------\n',
+                'ARM does not generally make a0-level data discoverable\n',
+                'Please reach out through the ARM Help link to request access',
+            )
 
     return file_names
+
+
+def download_arm_data_mod(username, token, file_list, variables=None, filetype='cdf', output=None):
+    """
+    This function allows for downloading ARM data from ARM's data discovery mod API:
+    https://adc.arm.gov/armlive/
+
+    This function will then provide a concatenated file of the file list in csv or
+    cdf file format with all variables or user provided variables.
+
+    Parameters
+    ----------
+    username : str
+        ARM username.
+    token : str
+        ARM user token.
+    file_list : list
+        A list of files by datetime of the same datastream to concatenate.
+    variables : list
+        A list of desired variables that exist in the datastream.
+        Default is None and will provide all variables.
+    file_type : str
+        File type to download file as. Valid options are 'csv' and 'cdf'.
+        Default is 'cdf'
+    output : str
+        The output directory for the data. Set to None to make a folder in the
+        current working directory with the same name as filename to place
+        the files in.
+
+    Returns
+    -------
+    filename : str
+        Concatenated filename
+    """
+    if variables is not None:
+        variables_str = ",".join(variables)
+        url = f'https://adc.arm.gov/armlive/mod?user={username}:{token}&variables={variables_str}&wt={filetype}'
+    else:
+        url = f'https://adc.arm.gov/armlive/mod?user={username}:{token}&wt={filetype}'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, data=json.dumps(file_list))
+
+    if response.status_code == 200:
+        # Save the response content to a file
+        filename = response.headers.get('Content-Disposition').split('filename=')[1]
+        filename = filename.replace('"', '')
+
+        if output is not None:
+            # output files to directory specified
+            output_dir = os.path.join(output)
+        else:
+            # if no folder given, set current directory as folder
+            output_dir = os.getcwd()
+
+        # make directory if it doesn't exist and its a user provided folder.
+        if not os.path.isdir(output_dir) and output is not None:
+            os.makedirs(output_dir)
+
+        output_file = os.path.join(output_dir, filename)
+
+        with open(output_file, 'wb') as file:
+            file.write(response.content)
+
+        print(f"File saved as {filename}")
+        return filename
+    else:
+        warnings.warn(
+            'No files returned or url status error.\n'
+            'Check if username, token, file list are valid. \n',
+            UserWarning,
+        )
+        return
 
 
 def get_arm_doi(datastream, startdate, enddate):
@@ -194,7 +286,9 @@ def get_arm_doi(datastream, startdate, enddate):
         Returns the citation as a string
 
     """
-
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    }
     # Get the DOI information
     doi_url = (
         'https://adc.arm.gov/citationservice/citation/datastream?id='
@@ -204,7 +298,7 @@ def get_arm_doi(datastream, startdate, enddate):
     doi_url += '&startDate=' + startdate
     doi_url += '&endDate=' + enddate
     try:
-        doi = requests.get(url=doi_url)
+        doi = requests.get(url=doi_url, headers=headers)
     except ValueError as err:
         return "Webservice potentially down or arguments are not valid: " + err
 

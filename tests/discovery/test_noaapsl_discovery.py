@@ -1,4 +1,4 @@
-import numpy as np
+import pytest
 
 import act
 
@@ -49,11 +49,11 @@ def test_noaa_psl():
         )
         assert len(result) == files[i]
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         result = act.discovery.download_noaa_psl_data(
             instrument='Parsivel', startdate='20220601', hour='01'
         )
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         result = act.discovery.download_noaa_psl_data(
             site='ctd', instrument='dongle', startdate='20220601', hour='01'
         )

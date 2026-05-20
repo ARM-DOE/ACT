@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 import act
 
@@ -11,4 +12,4 @@ def test_planck_converter():
     np.testing.assert_almost_equal(result, radiance, decimal=1)
     result = act.utils.radiance_utils.planck_converter(wnum=wnum, radiance=radiance)
     assert np.ceil(result) == temp
-    np.testing.assert_raises(ValueError, act.utils.radiance_utils.planck_converter)
+    pytest.raises(ValueError, act.utils.radiance_utils.planck_converter)

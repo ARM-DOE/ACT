@@ -13,6 +13,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
         'doppler_lidar': ['correct_dl'],
         'mpl': ['correct_mpl'],
         'raman_lidar': ['correct_rl'],
-        'ship': ['correct_wind'],
+        'ship': ['correct_wind_for_ship_motion'],
     },
 )

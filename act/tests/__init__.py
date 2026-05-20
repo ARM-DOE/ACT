@@ -3,6 +3,7 @@ This module contains sample files used for testing the ARM Community Toolkit.
 Files in this module should only be used for testing, not production.
 
 """
+
 import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
@@ -61,6 +62,11 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'EXAMPLE_CCN',
             'EXAMPLE_OLD_QC',
             'EXAMPLE_AOSACSM',
+            'EXAMPLE_SIRS_SIRI_QC',
+            'EXAMPLE_SWATS',
+            'EXAMPLE_AMERIFLUX_BASE',
+            'EXAMPLE_AMERIFLUX_META',
+            'EXAMPLE_SMPS',
         ]
     },
 )

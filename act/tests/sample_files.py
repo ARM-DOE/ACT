@@ -4,7 +4,6 @@ be used for testing ACT.
 
 """
 
-
 from arm_test_data import DATASETS
 
 # Single files
@@ -31,7 +30,9 @@ EXAMPLE_SURFSPECALB1MLAWER = DATASETS.fetch('nsasurfspecalb1mlawerC1.c1.20160609
 EXAMPLE_SIGMA_MPLV5 = DATASETS.fetch('201509021500.bi')
 EXAMPLE_RL1 = DATASETS.fetch('sgprlC1.a0.20160131.000000.nc')
 EXAMPLE_CO2FLX4M = DATASETS.fetch('sgpco2flx4mC1.b1.20201007.001500.nc')
+EXAMPLE_SWATS = DATASETS.fetch('sgpswatsE8.b1.20071229.000700.cdf')
 EXAMPLE_SIRS = DATASETS.fetch('sgpsirsE13.b1.20190101.000000.cdf')
+EXAMPLE_SIRS_SIRI_QC = DATASETS.fetch('sgpsirsC1.b1.20040101.000000.cdf')
 EXAMPLE_GML_RADIATION = DATASETS.fetch('brw21001.dat')
 EXAMPLE_GML_MET = DATASETS.fetch('met_brw_insitu_1_obop_hour_2020.txt')
 EXAMPLE_GML_OZONE = DATASETS.fetch('brw_12_2020_hour.dat')
@@ -150,3 +151,12 @@ stamp_wildcard_list = [
 EXAMPLE_STAMP_WILDCARD = [DATASETS.fetch(file) for file in stamp_wildcard_list]
 mmcr_list = ['sgpmmcrC1.b1.1.cdf', 'sgpmmcrC1.b1.2.cdf']
 EXAMPLE_MMCR = [DATASETS.fetch(file) for file in mmcr_list]
+
+EXAMPLE_AMERIFLUX_BASE = DATASETS.fetch('AMF_US-CU1_BASE_HH_1-5.csv')
+EXAMPLE_AMERIFLUX_META = DATASETS.fetch('AMF_US-CU1_BIF_20250318.xlsx')
+
+EXAMPLE_GML_AEROSOL_NAS = DATASETS.fetch(
+    'US1200R.20200101000000.20210214053818.nephelometer.aerosol_light_scattering_coefficient.pm10.1y.1h.US06L_TSI_3563_MLO.US06L_scat_coef.lev2.nas'
+)
+
+EXAMPLE_SMPS = DATASETS.fetch('houmergedsmpsapsmlM1.c1.20220801.000000.nc')

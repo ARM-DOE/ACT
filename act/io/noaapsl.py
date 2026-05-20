@@ -245,9 +245,9 @@ def _parse_psl_wind_lines(filepath, lines, line_offset=0):
     ds.attrs['beam_elevation'] = beam_elevation
     ds.attrs['beam_azimuth'] = beam_azimuth
     ds.attrs['revision_number'] = version
-    ds.attrs[
-        'data_description'
-    ] = 'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
+    ds.attrs['data_description'] = (
+        'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
+    )
     ds.attrs['consensus_average_time'] = consensus_average_time
     ds.attrs['oblique-beam_vertical_correction'] = int(beam_vertical_correction)
     ds.attrs['number_of_beams'] = int(number_of_beams)
@@ -388,9 +388,9 @@ def _parse_psl_temperature_lines(filepath, lines, line_offset=0):
     ds.attrs['beam_elevation'] = beam_elevation
     ds.attrs['beam_azimuth'] = beam_azimuth
     ds.attrs['revision_number'] = version
-    ds.attrs[
-        'data_description'
-    ] = 'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
+    ds.attrs['data_description'] = (
+        'https://psl.noaa.gov/data/obs/data/view_data_type_info.php?SiteID=ctd&DataOperationalID=5855&OperationalID=2371'
+    )
     ds.attrs['consensus_average_time'] = consensus_average_time
     ds.attrs['number_of_beams'] = int(number_of_beams)
     ds.attrs['number_of_gates'] = int(number_of_gates)

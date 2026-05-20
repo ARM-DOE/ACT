@@ -18,7 +18,7 @@ def calc_cog_sog(ds):
     Function is set up to use dask for the calculations in order to improve
     efficiency. Data are then resampled to 1 second to match native format.
     This assumes that the input data are 1 second. See this `example
-    <https://ARM-DOE.github.io/ACT/source/auto_examples/correct_ship_wind_data.html
+    <https://ARM-DOE.github.io/ACT/auto_examples/correct_ship_wind_data.html
     #sphx-glr-source-auto-examples-correct-ship-wind-data-py>`_.
 
     Parameters

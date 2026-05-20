@@ -8,8 +8,9 @@ on the North Slope and plot them
 
 """
 
-import os
 import glob
+import os
+
 import matplotlib.pyplot as plt
 
 import act

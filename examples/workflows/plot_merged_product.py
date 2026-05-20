@@ -10,9 +10,9 @@ data using xarray and plot/write out the results.
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import xarray as xr
+from arm_test_data import DATASETS
 
 import act
 
@@ -24,9 +24,9 @@ ecor_file = DATASETS.fetch('sgp30ecorE14.b1.20190601.000000.cdf')
 sebs_file = DATASETS.fetch('sgpsebsE14.b1.20190601.000000.cdf')
 
 # Read data into datasets
-ds_ebbr = act.io.arm.read_arm_netcdf(ebbr_file)
-ds_ecor = act.io.arm.read_arm_netcdf(ecor_file)
-ds_sebs = act.io.arm.read_arm_netcdf(sebs_file)
+ds_ebbr = act.io.arm.read_arm_netcdf(ebbr_file, use_base_time=True)
+ds_ecor = act.io.arm.read_arm_netcdf(ecor_file, use_base_time=True)
+ds_sebs = act.io.arm.read_arm_netcdf(sebs_file, use_base_time=True)
 
 # Check for ARM DQRs and add them to the QC variables
 ds_ebbr = act.qc.arm.add_dqr_to_qc(ds_ebbr)
@@ -77,7 +77,7 @@ plt.show()
 # Check out the xarray documentation for more information
 # on the resample function. Options include mean, median,
 # max, min, sum, nearest, and more.
-ds = ds.resample(time='H').mean(keep_attrs=True)
+ds = ds.resample(time='h').mean(keep_attrs=True)
 
 # Plot up data from the hourly merged dataset for ECOR and EBBR
 display = act.plotting.TimeSeriesDisplay(ds, figsize=(15, 10), subplot_shape=(1,))

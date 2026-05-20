@@ -7,8 +7,8 @@ from multiple days worth of sounding data.
 
 """
 
-from arm_test_data import DATASETS
 import numpy as np
+from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
 
 import act

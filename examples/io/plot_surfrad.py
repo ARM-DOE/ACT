@@ -9,8 +9,9 @@ Author: Adam Theisen
 
 """
 
-import act
 import matplotlib.pyplot as plt
+
+import act
 
 # Easily download data from SURFRAD
 results = act.discovery.download_surfrad_data('tbl', startdate='20230601', enddate='20230602')

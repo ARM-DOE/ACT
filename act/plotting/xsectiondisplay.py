@@ -146,13 +146,14 @@ class XSectionDisplay(Display):
 
     def plot_xsection(
         self,
-        dsname,
-        varname,
+        field,
+        dsname=None,
         x=None,
         y=None,
         subplot_index=(0,),
         sel_kwargs=None,
         isel_kwargs=None,
+        set_title=None,
         **kwargs,
     ):
         """
@@ -162,11 +163,10 @@ class XSectionDisplay(Display):
 
         Parameters
         ----------
-        dsname : str or None
-            The name of the datastream to plot from. Set to None to have
-            ACT attempt to automatically detect this.
-        varname : str
+        field : str
             The name of the variable to plot.
+        dsname : str or None
+            The name of the datastream to plot from.
         x : str or None
             The name of the x coordinate variable.
         y : str or None
@@ -181,6 +181,8 @@ class XSectionDisplay(Display):
             to slice datasets, see the documentation on :func:`xarray.DataArray.sel`.
         isel_kwargs : dict
             The keyword arguments to pass into :py:func:`xarray.DataArray.sel`
+        set_title : str
+            Title for the plot
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into
             :func:`xarray.DataArray.plot`.
@@ -220,9 +222,9 @@ class XSectionDisplay(Display):
             y_coord_dim = temp_ds[y].dims[0]
             coord_list[y] = y_coord_dim
             new_ds = data_utils.assign_coordinates(temp_ds, coord_list)
-            my_dataarray = new_ds[varname]
+            my_dataarray = new_ds[field]
         else:
-            my_dataarray = temp_ds[varname]
+            my_dataarray = temp_ds[field]
 
         coord_keys = [key for key in my_dataarray.coords.keys()]
         # X-array will sometimes shorten latitude and longitude variables
@@ -255,28 +257,42 @@ class XSectionDisplay(Display):
         self.set_xrng(xrng, subplot_index)
         yrng = self.axes[subplot_index].get_ylim()
         self.set_yrng(yrng, subplot_index)
+
+        if set_title is None:
+            if 'long_name' in self._ds[dsname][field].attrs:
+                set_title = self._ds[dsname][field].attrs['long_name']
+        plt.title(set_title)
+
         del temp_ds
         return self.axes[subplot_index]
 
     def plot_xsection_map(
-        self, dsname, varname, subplot_index=(0,), coastlines=True, background=False, **kwargs
+        self,
+        field,
+        dsname=None,
+        subplot_index=(0,),
+        coastlines=True,
+        background=False,
+        set_title=None,
+        **kwargs,
     ):
         """
         Plots a cross section of 2D data on a geographical map.
 
         Parameters
         ----------
-        dsname : str or None
-            The name of the datastream to plot from. Set to None
-            to have ACT attempt to automatically detect this.
-        varname : str
+        field : str
             The name of the variable to plot.
+        dsname : str or None
+            The name of the datastream to plot from.
         subplot_index : tuple
             The index of the subplot to plot inside.
         coastlines : bool
             Set to True to plot the coastlines.
         background : bool
             Set to True to plot a stock image background.
+        set_title : str
+            Title for the plot
         **kwargs : keyword arguments
             Additional keyword arguments will be passed into
             :func:`act.plotting.XSectionDisplay.plot_xsection`
@@ -292,7 +308,9 @@ class XSectionDisplay(Display):
                 'Cartopy needs to be installed in order to plot ' + 'cross sections on maps!'
             )
         self.set_subplot_to_map(subplot_index)
-        self.plot_xsection(dsname, varname, subplot_index=subplot_index, **kwargs)
+        self.plot_xsection(
+            field, dsname=dsname, subplot_index=subplot_index, set_title=set_title, **kwargs
+        )
         xlims = self.xrng[subplot_index].flatten()
         ylims = self.yrng[subplot_index].flatten()
         self.axes[subplot_index].set_xticks(np.linspace(round(xlims[0], 0), round(xlims[1], 0), 10))

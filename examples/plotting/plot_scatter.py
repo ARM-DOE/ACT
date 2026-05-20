@@ -9,9 +9,9 @@ Written: Joe O'Brien
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
 import numpy as np
+from arm_test_data import DATASETS
 from scipy.stats.mstats import pearsonr
 
 import act
@@ -53,10 +53,10 @@ display.axes[0].text(45, 135, f"y = {z[0]:.3f}x + ({z[1]:.3f})", color='r', font
 cc_conc = pearsonr(ds['true_airspeed'], ds['ground_speed'])
 
 # Display the Pearson CC
-display.axes[0].text(45, 130, "Pearson CC: %.2f" % (cc_conc[0]), fontsize=12)
+display.axes[0].text(45, 130, f"Pearson CC: {cc_conc[0]:.2f}", fontsize=12)
 
 # Display the total number of samples
-display.axes[0].text(45, 125, "N = %.0f" % (ds['true_airspeed'].data.shape[0]), fontsize=12)
+display.axes[0].text(45, 125, "N = {:.0f}".format(ds['true_airspeed'].data.shape[0]), fontsize=12)
 
 # Display the 1:1 ratio line
 display.set_ratio_line()

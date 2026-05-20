@@ -9,10 +9,10 @@ Author: Maxwell Grover
 
 """
 
-from arm_test_data import DATASETS
-from matplotlib import pyplot as plt
 import numpy as np
 import xarray as xr
+from arm_test_data import DATASETS
+from matplotlib import pyplot as plt
 
 import act
 

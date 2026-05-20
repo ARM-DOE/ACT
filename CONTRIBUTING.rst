@@ -57,7 +57,7 @@ Get Started!
 Ready to contribute? Here's are a few steps we will go over for contributing
 to `act`.
 
-1. Fork the `arm-community-toolkit` repo on GitHub and clone your fork locally.
+1. Fork the `atmospheric-data-community-toolkit` repo on GitHub and clone your fork locally.
 
 2. Install your local copy into an Anaconda environment. Assuming you have
    anaconda installed.
@@ -77,7 +77,7 @@ to `act`.
 
 Fork and Cloning the ACT Repository
 -----------------------------------
-To start, you will first fork the `arm-community-toolkit` repo on GitHub by
+To start, you will first fork the `atmospheric-data-community-toolkit` repo on GitHub by
 clicking the fork icon button found on the main page here:
 
 - https://github.com/ARM-DOE/ACT
@@ -352,7 +352,7 @@ To install pytest::
 
         conda install -c conda-forge pytest
 
-To run all tests in pyart with pytest from outside the pyart directory::
+To run all tests in act with pytest from outside the act directory::
 
         pytest --pyargs act
 
@@ -405,7 +405,7 @@ a more in depth description on what your commiting.
 
 A set of recommended acronymns can be found at:
 
-- https://docs.scipy.org/doc/numpy/dev/gitwash/development_workflow.html
+- https://numpy.org/doc/stable/dev/development_workflow.html#writing-the-commit-message
 
 If you would like to type your commit in the terminal and skip the default
 editor::

@@ -8,10 +8,9 @@ Author: Joe O'Brien
 
 """
 
-from arm_test_data import DATASETS
-from matplotlib.dates import DateFormatter
-from matplotlib.dates import num2date
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
+from matplotlib.dates import DateFormatter, num2date
 
 import act
 

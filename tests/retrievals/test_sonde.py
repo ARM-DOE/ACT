@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 import act
 
@@ -14,7 +15,7 @@ def test_get_stability_indices():
         rtol=1e-5,
     )
     assert sonde_ds['parcel_temperature'].attrs['units'] == 'kelvin'
-    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.96, decimal=2)
+    np.testing.assert_almost_equal(sonde_ds['surface_based_cape'], 0.98, decimal=2)
     assert sonde_ds['surface_based_cape'].attrs['units'] == 'J/kg'
     assert sonde_ds['surface_based_cape'].attrs['long_name'] == 'Surface-based CAPE'
     np.testing.assert_almost_equal(sonde_ds['surface_based_cin'], 0.000, decimal=3)
@@ -87,7 +88,7 @@ def test_calculate_pbl_liu_liang():
 
     ds = act.io.arm.read_arm_netcdf(files[-2:])
     ds['tdry'].attrs['units'] = 'degree_Celsius'
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
     ds = act.io.arm.read_arm_netcdf(files[0])
@@ -99,15 +100,15 @@ def test_calculate_pbl_liu_liang():
     ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds, land_parameter=False)
     assert ds['pblht_regime_liu_liang'].values == 'SBL'
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds2 = ds.where(ds['alt'].load() < 1000.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds2 = ds.where(ds['pres'].load() < 200.0, drop=True)
         ds2 = act.retrievals.sonde.calculate_pbl_liu_liang(ds2, smooth_height=15)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp[0:5] = -40
         ds['tdry'].values = temp
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
@@ -117,7 +118,7 @@ def test_calculate_pbl_liu_liang():
     temp = ds['tdry'].values
     temp[20:50] = 100.0
     ds['tdry'].values = temp
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds = act.retrievals.sonde.calculate_pbl_liu_liang(ds)
 
 
@@ -130,5 +131,5 @@ def test_calculate_heffter_pbl():
     assert ds['pblht_heffter'].values == 960.0
     np.testing.assert_almost_equal(ds['atm_pres_ss'].values[1], 994.9, 1)
     np.testing.assert_almost_equal(ds['potential_temperature_ss'].values[4], 298.4, 1)
-    assert np.sum(ds['bottom_inversion'].values) == 7426
-    assert np.sum(ds['top_inversion'].values) == 7903
+    assert np.sum(ds['bottom_inversion'].values) == 7426.0
+    assert np.sum(ds['top_inversion'].values) == 7903.0

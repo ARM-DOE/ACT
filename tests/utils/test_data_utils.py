@@ -1,15 +1,16 @@
 import importlib
+from contextlib import redirect_stdout
+from io import StringIO
+from pathlib import Path
 
 import numpy as np
 import pytest
 import xarray as xr
 from numpy.testing import assert_almost_equal
-from contextlib import redirect_stdout
-from io import StringIO
-from pathlib import Path
 
 import act
 from act.utils.data_utils import DatastreamParserARM as DatastreamParser
+from act.utils.data_utils import convert_2d_to_1d
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -96,7 +97,7 @@ def test_convert_units():
     data = act.utils.data_utils.convert_units(r_data, 'K', 'C')
     assert np.ceil(data[0]) == 12
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds.utils.change_units()
 
     desired_unit = 'degF'
@@ -141,10 +142,10 @@ def test_convert_units():
 
     # Test if exception or print statement is issued when an error occurs with units string
     ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_EBBR1)
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds.utils.change_units('home_signal_15', 'not_a_real_unit_string', raise_error=True)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds.utils.change_units('not_a_real_variable_name', 'degC', raise_error=True)
 
     f = StringIO()
@@ -255,14 +256,14 @@ def test_convert_to_potential_temp():
     )
     assert np.isclose(np.nansum(temp), -4240.092, rtol=0.001, atol=0.0011)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.convert_to_potential_temp(
             temperature=ds[temp_var_name].values,
             pressure=ds[press_var_name].values,
             temp_var_units=ds[temp_var_name].attrs['units'],
         )
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.convert_to_potential_temp(
             temperature=ds[temp_var_name].values,
             pressure=ds[press_var_name].values,
@@ -310,7 +311,7 @@ def test_height_adjusted_temperature():
     )
     assert np.isclose(np.nansum(temp), -5847.511, rtol=0.001, atol=0.001)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.height_adjusted_temperature(
             height_difference=25.2,
             height_units='m',
@@ -338,7 +339,7 @@ def test_height_adjusted_pressure():
     )
     assert np.isclose(np.nansum(temp), 142877.69, rtol=0.001, atol=0.001)
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         temp = act.utils.data_utils.height_adjusted_pressure(
             height_difference=-100,
             height_units='ft',
@@ -557,3 +558,50 @@ def test_calculate_percentages():
         assert np.round(percentages["chloride"], 3) == 0.915
         if not record:
             pytest.fail("Expected a warning for using all times.")
+
+
+def test_convert_2d_to_1d():
+    # Create a  sample dataset
+    data = np.array([[1, 2], [3, 4], [5, 6]])
+    ds = xr.Dataset(
+        {'var': (('time', 'level'), data)}, coords={'time': [0, 1, 2], 'level': [10, 20]}
+    )
+    ds['level'].attrs['units'] = 'm'
+
+    # Run the function
+    result = convert_2d_to_1d(ds, parse='level')
+
+    # Check the results
+    assert 'var_level_0' in result
+    assert 'var_level_1' in result
+    np.testing.assert_array_equal(result['var_level_0'].values, [1, 3, 5])
+    np.testing.assert_array_equal(result['var_level_1'].values, [2, 4, 6])
+
+    # Run the function with use_dim_value_in_name=True
+    result = convert_2d_to_1d(ds, parse='level', use_dim_value_in_name=True)
+
+    # Check the results
+    assert 'var_level_10m' in result
+    assert 'var_level_20m' in result
+    np.testing.assert_array_equal(result['var_level_10m'].values, [1, 3, 5])
+    np.testing.assert_array_equal(result['var_level_20m'].values, [2, 4, 6])
+
+    # Run the function with custom labels
+    result = convert_2d_to_1d(ds, parse='level', dim_labels=['low', 'high'])
+
+    # Check the results
+    assert 'var_low' in result
+    assert 'var_high' in result
+    np.testing.assert_array_equal(result['var_low'].values, [1, 3, 5])
+    np.testing.assert_array_equal(result['var_high'].values, [2, 4, 6])
+
+    # Create a sample dataset
+    data = np.array([[1], [3], [5]])
+    ds = xr.Dataset({'var': (('time', 'level'), data)}, coords={'time': [0, 1, 2], 'level': [10]})
+
+    # Run the function with keep_name_if_one=True
+    result = convert_2d_to_1d(ds, parse='level', keep_name_if_one=True)
+
+    # Check the results
+    assert 'var' in result
+    np.testing.assert_array_equal(result['var'].values, [1, 3, 5])

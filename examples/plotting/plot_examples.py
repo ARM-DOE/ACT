@@ -7,8 +7,8 @@ of ACT's plotting tools as well as Xarray's tools.
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 

@@ -4,12 +4,12 @@ ACT: The Atmospheric Community Toolkit
 
 """
 
+import importlib.metadata as _importlib_metadata
+
 import lazy_loader as lazy
 
 # No more pandas warnings
 from pandas.plotting import register_matplotlib_converters
-
-from ._version import get_versions
 
 register_matplotlib_converters()
 
@@ -29,6 +29,9 @@ submodules = [
 ]
 __getattr__, __dir__, _ = lazy.attach(__name__, submodules)
 
-# Version for source builds
-vdict = get_versions()
-__version__ = vdict['version']
+# Get the version
+try:
+    __version__ = _importlib_metadata.version("act-atmos")
+except _importlib_metadata.PackageNotFoundError:
+    # package is not installed
+    __version__ = "0.0.0"

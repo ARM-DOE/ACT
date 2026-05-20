@@ -8,8 +8,8 @@ file but called under the qcfilter method.
 
 """
 
-from arm_test_data import DATASETS
 import numpy as np
+from arm_test_data import DATASETS
 
 from act.io.arm import read_arm_netcdf
 from act.qc.qcfilter import parse_bit
@@ -79,7 +79,7 @@ data = ds.qcfilter.get_masked_data(var_name)
 diff = np.diff(data)
 max_difference = 0.04
 data = np.ma.masked_greater(diff, max_difference)
-index = np.where(data.mask is True)[0]
+index = np.where(data.mask)[0]
 result = ds.qcfilter.add_test(
     var_name,
     index=index,

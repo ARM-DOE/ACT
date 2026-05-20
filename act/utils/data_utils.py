@@ -4,18 +4,17 @@ Module containing utilities for the data.
 """
 
 import importlib
-import warnings
-
 import json
+import re
+import warnings
+from os import PathLike
+from pathlib import Path
+
 import metpy
 import numpy as np
 import pint
-import scipy.stats as stats
-import xarray as xr
-from pathlib import Path
-import re
 import requests
-from os import PathLike
+import xarray as xr
 
 spec = importlib.util.find_spec('pyart')
 if spec is not None:
@@ -112,9 +111,10 @@ class ChangeUnits:
                     self._ds[var_name].attrs = attrs
             except (
                 KeyError,
+                TypeError,
                 pint.errors.DimensionalityError,
                 pint.errors.UndefinedUnitError,
-                np.core._exceptions.UFuncTypeError,
+                np._core._exceptions.UFuncTypeError,
             ):
                 if raise_error:
                     raise ValueError(
@@ -450,12 +450,9 @@ def add_in_nan(time, data):
         # diff = np.diff(time.astype('datetime64[s]'), 1)
         diff = np.diff(time, 1)
 
-        # Wrapping in a try to catch error while switching between numpy 1.10 to 1.11
-        try:
-            mode = stats.mode(diff, keepdims=True).mode[0]
-        except TypeError:
-            mode = stats.mode(diff).mode[0]
-
+        # Use np.unique instead of stats.mode for timedelta arrays (scipy 1.11+ compatibility)
+        unique_vals, counts = np.unique(diff, return_counts=True)
+        mode = unique_vals[np.argmax(counts)]
         index = np.where(diff > (2.0 * mode))
 
         # If the data is not float time and we try to insert a NaN it will
@@ -779,10 +776,9 @@ def accumulate_precip(ds, variable, time_delta=None):
     # Calculate mode of the time samples(i.e. 1 min vs 1 sec)
     if time_delta is None:
         diff = np.diff(time.values, 1) / np.timedelta64(1, 's')
-        try:
-            t_delta = stats.mode(diff, keepdims=False).mode
-        except TypeError:
-            t_delta = stats.mode(diff).mode
+        # Use np.unique instead of stats.mode (scipy 1.11+ compatibility)
+        unique_vals, counts = np.unique(diff, return_counts=True)
+        t_delta = unique_vals[np.argmax(counts)]
     else:
         t_delta = time_delta
 
@@ -1270,6 +1266,7 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
     """
     headers = {
         'Content-Type': 'application/json',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
     }
     # Return all facilities if facility_code is None else set the query to include
     # facility search
@@ -1310,8 +1307,8 @@ def arm_site_location_search(site_code='sgp', facility_code=None):
         },
     }
 
-    # Uses requests to grab metadata from arm.gov.
-    response = requests.get(
+    # Uses requests to grab metadata from adc.arm.gov.
+    response = requests.post(
         'https://adc.arm.gov/elastic/metadata/_search', headers=headers, json=json_data
     )
     # Loads the text to a dictionary
@@ -1410,3 +1407,114 @@ def calculate_percentages(ds, fields, time=None, time_slice=None, threshold=None
         percentages[i] = j
     ds_percent.close()
     return percentages
+
+
+def convert_2d_to_1d(
+    ds,
+    parse=None,
+    variables=None,
+    keep_name_if_one=False,
+    use_dim_value_in_name=False,
+    dim_labels=None,
+):
+    """
+    Function to  convert a single 2D variable into multiple 1D
+    variables using the second dimension in the new variable name.
+
+    Parameters
+    ----------
+    ds: xarray.dataset
+        Object containing 2D variable to be converted
+    parse: str or None
+        Coordinate dimension name to parse along. If set to None will
+        guess the non-time dimension is the parse dimension.
+    variables: str or list of str
+        Variable name or names to parse. If not provided will attempt to
+        parse all two dimensional variables with the parse coordinate
+        dimension.
+    keep_name_if_one: boolean
+        Option to not modify the variable name if the coordinate dimension
+        has only one value. Essentially converting a 2D (i.e. (100,1)
+        variable into a 1D variable (i.e. (100)).
+    use_dim_value_in_name: boolean
+        Option to use value from the coordinate dimension in new variable
+        name instead of indexing number. Will use the value prepended
+        to the units of the dimension.
+    dim_labels: str or list of str
+        Allows for use of custom label to append to end of variable names
+
+    Returns
+    -------
+        A new object copied from input object with the multi-dimensional
+        variable split into multiple single-dimensional variables.
+
+    Example
+    -------
+    # This will get the name of the coordinate dimension so it does not need to
+    # be hard coded.
+    >>> parse_dim = (list(set(list(ds.dims)) - set(['time'])))[0]
+
+    # Now use the parse_dim name to parse the variable and return new object.
+    >>> new_ds = convert_2d_to_1d(ds, parse=parse_dim)
+
+    """
+    # If no parse dimension name given assume it is the one not equal to 'time'
+    if parse is None:
+        parse = (list(set(list(ds.dims)) - {'time'}))[0]
+
+    new_ds = ds.copy()
+
+    if variables is not None and isinstance(variables, str):
+        variables = [variables]
+
+    if variables is None:
+        variables = list(new_ds.variables)
+
+    if dim_labels is not None and isinstance(dim_labels, (str,)):
+        dim_labels = [dim_labels]
+
+    # Check if we want to keep the names the same if the second dimension
+    # is of size one.
+    num_dims = 1
+    if keep_name_if_one:
+        num_dims = 2
+
+    parse_values = ds[parse].values
+    for var in variables:
+        if var == parse:
+            continue
+        # Check if the parse dimension is in the dimension tuple
+        if parse in new_ds[var].dims:
+            if len(new_ds[parse]) >= num_dims:
+                for i in range(0, new_ds.sizes[parse]):
+                    if dim_labels is not None:
+                        new_var_name = '_'.join([var, dim_labels[i]])
+                    elif use_dim_value_in_name:
+                        level = str(parse_values[i]) + ds[parse].attrs['units']
+                        new_var_name = '_'.join([var, parse, level])
+                    else:
+                        new_var_name = '_'.join([var, parse, str(i)])
+                    new_var = new_ds[var].copy()
+                    new_ds[new_var_name] = new_var.isel(indexers={parse: i})
+
+                    try:
+                        ancillary_variables = new_ds[new_var_name].attrs['ancillary_variables']
+                        current_qc_var_name = ds.qcfilter.check_for_ancillary_qc(
+                            var, add_if_missing=False
+                        )
+                        if current_qc_var_name is not None:
+                            ancillary_variables = ancillary_variables.replace(
+                                current_qc_var_name, 'qc_' + new_var_name
+                            )
+                            new_ds[new_var_name].attrs['ancillary_variables'] = ancillary_variables
+                    except KeyError:
+                        pass
+
+                # Remove the old 2D variable after extracting
+                del new_ds[var]
+
+            else:
+                # Keep the same name but remove the dimension equal to size 1
+                new_ds[var] = new_ds[var].squeeze(dim=parse)
+
+    return new_ds

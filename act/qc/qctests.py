@@ -9,11 +9,11 @@ qcfilter class definition to make it callable.
 import warnings
 
 import dask.array as da
-from metpy.units import units
-from metpy.calc import add_height_to_pressure
 import numpy as np
 import pandas as pd
 import xarray as xr
+from metpy.calc import add_height_to_pressure
+from metpy.units import units
 
 from act.utils.data_utils import convert_units, get_missing_value
 
@@ -205,7 +205,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value less than {}.').format(attr_name)
+            test_meaning = f'Data value less than {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -299,7 +299,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value greater than {}.').format(attr_name)
+            test_meaning = f'Data value greater than {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -394,7 +394,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value less than ' 'or equal to {}.').format(attr_name)
+            test_meaning = 'Data value less than ' f'or equal to {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -493,7 +493,7 @@ class QCTests:
             attr_name = limit_attr_name
 
         if test_meaning is None:
-            test_meaning = ('Data value greater than ' 'or equal to {}.').format(attr_name)
+            test_meaning = 'Data value greater than ' f'or equal to {attr_name}.'
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -782,8 +782,8 @@ class QCTests:
             attr_name_upper = limit_attr_names[1]
 
         if test_meaning is None:
-            test_meaning = ('Data value less than {} ' 'or greater than {}.').format(
-                attr_name_lower, attr_name_upper
+            test_meaning = (
+                f'Data value less than {attr_name_lower} ' f'or greater than {attr_name_upper}.'
             )
 
         if prepend_text is not None:
@@ -895,8 +895,8 @@ class QCTests:
             attr_name_upper = limit_attr_names[1]
 
         if test_meaning is None:
-            test_meaning = ('Data value greater than {} ' 'or less than {}.').format(
-                attr_name_lower, attr_name_upper
+            test_meaning = (
+                f'Data value greater than {attr_name_lower} ' f'or less than {attr_name_upper}.'
             )
 
         if prepend_text is not None:
@@ -948,6 +948,7 @@ class QCTests:
         test_number=None,
         flag_value=False,
         prepend_text=None,
+        ignore_range=None,
     ):
         """
         Method to perform a persistence test over 1-D data..
@@ -968,21 +969,26 @@ class QCTests:
         center : boolean
             Optional where within the moving window to report the standard
             deviation values. Used in the .rolling.std() calculation with xarray.
-        test_meaning : str
+        test_meaning : None or str
             The optional text description to add to flag_meanings
             describing the test. Will add a default if not set.
         test_assessment : str
             Optional single word describing the assessment of the test.
             Will set a default if not set.
-        test_number : int
+        test_number : None or int
             Optional test number to use. If not set will ues next
             available test number.
         flag_value : boolean
             Indicates that the tests are stored as integers
             not bit packed values in quality control variable.
-        prepend_text : str
+        prepend_text : None or str
             Optional text to prepend to the test meaning.
             Example is indicate what institution added the test.
+        ignore_range : None, tuple, list
+            Optional list of minimum and maximum data values used to define a range
+            where the test will not flag if a persistence is discovered if the data used
+            in testing is within this range. Can be used when there is a specific range
+            of values that often have a persistent value. e.g. RH at 100% during raining event.
 
         Returns
         -------
@@ -998,9 +1004,9 @@ class QCTests:
         if test_meaning is None:
             test_meaning = (
                 'Data failing persistence test. '
-                'Standard Deviation over a window of {} values '
-                'less than {}.'
-            ).format(window, test_limit)
+                f'Standard Deviation over a window of {window} values '
+                f'less than {test_limit}.'
+            )
 
         if prepend_text is not None:
             test_meaning = ': '.join((prepend_text, test_meaning))
@@ -1008,7 +1014,11 @@ class QCTests:
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=RuntimeWarning)
             stddev = data.rolling(time=window, min_periods=min_periods, center=True).std()
-            index = stddev < test_limit
+            index = stddev <= test_limit
+
+        if ignore_range is not None:
+            ignore_index = (data >= min(ignore_range)) & (data <= max(ignore_range))
+            index = index & ~ignore_index
 
         result = self._ds.qcfilter.add_test(
             var_name,
@@ -1617,5 +1627,226 @@ class QCTests:
             test_assessment=test_assessment,
             flag_value=flag_value,
         )
+
+        return result
+
+    def add_step_change_test(
+        self,
+        var_name,
+        k=1.0,
+        detrend=True,
+        n_flagged=2,
+        add_nan=False,
+        test_meaning=None,
+        test_assessment='Indeterminate',
+        test_number=None,
+        flag_value=False,
+        prepend_text=None,
+    ):
+        """
+        Method to detect a shift change in values using the CUSUM (cumulative sum control chart) test.
+
+        Parameters
+        ----------
+        var_name : str
+            Data variable name in Dataset to use for testing. Results are inserted into
+            accompanying embedded quality control variable.
+        k : float
+            Reference value. This is typically around the value of the shift size change to
+            to be detected when detrend=True. Will typically be around half the value
+            of the shift size when no detrend is applied.
+        detrend : bool
+            Remove the trend in the data by differencing the data before
+            applying the CUSUM algorithm. Needed for most data that have atmospheric variability.
+        n_flagged : int
+            Number of time steps to flag in the quality control variable. Default is to
+            flag the point of and one after the step change since we will not know which
+            value of the two will be suspect. Can set to any number of time steps
+            or -1 to flag the remaining data after the detected step change.
+        add_nan : bool
+            Should a NaN value be added to the data where a value is missing. A value is
+            determined to be missing when the time step is larger than the mode of the
+            difference in time values. This will stop the reporting of a step when there
+            is an outage and the data normally rises/decends but with the gap is appears
+            as a step change.
+        test_meaning : str
+            Optional text description to add to flag_meanings
+            describing the test. Will use a default if not set.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will use a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next available
+            test number.
+        flag_value : boolean
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is indicate what institution added the test.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc
+            variable name, test_number, test_meaning, test_assessment
+
+        """
+
+        def cusum(data, k):
+            """
+            CUSUM algorithm used to detect step changes.
+
+            data : numpy array
+                1D numpy array of time series data to analze
+            k : float
+                Reference value. This is typically half the value of the shift size change to
+                to be detected or the size of the shift change if the data is detrended by
+                differencing.
+
+            Returns
+            -------
+            C : numpy array
+                Numpy array containing a 0 when there is no shift detected
+                or positive value when a shift is detected.
+
+            """
+
+            mean_val = np.nanmean(data)
+            Cu = np.zeros(data.size, dtype=np.float16)
+            Cl = np.zeros(data.size, dtype=np.float16)
+            for ii in range(1, data.size):
+                Cl[ii] = max(0.0, Cl[ii - 1] - (data[ii] - mean_val + k))
+                Cu[ii] = max(0.0, Cu[ii - 1] + (data[ii] - mean_val - k))
+
+            return np.maximum(Cu, Cl)
+
+        data = self._ds[var_name].values
+        if add_nan:
+            from act.utils.data_utils import add_in_nan
+
+            time, data = add_in_nan(self._ds['time'].values, data)
+
+        data = data.astype(float)
+        if detrend:
+            data = np.diff(data)
+            data = np.append(np.nan, data)
+
+        if n_flagged < 0:
+            n_flagged = data.size
+
+        index = np.full(data.size, False)
+        C = cusum(data, k)
+        found_ind = np.where(np.diff(C) > 0.0)[0]
+        for ind in found_ind:
+            ind = np.arange(ind, ind + n_flagged)
+            ind = ind[ind < data.size]
+            index[ind] = True
+
+        if add_nan:
+            import xarray as xr
+
+            da = xr.DataArray(index, dims=['time'], coords=[time])
+            da = da.sel(time=self._ds['time'])
+            index = da.values
+            del da
+
+        if test_meaning is None:
+            test_meaning = f'Shift in data detected with CUSUM algorithm: k={round(k, 2)}'
+
+        if prepend_text is not None:
+            test_meaning = f'{prepend_text}: {test_meaning}'
+
+        result = self._ds.qcfilter.add_test(
+            var_name,
+            index=index,
+            test_number=test_number,
+            test_meaning=test_meaning,
+            test_assessment=test_assessment,
+            flag_value=flag_value,
+        )
+
+        return result
+
+    def add_relative_variability_test(
+        self,
+        var_names,
+        threshold,
+        test_assessment='Suspect',
+        test_number=None,
+        flag_value=False,
+        prepend_text=None,
+        window=60,
+        min_period=1,
+    ):
+        """
+        Method to calculate the variability of a variable relative to
+        other variables that are passed in. The process includes:
+
+        1. Calculating a rolling standard deviation for all variables passed in.
+        2. For each variable it will subtract the mean standard deviation of all
+           the other variables.
+        3. Variability relative to the mean greater than the threshold passed in
+           will be flagged.
+
+        Parameters
+        ----------
+        var_names : list
+            List of data variable names. At least 2 are required.
+        threshold : int or float
+            Threshold value to use in test.
+        test_assessment : str
+            Optional single word describing the assessment of the test.
+            Will set a default if not set.
+        test_number : int
+            Optional test number to use. If not set will use next
+            available test number.
+        flag_value : bool
+            Indicates that the tests are stored as integers
+            not bit packed values in quality control variable.
+        prepend_text : str
+            Optional text to prepend to the test meaning.
+            Example is to indicate what institution added the test.
+        window : int or float
+            Window to calculate rolling standard deviation.
+        min_periods : int
+            Minimum number of samples to use for rolling standard deviation.
+
+        Returns
+        -------
+        test_info : tuple
+            A tuple containing test information including var_name, qc variable name,
+            test_number, test_meaning, test_assessment.
+
+        """
+        test_meaning = 'Standard deviation of variable is greater than the mean standard deviation of other like variables'
+
+        if prepend_text is not None:
+            test_meaning = ': '.join((prepend_text, test_meaning))
+
+        if len(var_names) < 2:
+            raise ValueError('More than 1 variable is needed to run test')
+
+        # Copy data and perform rolling average in new dataset
+        ds_std = self._ds[var_names].copy(deep=True)
+        ds_std = ds_std.rolling(time=window, min_periods=min_period).std()
+
+        result = {}
+        for v in var_names:
+            # Get variables and remove current variable to calculate means from
+            dummy_var = var_names.copy()
+            dummy_var.remove(v)
+
+            std_data = np.abs(
+                ds_std[v].values - np.nanmean([ds_std[d].values for d in dummy_var], axis=0)
+            )
+            index = np.where(std_data > threshold)
+            result[v] = self._ds.qcfilter.add_test(
+                v,
+                index=index,
+                test_number=test_number,
+                test_meaning=test_meaning,
+                test_assessment=test_assessment,
+            )
 
         return result

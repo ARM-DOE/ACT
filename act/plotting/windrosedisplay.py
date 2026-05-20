@@ -162,7 +162,7 @@ class WindRoseDisplay(Display):
         # We need to wrap around
 
         deg_width = 360.0 / num_dirs
-        dir_bins_mid = np.linspace(0.0, 360.0 - 3 * deg_width / 2.0, num_dirs)
+        dir_bins_mid = np.linspace(deg_width / 2.0, 360.0 - deg_width / 2.0, num_dirs)
         wind_hist = np.zeros((num_dirs, len(spd_bins) - 1))
 
         for i in range(num_dirs):
@@ -190,7 +190,7 @@ class WindRoseDisplay(Display):
             units = self._ds[dsname][spd_field].attrs['units']
         else:
             units = ''
-        the_label = '%3.1f' % spd_bins[0] + '-' + '%3.1f' % spd_bins[1] + ' ' + units
+        the_label = f'{spd_bins[0]:3.1f}' + '-' + f'{spd_bins[1]:3.1f}' + ' ' + units
         our_cmap = matplotlib.colormaps.get_cmap(cmap)
         our_colors = our_cmap(np.linspace(0, 1, len(spd_bins)))
 
@@ -208,7 +208,7 @@ class WindRoseDisplay(Display):
             )
         ]
         for i in range(1, len(spd_bins) - 1):
-            the_label = '%3.1f' % spd_bins[i] + '-' + '%3.1f' % spd_bins[i + 1] + ' ' + units
+            the_label = f'{spd_bins[i]:3.1f}' + '-' + f'{spd_bins[i + 1]:3.1f}' + ' ' + units
             # Changing the bottom to be a sum of the previous speeds so that
             # it positions it correctly - Adam Theisen
             bars.append(
@@ -229,12 +229,12 @@ class WindRoseDisplay(Display):
         # Add an annulus with text stating % of time calm
         pct_calm = np.sum(spd_data <= calm_threshold) / len(spd_data) * 100
         ax.set_rorigin(-2.5)
-        ax.annotate('%3.2f%%\n calm' % pct_calm, xy=(0, -2.5), ha='center', va='center')
+        ax.annotate(f'{pct_calm:3.2f}%\n calm', xy=(0, -2.5), ha='center', va='center')
 
         # Set the ticks to be nice numbers
         tick_max = tick_interval * round(np.nanmax(np.cumsum(wind_hist, axis=1)) / tick_interval)
         rticks = np.arange(0, tick_max, tick_interval)
-        rticklabels = [('%d' % x + '%') for x in rticks]
+        rticklabels = [f'{x}%' for x in rticks]
         ax.set_rticks(rticks)
         ax.set_yticklabels(rticklabels)
 
@@ -407,9 +407,9 @@ class WindRoseDisplay(Display):
                 # Produce direction (x-axis) and speed (y-axis) plots displaying the mean
                 # as the contours.
                 spd_data = ds[spd_field].values
-                spd_bins = np.linspace(0, ds[spd_field].max(), num_data_bins + 1)
+                spd_bins = np.linspace(0, ds[spd_field].max().values, num_data_bins + 1)
                 spd_bins = np.insert(spd_bins, 1, calm_threshold)
-                #  Set up an array and cycle through the data, binning them by speed/direction
+                # Set up an array and cycle through the data, binning them by speed/direction
                 mean_data = np.zeros([len(bins), len(spd_bins)])
                 for i in range(len(bins) - 1):
                     for j in range(len(spd_bins)):
@@ -432,7 +432,6 @@ class WindRoseDisplay(Display):
                 mean_data = np.insert(mean_data, -1, mean_data[0, :], axis=0)
                 bins.append(bins[0])
                 mean_data[-1, :] = mean_data[0, :]
-
                 # In order to properly handle vmin/vmax in contours, need to adjust
                 # the levels plotted and remove the keywords to contourf
                 vmin = np.nanmin(mean_data)

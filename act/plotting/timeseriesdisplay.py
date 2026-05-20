@@ -7,7 +7,8 @@ import datetime as dt
 import textwrap
 import warnings
 from copy import deepcopy
-from re import search, search as re_search
+from re import search
+from re import search as re_search
 
 import matplotlib as mpl
 import matplotlib.dates as mdates
@@ -15,11 +16,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import colors as mplcolors
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import NearestNDInterpolator
 
 from ..qc.qcfilter import parse_bit
-from ..utils import data_utils, datetime_utils as dt_utils
+from ..utils import data_utils
+from ..utils import datetime_utils as dt_utils
 from ..utils.datetime_utils import determine_time_delta, reduce_time_ranges
 from ..utils.geo_utils import get_sunrise_sunset_noon
 from . import common
@@ -302,9 +306,13 @@ class TimeSeriesDisplay(Display):
         abs_limits=(None, None),
         time_rng=None,
         y_rng=None,
+        ylabel=None,
         use_var_for_y=None,
+        yerror=None,
+        error_kw={},
         set_shading='auto',
         assessment_overplot=False,
+        assessment_overplot_bit=None,
         overplot_marker='.',
         overplot_behind=False,
         overplot_markersize=6,
@@ -315,9 +323,11 @@ class TimeSeriesDisplay(Display):
         assessment_overplot_category_color={'Incorrect': 'red', 'Suspect': 'orange'},
         force_line_plot=False,
         labels=False,
+        y_axis_flag_meanings=False,
         cbar_label=None,
         cbar_h_adjust=None,
-        y_axis_flag_meanings=False,
+        cbar_labelpad=5,
+        cbar_labelsize=10,
         colorbar_labels=None,
         cvd_friendly=False,
         match_line_label_color=False,
@@ -351,6 +361,8 @@ class TimeSeriesDisplay(Display):
         day_night_background : bool
             Set to True to fill in a color coded background.
             according to the time of day.
+        invert_y_axis : bool
+            Invert the y-axix.
         abs_limits : tuple or list
             Sets the bounds on plot limits even if data values exceed
             those limits. Set to (ymin,ymax). Use None if only setting
@@ -360,18 +372,30 @@ class TimeSeriesDisplay(Display):
             limits.
         y_rng : tuple or list
             List or tuple with (min, max) values to set the y-axis range
+        ylabel : str
+            Label for the y-axis of the plot.  This will take the place of the
+            default which is to get the variable name or units.
         use_var_for_y : str
             Set this to the name of a data variable in the Dataset to use as
             the y-axis variable instead of the default dimension. Useful for
             instances where data has an index-based dimension instead of a
             height-based dimension. If shapes of arrays do not match it will
             automatically revert back to the original ydata.
+        yerror : float or array-like, shape(N,) or shape(2,N)
+            Option to add y-error bars to timeseries plots using
+            matplotlib.errorbar functionality.
+        error_kw : dict
+            The keyword arguments for :func`plt.errorbar` if yerror is not
+            None.
         set_shading : string
             Option to to set the matplotlib.pcolormesh shading parameter.
             Default to 'auto'
         assessment_overplot : boolean
             Option to overplot quality control colored symbols over plotted
             data using flag_assessment categories.
+        assessment_overplot_bit : int or list of int
+            Option to overplot quality control colored symbols for specific
+            quality control tests using flag_assessments categories.
         overplot_marker : str
             Marker to use for overplot symbol.
         overplot_behind : bool
@@ -391,17 +415,21 @@ class TimeSeriesDisplay(Display):
         labels : boolean or list
             Option to overwrite the legend labels. Must have same dimensions as
             number of lines plotted.
-        cbar_label : str
-            Option to overwrite default colorbar label.
-        cbar_h_adjust : float
-            Option to adjust location of colorbar horizontally. Positive values
-            move to right negative values move to left.
         y_axis_flag_meanings : boolean or int
             When set to True and plotting state variable with flag_values and
             flag_meanings attributes will replace y axis numerical values
             with flag_meanings value. Set to a positive number larger than 1
             to indicate maximum word length to use. If text is longer that the
             value and has space characters will split text over multiple lines.
+        cbar_label : str
+            Option to overwrite default colorbar label.
+        cbar_h_adjust : float
+            Option to adjust location of colorbar horizontally. Positive values
+            move to right negative values move to left.
+        cbar_labelpad : int
+            Adjusts the location of the colorbar title. Default is 5.
+        cbar_labelsize : int
+            Adjusts the fontsize of the colorbar title. Default is 10.
         colorbar_labels : dict
             A dictionary containing values for plotting a 2D array of state variables.
             The dictionary uses data values as keys and a dictionary containing keys
@@ -471,6 +499,7 @@ class TimeSeriesDisplay(Display):
 
         if cbar_label is None:
             cbar_default = ytitle
+
         if len(dim) > 1:
             if use_var_for_y is None:
                 ydata = self._ds[dsname][dim[1]]
@@ -500,6 +529,10 @@ class TimeSeriesDisplay(Display):
                 ydata = None
         else:
             ydata = None
+
+        # Set ylabel after previous default titles if ylabel is set
+        if ylabel is not None:
+            ytitle = ylabel
 
         # Get the current plotting axis
         if self.fig is None:
@@ -546,7 +579,15 @@ class TimeSeriesDisplay(Display):
             if 'marker' not in kwargs.keys():
                 kwargs['marker'] = '.'
 
-            lines = ax.plot(xdata, data, **kwargs)
+            if yerror is not None:
+                # If kwargs in error_kw and kwargs, error_kw takes precedence
+                for key in error_kw.keys():
+                    if key in kwargs:
+                        kwargs.pop(key)
+
+                lines = ax.errorbar(xdata.values, data, yerr=yerror, **error_kw, **kwargs)
+            else:
+                lines = ax.plot(xdata, data, **kwargs)
 
             # Check if we need to call legend method after plotting. This is only
             # called when no assessment overplot is called.
@@ -555,6 +596,12 @@ class TimeSeriesDisplay(Display):
                 add_legend = True
 
             # Overplot failing data if requested
+            if assessment_overplot_bit:
+                assessment_overplot = True
+                if not isinstance(assessment_overplot_bit, list):
+                    assessment_overplot_bit = [assessment_overplot_bit]
+                    if not all(isinstance(bit, int) for bit in assessment_overplot_bit):
+                        raise TypeError('All passed bits must be integers')
             if assessment_overplot:
                 # If we are doing forced line plot from 2D data need to manage
                 # legend lables. Will make arrays to hold labels of QC failing
@@ -570,35 +617,138 @@ class TimeSeriesDisplay(Display):
                     zorder = 0
                     overplot_markersize *= 2.0
 
-                for assessment, categories in assessment_overplot_category.items():
-                    flag_data = self._ds[dsname].qcfilter.get_masked_data(
-                        field, rm_assessments=categories, return_inverse=True
-                    )
-                    if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
-                        try:
-                            flag_data.mask = np.logical_or(data.mask, flag_data.mask)
-                        except AttributeError:
-                            pass
-                        qc_ax = ax.plot(
-                            xdata,
-                            flag_data,
-                            marker=overplot_marker,
-                            linestyle='',
-                            markersize=overplot_markersize,
-                            color=assessment_overplot_category_color[assessment],
-                            label=assessment,
-                            zorder=zorder,
+                # Get name of QC variable for overplot
+                qc_data_field = self._ds[dsname].qcfilter.check_for_ancillary_qc(
+                    field, add_if_missing=False, cleanup=False
+                )
+
+                # Checks to ensure that valid QC test numbers are being passed
+                if assessment_overplot_bit:
+                    # Test number must be greater than 1 (Bit 1 is missing data)
+                    if any(bit <= 1 for bit in assessment_overplot_bit):
+                        raise ValueError('Bit numbers must be greater than 1')
+                    num_bits = self._ds[dsname].qcfilter.available_bit(qc_data_field) - 1
+                    # Check that passed numbers are currently assigned to QC tests
+                    if any(bit > num_bits for bit in assessment_overplot_bit):
+                        raise ValueError(
+                            f'One or more passed bits are not a set QC bit for {qc_data_field}'
                         )
-                        # If labels keyword is set need to add labels for calling legend
-                        if isinstance(labels, list):
-                            # If plotting forced_line_plot need to subset the Line2D object
-                            # so we don't have more than one added to legend.
-                            if len(qc_ax) > 1:
-                                lines.extend(qc_ax[:1])
+
+                for assessment, categories in assessment_overplot_category.items():
+                    rm_tests = None
+                    qc_label = assessment
+                    if assessment_overplot_bit:
+                        # Overplot by test number(s)
+                        # Want to make sure that we are not removing assessments since we want to search all
+                        # assessment types
+                        rm_assessments = None
+
+                        # If test bit does not match the assessment then go to next
+                        # assessment in the loop
+                        for bit in assessment_overplot_bit:
+                            bit_assessment = self._ds[dsname][qc_data_field].attrs[
+                                'flag_assessments'
+                            ][bit - 1]
+
+                            # Get the proper keyword for overplot assessment color
+                            if any(
+                                ba in bit_assessment
+                                for ba in assessment_overplot_category['Incorrect']
+                            ):
+                                plot_assessment_category = 'Incorrect'
+                            elif any(
+                                ba in bit_assessment
+                                for ba in assessment_overplot_category['Suspect']
+                            ):
+                                plot_assessment_category = 'Suspect'
                             else:
-                                lines.extend(qc_ax)
-                            labels.append(assessment)
-                        add_legend = True
+                                raise ValueError(
+                                    f'{bit_assessment} not detected in assessment overplot categories'
+                                )
+
+                            # If assessment in iteration does not match QC bit assessment then
+                            # exit current iteration
+                            if bit_assessment not in categories:
+                                continue
+
+                            # Get labels for legend
+                            try:
+                                test_desc = ":" + str(
+                                    self._ds[dsname][qc_data_field].attrs['flag_meanings'][bit - 1]
+                                )
+                            except KeyError:
+                                test_desc = ''
+                            qc_label = f'Bit {bit}{test_desc}'
+
+                            # Get QC data in mask
+                            flag_data = self._ds[dsname].qcfilter.get_masked_data(
+                                field,
+                                rm_assessments=rm_assessments,
+                                rm_tests=bit,
+                                return_inverse=True,
+                            )
+                            if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                                try:
+                                    flag_data.mask = np.logical_or(data.mask, flag_data.mask)
+                                except AttributeError:
+                                    pass
+                                qc_ax = ax.plot(
+                                    xdata,
+                                    flag_data,
+                                    marker=overplot_marker,
+                                    linestyle='',
+                                    markersize=overplot_markersize,
+                                    color=assessment_overplot_category_color[
+                                        plot_assessment_category
+                                    ],
+                                    label=qc_label,
+                                    zorder=zorder,
+                                )
+                                # If labels keyword is set need to add labels for calling legend
+                                if isinstance(labels, list):
+                                    # If plotting forced_line_plot need to subset the Line2D object
+                                    # so we don't have more than one added to legend.
+                                    if len(qc_ax) > 1:
+                                        lines.extend(qc_ax[:1])
+                                    else:
+                                        lines.extend(qc_ax)
+                                    labels.append(qc_label)
+                                add_legend = True
+                    else:
+                        # Overplot by category
+                        # Set keyword to keep assessment categories in flag data
+                        rm_assessments = categories
+                        flag_data = self._ds[dsname].qcfilter.get_masked_data(
+                            field,
+                            rm_assessments=rm_assessments,
+                            rm_tests=rm_tests,
+                            return_inverse=True,
+                        )
+                        if np.invert(flag_data.mask).any() and np.isfinite(flag_data).any():
+                            try:
+                                flag_data.mask = np.logical_or(data.mask, flag_data.mask)
+                            except AttributeError:
+                                pass
+                            qc_ax = ax.plot(
+                                xdata,
+                                flag_data,
+                                marker=overplot_marker,
+                                linestyle='',
+                                markersize=overplot_markersize,
+                                color=assessment_overplot_category_color[assessment],
+                                label=qc_label,
+                                zorder=zorder,
+                            )
+                            # If labels keyword is set need to add labels for calling legend
+                            if isinstance(labels, list):
+                                # If plotting forced_line_plot need to subset the Line2D object
+                                # so we don't have more than one added to legend.
+                                if len(qc_ax) > 1:
+                                    lines.extend(qc_ax[:1])
+                                else:
+                                    lines.extend(qc_ax)
+                                labels.append(qc_label)
+                            add_legend = True
 
             # Add legend if labels are available
             if isinstance(labels, list):
@@ -621,6 +771,11 @@ class TimeSeriesDisplay(Display):
                 ax.set_yticks(flag_values)
                 ax.set_yticklabels(flag_meanings)
 
+                # Setting autoscale() below causes issues with this plot. Setting y_rng here
+                # means the current range will be reset after autoscale() is set.
+                if y_rng is None:
+                    y_rng = ax.get_ylim()
+
         else:
             # Add in nans to ensure the data are not streaking
             if add_nan is True:
@@ -639,6 +794,15 @@ class TimeSeriesDisplay(Display):
                 cmap=cmap,
                 **kwargs,
             )
+
+            # The pcolormesh plot is rounding the ylimit. To have just the data in the plotting
+            # window need to set the ylimits. If the y_lim keyword is set that will overwrite
+            # this after.
+            ydata_diff = np.diff(ydata.values)
+            if y_rng is None and np.all(np.isfinite([ydata[0], ydata[-1]])):
+                lower_limit = ydata.values[0] - ydata_diff[0] / 2.0
+                upper_limit = ydata.values[-1] + ydata_diff[-1] / 2.0
+                y_rng = (lower_limit, upper_limit)
 
         # Set Title
         if set_title is None:
@@ -676,54 +840,27 @@ class TimeSeriesDisplay(Display):
 
         self.set_xrng(self.time_rng, subplot_index)
 
-        # Set Y Limit
-        if y_rng is not None:
-            self.set_yrng(y_rng)
-
         if hasattr(self, 'yrng'):
-            # Make sure that the yrng is not just the default
-            if ydata is None:
-                if abs_limits[0] is not None or abs_limits[1] is not None:
-                    our_data = data
-                else:
-                    our_data = data.values
-            else:
-                our_data = ydata
+            # Set autoscate to True. Needed because we may override with set_yrng() below.
+            ax.autoscale(enable=True, axis='y')
 
-            finite = np.isfinite(our_data)
-            # If finite is returned as DataArray or Dask array extract values.
-            try:
-                finite = finite.values
-            except AttributeError:
-                pass
-
-            if finite.any():
-                our_data = our_data[finite]
-                if invert_y_axis is False:
-                    yrng = [np.min(our_data), np.max(our_data)]
-                else:
-                    yrng = [np.max(our_data), np.min(our_data)]
-            else:
-                yrng = [0, 1]
-
-            # Check if current range is outside of new range an only set
-            # values that work for all data plotted.
-            if isinstance(yrng[0], np.datetime64):
-                yrng = mdates.datestr2num([str(yrng[0]), str(yrng[1])])
-
+            # If all the data is NaN for only plot then the range should be updated. Default sets the range
+            # to (-0.055, 0.055). This will set to (0, 1) when all data are NaN. If a second call with non-NaN
+            # data is made the ax.autoscale() will allow the ylim to be updated to match that data.
             current_yrng = ax.get_ylim()
-            if invert_y_axis is False:
-                if yrng[0] > current_yrng[0]:
-                    yrng[0] = current_yrng[0]
-                if yrng[1] < current_yrng[1]:
-                    yrng[1] = current_yrng[1]
-            else:
-                if yrng[0] < current_yrng[0]:
-                    yrng[0] = current_yrng[0]
-                if yrng[1] > current_yrng[1]:
-                    yrng[1] = current_yrng[1]
+            if np.sum(current_yrng) == 0.0 and np.diff(current_yrng) < 0.12:
+                self.set_yrng([0, 1], subplot_index)
 
-            self.set_yrng(yrng, subplot_index)
+            # When requested invert y-axis
+            if invert_y_axis:
+                try:
+                    ax.ACT_y_axis_is_inverted
+                except AttributeError:
+                    ax.ACT_y_axis_is_inverted = False
+
+                if not ax.ACT_y_axis_is_inverted:
+                    ax.invert_yaxis()
+                    ax.ACT_y_axis_is_inverted = True
 
         # Set X Format
         if len(subplot_index) == 1:
@@ -746,25 +883,30 @@ class TimeSeriesDisplay(Display):
             if cbar_label is None:
                 cbar_title = cbar_default
             else:
-                cbar_title = ''.join(['(', cbar_label, ')'])
+                cbar_title = cbar_label
 
             if colorbar_labels is not None:
                 cbar_title = None
                 cbar = self.add_colorbar(
                     mesh,
-                    title=cbar_title,
                     subplot_index=subplot_index,
                     values=flag_values,
                     pad=cbar_h_adjust,
                 )
+                cbar.set_label(cbar_title, labelpad=cbar_labelpad, fontsize=cbar_labelsize)
                 cbar.set_ticks(flag_values)
                 cbar.set_ticklabels(flag_meanings)
-                cbar.ax.tick_params(labelsize=10)
+                cbar.ax.tick_params(labelsize=cbar_labelsize)
 
             else:
-                self.add_colorbar(
-                    mesh, title=cbar_title, subplot_index=subplot_index, pad=cbar_h_adjust
-                )
+                cbar = self.add_colorbar(mesh, subplot_index=subplot_index, pad=cbar_h_adjust)
+                cbar.set_label(cbar_title, labelpad=cbar_labelpad, fontsize=cbar_labelsize)
+                cbar.ax.tick_params(labelsize=cbar_labelsize)
+
+        # Set Y Limit
+        if y_rng is not None:
+            self.set_yrng(y_rng, subplot_index=subplot_index)
+
         return ax
 
     def plot_barbs_from_spd_dir(
@@ -850,6 +992,8 @@ class TimeSeriesDisplay(Display):
         invert_y_axis=True,
         num_barbs_x=20,
         num_barbs_y=20,
+        barb_step_x=None,
+        barb_step_y=None,
         use_var_for_y=None,
         **kwargs,
     ):
@@ -883,6 +1027,12 @@ class TimeSeriesDisplay(Display):
             The number of wind barbs to plot in the x axis.
         num_barbs_y : int
             The number of wind barbs to plot in the y axis.
+        barb_step_x : int
+            Step between each wind barb to plot.  If set, will override
+            values given for num_barbs_x
+        barb_step_y : int
+            Step between each wind barb to plot.  If set, will override
+            values given for num_barbs_y
         cmap : matplotlib.colors.LinearSegmentedColormap
             A color map to use with wind barbs. If this is set the plt.barbs
             routine will be passed the C parameter scaled as sqrt of sum of the
@@ -919,8 +1069,9 @@ class TimeSeriesDisplay(Display):
         v = self._ds[dsname][v_field].values
         dim = list(self._ds[dsname][u_field].dims)
         xdata = self._ds[dsname][dim[0]].values
-        num_x = xdata.shape[-1]
-        barb_step_x = round(num_x / num_barbs_x)
+        if barb_step_x is None:
+            num_x = xdata.shape[-1]
+            barb_step_x = round(num_x / num_barbs_x)
         if barb_step_x == 0:
             barb_step_x = 1
 
@@ -937,8 +1088,9 @@ class TimeSeriesDisplay(Display):
             else:
                 units = ''
             ytitle = ''.join(['(', units, ')'])
-            num_y = ydata.shape[0]
-            barb_step_y = round(num_y / num_barbs_y)
+            if barb_step_y is None:
+                num_y = ydata.shape[0]
+                barb_step_y = round(num_y / num_barbs_y)
             if barb_step_y == 0:
                 barb_step_y = 1
 
@@ -1097,6 +1249,143 @@ class TimeSeriesDisplay(Display):
         self.axes[subplot_index] = ax
 
         return self.axes[subplot_index]
+
+    def wind_quiver_plot(
+        self,
+        field_wspd='wspd_vec_mean',
+        field_wdir='wdir_vec_mean',
+        dsname=None,
+        scale=125,
+        cmap='cividis',
+        arrow_legend=True,
+        day_night_background=False,
+        set_title=None,
+        subplot_index=(0,),
+        figsize=(12, 3),
+        **kwargs,
+    ):
+        """
+        Creates a time series quiver plot showing wind speed and direction.
+
+        Parameters
+        ----------
+        field_wspd : str
+            Field name for wind speed (in m/s).
+        field_wdir : str
+            Field name for wind direction (in degrees).
+        dsname : str
+            Name of datastream to plot.
+        scale : float
+            Scale factor for quiver arrows.
+        cmap : str
+            Colormap for arrow colors representing wind speed.
+        arrow_legend : bool
+            Whether to add a legend for arrow lengths.
+        day_night_background : bool
+            If True, overlays day/night background shading.
+        set_title : str or None
+            Title to set on the plot. If None, generates automatically.
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to plot in.
+        figsize : tuple
+            Size of the figure.
+        **kwargs : keyword arguments
+            Additional keyword arguments passed to matplotlib's quiver function.
+
+        Returns
+        -------
+        ax : matplotlib.axes.Axes
+            The axis with the wind quiver plot.
+        """
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError('You must choose a datastream when there are 2 or more datasets.')
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        ds = self._ds[dsname]
+        ax = self.axes[subplot_index]
+
+        # Set up figure and axes if not already done
+        if self.fig is None:
+            self.fig = plt.figure(figsize=figsize)
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        self.fig.set_size_inches(figsize)
+        self.fig.subplots_adjust(left=0.08, right=0.94, bottom=0.15, top=0.90, hspace=0.3)
+
+        time = ds['time'].values
+        wind_speed = ds[field_wspd].values
+        wind_direction = ds[field_wdir].values
+
+        u = -wind_speed * np.sin(np.radians(wind_direction))
+        v = -wind_speed * np.cos(np.radians(wind_direction))
+
+        x = mdates.date2num(time)
+        y = np.zeros_like(x)
+
+        quiver = ax.quiver(x, y, u, v, wind_speed, cmap=cmap, scale=scale, width=0.005, **kwargs)
+
+        ax.set_xlim([x.min(), x.max()])
+        ax.set_yticks([])
+        ax.set_ylim([-0.5, 0.5])
+        ax.set_ylabel('Wind Direction Over Time')
+
+        self.fig.colorbar(quiver, ax=ax, orientation='vertical', shrink=0.8, pad=0.02).set_label(
+            'Wind Speed (m/s)'
+        )
+
+        if arrow_legend:
+            # Place legend arrows near end of time range and above baseline
+            legend_x = x.max() + 0.14 * (x.max() - x.min())  # 5% to the right
+            legend_y_base = 1.3
+
+            for i, speed in enumerate((2, 5, 10)):
+                y_offset = i * 0.2
+                ax.quiver(
+                    legend_x,
+                    legend_y_base - y_offset,
+                    speed,
+                    0,
+                    color='black',
+                    scale=scale,
+                    width=0.005,
+                    transform=ax.transData,
+                    clip_on=False,
+                )
+                ax.text(
+                    legend_x - 0.01 * (x.max() - x.min()),
+                    legend_y_base - y_offset,
+                    f"{speed} m/s",
+                    fontsize=9,
+                    verticalalignment='center',
+                    ha='right',
+                    transform=ax.transData,
+                )
+
+            # Extend x and y limits to fit legend
+            ax.set_xlim(x.min(), legend_x + 0.05 * (x.max() - x.min()))
+            ax.set_ylim(-0.5, 0.5 + y_offset + 0.3)
+
+        if set_title is None:
+            if isinstance(time[0], np.datetime64):
+                set_title = f"{dsname} Wind Speed and Direction on {time[0].astype('M8[D]')}"
+        ax.set_title(set_title)
+
+        # Set up time format
+        days = x.max() - x.min()
+        myFmt = common.get_date_format(days)
+        ax.xaxis.set_major_formatter(myFmt)
+        ax.tick_params(axis='x', labelsize=8)
+
+        if day_night_background is True:
+            self.day_night_background(subplot_index=subplot_index, dsname=dsname)
+
+        self.set_xrng([x.min(), x.max()], subplot_index)
+        self.axes[subplot_index] = ax
+
+        return ax
 
     def plot_time_height_xsection_from_1d_data(
         self,
@@ -1272,6 +1561,8 @@ class TimeSeriesDisplay(Display):
         self,
         data_field=None,
         alt_field='alt',
+        yerror=None,
+        error_kw={},
         dsname=None,
         cmap='rainbow',
         alt_label=None,
@@ -1295,6 +1586,12 @@ class TimeSeriesDisplay(Display):
             Name of data field in the dataset to plot on second y-axis.
         alt_field : str
             Variable to use for y-axis.
+        yerror : float or array-like, shape(N,) or shape(2,N)
+            Option to add y-error bars to time-height plots using
+            matplotlib.errorbar functionality.
+        error_kw : dict
+            The keyword arguments for :func`plt.errorbar` if yerror is not
+            None.
         dsname : str or None
             The name of the datastream to plot.
         cmap : str
@@ -1390,6 +1687,42 @@ class TimeSeriesDisplay(Display):
         # Plot scatter data
         sc = ax.scatter(xdata.values, data.values, c=data.values, cmap=cmap, **kwargs)
 
+        # Optional overlay of errorbars
+        if yerror is not None:
+            # if 'ecolor not specified', bar color same as scatter colors
+            if 'ecolor' not in error_kw:
+                colormap = sc.get_cmap()
+                norm = sc.norm
+                bar_colors = colormap(norm(data.values))
+
+                # Handle errorevery subsetting
+                if 'errorevery' in error_kw:
+                    errorevery = error_kw['errorevery']
+                    if isinstance(errorevery, int):
+                        bar_colors = bar_colors[::errorevery]
+                    elif isinstance(errorevery, tuple):
+                        bar_colors = bar_colors[errorevery[0] :: errorevery[1]]
+
+                error_kw['ecolor'] = bar_colors
+
+            # Prevent overwritting of scatter
+            error_kw['fmt'] = 'none'
+            for key in [
+                'marker',
+                'markersize',
+                'markerfacecolor',
+                'markeredgecolor',
+                'markeredgewidth',
+                'markevery',
+                'fillstyle',
+                'linestyle',
+                'linewidth',
+                'color',
+            ]:
+                error_kw.pop(key, None)
+
+            ax.errorbar(xdata.values, data.values, yerr=yerror, **error_kw)
+
         ax.set_title(set_title)
         if plot_alt_field:
             self.fig.subplots_adjust(left=0.1, right=0.8, bottom=0.15, top=0.925)
@@ -1437,6 +1770,7 @@ class TimeSeriesDisplay(Display):
         edgecolor='face',
         set_shading='auto',
         cvd_friendly=False,
+        ylabel=None,
         **kwargs,
     ):
         """
@@ -1468,6 +1802,9 @@ class TimeSeriesDisplay(Display):
         cvd_friendly : boolean
             Set to true if you want to use the integrated color vision deficiency (CVD) friendly
             colors for green/red based on the Homeyer colormap
+        ylabel : str
+            Label for the y-axis of the plot.  This will take the place of the
+            default which is to get the variable name or units.
         **kwargs : keyword arguments
             The keyword arguments for :func:`plt.broken_barh`.
 
@@ -1538,7 +1875,6 @@ class TimeSeriesDisplay(Display):
         )
         if qc_data_field is None:
             raise ValueError(f'No quality control ancillary variable in Dataset for {data_field}')
-
         flag_masks = self._ds[dsname][qc_data_field].attrs['flag_masks']
         flag_meanings = self._ds[dsname][qc_data_field].attrs['flag_meanings']
         flag_assessments = self._ds[dsname][qc_data_field].attrs['flag_assessments']
@@ -1635,6 +1971,9 @@ class TimeSeriesDisplay(Display):
             dim_name = list(set(self._ds[dsname][qc_data_field].dims) - {'time'})
             try:
                 ytitle = f"{dim_name[0]} ({self._ds[dsname][dim_name[0]].attrs['units']})"
+                # Set ylabel after previous default titles if ylabel is set
+                if ylabel is not None:
+                    ytitle = ylabel
                 ax.set_ylabel(ytitle)
             except KeyError:
                 pass
@@ -1835,5 +2174,134 @@ class TimeSeriesDisplay(Display):
                 ]
             )
         ax.set_title(set_title)
+        self.axes[subplot_index] = ax
+        return self.axes[subplot_index]
+
+    def plot_stripes(
+        self,
+        field,
+        dsname=None,
+        subplot_index=(0,),
+        set_title=None,
+        reference_period=None,
+        cmap='bwr',
+        cbar_label=None,
+        colorbar=True,
+        **kwargs,
+    ):
+        """
+        Makes a climate stripe plot with or without a baseline period specified
+
+        Parameters
+        ----------
+        field : str
+            The name of the field to plot.
+        dsname : None or str
+            If there is more than one datastream in the display object the
+            name of the datastream needs to be specified. If set to None and
+            there is only one datastream ACT will use the sole datastream
+            in the object.
+        subplot_index : 1 or 2D tuple, list, or array
+            The index of the subplot to set the x range of.
+        set_title : str
+            The title for the plot.
+        reference_period : list
+            List of a start and end date for a reference period ['2020-01-01', '2020-04-01']
+            If this is set, the plot will subtract the mean of the reference period from the
+            field to create an anomaly calculation.
+        cmap : string
+            Colormap to use for plotting.  Defaults to bwr
+        cbar_label : str
+            Option to overwrite default colorbar label.
+        colorbar : boolean
+            Option to not plot the colorbar. Default is to plot it
+        **kwargs : keyword arguments
+            The keyword arguments for :func:`plt.plot` (1D timeseries) or
+            :func:`plt.pcolormesh` (2D timeseries).
+
+        Returns
+        -------
+        ax : matplotlib axis handle
+            The matplotlib axis handle of the plot.
+
+        """
+        if dsname is None and len(self._ds.keys()) > 1:
+            raise ValueError(
+                'You must choose a datastream when there are 2 '
+                'or more datasets in the TimeSeriesDisplay '
+                'object.'
+            )
+        elif dsname is None:
+            dsname = list(self._ds.keys())[0]
+
+        # Get data and dimensions
+        data = self._ds[dsname][field]
+        dim = list(self._ds[dsname][field].dims)
+        xdata = self._ds[dsname][dim[0]]
+
+        start = int(mdates.date2num(xdata.values[0]))
+        end = int(mdates.date2num(xdata.values[-1]))
+        diff_vals = xdata.diff('time').values
+        unique_vals, counts = np.unique(diff_vals, return_counts=True)
+        delta = unique_vals[np.argmax(counts)] / np.timedelta64(1, 'D')
+
+        # Calculate mean for reference period and subtract from the data
+        if reference_period is not None:
+            reference = data.sel(time=slice(reference_period[0], reference_period[1])).mean('time')
+            data.values = data.values - reference.values
+
+        # Get the current plotting axis, add day/night background and plot data
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.axes is None:
+            self.axes = np.array([plt.axes()])
+            self.fig.add_axes(self.axes[0])
+
+        # Set ax to appropriate axis
+        ax = self.axes[subplot_index]
+
+        # Plot up data using rectangles
+        col = PatchCollection(
+            [Rectangle((y, 0), delta, 1) for y in np.arange(start, end + 1, delta)]
+        )
+        col.set_array(data)
+        col.set_cmap(cmap)
+        col.set_clim(np.nanmin(data), np.nanmax(data))
+        ax.add_collection(col)
+
+        locator = mdates.AutoDateLocator(minticks=3)
+        formatter = mdates.AutoDateFormatter(locator)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(formatter)
+
+        ax.set_ylim(0, 1)
+        ax.set_yticks([])
+        ax.set_xlim(start, end + 1)
+
+        # Set Title
+        if set_title is None:
+            set_title = ' '.join(
+                [
+                    dsname,
+                    field,
+                    'Stripes on',
+                    dt_utils.numpy_to_arm_date(self._ds[dsname].time.values[0]),
+                ]
+            )
+        ax.set_title(set_title)
+
+        # Set Colorbar
+        if colorbar:
+            if 'units' in data.attrs:
+                ytitle = ''.join(['(', data.attrs['units'], ')'])
+            else:
+                ytitle = field
+            if cbar_label is None:
+                cbar_title = ytitle
+            else:
+                cbar_title = ''.join(['(', cbar_label, ')'])
+            self.add_colorbar(col, title=cbar_title, subplot_index=subplot_index)
+
         self.axes[subplot_index] = ax
         return self.axes[subplot_index]

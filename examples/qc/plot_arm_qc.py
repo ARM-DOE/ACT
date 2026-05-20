@@ -3,18 +3,18 @@ Working with and expanding embedded quality control variables
 -------------------------------------------------------------
 
 This is an example of how to use existing or create new quality
-control varibles and extend the quality control flagging. The
+control variables and extend the quality control flagging. The
 anicllary quality control variable can be expanded by integrating
 external Data Quality Reports, adding additional generic ACT tests,
-instrument specific ACT tests, or reading a configuraiton file of
+instrument specific ACT tests, or reading a configuration file of
 known failures to clean up the data variable.
 
 """
 
 import os
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 import act
 

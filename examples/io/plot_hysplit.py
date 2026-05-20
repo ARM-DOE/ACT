@@ -8,10 +8,10 @@ HYSPLIT model over Houston.
 Author: Robert Jackson
 """
 
-import act
 import matplotlib.pyplot as plt
-
 from arm_test_data import DATASETS
+
+import act
 
 # Load the data
 filename = DATASETS.fetch('houstonaug300.0summer2010080100')

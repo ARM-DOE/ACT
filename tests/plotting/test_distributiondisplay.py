@@ -18,9 +18,9 @@ def test_distribution_errors():
 
     histdisplay = DistributionDisplay(ds)
     histdisplay.axes = None
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         histdisplay.set_yrng([0, 10])
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         histdisplay.set_xrng([-40, 40])
     histdisplay.fig = None
     histdisplay.plot_stacked_bar('temp_mean', bins=np.arange(-40, 40, 5))
@@ -29,7 +29,7 @@ def test_distribution_errors():
     assert histdisplay.fig is not None
     assert histdisplay.axes is not None
 
-    with np.testing.assert_raises(AttributeError):
+    with pytest.raises(AttributeError):
         DistributionDisplay([])
 
     histdisplay.axes = None
@@ -67,15 +67,15 @@ def test_distribution_errors():
     assert histdisplay.axes is not None
 
     histdisplay = DistributionDisplay({'thing1': sonde_ds, 'thing2': sonde_ds})
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         histdisplay.plot_stacked_bar('tdry')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         histdisplay.plot_size_distribution('tdry', 'time')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         histdisplay.plot_stairstep('tdry')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         histdisplay.plot_heatmap('tdry', 'alt')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         histdisplay.plot_violin('tdry')
     matplotlib.pyplot.close(fig=histdisplay.fig)
 
@@ -361,7 +361,7 @@ def test_violin2():
     display = DistributionDisplay(ds)
 
     # Create violin display of mean temperature
-    display.plot_violin('temp_mean', vert=False)
+    display.plot_violin('temp_mean', orientation='horizontal')
 
     ds.close()
 
@@ -419,7 +419,12 @@ def test_plot_pie_chart():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_AOSACSM)
     fields = ['sulfate', 'ammonium', 'nitrate', 'chloride']
     display = DistributionDisplay(ds)
-    display.plot_pie_chart(fields)
+    with pytest.warns(UserWarning, match="contains negatives values, consider using a threshold."):
+        with pytest.warns(
+            UserWarning,
+            match="No time parameter used, calculating a mean for each field for the whole dataset.",
+        ):
+            display.plot_pie_chart(fields)
     ds.close()
 
     try:
@@ -435,12 +440,16 @@ def test_plot_pie_chart_kwargs():
     threshold = 0.0
     fill_value = 0.0
     display = DistributionDisplay(ds)
-    display.plot_pie_chart(
-        fields,
-        threshold=threshold,
-        fill_value=fill_value,
-        colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
-    )
+    with pytest.warns(
+        UserWarning,
+        match="No time parameter used, calculating a mean for each field for the whole dataset.",
+    ):
+        display.plot_pie_chart(
+            fields,
+            threshold=threshold,
+            fill_value=fill_value,
+            colors=['olivedrab', 'rosybrown', 'gray', 'saddlebrown'],
+        )
     ds.close()
 
     try:

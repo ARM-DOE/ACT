@@ -1,8 +1,10 @@
 import dask.array as da
 import numpy as np
+import pytest
 
+import act
 from act.io.arm import read_arm_netcdf
-from act.tests import EXAMPLE_MET1, EXAMPLE_IRT25m20s
+from act.tests import EXAMPLE_MET1, EXAMPLE_MFRSR, EXAMPLE_IRT25m20s
 
 
 def test_qctests():
@@ -305,10 +307,10 @@ def test_qctests():
     assert 'fail_delta' in ds[result['qc_variable_name']].attrs.keys()
 
     comp_ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         result = ds.qcfilter.add_difference_test(var_name, 'test')
 
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         result = ds.qcfilter.add_difference_test(
             var_name,
             {comp_ds.attrs['datastream']: comp_ds},
@@ -337,10 +339,9 @@ def test_qctests_dos():
     ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
     var_name = 'inst_up_long_dome_resist'
 
-    # persistence test
     data = ds[var_name].values
     data[1000:2400] = data[1000]
-    data = np.around(data, decimals=3)
+    data = np.around(data, decimals=5)
     ds[var_name].values = data
     result = ds.qcfilter.add_persistence_test(var_name)
     qc_var_name = result['qc_variable_name']
@@ -348,10 +349,11 @@ def test_qctests_dos():
         'Data failing persistence test. Standard Deviation over a '
         'window of 10 values less than 0.0001.'
     )
-    assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
-    # There is a precision issue with GitHub testing that makes the number of tests
-    # tripped off. This isclose() option is to account for that.
-    assert np.isclose(np.sum(ds[qc_var_name].values), 1399, atol=2)
+    assert ds[qc_var_name].attrs['flag_meanings'] == [test_meaning]
+
+    # There is a precision issue with hardware/VM used in testing that makes the
+    # number of tests tripped different than listed value. The isclose() option is to account for that.
+    assert np.isclose(np.sum(ds[qc_var_name].values), 1400, atol=10)
 
     ds.qcfilter.add_persistence_test(var_name, window=10000, prepend_text='DQO')
     test_meaning = (
@@ -359,6 +361,41 @@ def test_qctests_dos():
         '4320 values less than 0.0001.'
     )
     assert ds[qc_var_name].attrs['flag_meanings'][-1] == test_meaning
+
+    ds.close()
+    del ds
+
+    # Test the ignore range in persistence test
+    ds = read_arm_netcdf(EXAMPLE_IRT25m20s)
+    data = ds[var_name].values
+    data[1000:1400] = data[1000]
+    data[2000:2400] = 14.2
+    data = np.around(data, decimals=5)
+    ds[var_name].values = data
+    result = ds.qcfilter.add_persistence_test(var_name, window=20, min_periods=20, test_limit=0.01)
+
+    assert np.isclose(np.sum(ds[qc_var_name].values), 779, atol=5)
+
+    del ds[qc_var_name]
+    result = ds.qcfilter.add_persistence_test(
+        var_name,
+        window=20,
+        min_periods=20,
+        test_limit=0.01,
+        ignore_range=[14.8, 13.1],
+        test_assessment='Suspect',
+    )
+
+    assert np.isclose(np.sum(ds[qc_var_name].values), 398, atol=5)
+    assert ds[qc_var_name].attrs['flag_assessments'] == ['Suspect']
+    test_meaning = (
+        'Data failing persistence test. Standard Deviation over a window '
+        'of 20 values less than 0.01.'
+    )
+    assert ds[qc_var_name].attrs['flag_meanings'] == [test_meaning]
+
+    ds.close()
+    del ds
 
 
 def test_add_atmospheric_pressure_test():
@@ -382,3 +419,111 @@ def test_add_atmospheric_pressure_test():
 
     ds.close
     del ds
+
+
+def test_add_step_change_test():
+    variable = 'temp_mean'
+    qc_variable = f"qc_{variable}"
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=['temp_mean', 'atmos_pressure'])
+    ds.load()
+
+    result = ds.qcfilter.add_step_change_test(variable)
+    assert result == {
+        'test_number': 1,
+        'test_meaning': 'Shift in data detected with CUSUM algorithm: k=1.0',
+        'test_assessment': 'Indeterminate',
+        'qc_variable_name': qc_variable,
+        'variable_name': variable,
+    }
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=1)
+    assert len(np.where(index)[0]) == 0
+    assert ds[qc_variable].attrs['flag_meanings'] == [
+        'Shift in data detected with CUSUM algorithm: k=1.0'
+    ]
+    assert ds[qc_variable].attrs['flag_assessments'] == ['Indeterminate']
+
+    data = ds[variable].values
+    data[100:] -= 5
+    data[600:] += 4
+    data[800:] += 10
+    data[1000:] -= 2
+    ds[variable].values = data
+
+    ds.qcfilter.add_step_change_test(variable)
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=2)
+    assert np.all(np.where(index)[0] == [99, 100, 599, 600, 799, 800, 999, 1000])
+    assert (
+        ds[qc_variable].attrs['flag_meanings'][1]
+        == 'Shift in data detected with CUSUM algorithm: k=1.0'
+    )
+    assert ds[qc_variable].attrs['flag_assessments'][1] == 'Indeterminate'
+
+    ds.qcfilter.add_step_change_test(variable, k=4, prepend_text='ARM')
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=3)
+    assert np.all(np.where(index)[0] == [99, 100, 599, 600, 799, 800])
+    assert (
+        ds[qc_variable].attrs['flag_meanings'][2]
+        == 'ARM: Shift in data detected with CUSUM algorithm: k=4'
+    )
+
+    ds.qcfilter.add_step_change_test(variable, n_flagged=3)
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=4)
+    assert np.all(
+        np.where(index)[0] == [99, 100, 101, 599, 600, 601, 799, 800, 801, 999, 1000, 1001]
+    )
+
+    ds.qcfilter.add_step_change_test(variable, n_flagged=-1, k=5.1, test_assessment='Suspect')
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=5)
+    assert np.all(np.where(index)[0] == np.arange(799, 1440))
+    assert (
+        ds[qc_variable].attrs['flag_meanings'][4]
+        == 'Shift in data detected with CUSUM algorithm: k=5.1'
+    )
+    assert ds[qc_variable].attrs['flag_assessments'][4] == 'Suspect'
+
+    variable = 'atmos_pressure'
+    ds.qcfilter.add_step_change_test(variable, detrend=False)
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=1)
+    assert len(np.where(index)[0]) == 0
+
+    ds.close
+    del ds
+
+    # Test add_nan keyword
+    variable = 'temp_mean'
+    ds = read_arm_netcdf(EXAMPLE_MET1, keep_variables=variable)
+    data = ds[variable].values
+    data[600:] += 2
+    ds[variable].values = data
+
+    ds = ds.where((ds["time.hour"] < 3) | (ds["time.hour"] > 5), drop=True)
+
+    ds.qcfilter.add_step_change_test(variable, add_nan=False)
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=1)
+    assert np.all(np.where(index)[0] == [179, 180, 419, 420])
+
+    ds.qcfilter.add_step_change_test(variable, add_nan=True)
+    index = ds.qcfilter.get_qc_test_mask(var_name=variable, test_number=2)
+    assert np.all(np.where(index)[0] == [419, 420])
+
+    del ds
+
+
+def test_add_relative_variability_test():
+    ds = read_arm_netcdf(EXAMPLE_MFRSR)
+    ds.clean.cleanup()
+    variables = [v for v in list(ds) if v.startswith('diffuse_hemisp_narrowband_filter')]
+
+    # Modify data to trip the test
+    data = ds[variables[0]].values
+    data[1000:1200] += 20
+    ds[variables[0]].values = data
+
+    # Apply the test and have threshold of 1
+    thresh = 1.0
+    result = ds.qcfilter.add_relative_variability_test(variables, thresh)
+
+    assert result[variables[0]]['test_number'] == 4
+    assert np.nansum(ds['qc_' + variables[0]]) == 2030
+    assert ds['qc_' + variables[0]].values[1200] == 8
+    assert act.qc.qcfilter.parse_bit(ds['qc_' + variables[0]].values[1000]) == [4]

@@ -8,7 +8,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 
 def dates_between(sdate, edate):
@@ -55,6 +54,7 @@ def numpy_to_arm_date(_date, returnTime=False):
 
     """
     from dateutil.parser._parser import ParserError
+    from pandas._libs.tslibs.parsing import DateParseError
 
     try:
         date = pd.to_datetime(str(_date))
@@ -62,7 +62,7 @@ def numpy_to_arm_date(_date, returnTime=False):
             date = date.strftime('%Y%m%d')
         else:
             date = date.strftime('%H%M%S')
-    except ParserError:
+    except (ParserError, DateParseError):
         date = None
 
     return date
@@ -134,15 +134,10 @@ def determine_time_delta(time, default=60):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=RuntimeWarning)
         if time.size > 1:
-            try:
-                mode = stats.mode(np.diff(time), keepdims=True)
-            except TypeError:
-                mode = stats.mode(np.diff(time))
-            time_delta = mode.mode[0]
-            time_delta = time_delta.astype('timedelta64[s]').astype(float)
+            unique, count = np.unique(np.diff(time), return_counts=True)
+            time_delta = unique[np.argmax(count)].astype('timedelta64[s]').astype(float)
         else:
             time_delta = default
-
     return float(time_delta)
 
 

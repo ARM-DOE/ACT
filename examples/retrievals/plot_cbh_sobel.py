@@ -10,10 +10,11 @@ Author: Adam Theisen
 
 """
 
+import numpy as np
 from arm_test_data import DATASETS
 from matplotlib import pyplot as plt
+
 import act
-import numpy as np
 
 # Read Ceilometer data for an example
 filename_ceil = DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc')

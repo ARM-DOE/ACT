@@ -13,8 +13,8 @@ Author: Ken Kehoe
 
 """
 
-from arm_test_data import DATASETS
 import matplotlib.pyplot as plt
+from arm_test_data import DATASETS
 
 from act.io.arm import read_arm_netcdf
 from act.plotting import TimeSeriesDisplay

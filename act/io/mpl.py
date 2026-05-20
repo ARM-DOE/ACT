@@ -7,8 +7,10 @@ import os
 import shutil
 import subprocess
 import tempfile
+
 import dask
 import xarray as xr
+
 from act.io.arm import check_arm_standards
 
 if shutil.which('mpl2nc') is not None:
@@ -52,7 +54,7 @@ def read_sigma_mplv5(
     """
     if not MPLIMPORT:
         raise ImportError(
-            'The module mpl2nc is not installed and is needed to read ' 'mpl binary files!'
+            'The module mpl2nc is not installed and is needed to read mpl binary files!'
         )
 
     if isinstance(filename, str):
@@ -74,7 +76,7 @@ def read_sigma_mplv5(
 
     results_ds = dask.compute(*task)
 
-    ds = xr.concat(results_ds, 'time')
+    ds = xr.concat(results_ds, 'time', data_vars='all')
 
     return ds
 

@@ -13,9 +13,10 @@ a temporary area.
 
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+
 # Import standard libraries
 from arm_test_data import DATASETS
-import matplotlib.pyplot as plt
 
 # Import ACT functions
 from act.io.arm import read_arm_netcdf

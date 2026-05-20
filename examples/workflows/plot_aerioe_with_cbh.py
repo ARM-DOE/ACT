@@ -9,8 +9,9 @@ ceilometer cloud base height(cbh).
 
 """
 
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
 
 import act
 

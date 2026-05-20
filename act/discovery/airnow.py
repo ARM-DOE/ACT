@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 import xarray as xr
 
 
@@ -75,7 +75,6 @@ def get_airnow_forecast(token, date, zipcode=None, latlon=None, distance=25):
             + str(token)
         )
 
-    print(url)
     df = pd.read_csv(url)
 
     # converting to xarray dataset object

@@ -45,10 +45,10 @@ def test_arm_qc():
     except ValueError:
         return
 
-    assert 'Suspect' not in ds[qc_variable].attrs['flag_assessments']
-    assert 'Incorrect' not in ds[qc_variable].attrs['flag_assessments']
-    assert 'Bad' in ds[qc_variable].attrs['flag_assessments']
-    assert 'Indeterminate' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Suspect' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Incorrect' in ds[qc_variable].attrs['flag_assessments']
+    assert 'Bad' not in ds[qc_variable].attrs['flag_assessments']
+    assert 'Indeterminate' not in ds[qc_variable].attrs['flag_assessments']
 
     # Check that defualt will update all variables in DQR
     for var_name in ['wdir_vec_mean', 'wdir_vec_std', 'wspd_arith_mean', 'wspd_vec_mean']:
@@ -90,7 +90,7 @@ def test_arm_qc():
     assert 'Suspect' in ds[qc_variable].attrs['flag_assessments']
 
     # Test that an error is raised when no datastream global attributes
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         ds4 = copy.deepcopy(ds)
         del ds4.attrs['datastream']
         del ds4.attrs['_datastream']
@@ -325,14 +325,22 @@ def test_qcfilter2():
     )
 
     ds.qcfilter.add_gesd_test(var_name, test_assessment='Bad')
-    assert np.sum(ds[expected_qc_var_name].values) == 204
+    if scikit_posthocs.__version__ >= '0.11.3':
+        value = 188
+    else:
+        value = 204
+    assert np.sum(ds[expected_qc_var_name].values) == value
     assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
     assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.05'
     )
 
     ds.qcfilter.add_gesd_test(var_name, alpha=0.1)
-    assert np.sum(ds[expected_qc_var_name].values) == 332
+    if scikit_posthocs.__version__ >= '0.11.3':
+        value = 284
+    else:
+        value = 332
+    assert np.sum(ds[expected_qc_var_name].values) == value
     assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8, 16]
     assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.1'
@@ -409,29 +417,50 @@ def test_datafilter():
     data_var_names.sort()
     qc_var_names.sort()
 
-    var_name = 'atmos_pressure'
+    var_name = 'rh_mean'
 
-    ds_1 = ds.mean()
+    ds_1 = ds.sum()
 
-    ds.qcfilter.add_less_test(var_name, 99, test_assessment='Bad')
+    ds.qcfilter.add_less_test(var_name, 80, test_assessment='Bad')
+    ds.qcfilter.add_less_test(var_name, 70, test_assessment='Suspect')
     ds_filtered = copy.deepcopy(ds)
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad')
-    ds_2 = ds_filtered.mean()
-    assert np.isclose(ds_1[var_name].values, 98.86, atol=0.01)
-    assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_1[var_name].values, 104602.23, atol=0.01)
+    assert np.isclose(ds_2[var_name].values, 7466.4004, atol=0.01)
     assert isinstance(ds_1[var_name].data, da.core.Array)
     assert 'act.qc.datafilter' in ds_filtered[var_name].attrs['history']
+    assert 'ancillary_variables' in ds_filtered[var_name].attrs.keys()
 
     ds_filtered = copy.deepcopy(ds)
     ds_filtered.qcfilter.datafilter(rm_assessments='Bad', variables=var_name, del_qc_var=True)
-    ds_2 = ds_filtered.mean()
-    assert np.isclose(ds_2[var_name].values, 99.15, atol=0.01)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 7466.40, atol=0.01)
     expected_var_names = sorted(list(set(data_var_names + qc_var_names) - {'qc_' + var_name}))
     assert sorted(list(ds_filtered.data_vars)) == expected_var_names
 
     ds_filtered = copy.deepcopy(ds)
-    ds_filtered.qcfilter.datafilter(rm_assessments='Bad', del_qc_var=True)
+    ds_filtered.qcfilter.datafilter(rm_assessments='Suspect', del_qc_var=True)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 80244.33, atol=0.01)
     assert sorted(list(ds_filtered.data_vars)) == data_var_names
+    assert 'ancillary_variables' not in ds_filtered[var_name].attrs.keys()
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments=['Bad', 'Suspect'])
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 7466.40, atol=0.01)
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments=['Sponge', 'Bob'])
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 104602.23, atol=0.01)
+
+    ds_filtered = copy.deepcopy(ds)
+    ds_filtered.qcfilter.datafilter(rm_assessments=['Sponge', 'Bob', 'suspect'], variables=var_name)
+    ds_2 = ds_filtered.sum()
+    assert np.isclose(ds_2[var_name].values, 80244.33, atol=0.01)
+    assert np.isclose(ds_2['temp_mean'].values, np.sum(ds_filtered['temp_mean'].values), atol=0.01)
 
     ds.close()
     del ds

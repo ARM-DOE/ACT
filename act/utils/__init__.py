@@ -3,6 +3,7 @@ This module contains the common procedures used by all modules of the ARM
 Community Toolkit.
 
 """
+
 import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach(
@@ -33,6 +34,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'arm_site_location_search',
             'DatastreamParserARM',
             'calculate_percentages',
+            'convert_2d_to_1d',
         ],
         'datetime_utils': [
             'dates_between',
@@ -62,6 +64,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'pack_gzip',
             'unpack_gzip',
             'generate_movie',
+            'arm_standards_validator',
         ],
     },
 )

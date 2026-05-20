@@ -1,7 +1,3 @@
-================================================
-Atmospheric data Community Toolkit Documentation
-================================================
-
 .. toctree::
    :maxdepth: 2
    :hidden:
@@ -28,7 +24,7 @@ Atmospheric data Community Toolkit Documentation
    :hidden:
    :caption: Example Gallery
 
-   source/auto_examples/index.rst
+   auto_examples/index.rst
 
 .. toctree::
    :maxdepth: 1
@@ -55,13 +51,15 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 Please report any issues or feature requests by submitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
 
-Version 2.0
-===========
+ACT's Third Roadmap
+===================
 
-ACT will soon have a version 2.0 release. This release will contain many function
-naming changes such as IO and Discovery module function naming changes. To
-prepare for this release, a `v2.0 <https://github.com/ARM-DOE/ACT/blob/main/guides/GUIDE_V2.rst>`_
-has been provided that explains the changes and how to work with the new syntax.
+To meet the needs of the community and stakeholders, ACT will be creating a new roadmap.
+This roadmap will continue a plan forward on features to improve on and to add in newer ACT
+versions. A part of this new roadmap is a survey from the community that will provide feedback
+for the developers on priorities for newer ACT versions. If time permitting, and you are a user of ACT
+or are considering to use ACT the survey can be found here: `ACT Roadmap Survey <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
+The feedback would be much appreciated.
 
 Dependencies
 ============
@@ -110,8 +108,22 @@ contributing, see the `contributor's guide. <https://arm-doe.github.io/ACT/CONTR
 Testing
 =======
 
-After installation, you can launch the test suite from outside the
-source directory (you will need to have pytest installed)::
+For testing, we use pytest for running the unit tests and arm-test-data for
+test files that are used for the unit tests. To install pytest::
+
+   $ conda install -c conda-forge pytest
+
+And for matplotlib image testing with pytest::
+
+   $ conda install -c conda-forge pytest-mpl
+
+To install arm-test-data::
+
+   $ conda install -c conda-forge arm-test-data
+
+After installation of both pytest and arm-test-data, you can launch the test
+suite from outside the source directory (you will need to have pytest
+installed and for the mpl argument need pytest-mpl)::
 
    $ pytest --mpl --pyargs act
 

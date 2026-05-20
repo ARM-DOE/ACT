@@ -32,3 +32,11 @@ def test_sp2_psds():
     assert np.nanmax(my_binary['ScatDiaBC50'].values[scatrejectkey == 0]) < 1000.0
     my_psds = act.retrievals.process_sp2_psds(my_binary, my_hk, my_ini)
     np.testing.assert_almost_equal(my_psds['NumConcIncan'].max(), 0.95805343)
+
+
+@pytest.mark.skipif(not PYSP2_AVAILABLE, reason='PySP2 is not installed.')
+def test_sp2_errors():
+    act.io.pysp2.PYSP2_AVAILABLE = False
+    pytest.raises(ModuleNotFoundError, act.io.read_sp2, act.tests.EXAMPLE_SP2B)
+    pytest.raises(ModuleNotFoundError, act.io.read_hk_file, act.tests.EXAMPLE_HK)
+    act.io.pysp2.PYSP2_AVAILABLE = True

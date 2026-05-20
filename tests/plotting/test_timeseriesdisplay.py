@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from matplotlib import colors
 
 import act
 from act.plotting import TimeSeriesDisplay, WindRoseDisplay
@@ -51,21 +52,21 @@ def test_errors():
 
     display = TimeSeriesDisplay(ds)
     display.axes = None
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         display.day_night_background()
 
     display = TimeSeriesDisplay({'met': ds, 'met2': ds})
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot('temp_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.qc_flag_block_plot('qc_temp_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot_barbs_from_spd_dir('wdir_vec_mean', 'wspd_vec_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot_barbs_from_u_v('wdir_vec_mean', 'wspd_vec_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.plot_time_height_xsection_from_1d_data('wdir_vec_mean', 'wspd_vec_mean')
-    with np.testing.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         display.time_height_scatter('wdir_vec_mean')
 
     del ds.attrs['_file_dates']
@@ -79,16 +80,16 @@ def test_errors():
     display = TimeSeriesDisplay(ds)
     display.plot('temp_mean')
     display.set_yrng([0, 0])
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
     ds['lat'].values = lat
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
     ds['lon'].values = lon * 100.0
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
     ds['lat'].values = lat * 100.0
-    with np.testing.assert_warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning):
         display.day_night_background()
 
     ds.close()
@@ -98,9 +99,9 @@ def test_errors():
     del ds['temp_mean'].attrs['units']
     display = TimeSeriesDisplay(ds)
     display.axes = None
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         display.set_yrng([0, 10])
-    with np.testing.assert_raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         display.set_xrng([0, 10])
     display.fig = None
     display.plot('temp_mean', add_nan=True)
@@ -108,7 +109,7 @@ def test_errors():
     assert display.fig is not None
     assert display.axes is not None
 
-    with np.testing.assert_raises(AttributeError):
+    with pytest.raises(AttributeError):
         display = TimeSeriesDisplay([])
 
     fig, ax = matplotlib.pyplot.subplots()
@@ -272,6 +273,34 @@ def test_qc_bar_plot():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
+def test_qc_bar_plot_merge_qc():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SMPS, cleanup_qc=True)
+    var_name = 'merged_dN_dlogDp'
+    title = 'Merged Number Size Distribution'
+    cbar_title = 'dN/dlogD$_p$ (1/cm$^{3}$)'
+    ds.qcfilter.merge_qc_variables(var_name)
+    display = act.plotting.TimeSeriesDisplay(ds, subplot_shape=(2,))
+
+    display.plot(
+        'merged_dN_dlogDp',
+        cvd_friendly=True,
+        norm=colors.LogNorm(vmin=100.0, vmax=10000.0),
+        set_title=title,
+        cbar_label=cbar_title,
+        ylabel='Pariticle Diameter (nm)',
+        subplot_index=(0,),
+    )
+    display.axes[0].set_yscale('log')
+    display.qc_flag_block_plot('merged_dN_dlogDp', subplot_index=(1,))
+    display.axes[1].set_ylim([0, 21000])
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
 def test_2d_as_1d():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
 
@@ -307,7 +336,7 @@ def test_fill_between():
 
 @pytest.mark.mpl_image_compare(tolerance=10)
 def test_qc_flag_block_plot():
-    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER)
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SURFSPECALB1MLAWER, cleanup_qc=True)
 
     display = TimeSeriesDisplay(ds, subplot_shape=(2,), figsize=(10, 8))
 
@@ -375,6 +404,57 @@ def test_assessment_overplot_multi():
         assessment_overplot=True,
         linestyle='',
     )
+
+    ds.close()
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_overplot_bit():
+    files = sample_files.EXAMPLE_MET1
+    ds = act.io.arm.read_arm_netcdf(files)
+    ds.load()
+    ds.clean.cleanup()
+
+    ds.qcfilter.set_test('temp_mean', index=np.arange(100, 300, dtype=int), test_number=2)
+
+    plotted_bit = 2
+
+    # Plot data
+    display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
+    display.plot('temp_mean', day_night_background=True, assessment_overplot_bit=plotted_bit)
+
+    ds.close()
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_overplot_bit_multi():
+    files = sample_files.EXAMPLE_MET1
+    ds = act.io.arm.read_arm_netcdf(files)
+    ds.load()
+    ds.clean.cleanup()
+
+    ds.qcfilter.set_test('temp_mean', index=np.arange(100, 300, dtype=int), test_number=2)
+    ds.qcfilter.add_test(
+        'temp_mean',
+        index=np.arange(900, 950, dtype=int),
+        test_meaning='DQO added test',
+        test_assessment='Indeterminate',
+    )
+
+    highest_bit = ds.qcfilter.available_bit('qc_temp_mean') - 1
+    plotted_bits = [2, highest_bit]
+
+    # Plot data
+    display = TimeSeriesDisplay(ds, subplot_shape=(1,), figsize=(10, 6))
+    display.plot('temp_mean', day_night_background=True, assessment_overplot_bit=plotted_bits)
 
     ds.close()
     try:
@@ -462,7 +542,8 @@ def test_plot_barbs_from_u_v4():
     fake_ds = xr.Dataset(
         {'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres}
     )
-    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    with pytest.warns(UserWarning, match="Could not discern datastreamname and dict or tuple"):
+        BarbDisplay = TimeSeriesDisplay(fake_ds)
     BarbDisplay.plot_barbs_from_u_v(
         'xdata', 'ydata', None, set_title='test', use_var_for_y='pres', cmap='jet'
     )
@@ -488,7 +569,8 @@ def test_plot_barbs_from_u_v5():
     fake_ds = xr.Dataset(
         {'xbins': xbins, 'ybins': ybins, 'ydata': y_array, 'xdata': x_array, 'pres': pres}
     )
-    BarbDisplay = TimeSeriesDisplay(fake_ds)
+    with pytest.warns(UserWarning, match="Could not discern datastreamname and dict or tuple"):
+        BarbDisplay = TimeSeriesDisplay(fake_ds)
     BarbDisplay.plot_barbs_from_u_v(
         'xdata',
         'ydata',
@@ -504,10 +586,21 @@ def test_plot_barbs_from_u_v5():
 
 
 @pytest.mark.mpl_image_compare(tolerance=10)
-def test_2D_timeseries_plot():
+def test_2D_timeseries_plot_y_rng():
     ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
     display = TimeSeriesDisplay(ds)
     display.plot('backscatter', y_rng=[0, 5000], use_var_for_y='range')
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_2D_timeseries_plot():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
+    display = TimeSeriesDisplay(ds)
+    display.plot('backscatter')
     try:
         return display.fig
     finally:
@@ -683,3 +776,121 @@ def test_xlim_correction_plot():
     ds.close()
 
     return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_plot_stripes():
+    ds = act.io.read_arm_netcdf(sample_files.EXAMPLE_MET_WILDCARD)
+    ds = ds.resample(time='1h').mean()
+    print(ds)
+    reference_period = ['2019-01-01', '2019-10-02']
+
+    display = act.plotting.TimeSeriesDisplay(ds, figsize=(10, 2))
+    display.plot_stripes('temp_mean', reference_period=reference_period)
+
+    return display.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_plot_labels():
+    ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
+
+    display = TimeSeriesDisplay(ds)
+    display.plot(
+        'backscatter',
+        ylabel='Height (m)',
+        cbar_labelpad=6,
+        cbar_labelsize=5,
+        cbar_label='Backscatter',
+    )
+
+    ds.close()
+    del ds
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_time_height_scatter_errorbars():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+
+    yerrors = []
+    for val in sonde_ds['tdry'].values:
+        yerrors.append(abs(val) * 0.1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(10, 6))
+    display.time_height_scatter(
+        'tdry', yerror=yerrors, error_kw={'ecolor': 'black', 'errorevery': 50}
+    )
+
+    sonde_ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=10)
+def test_timeseries_errorbars():
+    sonde_ds = act.io.arm.read_arm_netcdf(sample_files.EXAMPLE_SONDE1)
+
+    display = TimeSeriesDisplay({'sgpsondewnpnC1.b1': sonde_ds}, figsize=(10, 6))
+    display.plot('wspd', yerror=20, error_kw={'color': 'purple', 'marker': '^', 'errorevery': 75})
+
+    sonde_ds.close()
+
+    try:
+        return display.fig
+    finally:
+        matplotlib.pyplot.close(display.fig)
+
+
+@pytest.mark.mpl_image_compare(tolerance=20)
+def test_wind_quiver_plot_basic():
+    # Create a simple dataset
+    times = pd.date_range("2025-07-01", periods=8, freq="3h")
+    wspd = np.linspace(1, 8, len(times))
+    wdir = np.linspace(0, 360, len(times), endpoint=False)
+    ds = xr.Dataset(
+        {
+            "time": ("time", times),
+            "wspd_vec_mean": ("time", wspd),
+            "wdir_vec_mean": ("time", wdir),
+        }
+    )
+
+    tsd = TimeSeriesDisplay({"test": ds})
+    tsd.wind_quiver_plot(dsname="test", arrow_legend=True)
+
+    tsd.fig.tight_layout()
+    return tsd.fig
+
+
+@pytest.mark.mpl_image_compare(tolerance=20)
+def test_wind_quiver_plot_daynight_and_custom_title():
+    times = pd.date_range("2025-07-01", periods=8, freq="3h")
+    wspd = np.linspace(2, 16, len(times))
+    wdir = np.linspace(45, 405, len(times), endpoint=False)
+    ds = xr.Dataset(
+        {
+            "wspd_vec_mean": ("time", wspd),
+            "wdir_vec_mean": ("time", wdir),
+            "latitude": ("time", [36.605] * len(times)),
+            "longitude": ("time", [-97.485] * len(times)),
+        },
+        coords={"time": times},
+    )
+
+    tsd = TimeSeriesDisplay({"test2": ds})
+    custom_title = "Custom Wind Plot"
+    ax = tsd.wind_quiver_plot(
+        dsname="test2", arrow_legend=True, day_night_background=True, set_title=custom_title
+    )
+
+    ax.xaxis.set_tick_params(labelsize=6)
+    tsd.fig.tight_layout()
+    return tsd.fig

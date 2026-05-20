@@ -2,6 +2,7 @@
 Functions and methods for performing comparison tests.
 
 """
+
 import copy
 
 import numpy as np

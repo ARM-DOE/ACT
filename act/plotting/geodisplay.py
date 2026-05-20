@@ -3,7 +3,6 @@ Stores the class for GeographicPlotDisplay.
 
 """
 
-
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -148,21 +147,17 @@ class GeographicPlotDisplay(Display):
             lat = self._ds[dsname][lat_field].values
         except KeyError:
             raise ValueError(
-                (
-                    'You will need to provide the name of the '
-                    "field if not '{}' to use for latitude "
-                    'data.'
-                ).format(lat_field)
+                'You will need to provide the name of the '
+                f"field if not '{lat_field}' to use for latitude "
+                'data.'
             )
         try:
             lon = self._ds[dsname][lon_field].values
         except KeyError:
             raise ValueError(
-                (
-                    'You will need to provide the name of the '
-                    "field if not '{}' to use for longitude "
-                    'data.'
-                ).format(lon_field)
+                'You will need to provide the name of the '
+                f"field if not '{lon_field}' to use for longitude "
+                'data.'
             )
 
         # Set up metadata information for display on plot

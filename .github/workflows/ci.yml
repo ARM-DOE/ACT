@@ -20,6 +20,8 @@ env:
   AIRNOW_API: ${{ secrets.AIRNOW_API }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   COVERALLS_TOKEN: ${{ secrets.COVERLALLS_REPO_TOKEN }}
+  AMERIFLUX_EMAIL: ${{ secrets.AMERIFLUX_EMAIL }}
+  AMERIFLUX_USERNAME: ${{ secrets.AMERIFLUX_USERNAME }}
 
 jobs:
   build:
@@ -32,44 +34,42 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
         os: [macOS, ubuntu, Windows]
-        inlcude:
-          - os: macos-latest
-            PLAT: arm64
-            INTERFACE64: ""
-            platform: [x64]
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v3
         with:
           create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml
-          environment-name: act_env
+          init-shell: >-
+            bash
+          cache-downloads: true
+          post-cleanup: "all"
+
+      - name: Fetch all history for all tags and branches
+        run: |
+           git fetch --prune --unshallow
 
       - name: Install ACT
         run: |
           python -m pip install -e . --no-deps --force-reinstall
 
-      - name: Lint with flake8
+      - name: Run Linting
+        shell: bash -l {0}
         run: |
-          # stop the build if there are Python syntax errors or undefined names
-          # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-          # Switching back to original flake
-          python -m flake8 --max-line-length=127 --ignore=F401,E402,W504,W605,F403
+          ruff check .
+
       - name: Test with pytest
         run: |
           python -m pytest -v --mpl --cov=./ --cov-report=xml
 
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: unittests
           env_vars: OS,PYTHON
           name: codecov-umbrella

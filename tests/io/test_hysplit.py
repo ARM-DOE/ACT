@@ -1,5 +1,4 @@
 import act
-
 from act.tests import sample_files
 
 

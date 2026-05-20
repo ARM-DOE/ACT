@@ -11,11 +11,13 @@ Author: Adam Theisen
 
 """
 
-import act
 import glob
-import xarray as xr
 import os
+
 import matplotlib.pyplot as plt
+import xarray as xr
+
+import act
 
 # Read in the ECOR data
 files = glob.glob(act.tests.sample_files.EXAMPLE_ECORSF_E39)

@@ -38,30 +38,29 @@ The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit fo
 
 Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
 
-Version 2.0
-~~~~~~~~~~~
+ACT's Third Roadmap
+~~~~~~~~~~~~~~~~~~~
 
-ACT now has a version 2.0 release. This release contains many function
-naming changes such as IO and Discovery module function naming changes. To
-prepare for this release, a `v2.0 <https://arm-doe.github.io/ACT/userguide/GUIDE_V2.html>`_
-has been provided that explains the changes and how to work with the new syntax.
-
-The new release is available on both PyPI and conda-forge.
-
-Please report any bugs of the 2.0 release to the Issue Tracker mentioned in
-the Important Links section below.
+To meet the needs of the community and stakeholders, ACT will be creating a new roadmap.
+This roadmap will continue a plan forward on features to improve on and to add in newer ACT
+versions. A part of this new roadmap is a survey from the community that will provide feedback
+for the developers on priorities for newer ACT versions. If time permitting, and you are a user of ACT
+or are considering to use ACT the survey can be found here: `ACT Roadmap Survey <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
+The feedback would be much appreciated.
 
 Important Links
 ~~~~~~~~~~~~~~~
 
 * Documentation: https://arm-doe.github.io/ACT/
-* Examples: https://arm-doe.github.io/ACT/source/auto_examples/index.html
+* Examples: https://arm-doe.github.io/ACT/auto_examples/index.html
 * Issue Tracker: https://github.com/ARM-DOE/ACT/issues
 
 Citing
 ~~~~~~
 
-If you use ACT to prepare a publication, please cite the DOI listed in the badge above, which is updated with every version release to ensure that contributors get appropriate credit.  DOI is provided through Zenodo.
+If you use ACT to prepare a publication, please cite the DOI listed in the badge above,
+which is updated with every version release to ensure that contributors get appropriate
+credit. DOI is provided through Zenodo.
 
 Dependencies
 ~~~~~~~~~~~~
@@ -170,11 +169,12 @@ forking the repository is highly recommended.
 We welcome contributions for all uses of ACT, provided the code can be
 distributed under the BSD 3-clause license. A copy of this license is
 available in the **LICENSE.txt** file in this directory. For more on
-contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob/master/CONTRIBUTING.rst>`_
+contributing, see the `contributor's guide. <https://github.com/ARM-DOE/ACT/blob/main/CONTRIBUTING.rst>`_ as well as the `code of conduct. <https://github.com/ARM-DOE/ACT/blob/main/CODE_OF_CONDUCT.md>`_
 
 Testing
 ~~~~~~~
-For testing, we use pytest. To install pytest::
+For testing, we use pytest for running the unit tests and arm-test-data for
+test files that are used for the unit tests. To install pytest::
 
    $ conda install -c conda-forge pytest
 
@@ -182,9 +182,13 @@ And for matplotlib image testing with pytest::
 
    $ conda install -c conda-forge pytest-mpl
 
-After installation, you can launch the test suite from outside the
-source directory (you will need to have pytest installed and for the mpl
-argument need pytest-mpl)::
+To install arm-test-data::
+
+   $ conda install -c conda-forge arm-test-data
+
+After installation of both pytest and arm-test-data, you can launch the test
+suite from outside the source directory (you will need to have pytest
+installed and for the mpl argument need pytest-mpl)::
 
    $ pytest --mpl --pyargs act
 

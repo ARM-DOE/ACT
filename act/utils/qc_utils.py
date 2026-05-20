@@ -224,5 +224,5 @@ def _write_dqr_times_to_txt(datastream, date, txt_path, variable, time_strings):
         'w',
     ) as text_file:
         for st, et in time_strings:
-            text_file.write('%s, ' % st)
-            text_file.write('%s \n' % et)
+            text_file.write(f'{st}, ')
+            text_file.write(f'{et} \n')

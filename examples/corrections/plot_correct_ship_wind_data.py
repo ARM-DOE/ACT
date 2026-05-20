@@ -6,8 +6,9 @@ This example shows how to calculate course and speed
 over ground of the ship and use it to correct the
 wind speed and direction data.
 """
-from arm_test_data import DATASETS
+
 import xarray as xr
+from arm_test_data import DATASETS
 
 import act
 
@@ -29,7 +30,7 @@ ds = xr.merge([nav_ds, aosmet_ds], compat='override')
 
 # Call the correction for the winds.  Note, that this only
 # corrects for ship course and speed, not roll and pitch.
-ds = act.corrections.ship.correct_wind(ds)
+ds = act.corrections.ship.correct_wind_for_ship_motion(ds)
 
 nav_ds.close()
 aosmet_ds.close()

@@ -1,8 +1,8 @@
-import xarray as xr
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
-
-from datetime import datetime
+import xarray as xr
 
 
 def read_hysplit(filename, base_year=2000, skiprows=1):

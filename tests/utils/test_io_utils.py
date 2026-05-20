@@ -224,10 +224,10 @@ def test_gunzip():
 @pytest.mark.skipif(not MOVIEPY_AVAILABLE, reason='MoviePy is not installed.')
 def test_generate_movie():
     files = [
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contour.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contour2.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contourf.png?raw=true',
-        'https://github.com/ARM-DOE/ACT/blob/main/tests/plotting/baseline/test_contourf2.png?raw=true',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260312/sgpmetE12.b1.precip.20260312.png',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260311/sgpmetE12.b1.precip.20260311.png',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260310/sgpmetE12.b1.precip.20260310.png',
+        'https://plot.dmf.arm.gov/PLOTS/sgp/sgpmet/20260309/sgpmetE12.b1.precip.20260309.png',
     ]
     cwd = Path.cwd()
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -239,12 +239,14 @@ def test_generate_movie():
             assert Path(result).name == 'movie.mp4'
 
             # Test list of files for making movie
-            files = [
-                'test_contour.png',
-                'test_contour2.png',
-                'test_contourf.png',
-                'test_contourf2.png',
-            ]
+            files = sorted(
+                [
+                    'test_contour.png',
+                    'test_contour2.png',
+                    'test_contourf.png',
+                    'test_contourf2.png',
+                ]
+            )
             basepath = Path(Path(__file__).parents[1], 'plotting', 'baseline')
             files = [Path(basepath, fl) for fl in files]
             write_filename = Path(tmpdirname, 'one', 'two', 'three', 'movie_filename_testing.mp4')
@@ -253,8 +255,9 @@ def test_generate_movie():
             assert np.isclose(Path(write_filename).stat().st_size, 173189, 1000)
 
             # Test PosixPath generator for making movie
-            file_generator = basepath.glob('test_contour[!_]*.png')
-            result = act.utils.generate_movie(file_generator, write_filename=write_filename)
+            result = act.utils.generate_movie(
+                list(basepath.glob('test_contour[!_]*.png')), write_filename=write_filename
+            )
             assert result == str(write_filename)
             assert np.isclose(Path(write_filename).stat().st_size, 173189, 1000)
 
@@ -285,3 +288,58 @@ def test_generate_movie():
 
         finally:
             chdir(cwd)
+
+
+def test_arm_standards_validator():
+    met_files = sample_files.EXAMPLE_MET_SAIL
+    errors = act.utils.arm_standards_validator(met_files)
+    assert len(errors) == 0
+
+    ds = act.io.read_arm_netcdf(met_files)
+    ds2 = ds.drop_vars(['lat', 'lon', 'alt'])
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+
+    assert len(errors) == 3
+
+    ds2 = ds
+    var = ['lat', 'lon', 'alt']
+    for v in var:
+        del ds2[v].attrs['standard_name']
+
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+    assert len(errors) == 3
+
+    ds2 = ds
+    for v in var:
+        ds2[v].attrs['standard_name'] = 'test'
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+    assert len(errors) == 3
+
+    ds2 = ds
+    for v in ds2:
+        del ds2[v].attrs['long_name']
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+    assert len(errors) == 54
+
+    ds2 = act.io.read_arm_netcdf(met_files)
+    t = ds2['time'].values.copy()
+    t[1] = t[10]
+    ds2 = ds2.assign_coords(time=t)
+    errors = act.utils.arm_standards_validator(dataset=ds2)
+
+    assert 'Duplicate' in errors[0]
+    assert 'increasing' in errors[1]
+
+    file = 'shpinstrumentX50.z1.202005.000000.nc'
+    errors = act.utils.arm_standards_validator(file)
+
+    assert 'File is not in a standard format' in errors[0]
+
+    file = 'sgpmetE13.z1.20200501.000000.nc'
+    errors = act.utils.arm_standards_validator(file)
+
+    assert 'no files to open' in errors[0]
+
+    ds = act.io.read_arm_netcdf(sample_files.EXAMPLE_CEIL1)
+    errors = act.utils.arm_standards_validator(dataset=ds)
+    assert len(errors) == 4

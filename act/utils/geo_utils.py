@@ -4,11 +4,11 @@ including solar calculations
 
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
 from pathlib import Path
 
 import numpy as np
-import pytz
 from skyfield import almanac
 from skyfield.api import load, load_file, wgs84
 
@@ -210,17 +210,17 @@ def get_solar_azimuth_elevation(
         earth, sun = planets['earth'], planets['sun']
 
         if isinstance(time, datetime) and time.tzinfo is None:
-            time = time.replace(tzinfo=pytz.UTC)
+            time = time.replace(tzinfo=_timezone.utc)
 
         if isinstance(time, (list, tuple)) and time[0].tzinfo is None:
-            time = [ii.replace(tzinfo=pytz.UTC) for ii in time]
+            time = [ii.replace(tzinfo=_timezone.utc) for ii in time]
 
         if type(time).__module__ == np.__name__ and np.issubdtype(time.dtype, np.datetime64):
             time = time.astype('datetime64[s]').astype(int)
             if time.size > 1:
-                time = [datetime.fromtimestamp(tm, timezone.utc) for tm in time]
+                time = [datetime.fromtimestamp(tm, _timezone.utc) for tm in time]
             else:
-                time = [datetime.fromtimestamp(time, timezone.utc)]
+                time = [datetime.fromtimestamp(time, _timezone.utc)]
 
         if not isinstance(time, (list, tuple, np.ndarray)):
             time = [time]
@@ -278,7 +278,7 @@ def get_sunrise_sunset_noon(
         # Parse datetime object
         if isinstance(date, datetime):
             if date.tzinfo is None:
-                sf_dates = [date.replace(tzinfo=pytz.UTC)]
+                sf_dates = [date.replace(tzinfo=_timezone.utc)]
             else:
                 sf_dates = [date]
 
@@ -286,20 +286,22 @@ def get_sunrise_sunset_noon(
             if date[0].tzinfo is not None:
                 sf_dates = date
             else:
-                sf_dates = [ii.replace(tzinfo=pytz.UTC) for ii in date]
+                sf_dates = [ii.replace(tzinfo=_timezone.utc) for ii in date]
 
         # Parse string date
         if isinstance(date, str):
-            sf_dates = [datetime.strptime(date, '%Y%m%d').replace(tzinfo=pytz.UTC)]
+            sf_dates = [datetime.strptime(date, '%Y%m%d').replace(tzinfo=_timezone.utc)]
 
         # Parse list of string dates
         if isinstance(date, (list, tuple)) and isinstance(date[0], str):
-            sf_dates = [datetime.strptime(dt, '%Y%m%d').replace(tzinfo=pytz.UTC) for dt in date]
+            sf_dates = [
+                datetime.strptime(dt, '%Y%m%d').replace(tzinfo=_timezone.utc) for dt in date
+            ]
 
         # Convert datetime64 to datetime
         if type(date).__module__ == np.__name__ and np.issubdtype(date.dtype, np.datetime64):
             sf_dates = datetime64_to_datetime(date)
-            sf_dates = [ii.replace(tzinfo=pytz.UTC) for ii in sf_dates]
+            sf_dates = [ii.replace(tzinfo=_timezone.utc) for ii in sf_dates]
 
         # Function for calculating solar noon
         # Convert location into skyfield location object
@@ -418,7 +420,7 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
     # Check if datetime object is scalar and if has no timezone.
     if isinstance(date_time, datetime):
         if date_time.tzinfo is None:
-            sf_dates = [date_time.replace(tzinfo=pytz.UTC)]
+            sf_dates = [date_time.replace(tzinfo=_timezone.utc)]
         else:
             sf_dates = [date_time]
 
@@ -427,12 +429,12 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
         if isinstance(date_time[0], datetime) and date_time[0].tzinfo is not None:
             sf_dates = date_time
         else:
-            sf_dates = [ii.replace(tzinfo=pytz.UTC) for ii in date_time]
+            sf_dates = [ii.replace(tzinfo=_timezone.utc) for ii in date_time]
 
     # Convert datetime64 to datetime with timezone.
     if type(date_time).__module__ == np.__name__ and np.issubdtype(date_time.dtype, np.datetime64):
         sf_dates = datetime64_to_datetime(date_time)
-        sf_dates = [ii.replace(tzinfo=pytz.UTC) for ii in sf_dates]
+        sf_dates = [ii.replace(tzinfo=_timezone.utc) for ii in sf_dates]
 
     if sf_dates is None:
         raise ValueError(

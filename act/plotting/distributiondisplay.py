@@ -1,11 +1,12 @@
-""" Module for Distribution Plotting. """
+"""Module for Distribution Plotting."""
 
 import matplotlib.pyplot as plt
 import numpy as np
-import xarray as xr
 import pandas as pd
+import xarray as xr
 
-from ..utils import datetime_utils as dt_utils, calculate_percentages
+from ..utils import calculate_percentages
+from ..utils import datetime_utils as dt_utils
 from .plot import Display
 
 
@@ -87,7 +88,26 @@ class DistributionDisplay(Display):
     def _get_data(self, dsname, fields):
         if isinstance(fields, str):
             fields = [fields]
-        return self._ds[dsname][fields].dropna('time')
+
+        if not fields:
+            raise ValueError("At least one field must be specified")
+
+        ds = self._ds[dsname][fields]
+
+        if 'time' not in ds.dims:
+            return ds
+
+        # Try modern xarray API first
+        try:
+            return ds.dropna('time', how='all')
+        except TypeError as e:
+            if 'how' not in str(e):
+                raise
+
+            # Fallback for older xarray versions
+            arr = ds.to_array()
+            valid_times = arr.notnull().any(dim=[d for d in arr.dims if d != 'time'])
+            return ds.sel(time=valid_times)
 
     def plot_stacked_bar(
         self,
@@ -756,7 +776,7 @@ class DistributionDisplay(Display):
         field,
         positions=None,
         dsname=None,
-        vert=True,
+        orientation='vertical',
         showmeans=True,
         showmedians=True,
         showextrema=True,
@@ -777,8 +797,9 @@ class DistributionDisplay(Display):
         dsname : str or None
             The name of the datastream the field is contained in. Set
             to None to let ACT automatically determine this.
-        vert : Boolean, Default: True
-            Display violin plot vertical. False will display horizontal.
+        orientation : str
+            Orientation of the violin plot. Options are 'vertical' and 'horizontal'.
+            Default is vertical.
         showmeans : Boolean; Default: False
             If True, will display the mean of the datastream.
         showmedians : Boolean; Default: False
@@ -829,7 +850,7 @@ class DistributionDisplay(Display):
         scc = self.axes[subplot_index].violinplot(
             ndata,
             positions=positions,
-            vert=vert,
+            orientation=orientation,
             showmeans=showmeans,
             showmedians=showmedians,
             showextrema=showextrema,
@@ -853,7 +874,7 @@ class DistributionDisplay(Display):
 
         # Define the axe title, x-axis label, y-axis label
         self.axes[subplot_index].set_title(set_title)
-        if vert is True:
+        if orientation == 'vertical':
             self.axes[subplot_index].set_ylabel(axtitle)
             if positions is None:
                 self.axes[subplot_index].set_xticks([])
