@@ -301,7 +301,7 @@ def print_dqr(
     """
 
     # Create URL
-    url = 'https://dqr-web-service.svcs.arm.gov/dqr_full'
+    url = 'https://dqr-web-service.arm.gov/dqr_full'
     url += f"/{datastream}"
     url += f"/{start_date}/{end_date}"
     url += f"/{assessment}"
