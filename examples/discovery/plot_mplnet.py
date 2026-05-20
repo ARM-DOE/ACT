@@ -9,8 +9,8 @@ NASA's MicroPulsed Lidar Network
 
 import act
 
-# Determine MPLNET site of interest
-meta = act.discovery.get_mplnet_meta(sites="active", method="data", print_to_screen=True)
+# Retrieve meta from GSFC Site
+meta = act.discovery.get_mplnet_meta(sites="GSFC", method="data", print_to_screen=True)
 
 # Download MPLNET data for site of interest
 output = act.discovery.download_mplnet_data(
