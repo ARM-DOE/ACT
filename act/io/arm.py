@@ -30,6 +30,7 @@ from act.utils.io_utils import cleanup_files, is_gunzip_file, unpack_gzip, unpac
 def read_arm_netcdf(
     filenames,
     concat_dim=None,
+    data_vars='all',
     return_None=False,
     combine='by_coords',
     decode_times=True,
@@ -52,6 +53,9 @@ def read_arm_netcdf(
         Name of file(s) to read.
     concat_dim : str
         Dimension to concatenate files along.
+    data_vars : str
+        Whether to attempt to concatenate all variables or only variables
+        that meet the concatenate dimension. Default is 'all'.
     return_None : boolean
         Catch IOError exception when file not found and return None.
         Default is False.
@@ -150,7 +154,7 @@ def read_arm_netcdf(
     if return_None:
         except_tuple = except_tuple + (FileNotFoundError, OSError)
 
-    kwargs['data_vars'] = 'all'
+    kwargs['data_vars'] = data_vars
 
     try:
         # Read data file with Xarray function
