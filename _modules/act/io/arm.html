@@ -470,6 +470,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">read_arm_netcdf</span><span class="p">(</span>
     <span class="n">filenames</span><span class="p">,</span>
     <span class="n">concat_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">data_vars</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
     <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;by_coords&#39;</span><span class="p">,</span>
     <span class="n">decode_times</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -492,6 +493,9 @@
 <span class="sd">        Name of file(s) to read.</span>
 <span class="sd">    concat_dim : str</span>
 <span class="sd">        Dimension to concatenate files along.</span>
+<span class="sd">    data_vars : str</span>
+<span class="sd">        Whether to attempt to concatenate all variables or only variables</span>
+<span class="sd">        that meet the concatenate dimension. Default is &#39;all&#39;.</span>
 <span class="sd">    return_None : boolean</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
@@ -590,7 +594,7 @@
     <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
         <span class="n">except_tuple</span> <span class="o">=</span> <span class="n">except_tuple</span> <span class="o">+</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span>
 
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data_vars&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data_vars&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_vars</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Read data file with Xarray function</span>
