@@ -179,7 +179,7 @@ def read_arm_netcdf(
             'to use to order the datasets for concatenation'
         ):
             kwargs['combine'] = 'nested'
-            ds = xr.open_mfdataset(filenames, **kwargs)
+            ds = xr.open_mfdataset(sorted(filenames), **kwargs)
 
         else:
             # When all else fails raise the orginal exception
