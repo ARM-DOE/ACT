@@ -61,6 +61,10 @@ jobs:
     needs: test-built-dist
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -68,7 +72,3 @@ jobs:
           path: dist
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@v1.14.0
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
-          verbose: true
