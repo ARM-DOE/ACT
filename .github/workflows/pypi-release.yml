@@ -44,6 +44,7 @@ jobs:
   test-built-dist:
     needs: build-artifacts
     runs-on: ubuntu-latest
+    if: github.repository == 'ARM-DOE/ACT'
     steps:
       - uses: actions/setup-python@v6
         name: Install Python
@@ -59,7 +60,7 @@ jobs:
           ls -ltrh dist
   upload-to-pypi:
     needs: test-built-dist
-    if: github.event_name == 'release' && github.repository == 'ARM-DOE/ACT'
+    if: github.repository == 'ARM-DOE/ACT'
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
