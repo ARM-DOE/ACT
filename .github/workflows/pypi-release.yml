@@ -59,7 +59,7 @@ jobs:
           ls -ltrh dist
   upload-to-pypi:
     needs: test-built-dist
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.repository == 'ARM-DOE/ACT'
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
