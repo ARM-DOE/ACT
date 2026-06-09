@@ -44,6 +44,7 @@ jobs:
   test-built-dist:
     needs: build-artifacts
     runs-on: ubuntu-latest
+    if: github.repository == 'ARM-DOE/ACT'
     steps:
       - uses: actions/setup-python@v6
         name: Install Python
@@ -59,8 +60,10 @@ jobs:
           ls -ltrh dist
   upload-to-pypi:
     needs: test-built-dist
-    if: github.event_name == 'release'
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -68,7 +71,3 @@ jobs:
           path: dist
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@v1.14.0
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
-          verbose: true
