@@ -49,9 +49,9 @@ for ideas, general discussions or questions, and show and tell!
 ACT's Third Roadmap
 ~~~~~~~~~~~~~~~~~~~
 
-To meet the needs of the community and stakeholders, ACT has created a new roadmap.
+To meet the needs of the community and stakeholders, the ACT developers have created a new roadmap.
 This roadmap will continue a plan forward on features to improve on and to add in newer ACT
-versions. For more on the ACT's third roadmap and the priorities the developers will be focusing
+versions. For more on ACT's third roadmap and the priorities the developers will be focusing
 on, please see `Third Roadmap <https://github.com/ARM-DOE/ACT/blob/main/guides/ACT_Roadmap_3.pdf>`_  .
 
 Important Links
