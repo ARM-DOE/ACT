@@ -86,7 +86,7 @@ class QCTests:
         sum_diff = np.array([], dtype=float)
         time_diff = np.array([], dtype=np.int32)
         for tm_shift in range(-1 * time_shift, time_shift + int(time_step), int(time_step)):
-            time = self_da.time.values.astype('datetime64[s]') + tm_shift
+            time = self_da.time.values.astype('datetime64[s]') + np.timedelta64(int(tm_shift), 's')
             time = time.astype('datetime64[ns]')
             self_da_shifted = self_da.assign_coords(time=time)
 

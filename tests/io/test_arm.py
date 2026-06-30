@@ -2,6 +2,7 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 import act
 from act.tests import sample_files
@@ -13,7 +14,7 @@ def test_read_arm_netcdf():
     assert 'rh_mean' in ds.variables.keys()
     assert ds.attrs['_arm_standards_flag'] == (1 << 0)
 
-    with np.testing.assert_raises(OSError):
+    with pytest.raises(OSError):
         ds = act.io.arm.read_arm_netcdf([])
 
     ds = act.io.arm.read_arm_netcdf([], return_None=True)
@@ -154,12 +155,12 @@ def test_io_dod():
         assert 'moment1' in ds
         assert len(ds['base_time'].values) == 1440
         assert len(ds['drop_diameter'].values) == 50
-        with np.testing.assert_warns(UserWarning):
+        with pytest.warns(UserWarning):
             ds2 = act.io.arm.create_ds_from_arm_dod('vdis.b1', dims, scalar_fill_dim='time')
         assert 'moment1' in ds2
         assert len(ds2['base_time'].values) == 1440
         assert len(ds2['drop_diameter'].values) == 50
-        with np.testing.assert_raises(ValueError):
+        with pytest.raises(ValueError):
             ds = act.io.arm.create_ds_from_arm_dod('vdis.b1', {}, version='1.2')
         ds = act.io.arm.create_ds_from_arm_dod(
             sample_files.EXAMPLE_DOD, dims, version=1.2, scalar_fill_dim='time', local_file=True
