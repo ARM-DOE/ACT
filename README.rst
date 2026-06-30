@@ -30,23 +30,29 @@ Atmospheric data Community Toolkit (ACT)
 .. |Build| image:: https://github.com/ARM-DOE/ACT/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/ARM-DOE/ACT/actions/workflows/ci.yml
 
-The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit has functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap_2.pdf>`_  .
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for
+working with atmospheric time-series datasets of varying dimensions. The toolkit has
+functions for every part of the scientific process; discovery, IO, quality control,
+corrections, retrievals, visualization, and analysis. It is a community platform for
+sharing code with the goal of reducing duplication of effort and better connecting
+the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.
+Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/ARM-DOE/ACT/blob/main/guides/ACT_Roadmap_3.pdf>`_  .
 
 |act|
 
 .. |act| image:: ./docs/source/act_plots.png
 
-Please report any issues or feature requests by sumitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
+Please report any issues or feature requests by submitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.
+Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open
+for ideas, general discussions or questions, and show and tell!
 
 ACT's Third Roadmap
 ~~~~~~~~~~~~~~~~~~~
 
-To meet the needs of the community and stakeholders, ACT will be creating a new roadmap.
+To meet the needs of the community and stakeholders, the ACT developers have created a new roadmap.
 This roadmap will continue a plan forward on features to improve on and to add in newer ACT
-versions. A part of this new roadmap is a survey from the community that will provide feedback
-for the developers on priorities for newer ACT versions. If time permitting, and you are a user of ACT
-or are considering to use ACT the survey can be found here: `ACT Roadmap Survey <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
-The feedback would be much appreciated.
+versions. For more on ACT's third roadmap and the priorities the developers will be focusing
+on, please see `Third Roadmap <https://github.com/ARM-DOE/ACT/blob/main/guides/ACT_Roadmap_3.pdf>`_  .
 
 Important Links
 ~~~~~~~~~~~~~~~
@@ -139,7 +145,7 @@ Installing ACT from source is the only way to get the latest updates and
 enhancement to the software that have no yet made it into a release.
 The latest source code for ACT can be obtained from the GitHub repository,
 https://github.com/ARM-DOE/ACT. Either download and unpack the
-`zip file <https://github.com/ARM-DOE/ACT/archive/master.zip>`_ of
+`zip file <https://github.com/ARM-DOE/ACT/archive/main.zip>`_ of
 the source code or use git to checkout the repository::
 
     git clone https://github.com/ARM-DOE/ACT.git
