@@ -37,7 +37,7 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
         os: [macOS, ubuntu, Windows]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Conda Environment
         uses: mamba-org/setup-micromamba@v3
@@ -67,7 +67,7 @@ jobs:
           python -m pytest -v --mpl --cov=./ --cov-report=xml
 
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage.xml
           flags: unittests
