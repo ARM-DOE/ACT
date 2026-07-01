@@ -293,3 +293,34 @@ def test_read_mmcr():
     assert 'SpectralWidth_BL' in ds
     np.testing.assert_almost_equal(ds['Reflectivity_GE'].mean(), -34.62, decimal=2)
     np.testing.assert_almost_equal(ds['MeanDopplerVelocity_Receiver1'].max(), 9.98, decimal=2)
+
+
+def test_read_mfrsr7nchaod():
+    results = act.tests.EXAMPLE_MFRSR7NCHAOD
+    ds = act.io.arm.read_arm_mfrsr7nchaod(results)
+    ds.load()
+
+    assert ds is not None
+    assert 'Io_gauss_time' in ds.coords
+    assert 'Io_interquartile_time' in ds.coords
+    assert isinstance(ds.attrs['_file_dates'], list)
+    assert len(ds.attrs['_file_dates']) == 3
+    assert isinstance(ds.attrs['_file_times'], list)
+    assert len(ds.attrs['_file_times']) == 3
+    assert ds.attrs['_datastream'] == 'sgpmfrsr7nchaod1michC1.c1'
+    assert ds.attrs['_arm_standards_flag'] == 1
+
+    ds.close()
+    del ds
+
+    ds = act.io.arm.read_arm_mfrsr7nchaod(results[0])
+    ds.load()
+
+    assert ds is not None
+    assert isinstance(ds.attrs['_file_dates'], list)
+    assert len(ds.attrs['_file_dates']) == 1
+    assert isinstance(ds.attrs['_file_times'], list)
+    assert len(ds.attrs['_file_times']) == 1
+
+    ds.close()
+    del ds
