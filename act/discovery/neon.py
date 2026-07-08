@@ -105,7 +105,7 @@ def get_neon_product_avail(token, site_code, product_code, print_to_screen=False
     return dates
 
 
-def download_neon_data(site_code, product_code, start_date, end_date=None, output_dir=None):
+def download_neon_data(token, site_code, product_code, start_date, end_date=None, output_dir=None):
     """
     Returns a list of data products available for a NEON site.  Please be sure to view the
     readme files that are downloaded as well as there may be a number of different products.
@@ -121,6 +121,8 @@ def download_neon_data(site_code, product_code, start_date, end_date=None, outpu
 
     Parameters
     ----------
+    token : str
+        The access token for the NEON API web server.
     site : str
         NEON site identifier. Required variable
     product_code : str
@@ -144,6 +146,9 @@ def download_neon_data(site_code, product_code, start_date, end_date=None, outpu
     # Every request begins with the server's URL
     server = 'http://data.neonscience.org/api/v0/'
 
+    # Add token to headers
+    headers = {"X-API-TOKEN": token}
+
     # Get dates to pass in
     if end_date is not None:
         date_range = pd.date_range(start_date, end_date, freq='MS').strftime('%Y-%m').tolist()
@@ -154,7 +159,9 @@ def download_neon_data(site_code, product_code, start_date, end_date=None, outpu
     files = []
     for date in date_range:
         # Make Request
-        data_request = requests.get(server + 'data/' + product_code + '/' + site_code + '/' + date)
+        data_request = requests.get(
+            server + 'data/' + product_code + '/' + site_code + '/' + date, headers=headers
+        )
         data_json = data_request.json()
 
         if output_dir is None:
