@@ -66,8 +66,8 @@ def get_neon_product_avail(token, site_code, product_code, print_to_screen=False
 
     Parameters
     ----------
-     token : str
-         The access token for the NEON API web server.
+    token : str
+        The access token for the NEON API web server.
     site : str
         NEON site identifier. Required variable
     product_code : str
