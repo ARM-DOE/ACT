@@ -14,7 +14,7 @@ import pandas as pd
 import requests
 
 
-def get_neon_site_products(site_code, print_to_screen=False):
+def get_neon_site_products(token, site_code, print_to_screen=False):
     """
     Returns a list of data products available for a NEON site
     NEON sites can be found through the NEON website
@@ -22,6 +22,8 @@ def get_neon_site_products(site_code, print_to_screen=False):
 
     Parameters
     ----------
+    token : str
+        The access token for the NEON API web server.
     site : str
         NEON site identifier. Required variable
     print_to_screen : boolean
@@ -37,8 +39,11 @@ def get_neon_site_products(site_code, print_to_screen=False):
     # Every request begins with the server's URL
     server = 'http://data.neonscience.org/api/v0/'
 
+    # Add token to headers
+    headers = {"X-API-TOKEN": token}
+
     # Make request, using the sites/ endpoint
-    site_request = requests.get(server + 'sites/' + site_code)
+    site_request = requests.get(server + 'sites/' + site_code, headers=headers)
 
     # Convert to Python JSON object
     site_json = site_request.json()
@@ -53,7 +58,7 @@ def get_neon_site_products(site_code, print_to_screen=False):
     return products
 
 
-def get_neon_product_avail(site_code, product_code, print_to_screen=False):
+def get_neon_product_avail(token, site_code, product_code, print_to_screen=False):
     """
     Returns a list of data products available for a NEON site
     NEON sites can be found through the NEON website
@@ -61,6 +66,8 @@ def get_neon_product_avail(site_code, product_code, print_to_screen=False):
 
     Parameters
     ----------
+    token : str
+        The access token for the NEON API web server.
     site : str
         NEON site identifier. Required variable
     product_code : str
@@ -78,8 +85,11 @@ def get_neon_product_avail(site_code, product_code, print_to_screen=False):
     # Every request begins with the server's URL
     server = 'http://data.neonscience.org/api/v0/'
 
+    # Add token to headers
+    headers = {"X-API-TOKEN": token}
+
     # Make request, using the sites/ endpoint
-    site_request = requests.get(server + 'sites/' + site_code)
+    site_request = requests.get(server + 'sites/' + site_code, headers=headers)
 
     # Convert to Python JSON object
     site_json = site_request.json()
