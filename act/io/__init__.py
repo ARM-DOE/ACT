@@ -27,7 +27,6 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'read_arm_netcdf',
             'check_if_tar_gz_file',
             'read_arm_mmcr',
-            'read_arm_mfrsr7nchaod',
         ],
         'ameriflux': ['convert_to_ameriflux', 'read_ameriflux'],
         'text': ['read_csv'],

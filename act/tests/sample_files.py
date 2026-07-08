@@ -160,10 +160,3 @@ EXAMPLE_GML_AEROSOL_NAS = DATASETS.fetch(
 )
 
 EXAMPLE_SMPS = DATASETS.fetch('houmergedsmpsapsmlM1.c1.20220801.000000.nc')
-
-mfrsr7nchaod_list = [
-    'sgpmfrsr7nchaod1michC1.c1.20260603.000000.nc',
-    'sgpmfrsr7nchaod1michC1.c1.20260602.000000.nc',
-    'sgpmfrsr7nchaod1michC1.c1.20260601.000000.nc',
-]
-EXAMPLE_MFRSR7NCHAOD = [DATASETS.fetch(file) for file in mfrsr7nchaod_list]
