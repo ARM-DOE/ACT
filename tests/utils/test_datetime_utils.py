@@ -13,7 +13,7 @@ def test_dates_between():
     start_string = datetime.strptime(start_date, '%Y%m%d').strftime('%Y-%m-%d')
     end_string = datetime.strptime(end_date, '%Y%m%d').strftime('%Y-%m-%d')
     answer = np.arange(start_string, end_string, dtype='datetime64[D]')
-    answer = np.append(answer, answer[-1] + 1)
+    answer = np.append(answer, answer[-1] + np.timedelta64(1, 'D'))
     answer = answer.astype('datetime64[s]').astype(int)
     answer = [datetime.fromtimestamp(ii, tz=timezone.utc).replace(tzinfo=None) for ii in answer]
 

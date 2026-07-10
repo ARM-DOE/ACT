@@ -475,8 +475,9 @@ def add_in_nan(time, data):
             else:
                 # For 2D plots need to add a NaN right after and right before the data
                 # to correctly mitigate streaking with pcolormesh.
-                time_added_1 = time[corr_i] + 1  # One time step after
-                time_added_2 = time[corr_i + 1] - 1  # One time step before
+                unit, _ = np.datetime_data(time.dtype)
+                time_added_1 = time[corr_i] + np.timedelta64(1, unit)  # One time step after
+                time_added_2 = time[corr_i + 1] - np.timedelta64(1, unit)  # One time step before
                 time = np.insert(time, corr_i + 1, [time_added_1, time_added_2])
                 data = np.insert(data, corr_i + 1, np.nan, axis=0)
                 data = np.insert(data, corr_i + 2, np.nan, axis=0)
