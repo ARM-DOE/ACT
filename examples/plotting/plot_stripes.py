@@ -14,7 +14,7 @@ import act
 
 # SGP E13 MET data has already been processed to yearly averages,
 # removing data flagged by embedded qc and DQRs
-url = 'https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_Y.csv'
+url = 'https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv'
 col_names = ['time', 'temperature', 'count']
 ds = act.io.read_csv(url, column_names=col_names, index_col=0, parse_dates=True)
 
