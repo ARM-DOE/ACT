@@ -16,8 +16,14 @@ import act
 # removing data flagged by embedded qc and DQRs
 url = 'https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv'
 col_names = ['time', 'temperature', 'count']
-ds = act.io.read_csv(url, column_names=col_names, index_col=0, parse_dates=True)
-
+ds = act.io.read_csv(
+    url,
+    column_names=col_names,
+    index_col=0,
+    parse_dates=['time'],
+    date_format="%Y-%m-%dT%H:%M:%S",
+    header=0,
+)
 # Drop years with less than 500000 samples
 ds = ds.where(ds['count'] > 500000)
 
