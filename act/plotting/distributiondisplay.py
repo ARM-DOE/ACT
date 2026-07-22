@@ -192,7 +192,6 @@ class DistributionDisplay(Display):
             self.fig = plt.figure()
         if self.axes is None:
             self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
 
         if sortby_field is not None:
             if 'units' in ydata.attrs:
@@ -330,7 +329,6 @@ class DistributionDisplay(Display):
             self.fig = plt.figure()
         if self.axes is None:
             self.axes = np.array([plt.axes()])
-            self.fig.add_axes(self.axes[0])
 
         # Set Title
         if set_title is None:
@@ -578,7 +576,7 @@ class DistributionDisplay(Display):
         if x_bins is not None and isinstance(x_bins, int):
             x_bins = np.linspace(xdata.values.min(), xdata.values.max(), x_bins)
 
-        if y_bins is not None and isinstance(x_bins, int):
+        if y_bins is not None and isinstance(y_bins, int):
             y_bins = np.linspace(ydata.values.min(), ydata.values.max(), y_bins)
 
         if x_bins is not None and y_bins is None:
@@ -825,7 +823,7 @@ class DistributionDisplay(Display):
                 'or more datasets in the TimeSeriesDisplay '
                 'object.'
             )
-        if dsname is None:
+        elif dsname is None:
             dsname = list(self._ds.keys())[0]
 
         ds = self._get_data(dsname, field)
