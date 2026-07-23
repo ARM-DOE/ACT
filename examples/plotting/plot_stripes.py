@@ -15,7 +15,15 @@ import act
 # SGP E13 MET data has already been processed to yearly averages,
 # removing data flagged by embedded qc and DQRs
 url = 'https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv'
-col_names = ['time', 'temperature', 'count']
+col_names = [
+    'time',
+    'temperature',
+    'count',
+    'minimum',
+    'maximum',
+    'standard_deviation',
+    'standard_error',
+]
 ds = act.io.read_csv(
     url,
     column_names=col_names,
@@ -24,6 +32,7 @@ ds = act.io.read_csv(
     date_format="%Y-%m-%dT%H:%M:%S",
     header=0,
 )
+
 # Drop years with less than 500000 samples
 ds = ds.where(ds['count'] > 500000)
 
