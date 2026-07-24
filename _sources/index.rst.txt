@@ -43,23 +43,20 @@
 
 Atmospheric Community Toolkit (ACT)
 ===================================
-The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit for working with atmospheric time-series datasets of varying dimensions.  The toolkit is meant to have functions for every part of the scientific process; discovery, IO, quality control, corrections, retrievals, visualization, and analysis.   It is meant to be a community platform for sharing code with the goal of reducing duplication of effort and better connecting the science community with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.  Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/AdamTheisen/ACT/blob/master/guides/ACT_Roadmap.pdf>`_  .
+The Atmospheric data Community Toolkit (ACT) is an open source Python toolkit
+for working with atmospheric time-series datasets of varying dimensions.
+The toolkit is meant to have functions for every part of the scientific process;
+discovery, IO, quality control, corrections, retrievals, visualization,
+and analysis. It is meant to be a community platform for sharing code with the
+goal of reducing duplication of effort and better connecting the science community
+with programs such as the `Atmospheric Radiation Measurement (ARM) User Facility <http://www.arm.gov>`_.
+Overarching development goals will be updated on a regular basis as part of the `Roadmap <https://github.com/ARM-DOE/ACT/blob/main/guides/ACT_Roadmap_3.pdf>`_  .
 
 |act|
 
 .. |act| image:: act_plots.png
 
 Please report any issues or feature requests by submitting an `Issue <https://github.com/ARM-DOE/ACT/issues>`_.  Additionally, our `discussions boards <https://github.com/ARM-DOE/ACT/discussions>`_ are open for ideas, general discussions or questions, and show and tell!
-
-ACT's Third Roadmap
-===================
-
-To meet the needs of the community and stakeholders, ACT will be creating a new roadmap.
-This roadmap will continue a plan forward on features to improve on and to add in newer ACT
-versions. A part of this new roadmap is a survey from the community that will provide feedback
-for the developers on priorities for newer ACT versions. If time permitting, and you are a user of ACT
-or are considering to use ACT the survey can be found here: `ACT Roadmap Survey <https://docs.google.com/forms/d/e/1FAIpQLScLQBH9ROP0sKMr_DvUnLKGT-K8pzc1b3zg21QqppNT_gTa2Q/viewform?usp=sf_link>`_
-The feedback would be much appreciated.
 
 Dependencies
 ============
@@ -103,7 +100,7 @@ forking the repository is highly recommended.
 
 We welcome contributions for all uses of ACT, provided the code can be
 distributed under the BSD 3-clause license. For more on
-contributing, see the `contributor's guide. <https://arm-doe.github.io/ACT/CONTRIBUTING.html>`_
+contributing, see the `contributor's guide. <https://arm-doe.github.io/ACT/userguide/CONTRIBUTING.html>`_
 
 Testing
 =======

@@ -25,7 +25,7 @@ This example shows how to download data from
 NEON and ARM 2m surface meteorology stations
 on the North Slope and plot them
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-65
+.. GENERATED FROM PYTHON SOURCE LINES 10-66
 
 
 
@@ -101,6 +101,7 @@ on the North Slope and plot them
     # Place your username and token here
     username = os.getenv('ARM_USERNAME')
     token = os.getenv('ARM_PASSWORD')
+    neon_token = os.getenv('NEON_API')
 
     if token is not None and len(token) > 0:
         # Download ARM data if a username/token are set
@@ -114,7 +115,7 @@ on the North Slope and plot them
         # https://www.neonscience.org/field-sites/explore-field-sites
         site_code = 'BARR'
         product_code = 'DP1.00002.001'
-        result = act.discovery.neon.download_neon_data(site_code, product_code, '2022-10')
+        result = act.discovery.neon.download_neon_data(neon_token, site_code, product_code, '2022-10')
 
         # A number of files are downloaded and further explained in the readme file that's downloaded.
         # These are the files we will need for reading 1 minute NEON data
@@ -149,7 +150,7 @@ on the North Slope and plot them
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 17.201 seconds)
+   **Total running time of the script:** (0 minutes 15.030 seconds)
 
 
 .. _sphx_glr_download_auto_examples_discovery_plot_neon.py:
