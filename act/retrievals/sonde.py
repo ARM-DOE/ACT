@@ -172,16 +172,28 @@ def calculate_stability_indicies(
     ds['parcel_temperature'] = t_profile.magnitude
     ds['parcel_temperature'].attrs['units'] = t_profile.units
 
-    # Calculate CAPE, CIN, LCL
-    sbcape, sbcin = mpcalc.surface_based_cape_cin(p_sorted, t_sorted, td_sorted)
+    # Calculate SBCAPE, SBCIN
+    try:
+        sbcape, sbcin = mpcalc.surface_based_cape_cin(p_sorted, t_sorted, td_sorted)
+    except IndexError:
+        sbcape = units.Quantity(np.nan, 'J/kg')
+        sbcin = units.Quantity(np.nan, 'J/kg')
 
+    # Calculate lifting condensation level
     lcl = mpcalc.lcl(p_sorted[0], t_sorted[0], td_sorted[0])
+
+    # Calculate level of free convection
     try:
         lfc = mpcalc.lfc(p_sorted[0], t_sorted[0], td_sorted[0])
     except IndexError:
         lfc = np.nan * p_sorted.units
 
-    mucape, mucin = mpcalc.most_unstable_cape_cin(p_sorted, t_sorted, td_sorted)
+    # Calculate MUCAPE, MUCIN
+    try:
+        mucape, mucin = mpcalc.most_unstable_cape_cin(p_sorted, t_sorted, td_sorted)
+    except IndexError:
+        mucape = units.Quantity(np.nan, 'J/kg')
+        mucin = units.Quantity(np.nan, 'J/kg')
 
     where_500 = np.argmin(np.abs(p_sorted - 500 * units.hPa))
     li = t_sorted[where_500] - t_profile[where_500]
