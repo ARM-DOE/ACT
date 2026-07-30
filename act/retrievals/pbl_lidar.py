@@ -193,7 +193,7 @@ def calculate_modified_gradient_pbl(
     return ds
 
 def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range",
-                                interval="30min", threshold=0.08, 
+                                interval="30min", threshold=0.08,
                                 noise_variance_threshold=0.2,
                                 min_gate_height=100):
     """
@@ -230,7 +230,7 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
     Nesbitt, S., Tan. H., Wefer, D., & Hammond, M. (2025).
     The thermodynamic and kinematic structure of the planetary boundary
     layer for a summer lake breeze day in Chicago. Journal of Geophysical
-    Research: Atmospheres, accepted. 
+    Research: Atmospheres, accepted.
 
     Parameters
     ----------
@@ -249,7 +249,7 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
         the turbulently mixed layer.
     noise_variance_threshold : float
         Instrument noise variance threshold, in the same units as velocity squared, above which a range gate is considered to have sufficient
-        signal-to-noise ratio to be included in the PBL height determination. 
+        signal-to-noise ratio to be included in the PBL height determination.
         The default value of 0.2 is based on the typical noise characteristics of the ARM Doppler lidars, but may need to be adjusted for other instruments.
     min_gate_height : float
         Minimum height of the range gate to be considered for PBL height determination.
@@ -310,7 +310,7 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
         noise_variance.append(noise_var)
         atmos_variance.append(atmos_var)
 
-    
+
     ds = ds.assign_coords(pbl_time=("pbl_time", interval_times))
     ds = ds.assign(
         pbl_tucker=xr.DataArray(pbl_heights, dims="pbl_time"),
@@ -323,7 +323,7 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
     )
     ds["pbl_tucker"].attrs["input_parameter"] = velocity
     ds["pbl_tucker"].attrs["variance_threshold"] = threshold
-    
+
     if hasattr(ds[dis_parm], "units"):
         ds["pbl_tucker"].attrs["units"] = ds[dis_parm].attrs["units"]
     else:
