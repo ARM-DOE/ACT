@@ -14,6 +14,7 @@ try:
 except:
     acf = None
 
+
 def calculate_gradient_pbl(ds, parm="beta_att", dis_parm="range", min_height=100, smooth_dis=5):
     """
     Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR
@@ -192,10 +193,16 @@ def calculate_modified_gradient_pbl(
 
     return ds
 
-def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range",
-                                interval="30min", threshold=0.08,
-                                noise_variance_threshold=0.2,
-                                min_gate_height=100):
+
+def calculate_tucker_method_pbl(
+    ds,
+    velocity="radial_velocity",
+    dis_parm="range",
+    interval="30min",
+    threshold=0.08,
+    noise_variance_threshold=0.2,
+    min_gate_height=100,
+):
     """
     Estimation of the Planetary Boundary Layer (PBL) height from Doppler lidar
     radial velocity using the turbulence component of the Tucker et al. (2009)
@@ -299,7 +306,7 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
         # threshold
         mask = (atmos_var < threshold) & (noise_var < noise_variance_threshold)
         height_inds = np.argwhere(height > min_gate_height).astype(int).flatten()
-        mask = mask[height_inds[0]:]
+        mask = mask[height_inds[0] :]
         match_inds = np.argwhere(mask).flatten()
         if match_inds.size > 0:
             pbl_height = height[height_inds][match_inds[0]]
@@ -310,7 +317,6 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
         noise_variance.append(noise_var)
         atmos_variance.append(atmos_var)
 
-
     ds = ds.assign_coords(pbl_time=("pbl_time", interval_times))
     ds = ds.assign(
         pbl_tucker=xr.DataArray(pbl_heights, dims="pbl_time"),
@@ -318,9 +324,9 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
         tucker_atmospheric_variance=xr.DataArray(atmos_variance, dims=("pbl_time", dis_parm)),
     )
 
-    ds["pbl_tucker"].attrs["description"] = (
-        "Planetary Boundary Layer Estimate via the Tucker et al. (2009) turbulence method"
-    )
+    ds["pbl_tucker"].attrs[
+        "description"
+    ] = "Planetary Boundary Layer Estimate via the Tucker et al. (2009) turbulence method"
     ds["pbl_tucker"].attrs["input_parameter"] = velocity
     ds["pbl_tucker"].attrs["variance_threshold"] = threshold
 
