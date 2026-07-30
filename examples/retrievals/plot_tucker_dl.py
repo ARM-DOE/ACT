@@ -27,7 +27,6 @@ display.plot('tucker_noise_variance', subplot_index=(2, ), vmin=0, vmax=0.5,
 display.set_yrng([0, 3000], subplot_index=(0, ))
 display.set_yrng([0, 3000], subplot_index=(1, ))
 display.set_yrng([0, 3000], subplot_index=(2, ))
-print(dl_ds['tucker_atmospheric_variance'].values.max())
-print(dl_ds['tucker_noise_variance'].values.max())
+
 plt.suptitle('Tucker Method PBL Height Retrieval', fontsize=16)
 plt.show()
