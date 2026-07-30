@@ -227,8 +227,8 @@ def calculate_tucker_method_pbl(ds, velocity="radial_velocity", dis_parm="range"
 
     Jackson, R., O’Brien, J., Wang, J., Fytanidis, D., Muradyan, P.,
     Grover, M., Raut, B., Collis, S., Tuftedal, M., Anderson, G., Wagner, T. J.,
-    Nesbitt, S., Tan. H., Wefer, D., & Hammond, M. (2025).
-    The thermodynamic and kinematic structure of the planetary boundary
+    Nesbitt, S., Tan. H., Wefer, D., & Hammond, M. (2025), The thermodynamic
+    and kinematic structure of the planetary boundary
     layer for a summer lake breeze day in Chicago. Journal of Geophysical
     Research: Atmospheres, accepted.
 
