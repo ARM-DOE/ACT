@@ -232,6 +232,9 @@ def calculate_tucker_method_pbl(
     Using Turbulence, Shear, and Aerosol Backscatter Data, J. Atmos. Oceanic
     Technol., 26, 673-688.
 
+    Newsom, RK, and Krishnamurthy, Raglavendra. Doppler Lidar (DL) Instrument Handbook.
+    United States: N. p., 2022. Web. doi:10.2172/1034640.
+
     Jackson, R., O’Brien, J., Wang, J., Fytanidis, D., Muradyan, P.,
     Grover, M., Raut, B., Collis, S., Tuftedal, M., Anderson, G., Wagner, T. J.,
     Nesbitt, S., Tan. H., Wefer, D., & Hammond, M. (2025), The thermodynamic
