@@ -7,7 +7,7 @@ The example below uses a Doppler lidar dataset from the ARM SGP site, but the me
 
 References:
 Tucker, S. C., Hardesty, R. M., & Brewer, W. A. (2009). Estimating the planetary boundary layer height from Doppler lidar radial velocity measurements.
- Journal of Atmospheric and Oceanic Technology, 26(9), 1745-175
+Journal of Atmospheric and Oceanic Technology, 26(9), 1745-175
 """
 
 import matplotlib.pyplot as plt
