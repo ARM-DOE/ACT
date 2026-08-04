@@ -196,7 +196,7 @@ def calculate_modified_gradient_pbl(
 
 
 def calculate_wavelet_pbl(
-    in_ds,
+    ds,
     var_name='wind_speed',
     range_name='height',
     scale=60.0,
@@ -222,7 +222,7 @@ def calculate_wavelet_pbl(
 
     Parameters
     ----------
-    in_ds : xarray.Dataset
+    ds : xarray.Dataset
         Dataset containing the zenith-pointing ceilometer or Doppler lidar data.
     var_name : str
         Variable in the dataset to compute the wavelet transform on (e.g.,
@@ -266,7 +266,7 @@ def calculate_wavelet_pbl(
     if not PYWAVELETS_AVAILABLE:
         raise ImportError('PyWavelets needs to be installed to use this feature.')
 
-    ds = in_ds.resample(time='5min').mean()
+    ds = ds.resample(time='5min').mean()
     range_resolution = ds[range_name].values[1] - ds[range_name].values[0]
     level = int(scale / range_resolution) - 1
 
