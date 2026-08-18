@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.retrievals.radiation</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functions for solar radiation related calculations and retrievals.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
@@ -457,12 +457,12 @@
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_dsh_from_dsdh_sdn.html#act.retrievals.calculate_dsh_from_dsdh_sdn">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_dsh_from_dsdh_sdn</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">dsdh</span><span class="o">=</span><span class="s1">&#39;down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">sdn</span><span class="o">=</span><span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span>
-    <span class="n">lat</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
-    <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+    <span class="n">dsdh</span><span class="o">=</span><span class="s1">'down_short_diffuse_hemisp'</span><span class="p">,</span>
+    <span class="n">sdn</span><span class="o">=</span><span class="s1">'short_direct_normal'</span><span class="p">,</span>
+    <span class="n">lat</span><span class="o">=</span><span class="s1">'lat'</span><span class="p">,</span>
+    <span class="n">lon</span><span class="o">=</span><span class="s1">'lon'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to derive the downwelling shortwave hemispheric irradiance (dsh) from the</span>
 <span class="sd">    downwelling shortwave diffuse hemispheric irradiance (dsdh) and the shortwave</span>
@@ -488,7 +488,7 @@
 <span class="sd">    ds: xarray.Dataset</span>
 <span class="sd">        ACT Xarray Dataset with calculations included as new variable.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="n">calculate_ghi_from_dni_dhi</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">dni</span><span class="o">=</span><span class="n">sdn</span><span class="p">,</span> <span class="n">dhi</span><span class="o">=</span><span class="n">dsdh</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">)</span>
 
@@ -498,15 +498,15 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_ghi_from_dni_dhi</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">dni</span><span class="o">=</span><span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span>
-    <span class="n">dhi</span><span class="o">=</span><span class="s1">&#39;down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">derived</span><span class="o">=</span><span class="s1">&#39;derived_down_short_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">long_name</span><span class="o">=</span><span class="s1">&#39;Derived global horizontal irradiance&#39;</span><span class="p">,</span>
+    <span class="n">dni</span><span class="o">=</span><span class="s1">'short_direct_normal'</span><span class="p">,</span>
+    <span class="n">dhi</span><span class="o">=</span><span class="s1">'down_short_diffuse_hemisp'</span><span class="p">,</span>
+    <span class="n">derived</span><span class="o">=</span><span class="s1">'derived_down_short_hemisp'</span><span class="p">,</span>
+    <span class="n">long_name</span><span class="o">=</span><span class="s1">'Derived global horizontal irradiance'</span><span class="p">,</span>
     <span class="n">solar_zenith</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">lat</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
-    <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+    <span class="n">lat</span><span class="o">=</span><span class="s1">'lat'</span><span class="p">,</span>
+    <span class="n">lon</span><span class="o">=</span><span class="s1">'lon'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to derive the Global Horizontal Irradiance (GHI) from</span>
 <span class="sd">    Direct Normal Irradiance (DNI) and Diffuse Horizontal</span>
@@ -540,16 +540,16 @@
 <span class="sd">    ds: xarray.Dataset</span>
 <span class="sd">        ACT Xarray Dataset with global horizontal irradiance included as new DataArray.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Get solar zenith angle</span>
     <span class="k">if</span> <span class="n">solar_zenith</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sz</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">sz</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">'radians'</span><span class="p">)</span>
         <span class="n">cos_sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">sz</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">elevation</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_solar_azimuth_elevation</span><span class="p">(</span>
-            <span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="p">)</span>
         <span class="n">cos_sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span> <span class="o">-</span> <span class="n">elevation</span><span class="p">))</span>
 
@@ -558,10 +558,10 @@
     <span class="c1"># Add data into Dataset</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">derived</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
         <span class="n">ghi</span><span class="p">,</span>
-        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
         <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">dhi</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">dhi</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span>
         <span class="p">},</span>
     <span class="p">)</span>
 
@@ -570,15 +570,15 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_dni_from_dhi_ghi</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">dhi</span><span class="o">=</span><span class="s1">&#39;down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">ghi</span><span class="o">=</span><span class="s1">&#39;down_short_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">derived</span><span class="o">=</span><span class="s1">&#39;derived_short_direct_normal&#39;</span><span class="p">,</span>
-    <span class="n">long_name</span><span class="o">=</span><span class="s1">&#39;Derived direct normal irradiance&#39;</span><span class="p">,</span>
+    <span class="n">dhi</span><span class="o">=</span><span class="s1">'down_short_diffuse_hemisp'</span><span class="p">,</span>
+    <span class="n">ghi</span><span class="o">=</span><span class="s1">'down_short_hemisp'</span><span class="p">,</span>
+    <span class="n">derived</span><span class="o">=</span><span class="s1">'derived_short_direct_normal'</span><span class="p">,</span>
+    <span class="n">long_name</span><span class="o">=</span><span class="s1">'Derived direct normal irradiance'</span><span class="p">,</span>
     <span class="n">solar_zenith</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">lat</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
-    <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+    <span class="n">lat</span><span class="o">=</span><span class="s1">'lat'</span><span class="p">,</span>
+    <span class="n">lon</span><span class="o">=</span><span class="s1">'lon'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to derive the Direct Normal Irradiance (DNI) from</span>
 <span class="sd">    Diffuse Horizontal Irradiance (DHI) and Global Horizontal</span>
@@ -612,16 +612,16 @@
 <span class="sd">    ds: xarray.Dataset</span>
 <span class="sd">        ACT Xarray Dataset with direct normal irradiance included as new DataArray.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Get solar zenith angle</span>
     <span class="k">if</span> <span class="n">solar_zenith</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sz</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">sz</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">'radians'</span><span class="p">)</span>
         <span class="n">cos_sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">sz</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">elevation</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_solar_azimuth_elevation</span><span class="p">(</span>
-            <span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="p">)</span>
         <span class="n">cos_sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span> <span class="o">-</span> <span class="n">elevation</span><span class="p">))</span>
 
@@ -630,10 +630,10 @@
     <span class="c1"># Add data into Dataset</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">derived</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
         <span class="n">dni</span><span class="p">,</span>
-        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
         <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">dhi</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">dhi</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span>
         <span class="p">},</span>
     <span class="p">)</span>
 
@@ -642,15 +642,15 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_dhi_from_dni_ghi</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">dni</span><span class="o">=</span><span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span>
-    <span class="n">ghi</span><span class="o">=</span><span class="s1">&#39;down_short_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">derived</span><span class="o">=</span><span class="s1">&#39;derived_down_short_diffuse_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">long_name</span><span class="o">=</span><span class="s1">&#39;Derived diffuse horizontal irradiance&#39;</span><span class="p">,</span>
+    <span class="n">dni</span><span class="o">=</span><span class="s1">'short_direct_normal'</span><span class="p">,</span>
+    <span class="n">ghi</span><span class="o">=</span><span class="s1">'down_short_hemisp'</span><span class="p">,</span>
+    <span class="n">derived</span><span class="o">=</span><span class="s1">'derived_down_short_diffuse_hemisp'</span><span class="p">,</span>
+    <span class="n">long_name</span><span class="o">=</span><span class="s1">'Derived diffuse horizontal irradiance'</span><span class="p">,</span>
     <span class="n">solar_zenith</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">lat</span><span class="o">=</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span>
-    <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+    <span class="n">lat</span><span class="o">=</span><span class="s1">'lat'</span><span class="p">,</span>
+    <span class="n">lon</span><span class="o">=</span><span class="s1">'lon'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to derive the Diffuse Horizontal Irradiance (DHI) from</span>
 <span class="sd">    Direct Normal Irradiance (DNI) and Global Horizontal</span>
@@ -684,16 +684,16 @@
 <span class="sd">    ds: xarray.Dataset</span>
 <span class="sd">        ACT Xarray Dataset with diffuse horizontal irradiance included as new DataArray.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Get solar zenith angle</span>
     <span class="k">if</span> <span class="n">solar_zenith</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sz</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">sz</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">solar_zenith</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">'radians'</span><span class="p">)</span>
         <span class="n">cos_sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">sz</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">elevation</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_solar_azimuth_elevation</span><span class="p">(</span>
-            <span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">lat</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">lon</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="p">)</span>
         <span class="n">cos_sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span> <span class="o">-</span> <span class="n">elevation</span><span class="p">))</span>
 
@@ -702,10 +702,10 @@
     <span class="c1"># Add data into Dataset</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">derived</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
         <span class="n">dhi</span><span class="p">,</span>
-        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
         <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">ghi</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">ghi</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span>
         <span class="p">},</span>
     <span class="p">)</span>
 
@@ -722,7 +722,7 @@
     <span class="n">ratio_output_variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to calculate the difference and ratio between two irradiance.</span>
 
@@ -747,26 +747,26 @@
 <span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Xarray dataset with calculations included as new variables.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">variable2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ds</span>
 
     <span class="k">if</span> <span class="n">diff_output_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">diff_output_variable</span> <span class="o">=</span> <span class="s1">&#39;diff_&#39;</span> <span class="o">+</span> <span class="n">variable</span>
+        <span class="n">diff_output_variable</span> <span class="o">=</span> <span class="s1">'diff_'</span> <span class="o">+</span> <span class="n">variable</span>
 
     <span class="k">if</span> <span class="n">ratio_output_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ratio_output_variable</span> <span class="o">=</span> <span class="s1">&#39;ratio_&#39;</span> <span class="o">+</span> <span class="n">variable</span>
+        <span class="n">ratio_output_variable</span> <span class="o">=</span> <span class="s1">'ratio_'</span> <span class="o">+</span> <span class="n">variable</span>
 
     <span class="c1"># ---------------------------------</span>
     <span class="c1"># Calculating Difference</span>
     <span class="c1"># ---------------------------------</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">-</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable2</span><span class="p">]</span>
     <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Difference between&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">variable2</span><span class="p">]),</span>
-        <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+        <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'Difference between'</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">'and'</span><span class="p">,</span> <span class="n">variable2</span><span class="p">]),</span>
+        <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'W/m^2'</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">diff_output_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="c1"># ---------------------------------</span>
@@ -778,10 +778,10 @@
         <span class="n">ratio</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
     <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Ratio between&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">variable2</span><span class="p">]),</span>
-        <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'Ratio between'</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">'and'</span><span class="p">,</span> <span class="n">variable2</span><span class="p">]),</span>
+        <span class="s1">'units'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">ratio_output_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
@@ -792,13 +792,13 @@
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_net_radiation.html#act.retrievals.calculate_net_radiation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_net_radiation</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">ush</span><span class="o">=</span><span class="s1">&#39;up_short_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">ulh</span><span class="o">=</span><span class="s1">&#39;up_long_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">dsh</span><span class="o">=</span><span class="s1">&#39;down_short_hemisp&#39;</span><span class="p">,</span>
-    <span class="n">dlhs</span><span class="o">=</span><span class="s1">&#39;down_long_hemisp_shaded&#39;</span><span class="p">,</span>
+    <span class="n">ush</span><span class="o">=</span><span class="s1">'up_short_hemisp'</span><span class="p">,</span>
+    <span class="n">ulh</span><span class="o">=</span><span class="s1">'up_long_hemisp'</span><span class="p">,</span>
+    <span class="n">dsh</span><span class="o">=</span><span class="s1">'down_short_hemisp'</span><span class="p">,</span>
+    <span class="n">dlhs</span><span class="o">=</span><span class="s1">'down_long_hemisp_shaded'</span><span class="p">,</span>
     <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to calculate the net radiation from upwelling short and long-wave irradiance and</span>
 <span class="sd">    downwelling short and long-wave hemisperic irradiances</span>
@@ -824,7 +824,7 @@
 <span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Xarray dataset with calculations included as new variables.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Calculate Net Radiation</span>
     <span class="n">ush_da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">ush</span><span class="p">]</span>
@@ -834,20 +834,20 @@
 
     <span class="n">net</span> <span class="o">=</span> <span class="o">-</span><span class="n">ush_da</span> <span class="o">+</span> <span class="n">dsh_da</span> <span class="o">-</span> <span class="n">ulh_da</span> <span class="o">+</span> <span class="n">dlhs_da</span>
 
-    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Calculated Net Radiation&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;net_radiation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Calculated Net Radiation'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'W/m^2'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'net_radiation'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">if</span> <span class="n">smooth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">net_smoothed</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">smooth</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Net Radiation Smoothed by &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">smooth</span><span class="p">),</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Net Radiation Smoothed by '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">smooth</span><span class="p">),</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'W/m^2'</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-            <span class="n">net_smoothed</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span>
+            <span class="n">net_smoothed</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span>
         <span class="p">)</span>
-        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;net_radiation_smoothed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'net_radiation_smoothed'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
@@ -863,7 +863,7 @@
     <span class="n">emiss_a</span><span class="o">=</span><span class="mf">0.61</span><span class="p">,</span>
     <span class="n">emiss_b</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Function to calculate longwave radiation during clear and cloudy sky conditions</span>
 <span class="sd">    using equations from Monteith and Unsworth 2013, Prata 1996, as reported in</span>
@@ -902,7 +902,7 @@
 <span class="sd">        Longwave Radiation Data Quality. Ninth ARM Science Team Meeting Proceedings,</span>
 <span class="sd">        San Antonio, Texas, March 22-26</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">met_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">met_ds</span><span class="p">[</span><span class="n">temperature_var</span><span class="p">]</span> <span class="o">+</span> <span class="mf">273.15</span>  <span class="c1"># C to K</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">met_ds</span><span class="p">[</span><span class="n">vapor_pressure_var</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.0</span>  <span class="c1"># kpa to hpa</span>
@@ -911,7 +911,7 @@
         <span class="n">e</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">vapor_pressure_var</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.0</span>  <span class="c1"># kpa to hpa</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Temperature and Vapor Pressure are Needed&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Temperature and Vapor Pressure are Needed'</span><span class="p">)</span>
 
     <span class="c1"># Get Stefan Boltzmann Constant</span>
     <span class="n">stefan</span> <span class="o">=</span> <span class="n">Stefan_Boltzmann</span>
@@ -929,22 +929,22 @@
     <span class="c1"># Monteith Cloudy Calcuation as indicated by Splitt and Bahrmann 1999</span>
     <span class="n">lw_calc_cldy</span> <span class="o">=</span> <span class="n">esky</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.178</span> <span class="o">-</span> <span class="mf">0.00957</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="mf">290.0</span><span class="p">)))</span> <span class="o">*</span> <span class="n">stefan</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">4</span>
 
-    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Clear Sky Estimate-(Monteith, 1973)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_clear</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;monteith_clear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Clear Sky Estimate-(Monteith, 1973)'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'W/m^2'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_clear</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'monteith_clear'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Overcast Sky Estimate-(Monteith, 1973)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_cldy</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;monteith_cloudy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Overcast Sky Estimate-(Monteith, 1973)'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'W/m^2'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">lw_calc_cldy</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'monteith_cloudy'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
-    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Clear Sky Estimate-(Prata, 1996)&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;W/m^2&#39;</span><span class="p">}</span>
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Clear Sky Estimate-(Prata, 1996)'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'W/m^2'</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
         <span class="n">lw_calc_clear_prata</span><span class="p">,</span>
-        <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
-        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
+        <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
         <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;prata_clear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'prata_clear'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

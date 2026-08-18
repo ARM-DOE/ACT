@@ -576,31 +576,31 @@ and calculate stability indicies.</p>
 <span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Read data</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_sonde</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;twpsondewnpnC3.b1.20060121.231600.custom.cdf&#39;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_sonde</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'twpsondewnpnC3.b1.20060121.231600.custom.cdf'</span><span class="p">)</span>
 <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_sonde</span></a><span class="p">)</span>
 
 
 <span class="c1"># Calculate stability indicies</span>
 <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">calculate_stability_indicies</span><span class="p">(</span>
-    <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span>
+    <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">'tdry'</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">'dp'</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">'pres'</span>
 <span class="p">)</span>
 
 <span class="c1"># Plot the stability index values on the plot</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variables</span></a> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;lifted_index&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;surface_based_cape&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;surface_based_cin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;most_unstable_cape&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;most_unstable_cin&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;lifted_condensation_level_temperature&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;lifted_condensation_level_pressure&#39;</span><span class="p">,</span>
+    <span class="s1">'lifted_index'</span><span class="p">,</span>
+    <span class="s1">'surface_based_cape'</span><span class="p">,</span>
+    <span class="s1">'surface_based_cin'</span><span class="p">,</span>
+    <span class="s1">'most_unstable_cape'</span><span class="p">,</span>
+    <span class="s1">'most_unstable_cin'</span><span class="p">,</span>
+    <span class="s1">'lifted_condensation_level_temperature'</span><span class="p">,</span>
+    <span class="s1">'lifted_condensation_level_pressure'</span><span class="p">,</span>
 <span class="p">]</span>
 
 
 <span class="c1"># Add a helper function which will format the text</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">format_variable</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">rounding_digits</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format a sounding variable to displayed on a single line&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.round.html#numpy.round" title="numpy.round" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">round</span></a><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span><span class="w"> </span><span class="n">rounding_digits</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">sonde_ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="w">    </span><span class="sd">"""Format a sounding variable to displayed on a single line"""</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.round.html#numpy.round" title="numpy.round" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">round</span></a><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span><span class="w"> </span><span class="n">rounding_digits</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">sonde_ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="si">}</span><span class="s1">'</span>
 
 
 <span class="c1"># Setup the plot</span>
@@ -608,7 +608,7 @@ and calculate stability indicies.</p>
 
 <span class="c1"># Add the stability indices</span>
 <span class="n">ax</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">skewt</span><span class="o">.</span><span class="n">axes</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">props</span></a> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;wheat&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">props</span></a> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s1">'round'</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'wheat'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">i</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variables</span></a><span class="p">)):</span>
     <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.text.html#matplotlib.axes.Axes.text" title="matplotlib.axes.Axes.text" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">ax</span><span class="o">.</span><span class="n">text</span></a><span class="p">(</span>
         <span class="mf">0.05</span><span class="p">,</span>
@@ -616,18 +616,18 @@ and calculate stability indicies.</p>
         <span class="n">format_variable</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">variables</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">i</span></a><span class="p">]),</span>
         <span class="n">transform</span><span class="o">=</span><a href="https://matplotlib.org/stable/api/transformations.html#matplotlib.transforms.BboxTransformTo" title="matplotlib.transforms.BboxTransformTo" class="sphx-glr-backref-module-matplotlib-transforms sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span></a><span class="p">,</span>
         <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">'top'</span><span class="p">,</span>
         <span class="n">bbox</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">props</span></a><span class="p">,</span>
     <span class="p">)</span>
 
 <span class="c1"># Add data</span>
-<span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">&#39;u_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;v_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">shade_cin</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">'u_wind'</span><span class="p">,</span> <span class="s1">'v_wind'</span><span class="p">,</span> <span class="s1">'pres'</span><span class="p">,</span> <span class="s1">'tdry'</span><span class="p">,</span> <span class="s1">'dp'</span><span class="p">,</span> <span class="n">shade_cin</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">sonde_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.373 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.367 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plotting-plot-skewt-with-text-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/f818455e872aadeb884d52404a3c2ad9/plot_skewt_with_text.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_skewt_with_text.ipynb</span></code></a></p>

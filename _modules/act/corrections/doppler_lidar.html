@@ -440,18 +440,18 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.corrections.doppler_lidar</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module contains functions for correcting doppler lidar data</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="correct_dl">
 <a class="viewcode-back" href="../../../API/generated/act.corrections.correct_dl.html#act.corrections.correct_dl">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">correct_dl</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;attenuated_backscatter&#39;</span><span class="p">,</span> <span class="n">range_normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">correct_dl</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">'attenuated_backscatter'</span><span class="p">,</span> <span class="n">range_normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This procedure corrects doppler lidar data by filling all zero and</span>
 <span class="sd">    negative values of backscatter with fill_value and then converting</span>
 <span class="sd">    the backscatter data into logarithmic space. Will also range normalize</span>
@@ -474,13 +474,13 @@
 <span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        The doppler lidar dataset containing the corrected values.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="k">if</span> <span class="n">range_normalize</span><span class="p">:</span>
-        <span class="c1"># This will get the name of the coordinate dimension so it&#39;s not assumed</span>
+        <span class="c1"># This will get the name of the coordinate dimension so it's not assumed</span>
         <span class="c1"># via position or name</span>
-        <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="n">height</span><span class="o">**</span><span class="mi">2</span>
@@ -490,9 +490,9 @@
 
     <span class="c1"># Updating the units to correctly indicate the values are log values</span>
     <span class="k">if</span> <span class="n">range_normalize</span><span class="p">:</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;log( Range normalized &#39;</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'log( Range normalized '</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">')'</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;log(&#39;</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'log('</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">')'</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

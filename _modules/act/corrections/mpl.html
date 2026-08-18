@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.corrections.mpl</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module contains corrections for micropulse lidars</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -455,17 +455,17 @@
 <a class="viewcode-back" href="../../../API/generated/act.corrections.correct_mpl.html#act.corrections.correct_mpl">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">correct_mpl</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">co_pol_var_name</span><span class="o">=</span><span class="s1">&#39;signal_return_co_pol&#39;</span><span class="p">,</span>
-    <span class="n">cross_pol_var_name</span><span class="o">=</span><span class="s1">&#39;signal_return_cross_pol&#39;</span><span class="p">,</span>
-    <span class="n">co_pol_afterpuls_var_name</span><span class="o">=</span><span class="s1">&#39;afterpulse_correction_co_pol&#39;</span><span class="p">,</span>
-    <span class="n">cross_pol_afterpulse_var_name</span><span class="o">=</span><span class="s1">&#39;afterpulse_correction_cross_pol&#39;</span><span class="p">,</span>
-    <span class="n">overlap_corr_var_name</span><span class="o">=</span><span class="s1">&#39;overlap_correction&#39;</span><span class="p">,</span>
-    <span class="n">overlap_corr_heights_var_name</span><span class="o">=</span><span class="s1">&#39;overlap_correction_heights&#39;</span><span class="p">,</span>
-    <span class="n">range_bins_var_name</span><span class="o">=</span><span class="s1">&#39;range_bins&#39;</span><span class="p">,</span>
-    <span class="n">height_var_name</span><span class="o">=</span><span class="s1">&#39;height&#39;</span><span class="p">,</span>
-    <span class="n">ratio_var_name</span><span class="o">=</span><span class="s1">&#39;cross_co_ratio&#39;</span><span class="p">,</span>
+    <span class="n">co_pol_var_name</span><span class="o">=</span><span class="s1">'signal_return_co_pol'</span><span class="p">,</span>
+    <span class="n">cross_pol_var_name</span><span class="o">=</span><span class="s1">'signal_return_cross_pol'</span><span class="p">,</span>
+    <span class="n">co_pol_afterpuls_var_name</span><span class="o">=</span><span class="s1">'afterpulse_correction_co_pol'</span><span class="p">,</span>
+    <span class="n">cross_pol_afterpulse_var_name</span><span class="o">=</span><span class="s1">'afterpulse_correction_cross_pol'</span><span class="p">,</span>
+    <span class="n">overlap_corr_var_name</span><span class="o">=</span><span class="s1">'overlap_correction'</span><span class="p">,</span>
+    <span class="n">overlap_corr_heights_var_name</span><span class="o">=</span><span class="s1">'overlap_correction_heights'</span><span class="p">,</span>
+    <span class="n">range_bins_var_name</span><span class="o">=</span><span class="s1">'range_bins'</span><span class="p">,</span>
+    <span class="n">height_var_name</span><span class="o">=</span><span class="s1">'height'</span><span class="p">,</span>
+    <span class="n">ratio_var_name</span><span class="o">=</span><span class="s1">'cross_co_ratio'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This procedure corrects MPL data:</span>
 <span class="sd">    1.) Throw out data before laser firing (heights &lt; 0).</span>
 <span class="sd">    2.) Remove background signal.</span>
@@ -514,7 +514,7 @@
 <span class="sd">        Xarray dataset containing the corrected values. The original Xarray Dataset</span>
 <span class="sd">        passed in is modified.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">data_dims</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span>
 
@@ -531,7 +531,7 @@
     <span class="c1"># height to only dimentionality of height in the dataset before removing</span>
     <span class="c1"># values less than 0.</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">reduce_dim_name</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">}</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
+        <span class="n">reduce_dim_name</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">}</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
         <span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
             <span class="n">func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">reduce_dim_name</span><span class="p">,</span> <span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
@@ -550,21 +550,21 @@
     <span class="n">dummy</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">range_bins</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
 
     <span class="c1"># Turn off warnings</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
 
     <span class="c1"># Run through co and cross pol data for corrections</span>
     <span class="n">co_bg</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span>
     <span class="n">co_bg</span> <span class="o">=</span> <span class="n">co_bg</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">co_bg</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">9998.0</span><span class="p">)</span>
-    <span class="n">co_bg</span> <span class="o">=</span> <span class="n">co_bg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;dim_0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">co_bg</span> <span class="o">=</span> <span class="n">co_bg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">'dim_0'</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
 
     <span class="n">x_bg</span> <span class="o">=</span> <span class="n">dummy</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span>
     <span class="n">x_bg</span> <span class="o">=</span> <span class="n">x_bg</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_bg</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">9998.0</span><span class="p">)</span>
-    <span class="n">x_bg</span> <span class="o">=</span> <span class="n">x_bg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;dim_0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">x_bg</span> <span class="o">=</span> <span class="n">x_bg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">'dim_0'</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Seems to be the fastest way of removing background signal at the moment</span>
     <span class="n">co_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
     <span class="n">x_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
         <span class="n">co_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">co_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">co_bg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">x_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">x_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">x_bg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
@@ -604,11 +604,11 @@
     <span class="k">if</span> <span class="n">ratio_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_data</span> <span class="o">+</span> <span class="n">co_data</span><span class="p">))</span> <span class="o">*</span> <span class="mf">100.0</span>
         <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ratio</span><span class="p">)</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Cross-pol / Co-pol ratio * 100&#39;</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Cross-pol / Co-pol ratio * 100'</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'1'</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]</span>
-            <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'ancillary_variables'</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">ratio_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'description'</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -621,8 +621,8 @@
     <span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">x_data</span>
 
     <span class="c1"># Update units</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;10 * log10(</span><span class="si">{</span><span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;10 * log10(</span><span class="si">{</span><span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"10 * log10(</span><span class="si">{</span><span class="n">ds</span><span class="p">[</span><span class="n">co_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"10 * log10(</span><span class="si">{</span><span class="n">ds</span><span class="p">[</span><span class="n">cross_pol_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

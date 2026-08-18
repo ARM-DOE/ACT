@@ -630,44 +630,44 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set your username and token here!</span>
-<span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;YourUserName&#39;</span>
-<span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;YourToken&#39;</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s1">'YourUserName'</span>
+<span class="n">token</span> <span class="o">=</span> <span class="s1">'YourToken'</span>
 
 <span class="c1"># Set the datastream and start/enddates for the DL data</span>
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgpdlfptE13.b1&#39;</span>
-<span class="n">startdate</span> <span class="o">=</span> <span class="s1">&#39;2024-04-08T17:00:00&#39;</span>
-<span class="n">enddate</span> <span class="o">=</span> <span class="s1">&#39;2024-04-08T21:00:00&#39;</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgpdlfptE13.b1'</span>
+<span class="n">startdate</span> <span class="o">=</span> <span class="s1">'2024-04-08T17:00:00'</span>
+<span class="n">enddate</span> <span class="o">=</span> <span class="s1">'2024-04-08T21:00:00'</span>
 
 <span class="c1"># Use ACT to easily download the data.  Watch for the data citation!  Show some support</span>
-<span class="c1"># for ARM&#39;s instrument experts and cite their data if you use it in a publication</span>
+<span class="c1"># for ARM's instrument experts and cite their data if you use it in a publication</span>
 <span class="n">dl_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_dl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">dl_files</span><span class="p">)</span>
 <span class="n">ds_dl</span> <span class="o">=</span> <span class="n">ds_dl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds_dl</span><span class="o">.</span><span class="n">range</span> <span class="o">&lt;</span> <span class="mi">1500</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Now download the rest of the data!</span>
-<span class="n">startdate</span> <span class="o">=</span> <span class="s1">&#39;2024-04-08&#39;</span>
-<span class="n">enddate</span> <span class="o">=</span> <span class="s1">&#39;2024-04-08&#39;</span>
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgpecorsfE14.b1&#39;</span>
+<span class="n">startdate</span> <span class="o">=</span> <span class="s1">'2024-04-08'</span>
+<span class="n">enddate</span> <span class="o">=</span> <span class="s1">'2024-04-08'</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgpecorsfE14.b1'</span>
 <span class="n">ecor_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_ecor</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">ecor_files</span><span class="p">)</span>
 
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgpmetE13.b1&#39;</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgpmetE13.b1'</span>
 <span class="n">met_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_met</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">met_files</span><span class="p">)</span>
 
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgpsirsE13.b1&#39;</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgpsirsE13.b1'</span>
 <span class="n">sirs_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_sirs</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">sirs_files</span><span class="p">)</span>
 
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgpaoscpcufE13.b1&#39;</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgpaoscpcufE13.b1'</span>
 <span class="n">cpcuf_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_cpcuf</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">cpcuf_files</span><span class="p">)</span>
 
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgpaossmpsE13.b1&#39;</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgpaossmpsE13.b1'</span>
 <span class="n">smps_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_smps</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">smps_files</span><span class="p">)</span>
 
-<span class="n">datastream</span> <span class="o">=</span> <span class="s1">&#39;sgp915rwpwindmomloC1.a0&#39;</span>
+<span class="n">datastream</span> <span class="o">=</span> <span class="s1">'sgp915rwpwindmomloC1.a0'</span>
 <span class="n">rwp_files</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">)</span>
 <span class="n">ds_rwp</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">rwp_files</span><span class="p">)</span>
 </pre></div>
@@ -758,14 +758,14 @@ Radiation Measurement (ARM) User Facility. https://doi.org/10.5439/1573768
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up the plot</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span>
     <span class="p">{</span>
-        <span class="s1">&#39;DL&#39;</span><span class="p">:</span> <span class="n">ds_dl</span><span class="p">,</span>
-        <span class="s1">&#39;SIRS&#39;</span><span class="p">:</span> <span class="n">ds_sirs</span><span class="p">,</span>
-        <span class="s1">&#39;MET&#39;</span><span class="p">:</span> <span class="n">ds_met</span><span class="p">,</span>
-        <span class="s1">&#39;ECOR&#39;</span><span class="p">:</span> <span class="n">ds_ecor</span><span class="p">,</span>
-        <span class="s1">&#39;CEIL&#39;</span><span class="p">:</span> <span class="n">ds_ceil</span><span class="p">,</span>
-        <span class="s1">&#39;CPCUF&#39;</span><span class="p">:</span> <span class="n">ds_cpcuf</span><span class="p">,</span>
-        <span class="s1">&#39;SMPS&#39;</span><span class="p">:</span> <span class="n">ds_smps</span><span class="p">,</span>
-        <span class="s1">&#39;RWP&#39;</span><span class="p">:</span> <span class="n">ds_rwp</span><span class="p">,</span>
+        <span class="s1">'DL'</span><span class="p">:</span> <span class="n">ds_dl</span><span class="p">,</span>
+        <span class="s1">'SIRS'</span><span class="p">:</span> <span class="n">ds_sirs</span><span class="p">,</span>
+        <span class="s1">'MET'</span><span class="p">:</span> <span class="n">ds_met</span><span class="p">,</span>
+        <span class="s1">'ECOR'</span><span class="p">:</span> <span class="n">ds_ecor</span><span class="p">,</span>
+        <span class="s1">'CEIL'</span><span class="p">:</span> <span class="n">ds_ceil</span><span class="p">,</span>
+        <span class="s1">'CPCUF'</span><span class="p">:</span> <span class="n">ds_cpcuf</span><span class="p">,</span>
+        <span class="s1">'SMPS'</span><span class="p">:</span> <span class="n">ds_smps</span><span class="p">,</span>
+        <span class="s1">'RWP'</span><span class="p">:</span> <span class="n">ds_rwp</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span>
     <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,),</span>
@@ -773,79 +773,79 @@ Radiation Measurement (ARM) User Facility. https://doi.org/10.5439/1573768
 
 <span class="c1"># Plot the direct solar radiation</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="s1">&#39;short_direct_normal&#39;</span><span class="p">,</span>
-    <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;SIRS&#39;</span><span class="p">,</span>
+    <span class="s1">'short_direct_normal'</span><span class="p">,</span>
+    <span class="n">dsname</span><span class="o">=</span><span class="s1">'SIRS'</span><span class="p">,</span>
     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-    <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;SIRS Short Direct Normal Irradiance&#39;</span><span class="p">,</span>
+    <span class="n">set_title</span><span class="o">=</span><span class="s1">'SIRS Short Direct Normal Irradiance'</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;SIRS&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">'SIRS'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_xrng</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;2024-04-08T17:00:00.0&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;2024-04-08T21:00:00.0&#39;</span><span class="p">)],</span>
+    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2024-04-08T17:00:00.0'</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2024-04-08T21:00:00.0'</span><span class="p">)],</span>
     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
 <span class="p">)</span>
 
 <span class="c1"># Plot up the surface temperature</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;temp_mean&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;MET&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;Surface Temperature&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'temp_mean'</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">'MET'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">set_title</span><span class="o">=</span><span class="s1">'Surface Temperature'</span><span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;MET&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">'MET'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="c1"># Surface fluxes</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;latent_flux&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;ECOR&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'latent_flux'</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">'ECOR'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="s1">&#39;sensible_heat_flux&#39;</span><span class="p">,</span>
-    <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;ECOR&#39;</span><span class="p">,</span>
+    <span class="s1">'sensible_heat_flux'</span><span class="p">,</span>
+    <span class="n">dsname</span><span class="o">=</span><span class="s1">'ECOR'</span><span class="p">,</span>
     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span>
-    <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;ECOR Latent, Sensible Heat, and CO2 Flux&#39;</span><span class="p">,</span>
+    <span class="n">set_title</span><span class="o">=</span><span class="s1">'ECOR Latent, Sensible Heat, and CO2 Flux'</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;ECOR&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">'ECOR'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">ecor_ax</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
-<span class="n">ecor_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;co2_flux&#39;</span><span class="p">],</span> <span class="s1">&#39;purple&#39;</span><span class="p">)</span>
-<span class="n">ecor_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;CO2 Flux (&#39;</span> <span class="o">+</span> <span class="n">ds_ecor</span><span class="p">[</span><span class="s1">&#39;co2_flux&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span>
+<span class="n">ecor_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_ecor</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">ds_ecor</span><span class="p">[</span><span class="s1">'co2_flux'</span><span class="p">],</span> <span class="s1">'purple'</span><span class="p">)</span>
+<span class="n">ecor_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'CO2 Flux ('</span> <span class="o">+</span> <span class="n">ds_ecor</span><span class="p">[</span><span class="s1">'co2_flux'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">')'</span><span class="p">)</span>
 
 <span class="c1"># Plot the DL data and adjust the limits</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="s1">&#39;radial_velocity&#39;</span><span class="p">,</span>
-    <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;DL&#39;</span><span class="p">,</span>
+    <span class="s1">'radial_velocity'</span><span class="p">,</span>
+    <span class="n">dsname</span><span class="o">=</span><span class="s1">'DL'</span><span class="p">,</span>
     <span class="n">vmin</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">vmax</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;balance&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">'balance'</span><span class="p">,</span>
     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,),</span>
-    <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;DL Radial Velocity&#39;</span><span class="p">,</span>
+    <span class="n">set_title</span><span class="o">=</span><span class="s1">'DL Radial Velocity'</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1500</span><span class="p">],</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="c1"># display.plot(&#39;radial_velocity_snr&#39;, dsname=&#39;RWP&#39;, cb_friendly=True, subplot_index=(4,))</span>
+<span class="c1"># display.plot('radial_velocity_snr', dsname='RWP', cb_friendly=True, subplot_index=(4,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="s1">&#39;signal_to_noise_ratio&#39;</span><span class="p">,</span>
-    <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;RWP&#39;</span><span class="p">,</span>
+    <span class="s1">'signal_to_noise_ratio'</span><span class="p">,</span>
+    <span class="n">dsname</span><span class="o">=</span><span class="s1">'RWP'</span><span class="p">,</span>
     <span class="n">cb_friendly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,),</span>
-    <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;RWP Signal-to-Noise Ratio&#39;</span><span class="p">,</span>
+    <span class="n">set_title</span><span class="o">=</span><span class="s1">'RWP Signal-to-Noise Ratio'</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">set_yrng</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1500</span><span class="p">],</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 
 <span class="c1"># Ultrafine CPC</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;concentration&#39;</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;CPCUF&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,),</span> <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;CPCUF Concentration&#39;</span><span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;CPCUF&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'concentration'</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="s1">'CPCUF'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,),</span> <span class="n">set_title</span><span class="o">=</span><span class="s1">'CPCUF Concentration'</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">'CPCUF'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="c1"># SMPS</span>
 <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="s1">&#39;dN_dlogDp&#39;</span><span class="p">,</span>
-    <span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;SMPS&#39;</span><span class="p">,</span>
+    <span class="s1">'dN_dlogDp'</span><span class="p">,</span>
+    <span class="n">dsname</span><span class="o">=</span><span class="s1">'SMPS'</span><span class="p">,</span>
     <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,),</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;nipy_spectral&#39;</span><span class="p">,</span>
-    <span class="n">set_title</span><span class="o">=</span><span class="s1">&#39;SMPS Size Distribution&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">'nipy_spectral'</span><span class="p">,</span>
+    <span class="n">set_title</span><span class="o">=</span><span class="s1">'SMPS Size Distribution'</span><span class="p">,</span>
     <span class="n">norm</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20000</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">&#39;SMPS&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">day_night_background</span><span class="p">(</span><span class="n">dsname</span><span class="o">=</span><span class="s1">'SMPS'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,))</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">'log'</span><span class="p">)</span>
 <span class="n">display</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">500</span><span class="p">])</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>

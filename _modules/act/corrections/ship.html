@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.corrections.ship</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module contains functions for correcting data for ship motion</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -452,13 +452,13 @@
 <a class="viewcode-back" href="../../../API/generated/act.corrections.correct_wind_for_ship_motion.html#act.corrections.correct_wind_for_ship_motion">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">correct_wind_for_ship_motion</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">wspd_name</span><span class="o">=</span><span class="s1">&#39;wind_speed&#39;</span><span class="p">,</span>
-    <span class="n">wdir_name</span><span class="o">=</span><span class="s1">&#39;wind_direction&#39;</span><span class="p">,</span>
-    <span class="n">heading_name</span><span class="o">=</span><span class="s1">&#39;yaw&#39;</span><span class="p">,</span>
-    <span class="n">cog_name</span><span class="o">=</span><span class="s1">&#39;course_over_ground&#39;</span><span class="p">,</span>
-    <span class="n">sog_name</span><span class="o">=</span><span class="s1">&#39;speed_over_ground&#39;</span><span class="p">,</span>
+    <span class="n">wspd_name</span><span class="o">=</span><span class="s1">'wind_speed'</span><span class="p">,</span>
+    <span class="n">wdir_name</span><span class="o">=</span><span class="s1">'wind_direction'</span><span class="p">,</span>
+    <span class="n">heading_name</span><span class="o">=</span><span class="s1">'yaw'</span><span class="p">,</span>
+    <span class="n">cog_name</span><span class="o">=</span><span class="s1">'course_over_ground'</span><span class="p">,</span>
+    <span class="n">sog_name</span><span class="o">=</span><span class="s1">'speed_over_ground'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This procedure corrects wind speed and direction for ship motion</span>
 <span class="sd">    based on equations from NOAA tech. memo. PSD-311. A Guide to Making</span>
 <span class="sd">    Climate Quality Meteorological and Flux Measurements at Sea.</span>
@@ -492,7 +492,7 @@
 <span class="sd">    Physical Sciences Division, 44pp. &amp; appendices. (NOAA Technical Memorandum OAR PSD-311).</span>
 <span class="sd">    http://hdl.handle.net/11329/386</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Set variables to be used and convert to radians</span>
     <span class="n">rels</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">wspd_name</span><span class="p">]</span>
     <span class="n">reld</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">wdir_name</span><span class="p">])</span>
@@ -516,12 +516,12 @@
     <span class="c1"># Create data arrays and add corrected wind direction and speed</span>
     <span class="c1"># to the initial dataset that was passed in</span>
     <span class="n">wdir_da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">wdir_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dirt</span><span class="p">)</span>
-    <span class="n">wdir_da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Wind direction corrected to ship motion&#39;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">wdir_name</span> <span class="o">+</span> <span class="s1">&#39;_corrected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wdir_da</span>
+    <span class="n">wdir_da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wind direction corrected to ship motion'</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">wdir_name</span> <span class="o">+</span> <span class="s1">'_corrected'</span><span class="p">]</span> <span class="o">=</span> <span class="n">wdir_da</span>
 
     <span class="n">wspd_da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">wspd_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ut</span><span class="p">)</span>
-    <span class="n">wspd_da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Wind speed corrected to ship motion&#39;</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">wspd_name</span> <span class="o">+</span> <span class="s1">&#39;_corrected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wspd_da</span>
+    <span class="n">wspd_da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wind speed corrected to ship motion'</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">wspd_name</span> <span class="o">+</span> <span class="s1">'_corrected'</span><span class="p">]</span> <span class="o">=</span> <span class="n">wspd_da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

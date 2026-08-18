@@ -829,25 +829,25 @@ If the signal is not strong, this may need to be lowered</p></li>
 <p>In testing on the ARM KAZR and MPL data, the following methods
 tended to work best for thresholding/corrections/etc.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kazr</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span>
-    <span class="n">kazr</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;reflectivity_copol&quot;</span><span class="p">,</span> <span class="n">height_dim</span><span class="o">=</span><span class="s2">&quot;range&quot;</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=-</span><span class="mf">10.0</span>
+    <span class="n">kazr</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s2">"reflectivity_copol"</span><span class="p">,</span> <span class="n">height_dim</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span> <span class="n">var_thresh</span><span class="o">=-</span><span class="mf">10.0</span>
 <span class="p">)</span>
 
 <span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">mpl</span><span class="o">.</span><span class="n">correct_mpl</span><span class="p">(</span><span class="n">mpl</span><span class="p">)</span>
 <span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="mf">1000.0</span>
-<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
-<span class="n">mpl</span><span class="p">[</span><span class="s2">&quot;signal_return_co_pol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">range_bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"m"</span>
+<span class="n">mpl</span><span class="p">[</span><span class="s2">"signal_return_co_pol"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">mpl</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span>
     <span class="n">mpl</span><span class="p">,</span>
-    <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;signal_return_co_pol&quot;</span><span class="p">,</span>
-    <span class="n">height_dim</span><span class="o">=</span><span class="s2">&quot;range_bins&quot;</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="s2">"signal_return_co_pol"</span><span class="p">,</span>
+    <span class="n">height_dim</span><span class="o">=</span><span class="s2">"range_bins"</span><span class="p">,</span>
     <span class="n">var_thresh</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
     <span class="n">fill_na</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">ceil</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">cbh</span><span class="o">.</span><span class="n">generic_sobel_cbh</span><span class="p">(</span>
     <span class="n">ceil</span><span class="p">,</span>
-    <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;backscatter&quot;</span><span class="p">,</span>
-    <span class="n">height_dim</span><span class="o">=</span><span class="s2">&quot;range&quot;</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="s2">"backscatter"</span><span class="p">,</span>
+    <span class="n">height_dim</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span>
     <span class="n">var_thresh</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
     <span class="n">fill_na</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>

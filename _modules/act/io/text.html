@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.io.text</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module contains I/O operations for loading csv files.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 
@@ -455,9 +455,9 @@
 <div class="viewcode-block" id="read_csv">
 <a class="viewcode-back" href="../../../API/generated/act.io.read_csv.html#act.io.read_csv">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_csv</span><span class="p">(</span>
-    <span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">','</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'python'</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skipfooter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns an `xarray.Dataset` with stored data and metadata from user-defined</span>
 <span class="sd">    query of CSV files.</span>
 
@@ -495,7 +495,7 @@
 
 <span class="sd">        ds = act.io.csv.read(act.tests.sample_files.EXAMPLE_CSV_WILDCARD)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Convert to string if filename is a pathlib or not a list</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
@@ -518,11 +518,11 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="n">ignore_index</span><span class="p">)</span>
 
-    <span class="c1"># Set Coordinates if there&#39;s a variable date_time</span>
-    <span class="k">if</span> <span class="s1">&#39;date_time&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">date_time</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">date_time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">)</span>
+    <span class="c1"># Set Coordinates if there's a variable date_time</span>
+    <span class="k">if</span> <span class="s1">'date_time'</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">date_time</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">date_time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">date_time</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'time'</span><span class="p">)</span>
 
     <span class="c1"># Convert to xarray DataSet</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
@@ -533,18 +533,18 @@
     <span class="n">x_coord</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">to_index</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">x_coord_dt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x_coord</span><span class="p">)</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_dates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H%M%S&#39;</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_file_dates'</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_file_times'</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_coord_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%H%M%S'</span><span class="p">)</span>
 
     <span class="c1"># Check for standard ARM datastream name, if none, assume the file is ARM</span>
     <span class="c1"># standard format.</span>
     <span class="n">is_arm_file_flag</span> <span class="o">=</span> <span class="n">check_arm_standards</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_arm_file_flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="c1"># Add additional attributes, site, standards flag, etc...</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_arm_standards_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_site'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">])[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_arm_standards_flag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

@@ -440,11 +440,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.io.arm</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">This module contains I/O operations for loading files that were created for the</span>
 <span class="sd">Atmospheric Radiation Measurement program supported by the Department of Energy</span>
 <span class="sd">Office of Science.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
@@ -474,18 +474,18 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">read_arm_netcdf</span><span class="p">(</span>
     <span class="n">filenames</span><span class="p">,</span>
     <span class="n">concat_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">data_vars</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+    <span class="n">data_vars</span><span class="o">=</span><span class="s1">'all'</span><span class="p">,</span>
     <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;by_coords&#39;</span><span class="p">,</span>
+    <span class="n">combine</span><span class="o">=</span><span class="s1">'by_coords'</span><span class="p">,</span>
     <span class="n">decode_times</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">use_base_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">combine_attrs</span><span class="o">=</span><span class="s1">&#39;override&#39;</span><span class="p">,</span>
+    <span class="n">combine_attrs</span><span class="o">=</span><span class="s1">'override'</span><span class="p">,</span>
     <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">keep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    query of ARM-standard netCDF files from a single datastream. Has some procedures</span>
@@ -499,7 +499,7 @@
 <span class="sd">        Dimension to concatenate files along.</span>
 <span class="sd">    data_vars : str</span>
 <span class="sd">        Whether to attempt to concatenate all variables or only variables</span>
-<span class="sd">        that meet the concatenate dimension. Default is &#39;all&#39;.</span>
+<span class="sd">        that meet the concatenate dimension. Default is 'all'.</span>
 <span class="sd">    return_None : boolean</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
@@ -550,7 +550,7 @@
 <span class="sd">        ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_SONDE_WILDCARD)</span>
 <span class="sd">        print(ds)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">filenames</span><span class="p">,</span> <span class="n">cleanup_temp_directory</span> <span class="o">=</span> <span class="n">check_if_tar_gz_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
@@ -570,24 +570,24 @@
         <span class="n">decode_times</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">coders</span><span class="o">.</span><span class="n">CFDatetimeCoder</span><span class="p">(</span><span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Add function keywords to kwargs dictionary for passing into open_mfdataset.</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;concat_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_times</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">'combine'</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">'concat_dim'</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_dim</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">'decode_times'</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_times</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine_attrs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">'combine_attrs'</span><span class="p">]</span> <span class="o">=</span> <span class="n">combine_attrs</span>
 
     <span class="c1"># An update to xarray.open_dataset is changing from allowing decode_timedelta to be set to None</span>
     <span class="c1"># (the current default) and if so set to match decode_times. This code is to set the keyword to</span>
     <span class="c1"># make the warning go away.</span>
-    <span class="k">if</span> <span class="s1">&#39;decode_timedelta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_timedelta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;decode_times&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'decode_timedelta'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">'decode_timedelta'</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'decode_times'</span><span class="p">]</span>
 
     <span class="c1"># Check if keep_variables is set. If so determine correct drop_variables</span>
     <span class="k">if</span> <span class="n">keep_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">drop_variables</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="s1">&#39;drop_variables&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">drop_variables</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;drop_variables&#39;</span><span class="p">]</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;drop_variables&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keep_variables_to_drop_variables</span><span class="p">(</span>
+        <span class="k">if</span> <span class="s1">'drop_variables'</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">drop_variables</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'drop_variables'</span><span class="p">]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">'drop_variables'</span><span class="p">]</span> <span class="o">=</span> <span class="n">keep_variables_to_drop_variables</span><span class="p">(</span>
             <span class="n">filenames</span><span class="p">,</span> <span class="n">keep_variables</span><span class="p">,</span> <span class="n">drop_variables</span><span class="o">=</span><span class="n">drop_variables</span>
         <span class="p">)</span>
 
@@ -598,7 +598,7 @@
     <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
         <span class="n">except_tuple</span> <span class="o">=</span> <span class="n">except_tuple</span> <span class="o">+</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span>
 
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data_vars&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_vars</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">'data_vars'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_vars</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Read data file with Xarray function</span>
@@ -606,23 +606,23 @@
 
     <span class="k">except</span> <span class="n">except_tuple</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
         <span class="c1"># If requested return None for File not found error</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;FileNotFoundError&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'FileNotFoundError'</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># If requested return None for File not found error</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;OSError&#39;</span> <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;no files to open&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'OSError'</span> <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'no files to open'</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># Look at error message and see if could be nested error message. If so</span>
         <span class="c1"># update combine keyword and try again. This should allow reading files</span>
         <span class="c1"># without a time variable but base_time and time_offset variables.</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;nested&#39;</span>
-            <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;ValueError&#39;</span>
-            <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Could not find any dimension coordinates &#39;</span>
-            <span class="s1">&#39;to use to order the datasets for concatenation&#39;</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">'combine'</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'nested'</span>
+            <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'ValueError'</span>
+            <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Could not find any dimension coordinates '</span>
+            <span class="s1">'to use to order the datasets for concatenation'</span>
         <span class="p">):</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;combine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;nested&#39;</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">'combine'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'nested'</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_mfdataset</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">filenames</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -633,18 +633,18 @@
     <span class="c1"># of both are in seconds and that the value is number of seconds since epoch.</span>
     <span class="k">if</span> <span class="n">use_base_time</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
-            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">'base_time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time_offset'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'base_time'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
 
         <span class="c1"># Need to use a new Dataset creation to correctly index time for use with</span>
         <span class="c1"># .group and .resample methods in Xarray Datasets.</span>
-        <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)})</span>
-        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+        <span class="n">temp_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="s1">'time'</span><span class="p">:</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)})</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">temp_ds</span>
-        <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;ancillary_variables&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">att_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'units'</span><span class="p">,</span> <span class="s1">'ancillary_variables'</span><span class="p">]:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
@@ -654,10 +654,10 @@
     <span class="c1"># To ensure the times are read in correctly need to set use_cftime=True.</span>
     <span class="c1"># This will read in time as cftime object. But Xarray uses numpy datetime64</span>
     <span class="c1"># natively. This will convert the cftime time values to numpy datetime64.</span>
-    <span class="n">desired_time_precision</span> <span class="o">=</span> <span class="s1">&#39;datetime64[ns]&#39;</span>
-    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">]:</span>
+    <span class="n">desired_time_precision</span> <span class="o">=</span> <span class="s1">'datetime64[ns]'</span>
+    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'time_offset'</span><span class="p">]:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cftime.&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">'time'</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'cftime.'</span><span class="p">):</span>
                 <span class="c1"># If we just convert time to datetime64 the group, sel, and other Xarray</span>
                 <span class="c1"># methods will not work correctly because time is not indexed. Need to</span>
                 <span class="c1"># use the formation of a Dataset to correctly set the time indexing.</span>
@@ -674,18 +674,18 @@
                 <span class="k">del</span> <span class="n">temp_ds</span>
 
                 <span class="c1"># If time_offset is in file try to convert base_time as well</span>
-                <span class="k">if</span> <span class="n">var_name</span> <span class="o">==</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;base_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">var_name</span> <span class="o">==</span> <span class="s1">'time_offset'</span><span class="p">:</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">'base_time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'base_time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="s1">'base_time'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'base_time'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">desired_time_precision</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-    <span class="c1"># Check if &quot;time&quot; variable is not in the netCDF file. If so try to use</span>
+    <span class="c1"># Check if "time" variable is not in the netCDF file. If so try to use</span>
     <span class="c1"># base_time and time_offset to make time variable. Basically a fix for incorrectly</span>
     <span class="c1"># formatted files. May require using decode_times=False to initially read the data.</span>
-    <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">'time'</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time_offset'</span><span class="p">]</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="k">pass</span>
 
@@ -699,33 +699,33 @@
     <span class="n">filenames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">pts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(^[a-zA-Z0-9]+)\.([0-9a-z]</span><span class="si">{2}</span><span class="s1">)\.([\d]</span><span class="si">{8}</span><span class="s1">)\.([\d]</span><span class="si">{6}</span><span class="s1">)\.([a-z]{2,3}$)&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">'(^[a-zA-Z0-9]+)\.([0-9a-z]</span><span class="si">{2}</span><span class="s1">)\.([\d]</span><span class="si">{8}</span><span class="s1">)\.([\d]</span><span class="si">{6}</span><span class="s1">)\.([a-z]{2,3}$)'</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="c1"># If Not ARM format, read in first time for info</span>
         <span class="k">if</span> <span class="n">pts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
             <span class="n">file_dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
             <span class="n">file_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">dummy</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dummy</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">dummy</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">dummy</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="n">file_dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="n">dummy</span><span class="p">))</span>
             <span class="n">file_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="n">dummy</span><span class="p">,</span> <span class="n">returnTime</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
     <span class="c1"># Add attributes</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_dates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_dates</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_times</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_file_dates'</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_dates</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_file_times'</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_times</span>
     <span class="n">is_arm_file_flag</span> <span class="o">=</span> <span class="n">check_arm_standards</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
-    <span class="c1"># Ensure that we have _datastream set whether or no there&#39;s</span>
+    <span class="c1"># Ensure that we have _datastream set whether or no there's</span>
     <span class="c1"># a datastream attribute already.</span>
     <span class="k">if</span> <span class="n">is_arm_file_flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_DATASTREAM_NAME</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'datastream'</span><span class="p">]</span>
 
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_arm_standards_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_arm_standards_flag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_arm_file_flag</span>
 
     <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -738,7 +738,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">keep_variables_to_drop_variables</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">keep_variables</span><span class="p">,</span> <span class="n">drop_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a list of variable names to exclude from reading by passing into</span>
 <span class="sd">    `Xarray.open_dataset` drop_variables keyword. This can greatly help reduce</span>
 <span class="sd">    loading time and disk space use of the Dataset.</span>
@@ -770,12 +770,12 @@
 <span class="sd">    .. code-block :: python</span>
 
 <span class="sd">        import act</span>
-<span class="sd">        filename = &#39;/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc&#39;</span>
+<span class="sd">        filename = '/data/datastream/hou/houkasacrcfrM1.a1/houkasacrcfrM1.a1.20220404.*.nc'</span>
 <span class="sd">        drop_vars = act.io.arm.keep_variables_to_drop_variables(</span>
-<span class="sd">            filename, [&#39;lat&#39;,&#39;lon&#39;,&#39;alt&#39;,&#39;crosspolar_differential_phase&#39;],</span>
-<span class="sd">            drop_variables=&#39;variable_name_that_only_exists_in_last_file_of_the_day&#39;)</span>
+<span class="sd">            filename, ['lat','lon','alt','crosspolar_differential_phase'],</span>
+<span class="sd">            drop_variables='variable_name_that_only_exists_in_last_file_of_the_day')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">read_variables</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">return_variables</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -799,7 +799,7 @@
             <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Use netCDF4 library to extract the variable and dimension names.</span>
-    <span class="n">rootgrp</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">rootgrp</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
     <span class="n">read_variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rootgrp</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
     <span class="c1"># Loop over the variables to exclude needed coordinate dimention names.</span>
     <span class="n">dims_to_keep</span> <span class="o">=</span> <span class="p">[]</span>
@@ -824,7 +824,7 @@
 <div class="viewcode-block" id="check_arm_standards">
 <a class="viewcode-back" href="../../../API/generated/act.io.check_arm_standards.html#act.io.check_arm_standards">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_arm_standards</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Checks to see if an xarray dataset conforms to ARM standards.</span>
 
@@ -839,17 +839,17 @@
 <span class="sd">        The flag corresponding to whether or not the file conforms</span>
 <span class="sd">        to ARM standards. Bit packed, so 0 for no, 1 for yes</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="s1">&#39;datastream&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">if</span> <span class="s1">'datastream'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="c1"># Check if the historical global attribute name is</span>
-    <span class="c1"># used instead of updated name of &#39;datastream&#39;. If so</span>
+    <span class="c1"># used instead of updated name of 'datastream'. If so</span>
     <span class="c1"># correct the global attributes and flip flag.</span>
-    <span class="k">if</span> <span class="s1">&#39;zeb_platform&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;datastream&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zeb_platform&#39;</span><span class="p">])</span>
-        <span class="k">del</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zeb_platform&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'zeb_platform'</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'zeb_platform'</span><span class="p">])</span>
+        <span class="k">del</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'zeb_platform'</span><span class="p">]</span>
         <span class="n">the_flag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
 
     <span class="k">return</span> <span class="n">the_flag</span></div>
@@ -859,9 +859,9 @@
 <div class="viewcode-block" id="create_ds_from_arm_dod">
 <a class="viewcode-back" href="../../../API/generated/act.io.create_ds_from_arm_dod.html#act.io.create_ds_from_arm_dod">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_ds_from_arm_dod</span><span class="p">(</span>
-    <span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.0</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_file</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">proc</span><span class="p">,</span> <span class="n">set_dims</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mf">9999.0</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_file</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Queries the ARM DOD api and builds a dataset based on the ARM DOD and</span>
 <span class="sd">    the dimension sizes that are passed in.</span>
@@ -877,7 +877,7 @@
 <span class="sd">        Time is required. Code will try and pull from DOD, unless set</span>
 <span class="sd">        through this variable</span>
 <span class="sd">        Note: names need to match exactly what is in the dod</span>
-<span class="sd">        i.e. {&#39;drop_diameter&#39;: 50, &#39;time&#39;: 1440}</span>
+<span class="sd">        i.e. {'drop_diameter': 50, 'time': 1440}</span>
 <span class="sd">    version : string</span>
 <span class="sd">        Version number of the ingest to use. If not set, defaults to</span>
 <span class="sd">        latest version</span>
@@ -900,14 +900,14 @@
 <span class="sd">    --------</span>
 <span class="sd">    .. code-block :: python</span>
 
-<span class="sd">        dims = {&#39;time&#39;: 1440, &#39;drop_diameter&#39;: 50}</span>
+<span class="sd">        dims = {'time': 1440, 'drop_diameter': 50}</span>
 <span class="sd">        ds = act.io.arm.create_ds_from_arm_dod(</span>
-<span class="sd">            &#39;vdis.b1&#39;, dims, version=&#39;1.2&#39;, scalar_fill_dim=&#39;time&#39;)</span>
+<span class="sd">            'vdis.b1', dims, version='1.2', scalar_fill_dim='time')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Set base url to get DOD information</span>
     <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://pcm.arm.gov/pcm/api/dods/&#39;</span>
+        <span class="n">base_url</span> <span class="o">=</span> <span class="s1">'https://pcm.arm.gov/pcm/api/dods/'</span>
 
         <span class="c1"># Get data from DOD api</span>
         <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">proc</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
@@ -917,11 +917,11 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
     <span class="c1"># Check version numbers and alert if requested version in not available</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'versions'</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">version</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="p">[</span><span class="s1">&#39;Version:&#39;</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="s1">&#39;not available or not specified. Using Version:&#39;</span><span class="p">,</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">'Version:'</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="s1">'not available or not specified. Using Version:'</span><span class="p">,</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
             <span class="p">),</span>
             <span class="ne">UserWarning</span><span class="p">,</span>
         <span class="p">)</span>
@@ -932,12 +932,12 @@
 
     <span class="c1"># Get the global attributes and add to dataset</span>
     <span class="n">atts</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">&#39;atts&#39;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'versions'</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">'atts'</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'string'</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span>
 
     <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">atts</span>
 
@@ -945,20 +945,20 @@
     <span class="c1"># then added to the dataset</span>
     <span class="c1"># If not passed in through set_dims, will look to the DOD</span>
     <span class="c1"># if not set in the DOD, then will raise error</span>
-    <span class="n">variables</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">&#39;vars&#39;</span><span class="p">]</span>
-    <span class="n">dod_dims</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;versions&#39;</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'versions'</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">'vars'</span><span class="p">]</span>
+    <span class="n">dod_dims</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'versions'</span><span class="p">][</span><span class="n">version</span><span class="p">][</span><span class="s1">'dims'</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dod_dims</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">set_dims</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">set_dims</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">set_dims</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">'length'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">set_dims</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'length'</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Dimension length not set in DOD for &#39;</span>
-                    <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-                    <span class="o">+</span> <span class="s1">&#39;, nor passed in through set_dim&#39;</span>
+                    <span class="s1">'Dimension length not set in DOD for '</span>
+                    <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="s1">', nor passed in through set_dim'</span>
                 <span class="p">)</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-        <span class="n">dims</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">'dims'</span><span class="p">]</span>
         <span class="n">dim_shape</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># Using provided dimension data, fill array accordingly for easy overwrite</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -966,11 +966,11 @@
                 <span class="n">data_na</span> <span class="o">=</span> <span class="n">fill_value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data_na</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">set_dims</span><span class="p">[</span><span class="n">scalar_fill_dim</span><span class="p">],</span> <span class="n">fill_value</span><span class="p">)</span>
-                <span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalar_fill_dim</span>
+                <span class="n">v</span><span class="p">[</span><span class="s1">'dims'</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalar_fill_dim</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
                 <span class="n">dim_shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_dims</span><span class="p">[</span><span class="n">d</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">v</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">==</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">data_na</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data_na</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">dim_shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>
@@ -978,18 +978,18 @@
         <span class="c1"># Get attribute information. Had to do some things to get to print to netcdf</span>
         <span class="n">atts</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">str_flag</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;atts&#39;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="s1">'atts'</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'string'</span><span class="p">:</span>
                 <span class="n">str_flag</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">str_flag</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">str_flag</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'units'</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">atts</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span>
 
-        <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_na</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">da</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_na</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">'dims'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
@@ -997,13 +997,13 @@
 
 <div class="viewcode-block" id="WriteDataset">
 <a class="viewcode-back" href="../../../API/generated/act.io.WriteDataset.html#act.io.WriteDataset">[docs]</a>
-<span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">&#39;write&#39;</span><span class="p">)</span>
+<span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">'write'</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">WriteDataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Class for cleaning up Dataset before writing to file.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_ds</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">xarray_ds</span>
@@ -1014,16 +1014,16 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cleanup_global_atts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">cleanup_qc_atts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">join_char</span><span class="o">=</span><span class="s1">&#39;__&#39;</span><span class="p">,</span>
+        <span class="n">join_char</span><span class="o">=</span><span class="s1">'__'</span><span class="p">,</span>
         <span class="n">make_copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">cf_compliant</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">delete_global_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;qc_standards_version&#39;</span><span class="p">,</span> <span class="s1">&#39;qc_method&#39;</span><span class="p">,</span> <span class="s1">&#39;qc_comment&#39;</span><span class="p">],</span>
+        <span class="n">delete_global_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">'qc_standards_version'</span><span class="p">,</span> <span class="s1">'qc_method'</span><span class="p">,</span> <span class="s1">'qc_comment'</span><span class="p">],</span>
         <span class="n">FillValue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">cf_convention</span><span class="o">=</span><span class="s1">&#39;CF-1.8&#39;</span><span class="p">,</span>
+        <span class="n">cf_convention</span><span class="o">=</span><span class="s1">'CF-1.8'</span><span class="p">,</span>
         <span class="n">encoding</span><span class="o">=</span><span class="p">{},</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 <span class="sd">        This is a wrapper around Dataset.to_netcdf to clean up the Dataset before</span>
 <span class="sd">        writing to disk. Some things are added to global attributes during ACT reading</span>
@@ -1077,9 +1077,9 @@
 <span class="sd">        --------</span>
 <span class="sd">        .. code-block :: python</span>
 
-<span class="sd">            ds.write.write_netcdf(path=&#39;output.nc&#39;)</span>
+<span class="sd">            ds.write.write_netcdf(path='output.nc')</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">make_copy</span><span class="p">:</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">)</span>
@@ -1088,16 +1088,16 @@
 
         <span class="k">if</span> <span class="n">cleanup_global_atts</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'_'</span><span class="p">):</span>
                     <span class="k">del</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">cleanup_qc_atts</span><span class="p">:</span>
-            <span class="n">check_atts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_assessments&#39;</span><span class="p">]</span>
+            <span class="n">check_atts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'flag_meanings'</span><span class="p">,</span> <span class="s1">'flag_assessments'</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">'standard_name'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="k">continue</span>
 
-                <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;quality_flag&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'standard_name'</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"quality_flag"</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">check_atts</span><span class="p">:</span>
@@ -1105,9 +1105,9 @@
                         <span class="n">att_values</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">att_values</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
                             <span class="n">att_values</span> <span class="o">=</span> <span class="p">[</span>
-                                <span class="n">att_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">join_char</span><span class="p">)</span> <span class="k">for</span> <span class="n">att_value</span> <span class="ow">in</span> <span class="n">att_values</span>
+                                <span class="n">att_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' '</span><span class="p">,</span> <span class="n">join_char</span><span class="p">)</span> <span class="k">for</span> <span class="n">att_value</span> <span class="ow">in</span> <span class="n">att_values</span>
                             <span class="p">]</span>
-                            <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">att_values</span><span class="p">)</span>
+                            <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">att_values</span><span class="p">)</span>
 
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
@@ -1121,13 +1121,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">FillValue</span><span class="p">:</span>
             <span class="n">all_var_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">all_var_names</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s1">&#39;_FillValue&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">'_FillValue'</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="k">if</span> <span class="n">var_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">encoding</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-                <span class="k">elif</span> <span class="s1">&#39;_FillValue&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'_FillValue'</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+                <span class="k">elif</span> <span class="s1">'_FillValue'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">encoding</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="s1">'_FillValue'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">delete_global_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">delete_global_attrs</span><span class="p">:</span>
@@ -1137,10 +1137,10 @@
                     <span class="k">pass</span>
 
         <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">if</span> <span class="s1">&#39;string&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                <span class="n">att</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">]</span>
-                <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">var_name</span> <span class="o">+</span> <span class="s1">&#39;_string&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">att</span>
-                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;string&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">'string'</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">att</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'string'</span><span class="p">]</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">var_name</span> <span class="o">+</span> <span class="s1">'_string'</span><span class="p">]</span> <span class="o">=</span> <span class="n">att</span>
+                <span class="k">del</span> <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'string'</span><span class="p">]</span>
 
         <span class="c1"># If requested update global attributes and variables attributes for required</span>
         <span class="c1"># CF attributes.</span>
@@ -1150,100 +1150,100 @@
             <span class="n">standard_names</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">standard_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">])</span>
+                    <span class="n">standard_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'standard_name'</span><span class="p">])</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="n">standard_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
             <span class="c1"># Check if time varible has axis and standard_name attribute</span>
-            <span class="n">coord_name</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
+            <span class="n">coord_name</span> <span class="o">=</span> <span class="s1">'time'</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'axis'</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'axis'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'T'</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'standard_name'</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="n">coord_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'standard_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'time'</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
             <span class="c1"># Try to determine type of dataset by coordinate dimention named time</span>
             <span class="c1"># and other factors</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;FeatureType&#39;</span><span class="p">]</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'FeatureType'</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">dim_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
                 <span class="n">FeatureType</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="n">dim_names</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]:</span>
-                    <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">&#39;timeSeries&#39;</span>
-                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">dim_names</span> <span class="ow">and</span> <span class="s1">&#39;bound&#39;</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">:</span>
-                    <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">&#39;timeSeries&#39;</span>
-                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_names</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dim_names</span> <span class="o">==</span> <span class="p">[</span><span class="s1">'time'</span><span class="p">]:</span>
+                    <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">'timeSeries'</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">'time'</span> <span class="ow">in</span> <span class="n">dim_names</span> <span class="ow">and</span> <span class="s1">'bound'</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">:</span>
+                    <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">'timeSeries'</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim_names</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">'time'</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">:</span>
                         <span class="n">dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
-                            <span class="n">prof_dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">'time'</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
+                            <span class="n">prof_dim</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
                             <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="n">prof_dim</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-                                <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">&#39;timeSeriesProfile&#39;</span>
+                                <span class="n">FeatureType</span> <span class="o">=</span> <span class="s1">'timeSeriesProfile'</span>
                                 <span class="k">break</span>
 
                 <span class="k">if</span> <span class="n">FeatureType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;FeatureType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FeatureType</span>
+                    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'FeatureType'</span><span class="p">]</span> <span class="o">=</span> <span class="n">FeatureType</span>
 
             <span class="c1"># Add axis and positive attributes to variables with standard_name</span>
-            <span class="c1"># equal to &#39;altitude&#39;</span>
+            <span class="c1"># equal to 'altitude'</span>
             <span class="n">alt_variables</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">var_names</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">sn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standard_names</span><span class="p">)</span> <span class="k">if</span> <span class="n">sn</span> <span class="o">==</span> <span class="s1">&#39;altitude&#39;</span>
+                <span class="n">var_names</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">sn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standard_names</span><span class="p">)</span> <span class="k">if</span> <span class="n">sn</span> <span class="o">==</span> <span class="s1">'altitude'</span>
             <span class="p">]</span>
             <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">alt_variables</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'axis'</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'axis'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Z'</span>
 
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">]</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'positive'</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;up&#39;</span>
+                    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'positive'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'up'</span>
 
             <span class="c1"># Check if the Conventions global attribute lists the CF convention</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">Conventions</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span>
+                <span class="n">Conventions</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Conventions'</span><span class="p">]</span>
                 <span class="n">Conventions</span> <span class="o">=</span> <span class="n">Conventions</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="n">cf_listed</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">Conventions</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">ii</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CF-&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">ii</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'CF-'</span><span class="p">):</span>
                         <span class="n">cf_listed</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">cf_listed</span><span class="p">:</span>
                     <span class="n">Conventions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cf_convention</span><span class="p">)</span>
-                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Conventions</span><span class="p">)</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Conventions'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Conventions</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Conventions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cf_convention</span><span class="p">)</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Conventions'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cf_convention</span><span class="p">)</span>
 
             <span class="c1"># Reorder global attributes to ensure history is last</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">history</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">])</span>
-                <span class="k">del</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
-                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">history</span>
+                <span class="n">history</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">])</span>
+                <span class="k">del</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">]</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">]</span> <span class="o">=</span> <span class="n">history</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
         <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">history_value</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Written to file by ACT-</span><span class="si">{</span><span class="n">act</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s1"> &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;with write_netcdf() at </span><span class="si">{</span><span class="n">current_time</span><span class="si">}</span><span class="s1"> UTC&#39;</span>
+            <span class="sa">f</span><span class="s1">'Written to file by ACT-</span><span class="si">{</span><span class="n">act</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s1"> '</span>
+            <span class="sa">f</span><span class="s1">'with write_netcdf() at </span><span class="si">{</span><span class="n">current_time</span><span class="si">}</span><span class="s1"> UTC'</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;history&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; ; </span><span class="si">{</span><span class="n">history_value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="s1">'history'</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" ; </span><span class="si">{</span><span class="n">history_value</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">history_value</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">]</span> <span class="o">=</span> <span class="n">history_value</span>
 
         <span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </div>
@@ -1253,7 +1253,7 @@
 <div class="viewcode-block" id="check_if_tar_gz_file">
 <a class="viewcode-back" href="../../../API/generated/act.io.check_if_tar_gz_file.html#act.io.check_if_tar_gz_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_if_tar_gz_file</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Unpacks gunzip and/or TAR file contents and returns Xarray Dataset</span>
 
 <span class="sd">    ...</span>
@@ -1268,7 +1268,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    filenames : Paths to extracted files from gunzip or TAR files</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">cleanup</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">)):</span>
@@ -1291,10 +1291,10 @@
 <div class="viewcode-block" id="read_arm_mmcr">
 <a class="viewcode-back" href="../../../API/generated/act.io.read_arm_mmcr.html#act.io.read_arm_mmcr">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_arm_mmcr</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Reads in ARM MMCR files and splits up the variables into specific</span>
-<span class="sd">    mode variables based on what&#39;s in the files.  MMCR files have the modes</span>
+<span class="sd">    mode variables based on what's in the files.  MMCR files have the modes</span>
 <span class="sd">    interleaved and are not readable using xarray so some modifications are</span>
 <span class="sd">    needed ahead of time.</span>
 
@@ -1308,7 +1308,7 @@
 <span class="sd">    ds : xarray.Dataset (or None)</span>
 <span class="sd">        ACT Xarray dataset (or None if no data file(s) found).</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Sort the files to make sure they concatenate right</span>
     <span class="n">filenames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
@@ -1317,53 +1317,53 @@
     <span class="c1"># read it in with xarray</span>
     <span class="n">multi_ds</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-        <span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">diskless</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="n">diskless</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># Change heights name to range to read appropriately to xarray</span>
-        <span class="k">if</span> <span class="s1">&#39;heights&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">:</span>
-            <span class="n">nc</span><span class="o">.</span><span class="n">renameDimension</span><span class="p">(</span><span class="s1">&#39;heights&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'heights'</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">:</span>
+            <span class="n">nc</span><span class="o">.</span><span class="n">renameDimension</span><span class="p">(</span><span class="s1">'heights'</span><span class="p">,</span> <span class="s1">'range'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">xr</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">NetCDF4DataStore</span><span class="p">(</span><span class="n">nc</span><span class="p">))</span>
             <span class="n">multi_ds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
     <span class="c1"># Concatenate datasets together</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_ds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">multi_ds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">data_vars</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">multi_ds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">data_vars</span><span class="o">=</span><span class="s1">'all'</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">multi_ds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Get mdoes and ranges with time/height modes</span>
-    <span class="n">modes</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">modes</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">mode_vars</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;range&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'range'</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="s1">'time'</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">mode_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
     <span class="c1"># For each mode, run extract data variables if available</span>
     <span class="c1"># saves as individual variables in the file.</span>
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ModeDescription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">mode_desc</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ModeDescription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'ModeDescription'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">mode_desc</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'ModeDescription'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'heights'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">continue</span>
-            <span class="n">range_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">range_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'heights'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">mode_desc</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ModeDescription&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">mode_desc</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'ModeDescription'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'heights'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">continue</span>
-            <span class="n">range_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;heights&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">mode_desc</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">mode_desc</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ModeNum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">range_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'heights'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">mode_desc</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">mode_desc</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode_desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\'</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'ModeNum'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">idy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">range_data</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mode_vars</span><span class="p">:</span>
-            <span class="n">new_var_name</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">mode_desc</span>
-            <span class="n">time_name</span> <span class="o">=</span> <span class="s1">&#39;time_&#39;</span> <span class="o">+</span> <span class="n">mode_desc</span>
-            <span class="n">range_name</span> <span class="o">=</span> <span class="s1">&#39;range_&#39;</span> <span class="o">+</span> <span class="n">mode_desc</span>
+            <span class="n">new_var_name</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="s1">'_'</span> <span class="o">+</span> <span class="n">mode_desc</span>
+            <span class="n">time_name</span> <span class="o">=</span> <span class="s1">'time_'</span> <span class="o">+</span> <span class="n">mode_desc</span>
+            <span class="n">range_name</span> <span class="o">=</span> <span class="s1">'range_'</span> <span class="o">+</span> <span class="n">mode_desc</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">idy</span><span class="p">]</span>
             <span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
             <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="n">time_name</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">range_name</span><span class="p">:</span> <span class="n">range_data</span><span class="p">[</span><span class="n">idy</span><span class="p">]},</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="n">time_name</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">range_name</span><span class="p">:</span> <span class="n">range_data</span><span class="p">[</span><span class="n">idy</span><span class="p">]},</span>
                 <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="n">time_name</span><span class="p">,</span> <span class="n">range_name</span><span class="p">],</span>
                 <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
             <span class="p">)</span>

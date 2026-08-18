@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.qc.radiometer_tests</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tests specific to radiometers.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -461,7 +461,7 @@
 <a class="viewcode-back" href="../../../API/generated/act.qc.fft_shading_test.html#act.qc.fft_shading_test">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">fft_shading_test</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;diffuse_hemisp_narrowband_filter4&#39;</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="s1">'diffuse_hemisp_narrowband_filter4'</span><span class="p">,</span>
     <span class="n">fft_window</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
     <span class="n">shad_freq_lower</span><span class="o">=</span><span class="p">[</span><span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.017</span><span class="p">],</span>
     <span class="n">shad_freq_upper</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0105</span><span class="p">,</span> <span class="mf">0.0195</span><span class="p">],</span>
@@ -470,7 +470,7 @@
     <span class="n">smooth_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">shading_thresh</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to test shadowband radiometer (MFRSR, RSS, etc) instruments</span>
 <span class="sd">    for shading related problems.  Program was adapted by Adam Theisen</span>
 <span class="sd">    from the method defined in Alexandrov et al 2007 to process on a</span>
@@ -521,13 +521,13 @@
 <span class="sd">    shadow-band radiometers and their uncertainties. Applied optics. 46.</span>
 <span class="sd">    8027-38. 10.1364/AO.46.008027.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Get time and data from variable</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-    <span class="k">if</span> <span class="s1">&#39;missing_value&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;missing_value&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'missing_value'</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'missing_value'</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.0</span>
 
@@ -539,7 +539,7 @@
 
     <span class="c1"># Compute the FFT for each point +- window samples</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">sun_up</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">sun_up</span> <span class="o">=</span> <span class="n">is_sun_visible</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">'lat'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">'lon'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)):</span>
         <span class="n">sind</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">fft_window</span>
         <span class="n">eind</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">fft_window</span>
@@ -572,7 +572,7 @@
 
     <span class="c1"># Run data through a rolling median to filter out singular</span>
     <span class="c1"># false positives</span>
-    <span class="n">shading</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;shading&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
+    <span class="n">shading</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">'shading'</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
     <span class="n">shading</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">shading</span><span class="p">)</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">smooth_window</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 
     <span class="c1"># Find indices where shading is indicated</span>
@@ -580,7 +580,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
     <span class="c1"># Add test to QC Variable</span>
-    <span class="n">desc</span> <span class="o">=</span> <span class="s1">&#39;FFT Shading Test&#39;</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="s1">'FFT Shading Test'</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">add_test</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">test_meaning</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
 
     <span class="c1"># Prepare frequency and fft variables for adding to the dataset</span>
@@ -589,31 +589,31 @@
     <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="n">fft_window</span> <span class="o">*</span> <span class="mi">2</span><span class="p">])</span>
     <span class="n">freq</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-        <span class="n">dummy</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;fft&#39;</span><span class="p">]</span>
+        <span class="n">dummy</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">'fft'</span><span class="p">]</span>
         <span class="n">fft</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">dummy</span><span class="p">)]</span> <span class="o">=</span> <span class="n">dummy</span>
-        <span class="n">dummy</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span>
+        <span class="n">dummy</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">'freq'</span><span class="p">]</span>
         <span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">dummy</span><span class="p">)]</span> <span class="o">=</span> <span class="n">dummy</span>
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;FFT Results for Shading Test&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;upper_freq&#39;</span><span class="p">:</span> <span class="n">shad_freq_upper</span><span class="p">,</span>
-        <span class="s1">&#39;lower_freq&#39;</span><span class="p">:</span> <span class="n">shad_freq_lower</span><span class="p">,</span>
+        <span class="s1">'units'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'FFT Results for Shading Test'</span><span class="p">,</span>
+        <span class="s1">'upper_freq'</span><span class="p">:</span> <span class="n">shad_freq_upper</span><span class="p">,</span>
+        <span class="s1">'lower_freq'</span><span class="p">:</span> <span class="n">shad_freq_lower</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">fft_window</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
         <span class="nb">range</span><span class="p">(</span><span class="n">fft_window</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span>
-        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fft_window&#39;</span><span class="p">],</span>
-        <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;FFT Window&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">},</span>
+        <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'fft_window'</span><span class="p">],</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'FFT Window'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'1'</span><span class="p">},</span>
     <span class="p">)</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">fft</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_window&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
+        <span class="n">fft</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'fft_window'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;fft&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
-    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;FFT Frequency Values for Shading Test&#39;</span><span class="p">}</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'fft'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'FFT Frequency Values for Shading Test'</span><span class="p">}</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">freq</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fft_window&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
+        <span class="n">freq</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'fft_window'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">fft_window</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;fft_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'fft_freq'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
@@ -630,7 +630,7 @@
     <span class="n">time_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">is_sunny</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Processing function to do the FFT calculations/thresholding</span>
 
 <span class="sd">    Parameters</span>
@@ -653,10 +653,10 @@
 <span class="sd">    shading : int</span>
 <span class="sd">        Binary to indicate shading problem (1) or not (0)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sunny</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'shading'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'fft'</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">'freq'</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)}</span>
 
     <span class="c1"># FFT Algorithm</span>
     <span class="n">fftv</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rfft</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
@@ -664,7 +664,7 @@
 
     <span class="c1"># Get FFT data under threshold</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">fftv</span> <span class="o">&gt;</span> <span class="mf">1.0</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
     <span class="n">fftv</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -672,7 +672,7 @@
 
     <span class="c1"># Return if FFT is empty</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fftv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'shading'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'fft'</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">'freq'</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)}</span>
 
     <span class="c1"># Commented out as it seems to work better without smoothing</span>
     <span class="c1"># fftv=pd.DataFrame(data=fftv).rolling(min_periods=3,window=3,center=True).mean().values.flatten()</span>
@@ -686,7 +686,7 @@
     <span class="c1"># Calculate threshold of peak value to surrounding values</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shad_freq_lower</span><span class="p">)):</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">freq</span> <span class="o">&gt;</span> <span class="n">shad_freq_lower</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">freq</span> <span class="o">&lt;</span> <span class="n">shad_freq_upper</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
@@ -730,7 +730,7 @@
         <span class="k">if</span> <span class="n">pass1</span> <span class="ow">and</span> <span class="n">pass2</span><span class="p">:</span>
             <span class="n">shading</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;shading&#39;</span><span class="p">:</span> <span class="n">shading</span><span class="p">,</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span> <span class="n">fftv</span><span class="p">,</span> <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="n">freq</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">'shading'</span><span class="p">:</span> <span class="n">shading</span><span class="p">,</span> <span class="s1">'fft'</span><span class="p">:</span> <span class="n">fftv</span><span class="p">,</span> <span class="s1">'freq'</span><span class="p">:</span> <span class="n">freq</span><span class="p">}</span></div>
 
 </pre></div>
 <div class="section ablog__blog_comments">

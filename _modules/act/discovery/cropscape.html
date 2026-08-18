@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.discovery.cropscape</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Function for getting CropScape data based on an entered lat/lon.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 
@@ -458,11 +458,11 @@
 <div class="viewcode-block" id="get_crop_type">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_crop_type.html#act.discovery.get_crop_type">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_crop_type</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function for working with the CropScape API to get a crop type based on</span>
 <span class="sd">    the lat,lon, and year entered. The lat/lon is converted to the projection</span>
 <span class="sd">    used by CropScape before pased to the API. Note, the requests library</span>
-<span class="sd">    is indicating a bad handshake with the server so &#39;verify&#39; is currently</span>
+<span class="sd">    is indicating a bad handshake with the server so 'verify' is currently</span>
 <span class="sd">    set to False which is unsecure. Use at your own risk until it can be</span>
 <span class="sd">    resolved. CropScape - Copyright © Center For Spatial Information Science</span>
 <span class="sd">    and Systems 2009 - 2018</span>
@@ -487,52 +487,52 @@
 
 <span class="sd">    .. code-block :: python</span>
 
-<span class="sd">        type = act.discovery.get_cropscape.croptype(36.8172,-97.1709,&#39;2018&#39;)</span>
+<span class="sd">        type = act.discovery.get_cropscape.croptype(36.8172,-97.1709,'2018')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Return if lat/lon are not passed in</span>
     <span class="k">if</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Lat and Lon need to be provided&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Lat and Lon need to be provided'</span><span class="p">)</span>
 
     <span class="c1"># Set the CropScape Projection</span>
     <span class="n">outproj</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;PROJCS[&quot;NAD_1983_Albers&quot;,&#39;</span>
-        <span class="s1">&#39;GEOGCS[&quot;NAD83&quot;,&#39;</span>
-        <span class="s1">&#39;DATUM[&quot;North_American_Datum_1983&quot;,&#39;</span>
-        <span class="s1">&#39;SPHEROID[&quot;GRS 1980&quot;,6378137,298.257222101,&#39;</span>
-        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;7019&quot;]],&#39;</span>
-        <span class="s1">&#39;TOWGS84[0,0,0,0,0,0,0],&#39;</span>
-        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;6269&quot;]],&#39;</span>
-        <span class="s1">&#39;PRIMEM[&quot;Greenwich&quot;,0,&#39;</span>
-        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],&#39;</span>
-        <span class="s1">&#39;UNIT[&quot;degree&quot;,0.0174532925199433,&#39;</span>
-        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;9108&quot;]],&#39;</span>
-        <span class="s1">&#39;AUTHORITY[&quot;EPSG&quot;,&quot;4269&quot;]],&#39;</span>
-        <span class="s1">&#39;PROJECTION[&quot;Albers_Conic_Equal_Area&quot;],&#39;</span>
-        <span class="s1">&#39;PARAMETER[&quot;standard_parallel_1&quot;,29.5],&#39;</span>
-        <span class="s1">&#39;PARAMETER[&quot;standard_parallel_2&quot;,45.5],&#39;</span>
-        <span class="s1">&#39;PARAMETER[&quot;latitude_of_center&quot;,23],&#39;</span>
-        <span class="s1">&#39;PARAMETER[&quot;longitude_of_center&quot;,-96],&#39;</span>
-        <span class="s1">&#39;PARAMETER[&quot;false_easting&quot;,0],&#39;</span>
-        <span class="s1">&#39;PARAMETER[&quot;false_northing&quot;,0],&#39;</span>
-        <span class="s1">&#39;UNIT[&quot;meters&quot;,1]]&#39;</span>
+        <span class="s1">'PROJCS["NAD_1983_Albers",'</span>
+        <span class="s1">'GEOGCS["NAD83",'</span>
+        <span class="s1">'DATUM["North_American_Datum_1983",'</span>
+        <span class="s1">'SPHEROID["GRS 1980",6378137,298.257222101,'</span>
+        <span class="s1">'AUTHORITY["EPSG","7019"]],'</span>
+        <span class="s1">'TOWGS84[0,0,0,0,0,0,0],'</span>
+        <span class="s1">'AUTHORITY["EPSG","6269"]],'</span>
+        <span class="s1">'PRIMEM["Greenwich",0,'</span>
+        <span class="s1">'AUTHORITY["EPSG","8901"]],'</span>
+        <span class="s1">'UNIT["degree",0.0174532925199433,'</span>
+        <span class="s1">'AUTHORITY["EPSG","9108"]],'</span>
+        <span class="s1">'AUTHORITY["EPSG","4269"]],'</span>
+        <span class="s1">'PROJECTION["Albers_Conic_Equal_Area"],'</span>
+        <span class="s1">'PARAMETER["standard_parallel_1",29.5],'</span>
+        <span class="s1">'PARAMETER["standard_parallel_2",45.5],'</span>
+        <span class="s1">'PARAMETER["latitude_of_center",23],'</span>
+        <span class="s1">'PARAMETER["longitude_of_center",-96],'</span>
+        <span class="s1">'PARAMETER["false_easting",0],'</span>
+        <span class="s1">'PARAMETER["false_northing",0],'</span>
+        <span class="s1">'UNIT["meters",1]]'</span>
     <span class="p">)</span>
 
     <span class="c1"># Set the input projection to be lat/lon</span>
-    <span class="n">inproj</span> <span class="o">=</span> <span class="s1">&#39;EPSG:4326&#39;</span>
+    <span class="n">inproj</span> <span class="o">=</span> <span class="s1">'EPSG:4326'</span>
 
     <span class="c1"># Get the x/y coordinates for CropScape</span>
     <span class="n">transformer</span> <span class="o">=</span> <span class="n">Transformer</span><span class="o">.</span><span class="n">from_crs</span><span class="p">(</span><span class="n">inproj</span><span class="p">,</span> <span class="n">outproj</span><span class="p">)</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
     <span class="c1"># Build URL</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue?&#39;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">'https://nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue?'</span>
     <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">year</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">1</span>
 
     <span class="c1"># Add year, lat, and lon as parameters</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'year'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="s1">'x'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">'y'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)}</span>
 
     <span class="c1"># Perform the request.</span>
     <span class="k">try</span><span class="p">:</span>
@@ -543,9 +543,9 @@
     <span class="c1"># Return from the webservice is not convertable to json</span>
     <span class="c1"># So we need to do some text mining</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-    <span class="n">category</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="s1">&#39;category&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
-    <span class="n">category</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="s1">'category'</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">': '</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">category</span></div>
 

@@ -440,11 +440,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.utils.qc_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functions containing utilities for quality control which</span>
 <span class="sd">may or may not be program dependent</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
@@ -457,7 +457,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_dqr_times</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">txt_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_bit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_missing</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to retrieve start and end times of missing or bad data. Function</span>
 <span class="sd">    will retrieve start and end time strings in a format that the DQR</span>
 <span class="sd">    submission tool can read, print them to the console, and save to a .txt</span>
@@ -471,7 +471,7 @@
 <span class="sd">        Data variable(s) in the dataset to check. Can check multiple variables.</span>
 <span class="sd">    txt_path : str</span>
 <span class="sd">        Full path to directory in which to save .txt files with start and end</span>
-<span class="sd">        times. If directory doesn&#39;t exist the program will create it. If set</span>
+<span class="sd">        times. If directory doesn't exist the program will create it. If set</span>
 <span class="sd">        to None then no .txt files will be created. Default is None.</span>
 <span class="sd">    threshold : int</span>
 <span class="sd">        Threshold of number of data points to trigger start and end time</span>
@@ -494,7 +494,7 @@
 <span class="sd">        List of tuples with the first element as the start time and the second</span>
 <span class="sd">        element as the end time.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Determine if searching for either bad or missing data</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">return_missing</span><span class="p">:</span>
         <span class="n">return_bad</span> <span class="o">=</span> <span class="kc">True</span>
@@ -509,8 +509,8 @@
 
     <span class="c1"># Clean files. Converts from ARM to CF standards</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">clean</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">cleanup_arm_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">handle_missing_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">link_qc_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_file_dates&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_file_dates'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span>
 
     <span class="c1"># Make variable instance a list always</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -525,7 +525,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">threshold</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;You must specify a threshold for separating ranges of&#39;</span> <span class="o">+</span> <span class="s1">&#39; flagged data&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'You must specify a threshold for separating ranges of'</span> <span class="o">+</span> <span class="s1">' flagged data'</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="c1"># If return_missing then search for indices where data is equal to</span>
@@ -544,7 +544,7 @@
 
             <span class="c1"># If no bad indices then exit</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No missing data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> on &#39;</span> <span class="o">+</span> <span class="n">date</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No missing data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> on '</span> <span class="o">+</span> <span class="n">date</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
@@ -557,16 +557,16 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
             <span class="c1"># Convert the datetimes to strings</span>
             <span class="n">time_strings</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">st</span><span class="p">,</span> <span class="n">et</span> <span class="ow">in</span> <span class="n">dt_times</span><span class="p">:</span>
-                <span class="n">start_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
-                <span class="n">end_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">et</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">)</span>
+                <span class="n">end_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">et</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">)</span>
                 <span class="n">time_strings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">))</span>
                 <span class="c1"># Print times to screen</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Missing Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> begins at: &#39;</span> <span class="o">+</span> <span class="n">start_time</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Missing Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> ends at: &#39;</span> <span class="o">+</span> <span class="n">end_time</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Missing Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> begins at: '</span> <span class="o">+</span> <span class="n">start_time</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Missing Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> ends at: '</span> <span class="o">+</span> <span class="n">end_time</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">txt_path</span><span class="p">:</span>
                 <span class="n">_write_dqr_times_to_txt</span><span class="p">(</span><span class="n">datastream</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">txt_path</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">time_strings</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">time_strings</span>
@@ -576,19 +576,19 @@
     <span class="k">if</span> <span class="n">return_bad</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variable</span><span class="p">:</span>
             <span class="c1"># If a1 level data, return.</span>
-            <span class="k">if</span> <span class="s1">&#39;a1&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data_level&#39;</span><span class="p">]:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No QC is present in a1 level.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">'a1'</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'data_level'</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'No QC is present in a1 level.'</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="c1"># Get QC data from corresponding QC variable</span>
-            <span class="n">qc_var</span> <span class="o">=</span> <span class="s1">&#39;qc_&#39;</span> <span class="o">+</span> <span class="n">var</span>
+            <span class="n">qc_var</span> <span class="o">=</span> <span class="s1">'qc_'</span> <span class="o">+</span> <span class="n">var</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">qc_data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">qc_var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to calculate start and end times for bad data&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'Unable to calculate start and end times for bad data'</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="c1"># Make sure qc bit is an integer</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;QC bit must be an integer&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'QC bit must be an integer'</span><span class="p">)</span>
             <span class="c1"># Get indices where data is being flagged for given qc bit</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">qc_data</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">qc_bit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -601,7 +601,7 @@
 
             <span class="c1"># If no bad indices then exit</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No bad data on &#39;</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">&#39; for selected QC bit for&#39;</span> <span class="o">+</span> <span class="s1">&#39; variable &#39;</span> <span class="o">+</span> <span class="n">var</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'No bad data on '</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">' for selected QC bit for'</span> <span class="o">+</span> <span class="s1">' variable '</span> <span class="o">+</span> <span class="n">var</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
@@ -614,16 +614,16 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+                    <span class="n">dt_times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
             <span class="c1"># Convert the datetimes to strings</span>
             <span class="n">time_strings</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">st</span><span class="p">,</span> <span class="n">et</span> <span class="ow">in</span> <span class="n">dt_times</span><span class="p">:</span>
-                <span class="n">start_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
-                <span class="n">end_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">et</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">)</span>
+                <span class="n">end_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">et</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">)</span>
                 <span class="n">time_strings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">))</span>
                 <span class="c1"># Print times to screen</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bad Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> Begins at: &#39;</span> <span class="o">+</span> <span class="n">start_time</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bad Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> Ends at: &#39;</span> <span class="o">+</span> <span class="n">end_time</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Bad Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> Begins at: '</span> <span class="o">+</span> <span class="n">start_time</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Bad Data for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> Ends at: '</span> <span class="o">+</span> <span class="n">end_time</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">txt_path</span><span class="p">:</span>
                 <span class="n">_write_dqr_times_to_txt</span><span class="p">(</span><span class="n">datastream</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">txt_path</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">time_strings</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">time_strings</span></div>
@@ -631,7 +631,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_write_dqr_times_to_txt</span><span class="p">(</span><span class="n">datastream</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">txt_path</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">time_strings</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Writes flagged data time range(s) to a .txt file. The naming convention is</span>
 <span class="sd">    dqrtimes_datastream.date.txt.</span>
 
@@ -648,29 +648,29 @@
 <span class="sd">    time_strings : list of tuples</span>
 <span class="sd">        List of every start and end time to be written.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s1">&#39;Writing data to text file for &#39;</span>
+        <span class="s1">'Writing data to text file for '</span>
         <span class="o">+</span> <span class="n">datastream</span>
-        <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+        <span class="o">+</span> <span class="s1">' '</span>
         <span class="o">+</span> <span class="n">variable</span>
-        <span class="o">+</span> <span class="s1">&#39; on &#39;</span>
+        <span class="o">+</span> <span class="s1">' on '</span>
         <span class="o">+</span> <span class="n">date</span>
-        <span class="o">+</span> <span class="s1">&#39; at &#39;</span>
+        <span class="o">+</span> <span class="s1">' at '</span>
         <span class="o">+</span> <span class="n">txt_path</span>
-        <span class="o">+</span> <span class="s1">&#39;...&#39;</span><span class="p">,</span>
+        <span class="o">+</span> <span class="s1">'...'</span><span class="p">,</span>
         <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">full_path</span> <span class="o">=</span> <span class="n">txt_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">datastream</span>
+    <span class="n">full_path</span> <span class="o">=</span> <span class="n">txt_path</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">datastream</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-        <span class="n">full_path</span> <span class="o">+</span> <span class="s1">&#39;/dqrtimes_&#39;</span> <span class="o">+</span> <span class="n">datastream</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">variable</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+        <span class="n">full_path</span> <span class="o">+</span> <span class="s1">'/dqrtimes_'</span> <span class="o">+</span> <span class="n">datastream</span> <span class="o">+</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="n">variable</span> <span class="o">+</span> <span class="s1">'.txt'</span><span class="p">,</span>
+        <span class="s1">'w'</span><span class="p">,</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">text_file</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">st</span><span class="p">,</span> <span class="n">et</span> <span class="ow">in</span> <span class="n">time_strings</span><span class="p">:</span>
-            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">st</span><span class="si">}</span><span class="s1">, &#39;</span><span class="p">)</span>
-            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">et</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">st</span><span class="si">}</span><span class="s1">, '</span><span class="p">)</span>
+            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">et</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 </pre></div>
 <div class="section ablog__blog_comments">
    

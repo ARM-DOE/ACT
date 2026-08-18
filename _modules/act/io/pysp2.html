@@ -451,7 +451,7 @@
 <div class="viewcode-block" id="read_hk_file">
 <a class="viewcode-back" href="../../../API/generated/act.io.read_hk_file.html#act.io.read_hk_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_hk_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This procedure will read in an SP2 housekeeping file and then</span>
 <span class="sd">    store the timeseries data into a pandas DataFrame.</span>
 
@@ -464,12 +464,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    hk_ds: xarray.Dataset</span>
 <span class="sd">        The housekeeping information in an xarray Dataset</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_hk_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-            <span class="s1">&#39;PySP2 must be installed in order to read SP2 data and housekeeping files.&#39;</span>
+            <span class="s1">'PySP2 must be installed in order to read SP2 data and housekeeping files.'</span>
         <span class="p">)</span></div>
 
 
@@ -477,7 +477,7 @@
 <div class="viewcode-block" id="read_sp2">
 <a class="viewcode-back" href="../../../API/generated/act.io.read_sp2.html#act.io.read_sp2">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_sp2</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">arm_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Loads a binary SP2 raw data file and returns all of the wave forms</span>
 <span class="sd">    into an xarray Dataset.</span>
 
@@ -495,12 +495,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    ds: xarray.Dataset</span>
 <span class="sd">        The xarray Dataset containing the raw SP2 waveforms for each particle.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_sp2</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">arm_convention</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-            <span class="s1">&#39;PySP2 must be installed in order to read SP2 data and housekeeping files.&#39;</span>
+            <span class="s1">'PySP2 must be installed in order to read SP2 data and housekeeping files.'</span>
         <span class="p">)</span></div>
 
 
@@ -508,7 +508,7 @@
 <div class="viewcode-block" id="read_sp2_dat">
 <a class="viewcode-back" href="../../../API/generated/act.io.read_sp2_dat.html#act.io.read_sp2_dat">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_sp2_dat</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This reads the .dat files that generate the intermediate parameters used</span>
 <span class="sd">    by the Igor processing. Wildcards are supported.</span>
 
@@ -518,18 +518,18 @@
 <span class="sd">        The name of the file to save to. Use a wildcard to open multiple files at once.</span>
 <span class="sd">    type: str</span>
 <span class="sd">        This parameter must be one of:</span>
-<span class="sd">            &#39;particle&#39;: Load individual particle timeseries from .dat file</span>
-<span class="sd">            &#39;conc&#39;: Load timeseries of concentrations.</span>
+<span class="sd">            'particle': Load individual particle timeseries from .dat file</span>
+<span class="sd">            'conc': Load timeseries of concentrations.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ds: xarray.Dataset</span>
 <span class="sd">        The xarray dataset to store the parameters in.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_dat</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-            <span class="s1">&#39;PySP2 must be installed in order to read SP2 data and housekeeping files.&#39;</span>
+            <span class="s1">'PySP2 must be installed in order to read SP2 data and housekeeping files.'</span>
         <span class="p">)</span></div>
 
 </pre></div>

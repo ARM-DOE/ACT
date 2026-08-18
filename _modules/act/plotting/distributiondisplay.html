@@ -440,7 +440,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.plotting.distributiondisplay</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Module for Distribution Plotting.&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""Module for Distribution Plotting."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -455,9 +455,9 @@
 <div class="viewcode-block" id="DistributionDisplay">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.html#act.plotting.DistributionDisplay">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DistributionDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class is used to make  distribution related plots. It is inherited from Display</span>
-<span class="sd">    and therefore contains all of Display&#39;s attributes and methods.</span>
+<span class="sd">    and therefore contains all of Display's attributes and methods.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -475,7 +475,7 @@
 <span class="sd">    If no subplot_shape is provided, then no figure or axis will be created</span>
 <span class="sd">    until add_subplots or plots is called.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -483,7 +483,7 @@
 <div class="viewcode-block" id="DistributionDisplay.set_xrng">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.set_xrng.html#act.plotting.DistributionDisplay.set_xrng">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_xrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets the x range of the plot.</span>
 
 <span class="sd">        Parameters</span>
@@ -493,14 +493,14 @@
 <span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;set_xrng requires the plot to be displayed.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'set_xrng requires the plot to be displayed.'</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;xrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[D]&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'xrng'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[D]'</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'xrng'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[D]'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xrng</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xrng</span><span class="p">)</span></div>
@@ -509,7 +509,7 @@
 <div class="viewcode-block" id="DistributionDisplay.set_yrng">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.set_yrng.html#act.plotting.DistributionDisplay.set_yrng">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_yrng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yrng</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets the y range of the plot.</span>
 
 <span class="sd">        Parameters</span>
@@ -519,13 +519,13 @@
 <span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;set_yrng requires the plot to be displayed.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'set_yrng requires the plot to be displayed.'</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'yrng'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yrng&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'yrng'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">yrng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">yrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
@@ -540,23 +540,23 @@
             <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">fields</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one field must be specified&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one field must be specified"</span><span class="p">)</span>
 
         <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">][</span><span class="n">fields</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'time'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ds</span>
 
         <span class="c1"># Try modern xarray API first</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'all'</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;how&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">'how'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
                 <span class="k">raise</span>
 
             <span class="c1"># Fallback for older xarray versions</span>
             <span class="n">arr</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">to_array</span><span class="p">()</span>
-            <span class="n">valid_times</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">notnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">arr</span><span class="o">.</span><span class="n">dims</span> <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="s1">&#39;time&#39;</span><span class="p">])</span>
+            <span class="n">valid_times</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">notnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">arr</span><span class="o">.</span><span class="n">dims</span> <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="s1">'time'</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">valid_times</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DistributionDisplay.plot_stacked_bar">
@@ -574,7 +574,7 @@
         <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure will plot a stacked bar graph of a histogram.</span>
 
 <span class="sd">        Parameters</span>
@@ -585,7 +585,7 @@
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
 <span class="sd">        bins : array-like or int</span>
-<span class="sd">            The histogram bin boundaries to use. If not specified, numpy&#39;s</span>
+<span class="sd">            The histogram bin boundaries to use. If not specified, numpy's</span>
 <span class="sd">            default 10 is used.</span>
 <span class="sd">        sortby_field : str or None</span>
 <span class="sd">            Set this option to a field name in order to sort the histograms</span>
@@ -610,12 +610,12 @@
 <span class="sd">            A dictionary containing the plot axis handle, bin boundaries, and</span>
 <span class="sd">            generated histogram.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="o">+</span> <span class="s1">'or more datasets in the TimeSeriesDisplay '</span>
+                <span class="o">+</span> <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -626,8 +626,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span><span class="n">dsname</span><span class="p">,</span> <span class="n">field</span><span class="p">)[</span><span class="n">field</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xtitle</span> <span class="o">=</span> <span class="n">field</span>
 
@@ -646,8 +646,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
 
         <span class="k">if</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-                <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
             <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
@@ -661,7 +661,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
                 <span class="n">x_inds</span><span class="p">,</span>
                 <span class="n">my_hist</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
-                <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">' to '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
@@ -669,7 +669,7 @@
                     <span class="n">x_inds</span><span class="p">,</span>
                     <span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
                     <span class="n">bottom</span><span class="o">=</span><span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
-                    <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span>
+                    <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">' to '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -682,26 +682,26 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
                     <span class="n">field</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'count'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">)</span>
 
         <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;plot_handle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;x_bins&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;x_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_bins</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;y_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_bins</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'plot_handle'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">'x_bins'</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">'x_bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_bins</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">'y_bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_bins</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;histogram&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hist</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">'bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'histogram'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hist</span>
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
@@ -711,7 +711,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">plot_size_distribution</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure plots a stairstep plot of a size distribution. This is</span>
 <span class="sd">        useful for plotting size distributions and waveforms.</span>
 
@@ -739,12 +739,12 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle referring to the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="o">+</span> <span class="s1">'or more datasets in the TimeSeriesDisplay '</span>
+                <span class="o">+</span> <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -756,27 +756,27 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">bins</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">bins</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;Bin #&#39;</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">'Bin #'</span>
 
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Input data has more than one dimension, &#39;</span> <span class="o">+</span> <span class="s1">&#39;you must specify a time to plot!&#39;</span>
+                <span class="s1">'Input data has more than one dimension, '</span> <span class="o">+</span> <span class="s1">'you must specify a time to plot!'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">xdata</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+            <span class="n">xdata</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'nearest'</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Bins must be a one dimensional field whose &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;length is equal to the field length!&#39;</span>
+                <span class="s1">'Bins must be a one dimensional field whose '</span>
+                <span class="o">+</span> <span class="s1">'length is equal to the field length!'</span>
             <span class="p">)</span>
 
         <span class="c1"># Get the current plotting axis</span>
@@ -787,18 +787,18 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
                     <span class="n">field</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-                <span class="n">set_title</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">[</span><span class="s1">&#39; at &#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">hour</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">minute</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">second</span><span class="p">)])]</span>
+                <span class="n">set_title</span> <span class="o">+=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s1">' at '</span><span class="p">,</span> <span class="s1">':'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">hour</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">minute</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">second</span><span class="p">)])]</span>
                 <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">bins</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -823,7 +823,7 @@
         <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure will plot a stairstep plot of a histogram.</span>
 
 <span class="sd">        Parameters</span>
@@ -834,7 +834,7 @@
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
 <span class="sd">        bins : array-like or int</span>
-<span class="sd">            The histogram bin boundaries to use. If not specified, numpy&#39;s</span>
+<span class="sd">            The histogram bin boundaries to use. If not specified, numpy's</span>
 <span class="sd">            default 10 is used.</span>
 <span class="sd">        sortby_field : str or None</span>
 <span class="sd">            Set this option to a field name in order to sort the histograms</span>
@@ -859,20 +859,20 @@
 <span class="sd">             A dictionary containing the plot axis handle, bin boundaries, and</span>
 <span class="sd">             generated histogram.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="o">+</span> <span class="s1">'or more datasets in the TimeSeriesDisplay '</span>
+                <span class="o">+</span> <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span><span class="n">dsname</span><span class="p">,</span> <span class="n">field</span><span class="p">)[</span><span class="n">field</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xtitle</span> <span class="o">=</span> <span class="n">field</span>
 
@@ -896,8 +896,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">sortby_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-                <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ytitle</span> <span class="o">=</span> <span class="n">field</span>
             <span class="n">my_hist</span><span class="p">,</span> <span class="n">x_bins</span><span class="p">,</span> <span class="n">y_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
@@ -911,14 +911,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
                 <span class="n">x_inds</span><span class="p">,</span>
                 <span class="n">my_hist</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
-                <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">' to '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
                     <span class="n">x_inds</span><span class="p">,</span>
                     <span class="n">my_hist</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
-                    <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span>
+                    <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">' to '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])),</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -932,26 +932,26 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
                     <span class="n">field</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'count'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">)</span>
 
         <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;plot_handle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;x_bins&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;x_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_bins</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;y_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_bins</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'plot_handle'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">'x_bins'</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">'x_bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_bins</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">'y_bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_bins</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;histogram&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hist</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="s1">'bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'histogram'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hist</span>
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
@@ -968,12 +968,12 @@
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">set_shading</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+        <span class="n">set_shading</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span>
         <span class="n">hist_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure will plot a heatmap of a histogram from 2 variables.</span>
 
 <span class="sd">        Parameters</span>
@@ -987,11 +987,11 @@
 <span class="sd">            to None to let ACT automatically determine this.</span>
 <span class="sd">        x_bins : array-like, int, or None</span>
 <span class="sd">            The histogram bin boundaries to use for the variable on the X axis.</span>
-<span class="sd">            Set to None to use numpy&#39;s default boundaries.</span>
+<span class="sd">            Set to None to use numpy's default boundaries.</span>
 <span class="sd">            If an int, will indicate the number of bins to use</span>
 <span class="sd">        y_bins : array-like, int, or None</span>
 <span class="sd">            The histogram bin boundaries to use for the variable on the Y axis.</span>
-<span class="sd">            Set to None to use numpy&#39;s default boundaries.</span>
+<span class="sd">            Set to None to use numpy's default boundaries.</span>
 <span class="sd">            If an int, will indicate the number of bins to use</span>
 <span class="sd">        subplot_index : tuple</span>
 <span class="sd">            The subplot index to place the plot in</span>
@@ -1001,7 +1001,7 @@
 <span class="sd">            Set to True to plot a p.d.f. instead of a frequency histogram.</span>
 <span class="sd">        set_shading : string</span>
 <span class="sd">            Option to to set the matplotlib.pcolormesh shading parameter.</span>
-<span class="sd">            Default to &#39;auto&#39;</span>
+<span class="sd">            Default to 'auto'</span>
 <span class="sd">        threshold : float</span>
 <span class="sd">            Value on which to threshold the histogram results for plotting.</span>
 <span class="sd">            Setting to 0 will ensure that all 0 values are removed from the plot</span>
@@ -1016,12 +1016,12 @@
 <span class="sd">            A dictionary containing the plot axis handle, bin boundaries, and</span>
 <span class="sd">            generated histogram.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
-                <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="s1">'or more datasets in the TimeSeriesDisplay '</span>
+                <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -1029,8 +1029,8 @@
         <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span><span class="n">dsname</span><span class="p">,</span> <span class="p">[</span><span class="n">x_field</span><span class="p">,</span> <span class="n">y_field</span><span class="p">])</span>
         <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">x_field</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">y_field</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xtitle</span> <span class="o">=</span> <span class="n">x_field</span>
 
@@ -1052,8 +1052,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'('</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ytitle</span> <span class="o">=</span> <span class="n">y_field</span>
 
@@ -1075,28 +1075,28 @@
 
         <span class="n">x_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="n">y_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
-        <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">y_inds</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+        <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">y_inds</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">'ij'</span><span class="p">)</span>
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">my_hist</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="n">set_shading</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ytitle</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xtitle</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'count'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">)</span>
 
         <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;plot_handle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;x_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_bins</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;y_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_bins</span>
-        <span class="n">return_dict</span><span class="p">[</span><span class="s1">&#39;histogram&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hist</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'plot_handle'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'x_bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_bins</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'y_bins'</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_bins</span>
+        <span class="n">return_dict</span><span class="p">[</span><span class="s1">'histogram'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hist</span>
 
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
@@ -1104,7 +1104,7 @@
 <div class="viewcode-block" id="DistributionDisplay.set_ratio_line">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.DistributionDisplay.set_ratio_line.html#act.plotting.DistributionDisplay.set_ratio_line">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_ratio_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets the 1:1 ratio line.</span>
 
 <span class="sd">        Parameters</span>
@@ -1112,13 +1112,13 @@
 <span class="sd">        subplot_index : 1 or 2D tuple, list, or array</span>
 <span class="sd">            The index of the subplot to set the x range of.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;set_ratio_line requires the plot to be displayed.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'set_ratio_line requires the plot to be displayed.'</span><span class="p">)</span>
         <span class="c1"># Define the xticks of the figure</span>
         <span class="n">xlims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span>
         <span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xlims</span><span class="p">,</span> <span class="n">xlims</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="s1">&#39;k--&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="s1">'k--'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DistributionDisplay.plot_scatter">
@@ -1134,7 +1134,7 @@
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure will produce a scatter plot from 2 variables.</span>
 
 <span class="sd">        Parameters</span>
@@ -1163,12 +1163,12 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
-                <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="s1">'or more datasets in the TimeSeriesDisplay '</span>
+                <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -1182,14 +1182,14 @@
             <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">mdata</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">x_field</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">y_field</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="n">m_field</span><span class="p">]</span>
 
         <span class="c1"># Define the x-axis label. If units are avaiable, plot.</span>
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">xtitle</span> <span class="o">=</span> <span class="n">x_field</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; (&#39;</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">xtitle</span> <span class="o">=</span> <span class="n">x_field</span> <span class="o">+</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">' ('</span><span class="p">,</span> <span class="n">xdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xtitle</span> <span class="o">=</span> <span class="n">x_field</span>
 
         <span class="c1"># Define the y-axis label. If units are available, plot</span>
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">ytitle</span> <span class="o">=</span> <span class="n">y_field</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; (&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">ytitle</span> <span class="o">=</span> <span class="n">y_field</span> <span class="o">+</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">' ('</span><span class="p">,</span> <span class="n">ydata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ytitle</span> <span class="o">=</span> <span class="n">y_field</span>
 
@@ -1207,10 +1207,10 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
@@ -1219,8 +1219,8 @@
         <span class="k">if</span> <span class="n">mdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Define the y-axis label. If units are available, plot</span>
-                <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-                    <span class="n">ztitle</span> <span class="o">=</span> <span class="n">m_field</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; (&#39;</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                    <span class="n">ztitle</span> <span class="o">=</span> <span class="n">m_field</span> <span class="o">+</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">' ('</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ztitle</span> <span class="o">=</span> <span class="n">m_field</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1244,7 +1244,7 @@
         <span class="n">field</span><span class="p">,</span>
         <span class="n">positions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span>
+        <span class="n">orientation</span><span class="o">=</span><span class="s1">'vertical'</span><span class="p">,</span>
         <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">showmedians</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">showextrema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1252,7 +1252,7 @@
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure will produce a violin plot for the selected</span>
 <span class="sd">        field (or fields).</span>
 
@@ -1266,7 +1266,7 @@
 <span class="sd">            The name of the datastream the field is contained in. Set</span>
 <span class="sd">            to None to let ACT automatically determine this.</span>
 <span class="sd">        orientation : str</span>
-<span class="sd">            Orientation of the violin plot. Options are &#39;vertical&#39; and &#39;horizontal&#39;.</span>
+<span class="sd">            Orientation of the violin plot. Options are 'vertical' and 'horizontal'.</span>
 <span class="sd">            Default is vertical.</span>
 <span class="sd">        showmeans : Boolean; Default: False</span>
 <span class="sd">            If True, will display the mean of the datastream.</span>
@@ -1286,12 +1286,12 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="s1">&#39;or more datasets in the TimeSeriesDisplay &#39;</span>
-                <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="s1">'or more datasets in the TimeSeriesDisplay '</span>
+                <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -1309,8 +1309,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="c1"># Define the axe label. If units are avaiable, plot.</span>
-        <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">ndata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">axtitle</span> <span class="o">=</span> <span class="n">field</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39; (&#39;</span><span class="p">,</span> <span class="n">ndata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">'units'</span> <span class="ow">in</span> <span class="n">ndata</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">axtitle</span> <span class="o">=</span> <span class="n">field</span> <span class="o">+</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">' ('</span><span class="p">,</span> <span class="n">ndata</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">],</span> <span class="s1">')'</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">axtitle</span> <span class="o">=</span> <span class="n">field</span>
 
@@ -1325,24 +1325,24 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">showmeans</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">scc</span><span class="p">[</span><span class="s1">&#39;cmeans&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-            <span class="n">scc</span><span class="p">[</span><span class="s1">&#39;cmeans&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+            <span class="n">scc</span><span class="p">[</span><span class="s1">'cmeans'</span><span class="p">]</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">)</span>
+            <span class="n">scc</span><span class="p">[</span><span class="s1">'cmeans'</span><span class="p">]</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">'mean'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">showmedians</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">scc</span><span class="p">[</span><span class="s1">&#39;cmedians&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-            <span class="n">scc</span><span class="p">[</span><span class="s1">&#39;cmedians&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;median&#39;</span><span class="p">)</span>
+            <span class="n">scc</span><span class="p">[</span><span class="s1">'cmedians'</span><span class="p">]</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">'black'</span><span class="p">)</span>
+            <span class="n">scc</span><span class="p">[</span><span class="s1">'cmedians'</span><span class="p">]</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">'median'</span><span class="p">)</span>
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
 
         <span class="c1"># Define the axe title, x-axis label, y-axis label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">set_title</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="s1">&#39;vertical&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="s1">'vertical'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">axtitle</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">positions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
@@ -1366,10 +1366,10 @@
         <span class="n">dsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
         <span class="n">set_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">autopct</span><span class="o">=</span><span class="s1">'</span><span class="si">%1.1f%%</span><span class="s1">'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This procedure will produce a pie chart for the selected fields.</span>
 
 <span class="sd">        Parameters</span>
@@ -1406,12 +1406,12 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;You must choose a datastream when there are 2 &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;or more datasets in the DistributionDisplay &#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;object.&#39;</span>
+                <span class="s1">'You must choose a datastream when there are 2 '</span>
+                <span class="o">+</span> <span class="s1">'or more datasets in the DistributionDisplay '</span>
+                <span class="o">+</span> <span class="s1">'object.'</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">dsname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -1425,10 +1425,10 @@
 
         <span class="c1"># Set Title</span>
         <span class="k">if</span> <span class="n">set_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">set_title</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">dsname</span><span class="p">,</span>
-                    <span class="s1">&#39;on&#39;</span><span class="p">,</span>
+                    <span class="s1">'on'</span><span class="p">,</span>
                     <span class="n">dt_utils</span><span class="o">.</span><span class="n">numpy_to_arm_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">dsname</span><span class="p">]</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="p">]</span>
             <span class="p">)</span>

@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.utils.datetime_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Module that containing utilities involving datetimes.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -455,7 +455,7 @@
 <div class="viewcode-block" id="dates_between">
 <a class="viewcode-back" href="../../../API/generated/act.utils.dates_between.html#act.utils.dates_between">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dates_between</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="n">edate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Ths procedure returns all of the dates between *sdate* and *edate*.</span>
 
 <span class="sd">    Parameters</span>
@@ -472,10 +472,10 @@
 <span class="sd">    all_dates : array of datetimes</span>
 <span class="sd">        The array containing the dates between *sdate* and *edate*.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">days</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">edate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">days</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">edate</span><span class="p">,</span> <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span>
     <span class="n">all_dates</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">sdate</span><span class="p">,</span> <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="p">]</span>
     <span class="k">return</span> <span class="n">all_dates</span></div>
 
@@ -484,7 +484,7 @@
 <div class="viewcode-block" id="numpy_to_arm_date">
 <a class="viewcode-back" href="../../../API/generated/act.utils.numpy_to_arm_date.html#act.utils.numpy_to_arm_date">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">numpy_to_arm_date</span><span class="p">(</span><span class="n">_date</span><span class="p">,</span> <span class="n">returnTime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given a numpy datetime64, return an ARM standard date (yyyymmdd).</span>
 
 <span class="sd">    Parameters</span>
@@ -499,16 +499,16 @@
 <span class="sd">    arm_date : string or None</span>
 <span class="sd">        Returns an arm date.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.parser._parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParserError</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pandas._libs.tslibs.parsing</span><span class="w"> </span><span class="kn">import</span> <span class="n">DateParseError</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_date</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">returnTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H%M%S&#39;</span><span class="p">)</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%H%M%S'</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="n">ParserError</span><span class="p">,</span> <span class="n">DateParseError</span><span class="p">):</span>
         <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -519,7 +519,7 @@
 <div class="viewcode-block" id="reduce_time_ranges">
 <a class="viewcode-back" href="../../../API/generated/act.utils.reduce_time_ranges.html#act.utils.reduce_time_ranges">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reduce_time_ranges</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">time_delta</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">broken_barh</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given a time series, this function will return a list of tuples of time</span>
 <span class="sd">    ranges representing the contineous times where no data is detected missing.</span>
 
@@ -538,9 +538,9 @@
 <span class="sd">    time_ranges : list of tuples with 2 numpy datetime64 times</span>
 <span class="sd">        The time range(s) of contineous data.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Convert integer sections to numpy datetime64</span>
-    <span class="n">time_delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time_delta</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+    <span class="n">time_delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time_delta</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span> <span class="s1">'ms'</span><span class="p">)</span>
 
     <span class="c1"># Make a difference array to find where time difference is great than time_delta</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
@@ -566,7 +566,7 @@
 <div class="viewcode-block" id="determine_time_delta">
 <a class="viewcode-back" href="../../../API/generated/act.utils.determine_time_delta.html#act.utils.determine_time_delta">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">determine_time_delta</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns the most likely time step in seconds by analyzing the difference</span>
 <span class="sd">    in time steps.</span>
 
@@ -580,15 +580,15 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    time_delta : float</span>
-<span class="sd">        Returns the number of seconds for the most common time step. If can&#39;t</span>
+<span class="sd">        Returns the number of seconds for the most common time step. If can't</span>
 <span class="sd">        calculate a value the default value is returned.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">unique</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">time_delta</span> <span class="o">=</span> <span class="n">unique</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;timedelta64[s]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">time_delta</span> <span class="o">=</span> <span class="n">unique</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'timedelta64[s]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">time_delta</span> <span class="o">=</span> <span class="n">default</span>
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_delta</span><span class="p">)</span></div>
@@ -598,7 +598,7 @@
 <div class="viewcode-block" id="datetime64_to_datetime">
 <a class="viewcode-back" href="../../../API/generated/act.utils.datetime64_to_datetime.html#act.utils.datetime64_to_datetime">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">datetime64_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given a numpy datetime64 array time series, return datetime</span>
 <span class="sd">    (y, m, d, h, m, s)</span>
 
@@ -613,14 +613,14 @@
 <span class="sd">        Returns a list of datetimes (y, m, d, h, m, s) from a time series.</span>
 <span class="sd">        YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY or YYYYMMDD.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">time</span><span class="p">])</span>
     <span class="n">datetime_array</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
-            <span class="n">tm</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+            <span class="n">tm</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ms]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
         <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">tm</span> <span class="ow">in</span> <span class="n">time</span>
     <span class="p">]</span>
@@ -630,8 +630,8 @@
 
 <div class="viewcode-block" id="date_parser">
 <a class="viewcode-back" href="../../../API/generated/act.utils.date_parser.html#act.utils.date_parser">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">date_parser</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">return_datetime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts one datetime string to another or to</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">date_parser</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">,</span> <span class="n">return_datetime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Converts one datetime string to another or to</span>
 <span class="sd">    a datetime object.</span>
 
 <span class="sd">    Parameters</span>
@@ -652,18 +652,18 @@
 <span class="sd">    datetime_obj : datetime.datetime</span>
 <span class="sd">        A datetime object.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">date_fmts</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%Y&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%YT%H:%M:%S&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%YT%H:%M:%S&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">T</span><span class="si">%%</span><span class="s1">H:%M:%S&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">,</span>
+        <span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1">'</span><span class="p">,</span>
+        <span class="s1">'</span><span class="si">%d</span><span class="s1">.%m.%Y'</span><span class="p">,</span>
+        <span class="s1">'</span><span class="si">%d</span><span class="s1">/%m/%Y'</span><span class="p">,</span>
+        <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">,</span>
+        <span class="s1">'%Y/%m/</span><span class="si">%d</span><span class="s1">'</span><span class="p">,</span>
+        <span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S'</span><span class="p">,</span>
+        <span class="s1">'</span><span class="si">%d</span><span class="s1">.%m.%YT%H:%M:%S'</span><span class="p">,</span>
+        <span class="s1">'</span><span class="si">%d</span><span class="s1">/%m/%YT%H:%M:%S'</span><span class="p">,</span>
+        <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">T</span><span class="si">%%</span><span class="s1">H:%M:%S'</span><span class="p">,</span>
+        <span class="s1">'%Y/%m/</span><span class="si">%d</span><span class="s1">T%H:%M:%S'</span><span class="p">,</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">date_fmts</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -674,20 +674,20 @@
                 <span class="k">return</span> <span class="n">datetime_obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">output_format</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
-    <span class="n">fmt_strings</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">date_fmts</span><span class="p">)</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid Date format, please use one of these formats &#39;</span> <span class="o">+</span> <span class="n">fmt_strings</span><span class="p">)</span></div>
+    <span class="n">fmt_strings</span> <span class="o">=</span> <span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">date_fmts</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Invalid Date format, please use one of these formats '</span> <span class="o">+</span> <span class="n">fmt_strings</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="adjust_timestamp">
 <a class="viewcode-back" href="../../../API/generated/act.utils.adjust_timestamp.html#act.utils.adjust_timestamp">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">adjust_timestamp</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">time_bounds</span><span class="o">=</span><span class="s1">&#39;time_bounds&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">adjust_timestamp</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">time_bounds</span><span class="o">=</span><span class="s1">'time_bounds'</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">'left'</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Will adjust the timestamp based on the time_bounds or other information</span>
 <span class="sd">    so that the timestamp aligns with user preference.</span>
 
 <span class="sd">    Will work to adjust the times based on the time_bounds variable</span>
-<span class="sd">    but if it&#39;s not available will rely on the user supplied input</span>
+<span class="sd">    but if it's not available will rely on the user supplied input</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -710,30 +710,30 @@
 <span class="sd">    ds : Xarray DataSet</span>
 <span class="sd">        Adjusted DataSet</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="n">time_bounds</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">time_bounds</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">time_bounds</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="k">if</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">'left'</span><span class="p">:</span>
             <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_bounds</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">'right'</span><span class="p">:</span>
             <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_bounds</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s1">'center'</span><span class="p">:</span>
             <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">/</span> <span class="mf">2.0</span>
                 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_bounds</span>
             <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Align should be set to one of [left, right, center]&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Align should be set to one of [left, right, center]'</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time</span><span class="p">]</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;time_bounds variable is not available&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'time_bounds variable is not available'</span><span class="p">)</span>
 
-    <span class="n">time_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_start</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">)</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time_start</span><span class="p">})</span>
+    <span class="n">time_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time_start</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">time_start</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.plotting.contourdisplay</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Stores the class for ContourDisplay.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rbf</span>
@@ -455,12 +455,12 @@
 <div class="viewcode-block" id="ContourDisplay">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.html#act.plotting.ContourDisplay">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ContourDisplay</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This subclass contains routines that are specific to plotting</span>
 <span class="sd">    contour plots from data. It is inherited from Display and therefore</span>
-<span class="sd">    contains all of Display&#39;s attributes and methods.</span>
+<span class="sd">    contains all of Display's attributes and methods.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ds_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="p">,</span> <span class="n">ds_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -471,15 +471,15 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
+        <span class="n">function</span><span class="o">=</span><span class="s1">'cubic'</span><span class="p">,</span>
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
-        <span class="n">contour</span><span class="o">=</span><span class="s1">&#39;contourf&#39;</span><span class="p">,</span>
+        <span class="n">contour</span><span class="o">=</span><span class="s1">'contourf'</span><span class="p">,</span>
         <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
         <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
         <span class="n">twod_dim_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not been</span>
 <span class="sd">        added yet, an axis will be created assuming that there is only going</span>
 <span class="sd">        to be one plot.</span>
@@ -514,7 +514,7 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get x, y, and z data by looping through each dictionary</span>
         <span class="c1"># item and extracting data from appropriate time</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
@@ -561,13 +561,13 @@
         <span class="n">zi</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 
         <span class="c1"># Create contour plot</span>
-        <span class="k">if</span> <span class="n">contour</span> <span class="o">==</span> <span class="s1">&#39;contour&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">contour</span> <span class="o">==</span> <span class="s1">'contour'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;contourf&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="s1">'contourf'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="n">subplot_index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid contour plot type. Please choose either &#39;contourf&#39; or &#39;contour&#39;&quot;</span>
+                <span class="s2">"Invalid contour plot type. Please choose either 'contourf' or 'contour'"</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
@@ -576,7 +576,7 @@
 <div class="viewcode-block" id="ContourDisplay.contourf">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.contourf.html#act.plotting.ContourDisplay.contourf">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">contourf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Base function for filled contours if user already has data gridded.</span>
 <span class="sd">        If subplots have not been added yet, an axis will be created</span>
 <span class="sd">        assuming that there is only going to be one plot.</span>
@@ -599,7 +599,7 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
@@ -608,7 +608,7 @@
 <div class="viewcode-block" id="ContourDisplay.contour">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.contour.html#act.plotting.ContourDisplay.contour">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Base function for contours if user already has data gridded.</span>
 <span class="sd">        If subplots have not been added yet, an axis will be created</span>
 <span class="sd">        assuming that there is only going to be one plot.</span>
@@ -631,7 +631,7 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
@@ -645,12 +645,12 @@
         <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
         <span class="n">mesh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">function</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
+        <span class="n">function</span><span class="o">=</span><span class="s1">'cubic'</span><span class="p">,</span>
         <span class="n">grid_delta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
         <span class="n">grid_buffer</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extracts, grids, and creates a contour plot.</span>
 <span class="sd">        If subplots have not been added yet, an axis will be created</span>
 <span class="sd">        assuming that there is only going to be one plot.</span>
@@ -678,7 +678,7 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get x, y, and z data by looping through each dictionary</span>
         <span class="c1"># item and extracting data from appropriate time</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
@@ -730,7 +730,7 @@
 <div class="viewcode-block" id="ContourDisplay.barbs">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.barbs.html#act.plotting.ContourDisplay.barbs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">barbs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Base function for wind barbs. If subplots have not been added yet,</span>
 <span class="sd">        an axis will be created assuming that there is only going to be</span>
 <span class="sd">        one plot.</span>
@@ -755,7 +755,7 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">barbs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span></div>
@@ -763,8 +763,8 @@
 
 <div class="viewcode-block" id="ContourDisplay.plot_station">
 <a class="viewcode-back" href="../../../API/generated/act.plotting.ContourDisplay.plot_station.html#act.plotting.ContourDisplay.plot_station">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">text_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">text_color</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extracts, grids, and creates a contour plot. If subplots have not</span>
 <span class="sd">        been added yet, an axis will be created assuming that there is only</span>
 <span class="sd">        going to be one plot.</span>
@@ -787,7 +787,7 @@
 <span class="sd">        ax : matplotlib axis handle</span>
 <span class="sd">            The matplotlib axis handle of the plot.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get x, y, and data by looping through each dictionary</span>
         <span class="c1"># item and extracting data from appropriate time</span>
         <span class="k">for</span> <span class="n">dsname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">:</span>
@@ -804,7 +804,7 @@
                         <span class="n">y</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">y</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">subplot_index</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">'*'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
                     <span class="n">offset</span> <span class="o">=</span> <span class="mf">0.02</span>

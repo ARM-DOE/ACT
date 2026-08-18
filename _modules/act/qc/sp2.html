@@ -455,7 +455,7 @@
 <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
 
     <span class="k">class</span><span class="w"> </span><span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        This class stores the particle crtiteria for filtering out bad particles in the SP2.</span>
 <span class="sd">        In addition, this class stores the calibration statistics for the mass calculations.</span>
 
@@ -507,7 +507,7 @@
 <span class="sd">        tempSTP, presSTP: float</span>
 <span class="sd">            Temperature [Kelvin] and pressure [hPa] at STP.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ScatMaxPeakHt1</span> <span class="o">=</span> <span class="mi">60000</span>
@@ -548,9 +548,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">TempSTP</span> <span class="o">=</span> <span class="mf">273.15</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">PressSTP</span> <span class="o">=</span> <span class="mf">1013.25</span>
             <span class="k">if</span> <span class="n">cal_file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">cal_file_name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;CalName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;CalName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;CalValue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">cal_file_name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'CalName'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">'CalName'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">'CalValue'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="k">del</span> <span class="n">df</span>
 
 <span class="k">else</span><span class="p">:</span>
@@ -560,10 +560,10 @@
     <span class="k">class</span><span class="w"> </span><span class="nc">SP2ParticleCriteria</span><span class="p">:</span>
         <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Attempting to use SP2ParticleCriteria without&#39;</span>
-                <span class="s1">&#39;PySP2 installed. SP2ParticleCriteria will&#39;</span>
-                <span class="s1">&#39;not have any functionality besides this&#39;</span>
-                <span class="s1">&#39;warning message.&#39;</span><span class="p">,</span>
+                <span class="s1">'Attempting to use SP2ParticleCriteria without'</span>
+                <span class="s1">'PySP2 installed. SP2ParticleCriteria will'</span>
+                <span class="s1">'not have any functionality besides this'</span>
+                <span class="s1">'warning message.'</span><span class="p">,</span>
                 <span class="ne">RuntimeWarning</span><span class="p">,</span>
             <span class="p">)</span></div>
 
@@ -572,7 +572,7 @@
 <div class="viewcode-block" id="get_waveform_statistics">
 <a class="viewcode-back" href="../../../API/generated/act.qc.get_waveform_statistics.html#act.qc.get_waveform_statistics">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_waveform_statistics</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_records</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generates waveform statistics for each particle in the dataset</span>
 <span class="sd">    This will do the fitting for channel 0 only.</span>
 
@@ -592,12 +592,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    wave_ds: xarray.Dataset</span>
 <span class="sd">        Dataset with gaussian fits</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">gaussian_fit</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">num_records</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 must be installed in order to process SP2 data.&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">'PySP2 must be installed in order to process SP2 data.'</span><span class="p">)</span></div>
 
 </pre></div>
 <div class="section ablog__blog_comments">

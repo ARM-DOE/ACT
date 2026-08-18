@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.retrievals.cbh</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functions for calculated cloud base height that are instrument agnostic.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
@@ -459,10 +459,10 @@
     <span class="n">var_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">fill_na</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">return_thresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">filter_type</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+    <span class="n">filter_type</span><span class="o">=</span><span class="s1">'uniform'</span><span class="p">,</span>
     <span class="n">edge_thresh</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function for calculating cloud base height from lidar/radar data</span>
 <span class="sd">    using a basic sobel filter and thresholding. Note, this was not</span>
 <span class="sd">    initially based on any published work, but a lit review indicates</span>
@@ -505,30 +505,30 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        kazr = act.retrievals.cbh.generic_sobel_cbh(</span>
-<span class="sd">            kazr, variable=&quot;reflectivity_copol&quot;, height_dim=&quot;range&quot;, var_thresh=-10.0</span>
+<span class="sd">            kazr, variable="reflectivity_copol", height_dim="range", var_thresh=-10.0</span>
 <span class="sd">        )</span>
 
 <span class="sd">        mpl = act.corrections.mpl.correct_mpl(mpl)</span>
 <span class="sd">        mpl.range_bins.values = mpl.height.values[0, :] * 1000.0</span>
-<span class="sd">        mpl.range_bins.attrs[&quot;units&quot;] = &quot;m&quot;</span>
-<span class="sd">        mpl[&quot;signal_return_co_pol&quot;].values[:, 0:10] = 0.0</span>
+<span class="sd">        mpl.range_bins.attrs["units"] = "m"</span>
+<span class="sd">        mpl["signal_return_co_pol"].values[:, 0:10] = 0.0</span>
 <span class="sd">        mpl = act.retrievals.cbh.generic_sobel_cbh(</span>
 <span class="sd">            mpl,</span>
-<span class="sd">            variable=&quot;signal_return_co_pol&quot;,</span>
-<span class="sd">            height_dim=&quot;range_bins&quot;,</span>
+<span class="sd">            variable="signal_return_co_pol",</span>
+<span class="sd">            height_dim="range_bins",</span>
 <span class="sd">            var_thresh=10.0,</span>
 <span class="sd">            fill_na=0.0,</span>
 <span class="sd">        )</span>
 
 <span class="sd">        ceil = act.retrievals.cbh.generic_sobel_cbh(</span>
 <span class="sd">            ceil,</span>
-<span class="sd">            variable=&quot;backscatter&quot;,</span>
-<span class="sd">            height_dim=&quot;range&quot;,</span>
+<span class="sd">            variable="backscatter",</span>
+<span class="sd">            height_dim="range",</span>
 <span class="sd">            var_thresh=1000.0,</span>
 <span class="sd">            fill_na=0,</span>
 <span class="sd">        )</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">if</span> <span class="n">fill_na</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -552,8 +552,8 @@
     <span class="c1"># Apply Sobel filter to data and smooth the results</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">edge</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">sobel</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">filter_type</span> <span class="o">==</span> <span class="s1">&#39;uniform&#39;</span><span class="p">:</span>
-        <span class="n">edge</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">uniform_filter</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filter_type</span> <span class="o">==</span> <span class="s1">'uniform'</span><span class="p">:</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">uniform_filter</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'nearest'</span><span class="p">)</span>
 
     <span class="c1"># Create Data Array</span>
     <span class="n">edge_da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
@@ -586,13 +586,13 @@
             <span class="n">cbh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
     <span class="c1"># Create DataArray to add to the dataset</span>
-    <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;cbh_sobel_&#39;</span> <span class="o">+</span> <span class="n">variable</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">cbh</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+    <span class="n">var_name</span> <span class="o">=</span> <span class="s1">'cbh_sobel_'</span> <span class="o">+</span> <span class="n">variable</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">cbh</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">&#39;CBH calculated from&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">&#39;using sobel filter&#39;</span><span class="p">]</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">'CBH calculated from'</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s1">'using sobel filter'</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_dim</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_dim</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

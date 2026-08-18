@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.discovery.arm</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Script for downloading data from ARM&#39;s Live Data Webservice</span>
+<span></span><span class="sd">"""</span>
+<span class="sd">Script for downloading data from ARM's Live Data Webservice</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -465,7 +465,7 @@
 <div class="viewcode-block" id="download_arm_data">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.download_arm_data.html#act.discovery.download_arm_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">download_arm_data</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This tool will help users utilize the ARM Live Data Webservice to download</span>
 <span class="sd">    ARM data.</span>
 
@@ -532,41 +532,41 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        act.discovery.download_data(</span>
-<span class="sd">            &quot;userName&quot;, &quot;XXXXXXXXXXXXXXXX&quot;, &quot;sgpmetE13.b1&quot;, &quot;2017-01-14&quot;, &quot;2017-01-20&quot;</span>
+<span class="sd">            "userName", "XXXXXXXXXXXXXXXX", "sgpmetE13.b1", "2017-01-14", "2017-01-20"</span>
 <span class="sd">        )</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># default start and end are empty</span>
-    <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">''</span>
     <span class="c1"># start and end strings for query_url are constructed</span>
     <span class="c1"># if the arguments were provided</span>
     <span class="k">if</span> <span class="n">startdate</span><span class="p">:</span>
         <span class="n">start_datetime</span> <span class="o">=</span> <span class="n">date_parser</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="n">return_datetime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">start_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&amp;start=</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">start_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'Z'</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&amp;start=</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1">'</span>
     <span class="k">if</span> <span class="n">enddate</span><span class="p">:</span>
         <span class="n">end_datetime</span> <span class="o">=</span> <span class="n">date_parser</span><span class="p">(</span><span class="n">enddate</span><span class="p">,</span> <span class="n">return_datetime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># If the start and end date are the same, and a day to the end date</span>
         <span class="k">if</span> <span class="n">start_datetime</span> <span class="o">==</span> <span class="n">end_datetime</span><span class="p">:</span>
             <span class="n">end_datetime</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="mi">59</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mi">59</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">end_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&amp;end=</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">end_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'Z'</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&amp;end=</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s1">'</span>
     <span class="c1"># build the url to query the web service using the arguments provided</span>
     <span class="n">query_url</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;https://adc.arm.gov/armlive/data/query?&#39;</span> <span class="o">+</span> <span class="s1">&#39;user=</span><span class="si">{0}</span><span class="s1">&amp;ds=</span><span class="si">{1}{2}{3}</span><span class="s1">&amp;wt=json&#39;</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">]),</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="s1">'https://adc.arm.gov/armlive/data/query?'</span> <span class="o">+</span> <span class="s1">'user=</span><span class="si">{0}</span><span class="s1">&amp;ds=</span><span class="si">{1}{2}{3}</span><span class="s1">&amp;wt=json'</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">':'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">]),</span> <span class="n">datastream</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
 
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
+        <span class="s1">'user-agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">query_url</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
     <span class="c1"># get url response, read the body of the message,</span>
     <span class="c1"># and decode from bytes type to utf-8 string</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">response_body</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
     <span class="c1"># if the response is an html doc, then there was an error with the user</span>
-    <span class="k">if</span> <span class="n">response_body</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!DOCTYPE html&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ConnectionRefusedError</span><span class="p">(</span><span class="s1">&#39;Error with user. Check username or token.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response_body</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'!DOCTYPE html'</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ConnectionRefusedError</span><span class="p">(</span><span class="s1">'Error with user. Check username or token.'</span><span class="p">)</span>
 
     <span class="c1"># parse into json object</span>
     <span class="n">response_body_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
@@ -582,57 +582,57 @@
 
     <span class="c1"># not testing, response is successful and files were returned</span>
     <span class="k">if</span> <span class="n">response_body_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ARM Data Live Webservice does not appear to be functioning&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'ARM Data Live Webservice does not appear to be functioning'</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[]</span>
 
-    <span class="n">num_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">response_body_json</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">])</span>
+    <span class="n">num_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">response_body_json</span><span class="p">[</span><span class="s1">'files'</span><span class="p">])</span>
     <span class="n">file_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;success&#39;</span> <span class="ow">and</span> <span class="n">num_files</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s1">'status'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'success'</span> <span class="ow">and</span> <span class="n">num_files</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">response_body_json</span><span class="p">[</span><span class="s1">'files'</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">time</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fname</span><span class="p">:</span>
                     <span class="k">continue</span>
             <span class="c1"># construct link to web service saveData function</span>
             <span class="n">save_data_url</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;https://adc.arm.gov/armlive/data/&#39;</span> <span class="o">+</span> <span class="s1">&#39;saveData?user=</span><span class="si">{0}</span><span class="s1">&amp;file=</span><span class="si">{1}</span><span class="s1">&#39;</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">]),</span> <span class="n">fname</span><span class="p">)</span>
+                <span class="s1">'https://adc.arm.gov/armlive/data/'</span> <span class="o">+</span> <span class="s1">'saveData?user=</span><span class="si">{0}</span><span class="s1">&amp;file=</span><span class="si">{1}</span><span class="s1">'</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">':'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">]),</span> <span class="n">fname</span><span class="p">)</span>
             <span class="n">req_save</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">save_data_url</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
             <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-            <span class="c1"># make directory if it doesn&#39;t exist</span>
+            <span class="c1"># make directory if it doesn't exist</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
             <span class="c1"># create file and write bytes to file</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">req_save</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="s1">&#39;This data file is not available&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="n">fname</span> <span class="o">+</span> <span class="s1">&#39; is not available for download&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="s1">'This data file is not available'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">fname</span> <span class="o">+</span> <span class="s1">' is not available for download'</span><span class="p">)</span>
                         <span class="k">continue</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[DOWNLOADING] </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'[DOWNLOADING] </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
                         <span class="n">open_bytes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unable to download file: &#39;</span> <span class="o">+</span> <span class="n">fname</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'Unable to download file: '</span> <span class="o">+</span> <span class="n">fname</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
         <span class="c1"># Get ARM DOI and print it out</span>
         <span class="n">doi</span> <span class="o">=</span> <span class="n">get_arm_doi</span><span class="p">(</span>
-            <span class="n">datastream</span><span class="p">,</span> <span class="n">start_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">end_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">datastream</span><span class="p">,</span> <span class="n">start_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1">'</span><span class="p">),</span> <span class="n">end_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">If you use these data to prepare a publication, please cite:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">If you use these data to prepare a publication, please cite:</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">doi</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="s1">&#39;No files returned or url status error.</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="s1">&#39;Check datastream name, start, and end date. </span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="s1">'No files returned or url status error.</span><span class="se">\n</span><span class="s1">'</span>
+            <span class="s1">'Check datastream name, start, and end date. </span><span class="se">\n</span><span class="s1">'</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">datastream</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;a0&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">datastream</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'a0'</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;---------------------ATTENTION--------------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ARM does not generally make a0-level data discoverable</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;Please reach out through the ARM Help link to request access&#39;</span><span class="p">,</span>
+                <span class="s1">'---------------------ATTENTION--------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span>
+                <span class="s1">'ARM does not generally make a0-level data discoverable</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span>
+                <span class="s1">'Please reach out through the ARM Help link to request access'</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">file_names</span></div>
@@ -641,9 +641,9 @@
 
 <div class="viewcode-block" id="download_arm_data_mod">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.download_arm_data_mod.html#act.discovery.download_arm_data_mod">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">download_arm_data_mod</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">file_list</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetype</span><span class="o">=</span><span class="s1">&#39;cdf&#39;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This function allows for downloading ARM data from ARM&#39;s data discovery mod API:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_arm_data_mod</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">file_list</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetype</span><span class="o">=</span><span class="s1">'cdf'</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    This function allows for downloading ARM data from ARM's data discovery mod API:</span>
 <span class="sd">    https://adc.arm.gov/armlive/</span>
 
 <span class="sd">    This function will then provide a concatenated file of the file list in csv or</span>
@@ -661,8 +661,8 @@
 <span class="sd">        A list of desired variables that exist in the datastream.</span>
 <span class="sd">        Default is None and will provide all variables.</span>
 <span class="sd">    file_type : str</span>
-<span class="sd">        File type to download file as. Valid options are &#39;csv&#39; and &#39;cdf&#39;.</span>
-<span class="sd">        Default is &#39;cdf&#39;</span>
+<span class="sd">        File type to download file as. Valid options are 'csv' and 'cdf'.</span>
+<span class="sd">        Default is 'cdf'</span>
 <span class="sd">    output : str</span>
 <span class="sd">        The output directory for the data. Set to None to make a folder in the</span>
 <span class="sd">        current working directory with the same name as filename to place</span>
@@ -672,19 +672,19 @@
 <span class="sd">    -------</span>
 <span class="sd">    filename : str</span>
 <span class="sd">        Concatenated filename</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">variables_str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://adc.arm.gov/armlive/mod?user=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&amp;variables=</span><span class="si">{</span><span class="n">variables_str</span><span class="si">}</span><span class="s1">&amp;wt=</span><span class="si">{</span><span class="n">filetype</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">variables_str</span> <span class="o">=</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'https://adc.arm.gov/armlive/mod?user=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&amp;variables=</span><span class="si">{</span><span class="n">variables_str</span><span class="si">}</span><span class="s1">&amp;wt=</span><span class="si">{</span><span class="n">filetype</span><span class="si">}</span><span class="s1">'</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://adc.arm.gov/armlive/mod?user=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&amp;wt=</span><span class="si">{</span><span class="n">filetype</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'https://adc.arm.gov/armlive/mod?user=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&amp;wt=</span><span class="si">{</span><span class="n">filetype</span><span class="si">}</span><span class="s1">'</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">}</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">file_list</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
         <span class="c1"># Save the response content to a file</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;filename=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Content-Disposition'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'filename='</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'"'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># output files to directory specified</span>
@@ -693,21 +693,21 @@
             <span class="c1"># if no folder given, set current directory as folder</span>
             <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
 
-        <span class="c1"># make directory if it doesn&#39;t exist and its a user provided folder.</span>
+        <span class="c1"># make directory if it doesn't exist and its a user provided folder.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
 
         <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File saved as </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"File saved as </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filename</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s1">&#39;No files returned or url status error.</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="s1">&#39;Check if username, token, file list are valid. </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s1">'No files returned or url status error.</span><span class="se">\n</span><span class="s1">'</span>
+            <span class="s1">'Check if username, token, file list are valid. </span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span>
             <span class="ne">UserWarning</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span></div>
@@ -717,7 +717,7 @@
 <div class="viewcode-block" id="get_arm_doi">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_arm_doi.html#act.discovery.get_arm_doi">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_arm_doi</span><span class="p">(</span><span class="n">datastream</span><span class="p">,</span> <span class="n">startdate</span><span class="p">,</span> <span class="n">enddate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function will return a citation with DOI, if available, for specified</span>
 <span class="sd">    datastream and date range</span>
 
@@ -735,27 +735,27 @@
 <span class="sd">    doi : str</span>
 <span class="sd">        Returns the citation as a string</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
+        <span class="s1">'user-agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="c1"># Get the DOI information</span>
     <span class="n">doi_url</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;https://adc.arm.gov/citationservice/citation/datastream?id=&#39;</span>
+        <span class="s1">'https://adc.arm.gov/citationservice/citation/datastream?id='</span>
         <span class="o">+</span> <span class="n">datastream</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;citationType=apa&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;citationType=apa'</span>
     <span class="p">)</span>
-    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;startDate=&#39;</span> <span class="o">+</span> <span class="n">startdate</span>
-    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;endDate=&#39;</span> <span class="o">+</span> <span class="n">enddate</span>
+    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">'&amp;startDate='</span> <span class="o">+</span> <span class="n">startdate</span>
+    <span class="n">doi_url</span> <span class="o">+=</span> <span class="s1">'&amp;endDate='</span> <span class="o">+</span> <span class="n">enddate</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">doi</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">doi_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Webservice potentially down or arguments are not valid: &quot;</span> <span class="o">+</span> <span class="n">err</span>
+        <span class="k">return</span> <span class="s2">"Webservice potentially down or arguments are not valid: "</span> <span class="o">+</span> <span class="n">err</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doi</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">doi</span> <span class="o">=</span> <span class="n">doi</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;citation&#39;</span><span class="p">]</span>
+        <span class="n">doi</span> <span class="o">=</span> <span class="n">doi</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">'citation'</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">doi</span> <span class="o">=</span> <span class="s1">&#39;Please check your arguments. No DOI Found&#39;</span>
+        <span class="n">doi</span> <span class="o">=</span> <span class="s1">'Please check your arguments. No DOI Found'</span>
 
     <span class="k">return</span> <span class="n">doi</span></div>
 

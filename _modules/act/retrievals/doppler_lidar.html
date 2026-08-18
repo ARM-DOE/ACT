@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.retrievals.doppler_lidar</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functions for doppler lidar specific retrievals</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -456,17 +456,17 @@
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.compute_winds_from_ppi.html#act.retrievals.compute_winds_from_ppi">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_winds_from_ppi</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">elevation_name</span><span class="o">=</span><span class="s1">&#39;elevation&#39;</span><span class="p">,</span>
-    <span class="n">azimuth_name</span><span class="o">=</span><span class="s1">&#39;azimuth&#39;</span><span class="p">,</span>
-    <span class="n">radial_velocity_name</span><span class="o">=</span><span class="s1">&#39;radial_velocity&#39;</span><span class="p">,</span>
-    <span class="n">snr_name</span><span class="o">=</span><span class="s1">&#39;signal_to_noise_ratio&#39;</span><span class="p">,</span>
+    <span class="n">elevation_name</span><span class="o">=</span><span class="s1">'elevation'</span><span class="p">,</span>
+    <span class="n">azimuth_name</span><span class="o">=</span><span class="s1">'azimuth'</span><span class="p">,</span>
+    <span class="n">radial_velocity_name</span><span class="o">=</span><span class="s1">'radial_velocity'</span><span class="p">,</span>
+    <span class="n">snr_name</span><span class="o">=</span><span class="s1">'signal_to_noise_ratio'</span><span class="p">,</span>
     <span class="n">intensity_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">snr_threshold</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
     <span class="n">remove_all_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">condition_limit</span><span class="o">=</span><span class="mf">1.0e4</span><span class="p">,</span>
     <span class="n">return_ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function will convert a Doppler Lidar PPI scan into vertical</span>
 <span class="sd">    distribution of horizontal wind direction and speed.</span>
 
@@ -518,7 +518,7 @@
 <span class="sd">    Horizontal Wind Measurements from a Doppler Lidar, Atmospheric Measurement</span>
 <span class="sd">    Techniques Discussions 2016, 10, 1-30</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">new_ds</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">azimuth</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">azimuth_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -528,8 +528,8 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">azimuth_rounded</span> <span class="o">==</span> <span class="n">azimuth_rounded</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">ERROR: Having trouble determining the PPI scan breaks &#39;</span>
-            <span class="s1">&#39;in compute_winds_from_ppi().</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="s1">'</span><span class="se">\n</span><span class="s1">ERROR: Having trouble determining the PPI scan breaks '</span>
+            <span class="s1">'in compute_winds_from_ppi().</span><span class="se">\n</span><span class="s1">'</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">return_ds</span>
 
@@ -551,21 +551,21 @@
             <span class="n">snr</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">snr_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="n">var_name</span> <span class="o">=</span> <span class="n">snr_name</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">intensity</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">intensity</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'intensity'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="n">snr</span> <span class="o">=</span> <span class="n">intensity</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="k">del</span> <span class="n">intensity</span>
-            <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;intensity&#39;</span>
+            <span class="n">var_name</span> <span class="o">=</span> <span class="s1">'intensity'</span>
 
-    <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">height_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">rng</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">height_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="n">height_units</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">height_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">height_units</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+            <span class="n">height_units</span> <span class="o">=</span> <span class="s1">'m'</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">height_units</span> <span class="o">=</span> <span class="s1">&#39;km&#39;</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">height_units</span> <span class="o">=</span> <span class="s1">'km'</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
     <span class="c1"># Loop over each PPI scan</span>
     <span class="n">task</span> <span class="o">=</span> <span class="p">[]</span>
@@ -596,12 +596,12 @@
     <span class="n">is_Dataset</span> <span class="o">=</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">is_Dataset</span><span class="p">):</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">is_Dataset</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">]</span>
-        <span class="n">new_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="n">new_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s1">'time'</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">return_ds</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
         <span class="n">new_ds</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span>
     <span class="p">):</span>
-        <span class="n">return_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">return_ds</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="n">return_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">return_ds</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">return_ds</span> <span class="o">=</span> <span class="n">new_ds</span>
 
@@ -621,11 +621,11 @@
     <span class="n">remove_all_missing</span><span class="p">,</span>
     <span class="n">height_units</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function is for processing the winds using dask from the compute_winds_from_ppi</span>
 <span class="sd">    function.  This should not be used standalone.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">height</span> <span class="o">=</span> <span class="n">rng</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">elevation</span><span class="p">))</span>
     <span class="n">xhat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">azimuth</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elevation</span><span class="p">)</span>
@@ -650,7 +650,7 @@
         <span class="n">ur1</span> <span class="o">=</span> <span class="n">doppler</span><span class="p">[:,</span> <span class="n">ii</span><span class="p">]</span>
         <span class="n">snr1</span> <span class="o">=</span> <span class="n">snr</span><span class="p">[:,</span> <span class="n">ii</span><span class="p">]</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">snr1</span> <span class="o">&gt;=</span> <span class="n">snr_threshold</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ur1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">count</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
@@ -689,7 +689,7 @@
                 <span class="n">chisq</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">ur_fit</span> <span class="o">-</span> <span class="n">ur1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="n">residual</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chisq</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">)</span>
                 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
                     <span class="n">corr</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">ur_fit</span><span class="p">,</span> <span class="n">ur1</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="n">u_err</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">chisq</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="n">ainv</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
                 <span class="n">v_err</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">chisq</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="n">ainv</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -697,7 +697,7 @@
 
     <span class="c1"># Compute windspeed and direction</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="n">wspd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u_wind</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v_wind</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">wdir</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">u_wind</span><span class="p">,</span> <span class="n">v_wind</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
 
@@ -718,60 +718,60 @@
     <span class="n">corr</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rng</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
     <span class="n">residual</span> <span class="o">=</span> <span class="n">residual</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rng</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="n">snr_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">snr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">snr_mean</span> <span class="o">=</span> <span class="n">snr_mean</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rng</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
     <span class="n">new_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
         <span class="p">{</span>
-            <span class="s1">&#39;wind_speed&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'wind_speed'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">wspd</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind speed&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Wind speed'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'m/s'</span><span class="p">},</span>
             <span class="p">),</span>
-            <span class="s1">&#39;wind_direction&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'wind_direction'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">wdir</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind direction&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Wind direction'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'degree'</span><span class="p">},</span>
             <span class="p">),</span>
-            <span class="s1">&#39;wind_speed_error&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'wind_speed_error'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">wspd_err</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind direction error&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Wind direction error'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'m/s'</span><span class="p">},</span>
             <span class="p">),</span>
-            <span class="s1">&#39;wind_direction_error&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'wind_direction_error'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">wdir_err</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Wind direction error&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Wind direction error'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'degree'</span><span class="p">},</span>
             <span class="p">),</span>
-            <span class="s1">&#39;signal_to_noise_ratio&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'signal_to_noise_ratio'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">snr_mean</span><span class="p">,</span>
                 <span class="p">{</span>
-                    <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Signal to noise ratio mean over PPI scan&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                    <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Signal to noise ratio mean over PPI scan'</span><span class="p">,</span>
+                    <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'1'</span><span class="p">,</span>
                 <span class="p">},</span>
             <span class="p">),</span>
-            <span class="s1">&#39;residual&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'residual'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">residual</span><span class="p">,</span>
                 <span class="p">{</span>
-                    <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Residual values (Square Root of Chi Square)&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span>
+                    <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Residual values (Square Root of Chi Square)'</span><span class="p">,</span>
+                    <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'m/s'</span><span class="p">,</span>
                 <span class="p">},</span>
             <span class="p">),</span>
-            <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">),</span>
+            <span class="s1">'correlation'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span>
                 <span class="n">corr</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Correlation coefficient&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Correlation coefficient'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'1'</span><span class="p">},</span>
             <span class="p">),</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Time in UTC&#39;</span><span class="p">}),</span>
-            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="p">(</span>
-                <span class="s1">&#39;height&#39;</span><span class="p">,</span>
+            <span class="s1">'time'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Time in UTC'</span><span class="p">}),</span>
+            <span class="s1">'height'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">'height'</span><span class="p">,</span>
                 <span class="n">height</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Height to center of bin&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">height_units</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Height to center of bin'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="n">height_units</span><span class="p">},</span>
             <span class="p">),</span>
         <span class="p">},</span>
     <span class="p">)</span>

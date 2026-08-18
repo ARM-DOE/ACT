@@ -571,37 +571,37 @@ Author: Adam Theisen</p>
 
 <span class="c1"># SGP E13 MET data has already been processed to yearly averages,</span>
 <span class="c1"># removing data flagged by embedded qc and DQRs</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv&#39;</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv'</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">col_names</span></a> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;time&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;count&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;minimum&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;maximum&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;standard_deviation&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;standard_error&#39;</span><span class="p">,</span>
+    <span class="s1">'time'</span><span class="p">,</span>
+    <span class="s1">'temperature'</span><span class="p">,</span>
+    <span class="s1">'count'</span><span class="p">,</span>
+    <span class="s1">'minimum'</span><span class="p">,</span>
+    <span class="s1">'maximum'</span><span class="p">,</span>
+    <span class="s1">'standard_deviation'</span><span class="p">,</span>
+    <span class="s1">'standard_error'</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
     <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a><span class="p">,</span>
     <span class="n">column_names</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">col_names</span></a><span class="p">,</span>
     <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
-    <span class="n">date_format</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">,</span>
+    <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
+    <span class="n">date_format</span><span class="o">=</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S"</span><span class="p">,</span>
     <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Drop years with less than 500000 samples</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">500000</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'count'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">500000</span><span class="p">)</span>
 
 <span class="c1"># Create plot display</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">reference</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2003-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2013-01-01&#39;</span><span class="p">]</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_stripes</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="n">reference_period</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">reference</span></a><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">reference</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">'2003-01-01'</span><span class="p">,</span> <span class="s1">'2013-01-01'</span><span class="p">]</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_stripes</span><span class="p">(</span><span class="s1">'temperature'</span><span class="p">,</span> <span class="n">reference_period</span><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">reference</span></a><span class="p">)</span>
 
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.207 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.372 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plotting-plot-stripes-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/b5b6e24b5dbc5e93d7eed811fdfaf5f3/plot_stripes.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_stripes.ipynb</span></code></a></p>

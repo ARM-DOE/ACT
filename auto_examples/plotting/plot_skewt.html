@@ -568,8 +568,8 @@ and calculate stability indicies.</p>
 <li><img src="../../_images/sphx_glr_plot_skewt_001.png" srcset="../../_images/sphx_glr_plot_skewt_001.png" alt="sgpsondewnpnC1.b1 on 20190101" class = "sphx-glr-multi-img"/></li>
 <li><img src="../../_images/sphx_glr_plot_skewt_002.png" srcset="../../_images/sphx_glr_plot_skewt_002.png" alt="sgpsondewnpnC1.b1 on 20190101" class = "sphx-glr-multi-img"/></li>
 </ul>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;base_time&#39;, &#39;time_offset&#39;, &#39;qc_time&#39;, &#39;pres&#39;, &#39;qc_pres&#39;, &#39;tdry&#39;, &#39;qc_tdry&#39;, &#39;dp&#39;, &#39;qc_dp&#39;, &#39;wspd&#39;, &#39;qc_wspd&#39;, &#39;deg&#39;, &#39;qc_deg&#39;, &#39;rh&#39;, &#39;qc_rh&#39;, &#39;u_wind&#39;, &#39;qc_u_wind&#39;, &#39;v_wind&#39;, &#39;qc_v_wind&#39;, &#39;wstat&#39;, &#39;asc&#39;, &#39;qc_asc&#39;, &#39;lat&#39;, &#39;lon&#39;, &#39;alt&#39;]
-&lt;xarray.DataArray &#39;lifted_index&#39; ()&gt; Size: 8B
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>['base_time', 'time_offset', 'qc_time', 'pres', 'qc_pres', 'tdry', 'qc_tdry', 'dp', 'qc_dp', 'wspd', 'qc_wspd', 'deg', 'qc_deg', 'rh', 'qc_rh', 'u_wind', 'qc_u_wind', 'v_wind', 'qc_v_wind', 'wstat', 'asc', 'qc_asc', 'lat', 'lon', 'alt']
+&lt;xarray.DataArray 'lifted_index' ()&gt; Size: 8B
 array(28.48245927)
 Attributes:
     units:      kelvin
@@ -589,31 +589,31 @@ Attributes:
 <span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Read data</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_sonde</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;sgpsondewnpnC1.b1.20190101.053200.cdf&#39;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_sonde</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'sgpsondewnpnC1.b1.20190101.053200.cdf'</span><span class="p">)</span>
 <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_sonde</span></a><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">))</span>
 <span class="c1"># Calculate stability indicies</span>
 <span class="n">sonde_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">retrievals</span><span class="o">.</span><span class="n">calculate_stability_indicies</span><span class="p">(</span>
-    <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">&#39;dp&#39;</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">&#39;pres&#39;</span>
+    <span class="n">sonde_ds</span><span class="p">,</span> <span class="n">temp_name</span><span class="o">=</span><span class="s1">'tdry'</span><span class="p">,</span> <span class="n">td_name</span><span class="o">=</span><span class="s1">'dp'</span><span class="p">,</span> <span class="n">p_name</span><span class="o">=</span><span class="s1">'pres'</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">&#39;lifted_index&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">[</span><span class="s1">'lifted_index'</span><span class="p">])</span>
 
 <span class="c1"># Set up plot</span>
 <span class="n">skewt</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">SkewTDisplay</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># Add data</span>
-<span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">&#39;u_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;v_wind&#39;</span><span class="p">,</span> <span class="s1">&#39;pres&#39;</span><span class="p">,</span> <span class="s1">&#39;tdry&#39;</span><span class="p">,</span> <span class="s1">&#39;dp&#39;</span><span class="p">)</span>
+<span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span><span class="s1">'u_wind'</span><span class="p">,</span> <span class="s1">'v_wind'</span><span class="p">,</span> <span class="s1">'pres'</span><span class="p">,</span> <span class="s1">'tdry'</span><span class="p">,</span> <span class="s1">'dp'</span><span class="p">)</span>
 
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 <span class="c1"># One could also add options like adiabats and mixing lines</span>
 <span class="n">skewt</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">SkewTDisplay</span><span class="p">(</span><span class="n">sonde_ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">skewt</span><span class="o">.</span><span class="n">plot_from_u_and_v</span><span class="p">(</span>
-    <span class="s1">&#39;u_wind&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;v_wind&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pres&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tdry&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;dp&#39;</span><span class="p">,</span>
+    <span class="s1">'u_wind'</span><span class="p">,</span>
+    <span class="s1">'v_wind'</span><span class="p">,</span>
+    <span class="s1">'pres'</span><span class="p">,</span>
+    <span class="s1">'tdry'</span><span class="p">,</span>
+    <span class="s1">'dp'</span><span class="p">,</span>
     <span class="n">plot_dry_adiabats</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">plot_moist_adiabats</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">plot_mixing_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -622,7 +622,7 @@ Attributes:
 <span class="n">sonde_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.517 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.500 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plotting-plot-skewt-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/9d36c0de5fbc17fb992015d192286fc5/plot_skewt.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_skewt.ipynb</span></code></a></p>

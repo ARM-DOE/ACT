@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.utils.radiance_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Module containing utilities for radiance calculations</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
@@ -452,8 +452,8 @@
 
 <div class="viewcode-block" id="planck_converter">
 <a class="viewcode-back" href="../../../API/generated/act.utils.planck_converter.html#act.utils.planck_converter">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">planck_converter</span><span class="p">(</span><span class="n">wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radiance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">planck_converter</span><span class="p">(</span><span class="n">wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radiance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'cm'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Planck function to convert radiance to temperature or temperature to</span>
 <span class="sd">    radiance given a corresponding wavenumber value.</span>
 
@@ -485,16 +485,16 @@
 <span class="sd">    &gt; planck_converter(wnum=1100, radiance=81.49)</span>
 <span class="sd">    299.9974150039702</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># h = Plancks&#39;s constant</span>
-    <span class="c1"># k = Boltzmann&#39;s constant</span>
+<span class="sd">    """</span>
+    <span class="c1"># h = Plancks's constant</span>
+    <span class="c1"># k = Boltzmann's constant</span>
     <span class="c1"># c = Speed of light in a vacuum</span>
-    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;cm&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">'cm'</span><span class="p">:</span>
         <span class="c1"># C1 = 2 h c^2, [W cm^2]</span>
         <span class="n">C1</span> <span class="o">=</span> <span class="mf">1.191042e-5</span>  <span class="c1"># For radiance in units of mW m^-2 sr^-1 /cm^-1</span>
         <span class="c1"># C2 = h c / k, [K cm]</span>
         <span class="n">C2</span> <span class="o">=</span> <span class="mf">1.4387752</span>
-    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">'m'</span><span class="p">:</span>
         <span class="c1"># C1 = 2 h c^2, [W m^2]</span>
         <span class="n">C1</span> <span class="o">=</span> <span class="mf">1.191042e-16</span>  <span class="c1"># For radiance in units of mW m^-2 sr^-1 /cm^-1</span>
         <span class="c1"># C2 = h c / k, [K m]</span>
@@ -502,11 +502,11 @@
 
     <span class="n">func_name</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">wnum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No wnum values provided for </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s1">() function.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No wnum values provided for </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s1">() function.</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">radiance</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;No radiance or temperature values provided for </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s1">() function.</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">'No radiance or temperature values provided for </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s1">() function.</span><span class="se">\n</span><span class="s1">'</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">radiance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

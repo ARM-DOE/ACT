@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.retrievals.aeri</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functions for aeri retrievals.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">brentq</span>
@@ -455,15 +455,15 @@
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.aeri2irt.html#act.retrievals.aeri2irt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">aeri2irt</span><span class="p">(</span>
     <span class="n">aeri_ds</span><span class="p">,</span>
-    <span class="n">wnum_name</span><span class="o">=</span><span class="s1">&#39;wnum&#39;</span><span class="p">,</span>
-    <span class="n">rad_name</span><span class="o">=</span><span class="s1">&#39;mean_rad&#39;</span><span class="p">,</span>
-    <span class="n">hatch_name</span><span class="o">=</span><span class="s1">&#39;hatchOpen&#39;</span><span class="p">,</span>
+    <span class="n">wnum_name</span><span class="o">=</span><span class="s1">'wnum'</span><span class="p">,</span>
+    <span class="n">rad_name</span><span class="o">=</span><span class="s1">'mean_rad'</span><span class="p">,</span>
+    <span class="n">hatch_name</span><span class="o">=</span><span class="s1">'hatchOpen'</span><span class="p">,</span>
     <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">temp_low</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
     <span class="n">temp_high</span><span class="o">=</span><span class="mf">320.0</span><span class="p">,</span>
     <span class="n">maxiter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function will integrate over the correct wavenumber values to produce</span>
 <span class="sd">    the effective IRT temperature.</span>
 
@@ -508,9 +508,9 @@
 <span class="sd">    -------</span>
 <span class="sd">    ds : xarray.Dataset or None</span>
 <span class="sd">        The aeri_ds Dataset with new DataArray of temperatures added under</span>
-<span class="sd">        variable name &#39;aeri_irt_equiv_temperature&#39;.</span>
+<span class="sd">        variable name 'aeri_irt_equiv_temperature'.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Get data values</span>
     <span class="n">rf_wnum</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">irt_response_function</span><span class="p">()</span>
     <span class="n">wnum</span> <span class="o">=</span> <span class="n">aeri_ds</span><span class="p">[</span><span class="n">wnum_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -519,7 +519,7 @@
     <span class="c1"># Pull out AERI data for correct wavenumbers and apply response function --;</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">wnum</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">rf_wnum</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">wnum</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">rf_wnum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No wavenumbers match for aeri2irt&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'No wavenumbers match for aeri2irt'</span><span class="p">)</span>
 
     <span class="n">wnum</span> <span class="o">=</span> <span class="n">wnum</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
     <span class="n">mean_rad</span> <span class="o">=</span> <span class="n">mean_rad</span><span class="p">[:,</span> <span class="n">index</span><span class="p">]</span>
@@ -549,15 +549,15 @@
 
     <span class="c1"># Look for when the hatch is not in Open position and set values to NaN.</span>
     <span class="k">if</span> <span class="n">hatch_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">flag_values</span> <span class="o">=</span> <span class="n">aeri_ds</span><span class="p">[</span><span class="n">hatch_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_values&#39;</span><span class="p">]</span>
-        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">aeri_ds</span><span class="p">[</span><span class="n">hatch_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_meanings&#39;</span><span class="p">]</span>
+        <span class="n">flag_values</span> <span class="o">=</span> <span class="n">aeri_ds</span><span class="p">[</span><span class="n">hatch_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'flag_values'</span><span class="p">]</span>
+        <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">aeri_ds</span><span class="p">[</span><span class="n">hatch_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'flag_meanings'</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag_meanings</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">flag_meanings</span> <span class="o">=</span> <span class="n">flag_meanings</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="n">flag_meanings</span> <span class="o">=</span> <span class="p">[</span><span class="n">att</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">flag_meanings</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag_values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">flag_values</span> <span class="o">=</span> <span class="n">flag_values</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="n">flag_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">att</span><span class="p">)</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">flag_values</span><span class="p">]</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">flag_values</span><span class="p">[</span><span class="n">flag_meanings</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">)]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">flag_values</span><span class="p">[</span><span class="n">flag_meanings</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">'open'</span><span class="p">)]</span>
         <span class="n">mean_rad</span><span class="p">[</span><span class="n">aeri_ds</span><span class="p">[</span><span class="n">hatch_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">!=</span> <span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
     <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mean_rad</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
@@ -577,10 +577,10 @@
                 <span class="k">pass</span>
 
     <span class="c1"># Add new values to Xarray Dataset</span>
-    <span class="n">aeri_ds</span><span class="p">[</span><span class="s1">&#39;aeri_irt_equiv_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+    <span class="n">aeri_ds</span><span class="p">[</span><span class="s1">'aeri_irt_equiv_temperature'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">'time'</span><span class="p">,</span>
         <span class="n">aeri_irt_vals</span><span class="p">,</span>
-        <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Derived IRT equivalent temperatrues from AERI&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Derived IRT equivalent temperatrues from AERI'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'K'</span><span class="p">},</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">aeri_ds</span></div>

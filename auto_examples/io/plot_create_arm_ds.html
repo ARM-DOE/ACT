@@ -599,8 +599,8 @@ Attributes: (12/23)
     qc_bit_4_assessment:     Indeterminate
     datastream:
     history:
-{&#39;long_name&#39;: &#39;Number of drops per bin&#39;, &#39;units&#39;: &#39;unitless&#39;, &#39;valid_min&#39;: &#39;0&#39;, &#39;missing_value&#39;: &#39;-9999&#39;}
-{&#39;command_line&#39;: &#39;&#39;, &#39;process_version&#39;: &#39;&#39;, &#39;dod_version&#39;: &#39;&#39;, &#39;site_id&#39;: &#39;&#39;, &#39;facility_id&#39;: &#39;&#39;, &#39;input_source&#39;: &#39;&#39;, &#39;resolution_description&#39;: &#39;The resolution field attributes refer to the number of significant digits relative to the decimal point that should be used in calculations. Using fewer digits might result in greater uncertainty. Using a larger number of digits should have no effect and thus is unnecessary. However, analysis based on differences in values with a larger number of significant digits than indicated could lead to erroneous results or misleading scientific conclusions.\n\nresolution for lat = 0.001\nresolution for lon = 0.001\nresolution for alt = 1&#39;, &#39;sampling_interval&#39;: &#39;1 minute&#39;, &#39;serial_number&#39;: &#39;&#39;, &#39;bin_width&#39;: &#39;0.2 mm&#39;, &#39;qc_standards_version&#39;: &#39;1.0&#39;, &#39;qc_method&#39;: &#39;Standard Mentor QC&#39;, &#39;qc_comment&#39;: &quot;The QC field values are a bit packed representation of true/false values for the tests that may have been performed. A QC value of zero means that none of the tests performed on the value failed.\n\nThe QC field values make use of the internal binary format to store the results of the individual QC tests. This allows the representation of multiple QC states in a single value. If the test associated with a particular bit fails the bit is turned on. Turning on the bit equates to adding the integer value of the failed test to the current value of the field. The QC field&#39;s value can be interpreted by applying bit logic using bitwise operators, or by examining the QC value&#39;s integer representation. A QC field&#39;s integer representation is the sum of the individual integer values of the failed tests. The bit and integer equivalents for the first 5 bits are listed below:\n\nbit_1 = 00000001 = 0x01 = 2^0 = 1\nbit_2 = 00000010 = 0x02 = 2^1 = 2\nbit_3 = 00000100 = 0x04 = 2^2 = 4\nbit_4 = 00001000 = 0x08 = 2^3 = 8\nbit_5 = 00010000 = 0x10 = 2^4 = 16&quot;, &#39;qc_bit_1_description&#39;: &#39;Value is equal to missing_value.&#39;, &#39;qc_bit_1_assessment&#39;: &#39;Bad&#39;, &#39;qc_bit_2_description&#39;: &#39;Value is less than the valid_min.&#39;, &#39;qc_bit_2_assessment&#39;: &#39;Bad&#39;, &#39;qc_bit_3_description&#39;: &#39;Value is greater than the valid_max.&#39;, &#39;qc_bit_3_assessment&#39;: &#39;Bad&#39;, &#39;qc_bit_4_description&#39;: &#39;Difference between current and previous values exceeds valid_delta.&#39;, &#39;qc_bit_4_assessment&#39;: &#39;Indeterminate&#39;, &#39;datastream&#39;: &#39;&#39;, &#39;history&#39;: &#39;&#39;}
+{'long_name': 'Number of drops per bin', 'units': 'unitless', 'valid_min': '0', 'missing_value': '-9999'}
+{'command_line': '', 'process_version': '', 'dod_version': '', 'site_id': '', 'facility_id': '', 'input_source': '', 'resolution_description': 'The resolution field attributes refer to the number of significant digits relative to the decimal point that should be used in calculations. Using fewer digits might result in greater uncertainty. Using a larger number of digits should have no effect and thus is unnecessary. However, analysis based on differences in values with a larger number of significant digits than indicated could lead to erroneous results or misleading scientific conclusions.\n\nresolution for lat = 0.001\nresolution for lon = 0.001\nresolution for alt = 1', 'sampling_interval': '1 minute', 'serial_number': '', 'bin_width': '0.2 mm', 'qc_standards_version': '1.0', 'qc_method': 'Standard Mentor QC', 'qc_comment': "The QC field values are a bit packed representation of true/false values for the tests that may have been performed. A QC value of zero means that none of the tests performed on the value failed.\n\nThe QC field values make use of the internal binary format to store the results of the individual QC tests. This allows the representation of multiple QC states in a single value. If the test associated with a particular bit fails the bit is turned on. Turning on the bit equates to adding the integer value of the failed test to the current value of the field. The QC field's value can be interpreted by applying bit logic using bitwise operators, or by examining the QC value's integer representation. A QC field's integer representation is the sum of the individual integer values of the failed tests. The bit and integer equivalents for the first 5 bits are listed below:\n\nbit_1 = 00000001 = 0x01 = 2^0 = 1\nbit_2 = 00000010 = 0x02 = 2^1 = 2\nbit_3 = 00000100 = 0x04 = 2^2 = 4\nbit_4 = 00001000 = 0x08 = 2^3 = 8\nbit_5 = 00010000 = 0x10 = 2^4 = 16", 'qc_bit_1_description': 'Value is equal to missing_value.', 'qc_bit_1_assessment': 'Bad', 'qc_bit_2_description': 'Value is less than the valid_min.', 'qc_bit_2_assessment': 'Bad', 'qc_bit_3_description': 'Value is greater than the valid_max.', 'qc_bit_3_assessment': 'Bad', 'qc_bit_4_description': 'Difference between current and previous values exceeds valid_delta.', 'qc_bit_4_assessment': 'Indeterminate', 'datastream': '', 'history': ''}
 command_line python  plot_create_arm_ds.py
 process_version 1.2.3
 history Processed with Jupyter Workbench
@@ -613,32 +613,32 @@ random 1234253sdgfadf
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
 
 <span class="c1"># Create an empty dataset using an ARM DOD</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">create_ds_from_arm_dod</span><span class="p">(</span><span class="s1">&#39;vdis.b1&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1440</span><span class="p">},</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">create_ds_from_arm_dod</span><span class="p">(</span><span class="s1">'vdis.b1'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="mi">1440</span><span class="p">},</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">)</span>
 
-<span class="c1"># Print out the xarray dataset to see that it&#39;s empty</span>
+<span class="c1"># Print out the xarray dataset to see that it's empty</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
 <span class="c1"># The user could populate this through a number of ways</span>
-<span class="c1"># and that&#39;s best left up to the user on how to do it.</span>
+<span class="c1"># and that's best left up to the user on how to do it.</span>
 <span class="c1"># If one has an existing dataset, a mapping of variable</span>
 <span class="c1"># names is sometimes the easiest way</span>
 
-<span class="c1"># Let&#39;s look at some variable attributes</span>
+<span class="c1"># Let's look at some variable attributes</span>
 <span class="c1"># These can be updated and it would be up to the</span>
 <span class="c1"># user to ensure these tests are being applied</span>
 <span class="c1"># and are appropriately set in the cooresponding QC variable</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;num_drops&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'num_drops'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
-<span class="c1"># Next, let&#39;s print out the global attribuets</span>
+<span class="c1"># Next, let's print out the global attribuets</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
 <span class="c1"># Add additional attributes or append to existing</span>
 <span class="c1"># if they are needed using a dictionary</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">atts</span></a> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;command_line&#39;</span><span class="p">:</span> <span class="s1">&#39;python  plot_create_arm_ds.py&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;process_version&#39;</span><span class="p">:</span> <span class="s1">&#39;1.2.3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;history&#39;</span><span class="p">:</span> <span class="s1">&#39;Processed with Jupyter Workbench&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;random&#39;</span><span class="p">:</span> <span class="s1">&#39;1234253sdgfadf&#39;</span><span class="p">,</span>
+    <span class="s1">'command_line'</span><span class="p">:</span> <span class="s1">'python  plot_create_arm_ds.py'</span><span class="p">,</span>
+    <span class="s1">'process_version'</span><span class="p">:</span> <span class="s1">'1.2.3'</span><span class="p">,</span>
+    <span class="s1">'history'</span><span class="p">:</span> <span class="s1">'Processed with Jupyter Workbench'</span><span class="p">,</span>
+    <span class="s1">'random'</span><span class="p">:</span> <span class="s1">'1234253sdgfadf'</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="k">for</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">atts</span></a><span class="p">:</span>
     <span class="k">if</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
@@ -649,14 +649,14 @@ random 1234253sdgfadf
     <span class="nb">print</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">])</span>
 
 <span class="c1"># Write data out to netcdf</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">&#39;./sgpvdisX1.b1.20230101.000000.nc&#39;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">'./sgpvdisX1.b1.20230101.000000.nc'</span><span class="p">)</span>
 
 <span class="c1"># If one wants to clean up the dataset to better match CF standards</span>
 <span class="c1"># the following can be done as well</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">write_netcdf</span><span class="p">(</span><span class="n">cf_compliant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;./sgpvdisX1.b1.20230101.000000.cf&#39;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">write_netcdf</span><span class="p">(</span><span class="n">cf_compliant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">'./sgpvdisX1.b1.20230101.000000.cf'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.655 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.780 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-io-plot-create-arm-ds-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/0463614145b45ecde06f0c2d49ed0594/plot_create_arm_ds.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_create_arm_ds.ipynb</span></code></a></p>

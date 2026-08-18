@@ -452,12 +452,12 @@
 <span class="c1">#   Good example below.</span>
 <span class="c1">#</span>
 <span class="c1">#   The general format is to use the variable name as initial key</span>
-<span class="c1">#   followed by an assessment key, followed by a &#39;description&#39; key which</span>
+<span class="c1">#   followed by an assessment key, followed by a 'description' key which</span>
 <span class="c1">#   is a description of that test. Each test listed will insert a new test</span>
-<span class="c1">#   into the ancillary quality control variable. After the &#39;description&#39;</span>
+<span class="c1">#   into the ancillary quality control variable. After the 'description'</span>
 <span class="c1">#   list all time ranges as a YAML array.</span>
 <span class="c1">#   If a test is to be applied to all variables list under the specail</span>
-<span class="c1">#   variable name &#39;_all&#39;.</span>
+<span class="c1">#   variable name '_all'.</span>
 <span class="c1">#</span>
 <span class="c1">#   The file should be named same as datastream name with standard</span>
 <span class="c1">#   YAML file extension when only providing the directoy.</span>
@@ -508,11 +508,11 @@
     <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">assessments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">datetime64</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">time_delim</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\t&#39;</span><span class="p">),</span>
+    <span class="n">time_delim</span><span class="o">=</span><span class="p">(</span><span class="s1">';'</span><span class="p">,</span> <span class="s1">','</span><span class="p">,</span> <span class="s1">'|'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'\t'</span><span class="p">),</span>
     <span class="n">none_if_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a dictionary converstion of YAML file for flagging data. The dictionary</span>
 <span class="sd">    will contain variable names as first key, assessents as second keys containing</span>
 <span class="sd">    test description as third key with time as last key. Multiple descriptions</span>
@@ -534,7 +534,7 @@
 <span class="sd">    datetime64 : boolean</span>
 <span class="sd">        Convert the string value list to 2D numpy datetime64 array with first value</span>
 <span class="sd">        the start time and second value end time. If the time list in the YAML file</span>
-<span class="sd">        is empty, the &#39;time&#39; numpy array will be a single value instead of 2D array</span>
+<span class="sd">        is empty, the 'time' numpy array will be a single value instead of 2D array</span>
 <span class="sd">        and set to numpy datetime64 NaT.</span>
 <span class="sd">    time_delim : str or list of str or tuple of str</span>
 <span class="sd">        Optional, character delimiter to use when parsing times.</span>
@@ -560,36 +560,36 @@
 <span class="sd">        from act.qc.add_supplemental_qc import read_yaml_supplemental_qc</span>
 <span class="sd">        ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
 <span class="sd">        result = read_yaml_supplemental_qc(ds, EXAPLE_MET_YAML,</span>
-<span class="sd">                                     variables=[&#39;rh_mean&#39;], assessments=&#39;Bad&#39;)</span>
+<span class="sd">                                     variables=['rh_mean'], assessments='Bad')</span>
 <span class="sd">        print(result)</span>
 
-<span class="sd">        {&#39;rh_mean&#39;: {&#39;Bad&#39;: {&#39;description&#39;: &#39;Values are bad&#39;,</span>
-<span class="sd">            &#39;time&#39;: array([[&#39;2020-01-01T00:01:02.000&#39;, &#39;2020-01-01T00:03:44.000&#39;],</span>
-<span class="sd">                           [&#39;2020-01-02T00:01:02.000&#39;, &#39;2020-01-02T00:03:44.000&#39;]],</span>
-<span class="sd">                           dtype=&#39;datetime64[ms]&#39;)}}}</span>
+<span class="sd">        {'rh_mean': {'Bad': {'description': 'Values are bad',</span>
+<span class="sd">            'time': array([['2020-01-01T00:01:02.000', '2020-01-01T00:03:44.000'],</span>
+<span class="sd">                           ['2020-01-02T00:01:02.000', '2020-01-02T00:03:44.000']],</span>
+<span class="sd">                           dtype='datetime64[ms]')}}}</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">flag_file</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
         <span class="n">flag_file</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_datastream&#39;</span><span class="p">]</span>
+            <span class="n">datastream</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s1">&#39;Unable to determine datastream name from Dataset. Need to set global attribute &#39;</span>
-                <span class="s1">&#39;_datastream in Dataset or provided full path to flag file.&#39;</span>
+                <span class="s1">'Unable to determine datastream name from Dataset. Need to set global attribute '</span>
+                <span class="s1">'_datastream in Dataset or provided full path to flag file.'</span>
             <span class="p">)</span>
 
-        <span class="n">flag_file</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">))</span>
-        <span class="n">flag_file</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yaml&#39;</span><span class="p">)))</span>
+        <span class="n">flag_file</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yml'</span><span class="p">))</span>
+        <span class="n">flag_file</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1">.yaml'</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">flag_file</span> <span class="o">=</span> <span class="n">flag_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not find supplemental QC file for </span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">fullpath</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Could not find supplemental QC file for </span><span class="si">{</span><span class="n">datastream</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">fullpath</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span>
 
@@ -616,7 +616,7 @@
 
     <span class="c1"># If variable names are provided only keep those names.</span>
     <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;_all&#39;</span><span class="p">)</span>
+        <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'_all'</span><span class="p">)</span>
         <span class="n">del_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">del_vars</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
@@ -642,11 +642,11 @@
                 <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">num_times</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">])</span>
-                        <span class="n">new_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_times</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)</span>
+                        <span class="n">new_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_times</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ms]'</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                         <span class="c1"># Set to single value Not A Time numpy array if times</span>
                         <span class="c1"># from yaml file are empty list.</span>
-                        <span class="n">new_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">([],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;NaT&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[ms]&#39;</span><span class="p">)</span>
+                        <span class="n">new_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">([],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'NaT'</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ms]'</span><span class="p">)</span>
 
                     <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">tm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">][</span><span class="n">description</span><span class="p">]):</span>
                         <span class="c1"># Split the times on multiple different types of delimiters.</span>
@@ -677,7 +677,7 @@
     <span class="n">exclude_all_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Apply flagging from supplemental QC file by adding new QC tests.</span>
 
 <span class="sd">    Parameters</span>
@@ -693,10 +693,10 @@
 <span class="sd">    assessments : str, list of str or None</span>
 <span class="sd">        Assessments to apply. If not not set will apply all assesments in the flag file.</span>
 <span class="sd">    apply_all : boolean</span>
-<span class="sd">        If a &quot;_all&quot; variable exists in the supplemental QC flag file will apply to all variables</span>
+<span class="sd">        If a "_all" variable exists in the supplemental QC flag file will apply to all variables</span>
 <span class="sd">        in the Dataset.</span>
 <span class="sd">    exclude_all_variables : str, list of str or None</span>
-<span class="sd">        Variables to skip when applying &quot;_all&quot; variables.</span>
+<span class="sd">        Variables to skip when applying "_all" variables.</span>
 <span class="sd">    quiet : boolean</span>
 <span class="sd">        Suppress information about not finding a supplemental QC file to read.</span>
 
@@ -711,16 +711,16 @@
 <span class="sd">        from act.qc.add_supplemental_qc import apply_supplemental_qc</span>
 <span class="sd">        ds = read_arm_netcdf(EXAMPLE_MET1, cleanup_qc=True)</span>
 <span class="sd">        apply_supplemental_qc(ds, EXAPLE_MET_YAML, apply_all=False)</span>
-<span class="sd">        print(ds[&#39;qc_temp_mean&#39;].attrs[&#39;flag_meanings&#39;])</span>
+<span class="sd">        print(ds['qc_temp_mean'].attrs['flag_meanings'])</span>
 
-<span class="sd">        [&#39;Value is equal to missing_value.&#39;, &#39;Value is less than the fail_min.&#39;,</span>
-<span class="sd">         &#39;Value is greater than the fail_max.&#39;,</span>
-<span class="sd">         &#39;Difference between current and previous values exceeds fail_delta.&#39;,</span>
-<span class="sd">         &#39;Values are bad&#39;, &#39;Values are super bad&#39;, &#39;Values are suspect&#39;, &#39;Values are good&#39;]</span>
+<span class="sd">        ['Value is equal to missing_value.', 'Value is less than the fail_min.',</span>
+<span class="sd">         'Value is greater than the fail_max.',</span>
+<span class="sd">         'Difference between current and previous values exceeds fail_delta.',</span>
+<span class="sd">         'Values are bad', 'Values are super bad', 'Values are suspect', 'Values are good']</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">exclude_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;base_time&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">]</span>
+    <span class="n">exclude_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'base_time'</span><span class="p">,</span> <span class="s1">'time_offset'</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">exclude_all_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude_all_variables</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">exclude_all_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">exclude_all_variables</span><span class="p">]</span>
@@ -746,7 +746,7 @@
                     <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
                         <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span>
-                            <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                         <span class="p">)</span>
 
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -760,7 +760,7 @@
                             <span class="n">test_assessment</span><span class="o">=</span><span class="n">asses_name</span><span class="p">,</span>
                         <span class="p">)</span>
 
-    <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;_all&#39;</span>
+    <span class="n">var_name</span> <span class="o">=</span> <span class="s1">'_all'</span>
     <span class="k">if</span> <span class="n">apply_all</span> <span class="ow">and</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">asses_name</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">flag_dict</span><span class="p">[</span><span class="n">var_name</span><span class="p">][</span><span class="n">asses_name</span><span class="p">]:</span>
@@ -772,7 +772,7 @@
                 <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
                     <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span>
-                        <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
@@ -782,11 +782,11 @@
                         <span class="k">if</span> <span class="n">all_var_name</span> <span class="ow">in</span> <span class="n">exclude_vars</span><span class="p">:</span>
                             <span class="k">continue</span>
 
-                        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">all_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s1">'time'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">[</span><span class="n">all_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
                             <span class="k">continue</span>
 
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="n">all_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;quality_flag&#39;</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">ds</span><span class="p">[</span><span class="n">all_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'standard_name'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'quality_flag'</span><span class="p">:</span>
                                 <span class="k">continue</span>
                         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                             <span class="k">pass</span>

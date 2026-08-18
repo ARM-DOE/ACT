@@ -587,27 +587,27 @@ IMPROVE is a collaborative association of state, tribal, and federal agencies, a
 
 <span class="c1"># Pull the data using the site_id from IMPROVE</span>
 <span class="c1"># https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&amp;siidse=244</span>
-<span class="c1"># Data from the IMPROVE station next to ARM&#39;s BNF deployment</span>
-<span class="c1"># can be found using site_id=&#39;21&#39;</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_improve_data</span><span class="p">(</span><span class="n">site_id</span><span class="o">=</span><span class="s1">&#39;244&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;1/1/2023&#39;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">&#39;12/31/2023&#39;</span><span class="p">)</span>
+<span class="c1"># Data from the IMPROVE station next to ARM's BNF deployment</span>
+<span class="c1"># can be found using site_id='21'</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_improve_data</span><span class="p">(</span><span class="n">site_id</span><span class="o">=</span><span class="s1">'244'</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">'1/1/2023'</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">'12/31/2023'</span><span class="p">)</span>
 
-<span class="c1"># Remove all data that&#39;s set to the FillValue</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;aluminum_fine&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;aluminum_fine&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">])</span>
+<span class="c1"># Remove all data that's set to the FillValue</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'aluminum_fine'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'aluminum_fine'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_FillValue'</span><span class="p">])</span>
 
 <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;aluminum_fine&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'aluminum_fine'</span><span class="p">)</span>
 
 <span class="c1"># Print out the known problems documented by IMPROVE</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_problems&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'site_problems'</span><span class="p">])</span>
 
 <span class="c1"># Write out the data to netCDF and csv</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">&#39;./sgpimprove.20230101.nc&#39;</span><span class="p">)</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;sgpimprove.20230101.csv&#39;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">'./sgpimprove.20230101.nc'</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'sgpimprove.20230101.csv'</span><span class="p">)</span>
 
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.322 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.860 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-discovery-plot-improve-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/657c0dbd07906b025e3304cb0770822d/plot_improve.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_improve.ipynb</span></code></a></p>

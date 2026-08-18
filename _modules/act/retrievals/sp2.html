@@ -451,7 +451,7 @@
 <div class="viewcode-block" id="calc_sp2_diams_masses">
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.calc_sp2_diams_masses.html#act.retrievals.calc_sp2_diams_masses">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calc_sp2_diams_masses</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates the scattering and incandescence diameters/BC masses for each particle.</span>
 
 <span class="sd">    Parameters</span>
@@ -471,11 +471,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    diam_ds : xarray.Dataset</span>
 <span class="sd">        The ACT xarray dataset containing the scattering/incadescence diameters.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">calc_diams_masses</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">Globals</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 needs to be installed to use this feature.&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">'PySP2 needs to be installed to use this feature.'</span><span class="p">)</span></div>
 
 
 
@@ -484,7 +484,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">process_sp2_psds</span><span class="p">(</span>
     <span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="n">deltaSize</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">num_bins</span><span class="o">=</span><span class="mi">199</span><span class="p">,</span> <span class="n">avg_interval</span><span class="o">=</span><span class="mi">10</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Processes the Scattering and BC mass size distributions.</span>
 
 <span class="sd">    Parameters</span>
@@ -507,14 +507,14 @@
 <span class="sd">    -------</span>
 <span class="sd">    psd_ds: xarray.Dataset</span>
 <span class="sd">        The xarray Dataset containing the time-averaged particle statistics.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">PYSP2_AVAILABLE</span><span class="p">:</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pysp2</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">process_psds</span><span class="p">(</span>
             <span class="n">particle_ds</span><span class="p">,</span> <span class="n">hk_ds</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">deltaSize</span><span class="p">,</span> <span class="n">num_bins</span><span class="p">,</span> <span class="n">avg_interval</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;PySP2 needs to be installed to use this feature.&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">'PySP2 needs to be installed to use this feature.'</span><span class="p">)</span></div>
 
 </pre></div>
 <div class="section ablog__blog_comments">

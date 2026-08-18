@@ -448,7 +448,7 @@
 <div class="viewcode-block" id="get_airnow_forecast">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_airnow_forecast.html#act.discovery.get_airnow_forecast">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_airnow_forecast</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">zipcode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latlon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This tool will get current or historical AQI values and categories for a</span>
 <span class="sd">    reporting area by either Zip code or Lat/Lon coordinate.</span>
 <span class="sd">    https://docs.airnowapi.org/</span>
@@ -477,45 +477,45 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    act.discovery.get_AirNow_forecast(token=&#39;XXXXXX&#39;, zipcode=&#39;60440&#39;, date=&#39;2012-05-31&#39;)</span>
+<span class="sd">    act.discovery.get_AirNow_forecast(token='XXXXXX', zipcode='60440', date='2012-05-31')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># default beginning of the query url</span>
-    <span class="n">query_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.airnowapi.org/aq/forecast/&#39;</span>
+    <span class="n">query_url</span> <span class="o">=</span> <span class="s1">'https://www.airnowapi.org/aq/forecast/'</span>
 
     <span class="c1"># checking is either a zipcode or latlon coordinate is defined</span>
     <span class="c1"># if neither is defined then error is raised</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">zipcode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">latlon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Zipcode or latlon must be defined&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">"Zipcode or latlon must be defined"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">zipcode</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-            <span class="s1">&#39;zipCode/?&#39;</span>
-            <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;zipCode=&#39;</span>
+            <span class="s1">'zipCode/?'</span>
+            <span class="o">+</span> <span class="s1">'format=text/csv'</span>
+            <span class="o">+</span> <span class="s1">'&amp;zipCode='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zipcode</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;date=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;date='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;distance=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;distance='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">latlon</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-            <span class="s1">&#39;latLong/?&#39;</span>
-            <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;latitude=&#39;</span>
+            <span class="s1">'latLong/?'</span>
+            <span class="o">+</span> <span class="s1">'format=text/csv'</span>
+            <span class="o">+</span> <span class="s1">'&amp;latitude='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;longitude=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;longitude='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;date=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;date='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;distance=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;distance='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+            <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
         <span class="p">)</span>
 
@@ -531,7 +531,7 @@
 <div class="viewcode-block" id="get_airnow_obs">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_airnow_obs.html#act.discovery.get_airnow_obs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_airnow_obs</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zipcode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latlon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This tool will get current or historical observed AQI values and categories for a</span>
 <span class="sd">    reporting area by either Zip code or Lat/Lon coordinate.</span>
 <span class="sd">    https://docs.airnowapi.org/</span>
@@ -561,82 +561,82 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    act.discovery.get_AirNow_obs(token=&#39;XXXXXX&#39;, date=&#39;2021-12-01&#39;, zipcode=&#39;60440&#39;)</span>
-<span class="sd">    act.discovery.get_AirNow_obs(token=&#39;XXXXXX&#39;, latlon=[45,-87])</span>
+<span class="sd">    act.discovery.get_AirNow_obs(token='XXXXXX', date='2021-12-01', zipcode='60440')</span>
+<span class="sd">    act.discovery.get_AirNow_obs(token='XXXXXX', latlon=[45,-87])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># default beginning of the query url</span>
-    <span class="n">query_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.airnowapi.org/aq/observation/&#39;</span>
+    <span class="n">query_url</span> <span class="o">=</span> <span class="s1">'https://www.airnowapi.org/aq/observation/'</span>
 
     <span class="c1"># checking is either a zipcode or latlon coordinate is defined</span>
     <span class="c1"># if neither is defined then error is raised</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">zipcode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">latlon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Zipcode or latlon must be defined&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">"Zipcode or latlon must be defined"</span><span class="p">)</span>
 
     <span class="c1"># setting the observation type to either current or historical based on the date</span>
     <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">obs_type</span> <span class="o">=</span> <span class="s1">&#39;current&#39;</span>
+        <span class="n">obs_type</span> <span class="o">=</span> <span class="s1">'current'</span>
         <span class="k">if</span> <span class="n">zipcode</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-                <span class="s1">&#39;zipCode/&#39;</span>
+                <span class="s1">'zipCode/'</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_type</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;/?&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;zipCode=&#39;</span>
+                <span class="o">+</span> <span class="s1">'/?'</span>
+                <span class="o">+</span> <span class="s1">'format=text/csv'</span>
+                <span class="o">+</span> <span class="s1">'&amp;zipCode='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zipcode</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;distance=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;distance='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">latlon</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-                <span class="s1">&#39;latLong/&#39;</span>
+                <span class="s1">'latLong/'</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_type</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;/?&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;latitude=&#39;</span>
+                <span class="o">+</span> <span class="s1">'/?'</span>
+                <span class="o">+</span> <span class="s1">'format=text/csv'</span>
+                <span class="o">+</span> <span class="s1">'&amp;latitude='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;longitude=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;longitude='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;distance=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;distance='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
             <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">obs_type</span> <span class="o">=</span> <span class="s1">&#39;historical&#39;</span>
+        <span class="n">obs_type</span> <span class="o">=</span> <span class="s1">'historical'</span>
         <span class="k">if</span> <span class="n">zipcode</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-                <span class="s1">&#39;zipCode/&#39;</span>
+                <span class="s1">'zipCode/'</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_type</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;/?&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;zipCode=&#39;</span>
+                <span class="o">+</span> <span class="s1">'/?'</span>
+                <span class="o">+</span> <span class="s1">'format=text/csv'</span>
+                <span class="o">+</span> <span class="s1">'&amp;zipCode='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">zipcode</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;date=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;date='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;T00-0000&amp;distance=&#39;</span>
+                <span class="o">+</span> <span class="s1">'T00-0000&amp;distance='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">latlon</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="n">query_url</span> <span class="o">+</span> <span class="p">(</span>
-                <span class="s1">&#39;latLong/&#39;</span>
+                <span class="s1">'latLong/'</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_type</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;/?&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;format=text/csv&#39;</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;latitude=&#39;</span>
+                <span class="o">+</span> <span class="s1">'/?'</span>
+                <span class="o">+</span> <span class="s1">'format=text/csv'</span>
+                <span class="o">+</span> <span class="s1">'&amp;latitude='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;longitude=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;longitude='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;date=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;date='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;T00-0000&amp;distance=&#39;</span>
+                <span class="o">+</span> <span class="s1">'T00-0000&amp;distance='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-                <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+                <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
             <span class="p">)</span>
 
@@ -652,9 +652,9 @@
 <div class="viewcode-block" id="get_airnow_bounded_obs">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_airnow_bounded_obs.html#act.discovery.get_airnow_bounded_obs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_airnow_bounded_obs</span><span class="p">(</span>
-    <span class="n">token</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">latlon_bnds</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="s1">&#39;OZONE,PM25&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">mon_type</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">token</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">latlon_bnds</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="s1">'OZONE,PM25'</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">mon_type</span><span class="o">=</span><span class="mi">0</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get AQI values or data concentrations for a specific date and time range and set of</span>
 <span class="sd">    parameters within a geographic area of intrest</span>
 <span class="sd">    https://docs.airnowapi.org/</span>
@@ -671,11 +671,11 @@
 <span class="sd">        Format is YYYY-MM-DDTHH</span>
 <span class="sd">    latlon_bnds : str</span>
 <span class="sd">        Lat/Lon bounding box of the area of intrest.</span>
-<span class="sd">        Format is &#39;minX,minY,maxX,maxY&#39;</span>
+<span class="sd">        Format is 'minX,minY,maxX,maxY'</span>
 <span class="sd">    parameters : str</span>
 <span class="sd">        Parameters to return data for. Options are:</span>
 <span class="sd">        Ozone, PM25, PM10, CO, NO2, SO2</span>
-<span class="sd">        Format is &#39;PM25,PM10&#39;</span>
+<span class="sd">        Format is 'PM25,PM10'</span>
 <span class="sd">    mon_type : int</span>
 <span class="sd">        The type of monitor to be returned. Default is 0</span>
 <span class="sd">        0-Permanent, 1-Mobile onlt, 2-Permanent &amp; Mobile</span>
@@ -688,69 +688,69 @@
 <span class="sd">    ds : xarray.Dataset</span>
 <span class="sd">        Returns an xarray dataset object</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">inc_raw_con</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;https://www.airnowapi.org/aq/data/?startDate=&#39;</span>
+        <span class="s1">'https://www.airnowapi.org/aq/data/?startDate='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;endDate=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;endDate='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;parameters=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;parameters='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;BBOX=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;BBOX='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">latlon_bnds</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;dataType=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;dataType='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;format=text/csv&#39;</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;verbose=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;format=text/csv'</span>
+        <span class="o">+</span> <span class="s1">'&amp;verbose='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;monitorType=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;monitorType='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mon_type</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;includerawconcentrations=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;includerawconcentrations='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">inc_raw_con</span><span class="p">)</span>
-        <span class="o">+</span> <span class="s1">&#39;&amp;API_KEY=&#39;</span>
+        <span class="o">+</span> <span class="s1">'&amp;API_KEY='</span>
         <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="p">)</span>
 
     <span class="c1"># Set Column names</span>
     <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;time&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;parameter&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;concentration&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;unit&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;raw_concentration&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;AQI&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;category&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;site_name&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;site_agency&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;aqs_id&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;full_aqs_id&#39;</span><span class="p">,</span>
+        <span class="s1">'latitude'</span><span class="p">,</span>
+        <span class="s1">'longitude'</span><span class="p">,</span>
+        <span class="s1">'time'</span><span class="p">,</span>
+        <span class="s1">'parameter'</span><span class="p">,</span>
+        <span class="s1">'concentration'</span><span class="p">,</span>
+        <span class="s1">'unit'</span><span class="p">,</span>
+        <span class="s1">'raw_concentration'</span><span class="p">,</span>
+        <span class="s1">'AQI'</span><span class="p">,</span>
+        <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'site_name'</span><span class="p">,</span>
+        <span class="s1">'site_agency'</span><span class="p">,</span>
+        <span class="s1">'aqs_id'</span><span class="p">,</span>
+        <span class="s1">'full_aqs_id'</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="c1"># Read data into CSV</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">)</span>
 
     <span class="c1"># Each line is a different time or site or variable so need to parse out</span>
-    <span class="n">sites</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-    <span class="n">times</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-    <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;AQI&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;raw_concentration&#39;</span><span class="p">]</span>
-    <span class="n">latitude</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">]</span>
-    <span class="n">longitude</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">]</span>
-    <span class="n">aqs_id</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;aqs_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">]</span>
+    <span class="n">sites</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'site_name'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'parameter'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="s1">'AQI'</span><span class="p">,</span> <span class="s1">'category'</span><span class="p">,</span> <span class="s1">'raw_concentration'</span><span class="p">]</span>
+    <span class="n">latitude</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'latitude'</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'site_name'</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">]</span>
+    <span class="n">longitude</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'longitude'</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'site_name'</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">]</span>
+    <span class="n">aqs_id</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'aqs_id'</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'site_name'</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">]</span>
 
     <span class="c1"># Set up the dataset ahead of time</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
         <span class="n">data_vars</span><span class="o">=</span><span class="p">{</span>
-            <span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="p">([</span><span class="s1">&#39;sites&#39;</span><span class="p">],</span> <span class="n">latitude</span><span class="p">),</span>
-            <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="p">([</span><span class="s1">&#39;sites&#39;</span><span class="p">],</span> <span class="n">longitude</span><span class="p">),</span>
-            <span class="s1">&#39;aqs_id&#39;</span><span class="p">:</span> <span class="p">([</span><span class="s1">&#39;sites&#39;</span><span class="p">],</span> <span class="n">aqs_id</span><span class="p">),</span>
+            <span class="s1">'latitude'</span><span class="p">:</span> <span class="p">([</span><span class="s1">'sites'</span><span class="p">],</span> <span class="n">latitude</span><span class="p">),</span>
+            <span class="s1">'longitude'</span><span class="p">:</span> <span class="p">([</span><span class="s1">'sites'</span><span class="p">],</span> <span class="n">longitude</span><span class="p">),</span>
+            <span class="s1">'aqs_id'</span><span class="p">:</span> <span class="p">([</span><span class="s1">'sites'</span><span class="p">],</span> <span class="n">aqs_id</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">([</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">times</span><span class="p">),</span> <span class="s1">&#39;sites&#39;</span><span class="p">:</span> <span class="p">([</span><span class="s1">&#39;sites&#39;</span><span class="p">],</span> <span class="n">sites</span><span class="p">)},</span>
+        <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="p">([</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">times</span><span class="p">),</span> <span class="s1">'sites'</span><span class="p">:</span> <span class="p">([</span><span class="s1">'sites'</span><span class="p">],</span> <span class="n">sites</span><span class="p">)},</span>
     <span class="p">)</span>
 
     <span class="c1"># Set up emtpy data with nans</span>
@@ -761,26 +761,26 @@
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sites</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AQI&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;raw_concentration&#39;</span><span class="p">]:</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">times</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sites</span><span class="p">[</span><span class="n">s</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'AQI'</span><span class="p">,</span> <span class="s1">'category'</span><span class="p">,</span> <span class="s1">'raw_concentration'</span><span class="p">]:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span> <span class="o">==</span> <span class="n">times</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'site_name'</span><span class="p">]</span> <span class="o">==</span> <span class="n">sites</span><span class="p">[</span><span class="n">s</span><span class="p">])]</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]])[</span><span class="mi">0</span><span class="p">]</span>
-                        <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+                        <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">''</span><span class="p">}</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-                        <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">times</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
-                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sites</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
-                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
+                        <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span> <span class="o">==</span> <span class="n">times</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'site_name'</span><span class="p">]</span> <span class="o">==</span> <span class="n">sites</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'parameter'</span><span class="p">]</span> <span class="o">==</span> <span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
                     <span class="p">]</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-                        <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]}</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">'concentration'</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">'concentration'</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">'unit'</span><span class="p">])[</span><span class="mi">0</span><span class="p">]}</span>
 
         <span class="c1"># Add variables to the dataset</span>
-        <span class="n">ds</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;sites&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">,</span> <span class="s1">'sites'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
 
     <span class="n">times</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">times</span><span class="p">})</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">times</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">ds</span></div>
 
 </pre></div>

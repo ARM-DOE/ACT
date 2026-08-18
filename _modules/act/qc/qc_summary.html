@@ -440,14 +440,14 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.qc.qc_summary</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Method for creating Quality Control Summary variables from the embedded</span>
 <span class="sd">quality control varialbes. The summary variable is a simplified version of</span>
 <span class="sd">quality control that uses flag integers instead of bit-packed masks. The</span>
 <span class="sd">number of descriptions is simplified to consolidate all categories into one</span>
 <span class="sd">description.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
@@ -459,16 +459,16 @@
 <div class="viewcode-block" id="QCSummary">
 <a class="viewcode-back" href="../../../API/generated/act.qc.QCSummary.html#act.qc.QCSummary">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">QCSummary</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This is a Mixins class used to allow using qcfilter class that is already</span>
 <span class="sd">    registered to the Xarray dataset. All the methods in this class will be added</span>
 <span class="sd">    to the qcfilter class. Doing this to make the code spread across more files</span>
 <span class="sd">    so it is more manageable and readable.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;initialize&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""initialize"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span>
 
 <div class="viewcode-block" id="QCSummary.create_qc_summary">
@@ -476,10 +476,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">create_qc_summary</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">remove_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fail_min&#39;</span><span class="p">,</span> <span class="s1">&#39;fail_max&#39;</span><span class="p">,</span> <span class="s1">&#39;fail_delta&#39;</span><span class="p">],</span>
+        <span class="n">remove_attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">'fail_min'</span><span class="p">,</span> <span class="s1">'fail_max'</span><span class="p">,</span> <span class="s1">'fail_delta'</span><span class="p">],</span>
         <span class="n">normalize_assessment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Method to convert embedded quality control to summary QC that utilzes</span>
 <span class="sd">        flag values instead of flag masks and summarizes the assessments to only</span>
 <span class="sd">        a few states. Lowest level of quality control will be listed first with most</span>
@@ -500,13 +500,13 @@
 <span class="sd">        return_ds : Xarray.dataset</span>
 <span class="sd">            ACT Xarray dataset with quality control variables converted to summary flag values.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">standard_meanings</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;Suspect&#39;</span><span class="p">:</span> <span class="s2">&quot;Data suspect further analysis recommended&quot;</span><span class="p">,</span>
-            <span class="s1">&#39;Indeterminate&#39;</span><span class="p">:</span> <span class="s2">&quot;Data suspect further analysis recommended&quot;</span><span class="p">,</span>
-            <span class="s1">&#39;Incorrect&#39;</span><span class="p">:</span> <span class="s2">&quot;Data incorrect use not recommended&quot;</span><span class="p">,</span>
-            <span class="s1">&#39;Bad&#39;</span><span class="p">:</span> <span class="s2">&quot;Data incorrect use not recommended&quot;</span><span class="p">,</span>
+            <span class="s1">'Suspect'</span><span class="p">:</span> <span class="s2">"Data suspect further analysis recommended"</span><span class="p">,</span>
+            <span class="s1">'Indeterminate'</span><span class="p">:</span> <span class="s2">"Data suspect further analysis recommended"</span><span class="p">,</span>
+            <span class="s1">'Incorrect'</span><span class="p">:</span> <span class="s2">"Data incorrect use not recommended"</span><span class="p">,</span>
+            <span class="s1">'Bad'</span><span class="p">:</span> <span class="s2">"Data incorrect use not recommended"</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">cleanup_qc</span><span class="p">:</span>
@@ -527,15 +527,15 @@
             <span class="c1"># Do not really know how to handle scalars yet.</span>
             <span class="k">if</span> <span class="n">return_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Unable to process scalar variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1">. &#39;</span>
-                    <span class="s1">&#39;Scalar variables currently not implemented.&#39;</span>
+                    <span class="sa">f</span><span class="s1">'Unable to process scalar variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s1">. '</span>
+                    <span class="s1">'Scalar variables currently not implemented.'</span>
                 <span class="p">)</span>
                 <span class="k">continue</span>
 
             <span class="n">added</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="n">result</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">return_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;flag_masks&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_assessments&#39;</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'flag_masks'</span><span class="p">,</span> <span class="s1">'flag_meanings'</span><span class="p">,</span> <span class="s1">'flag_assessments'</span><span class="p">,</span> <span class="s1">'flag_values'</span><span class="p">]:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">del</span> <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -547,13 +547,13 @@
                 <span class="n">var_name</span><span class="p">,</span>
                 <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">test_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">test_meaning</span><span class="o">=</span><span class="s1">&#39;Not failing quality control tests&#39;</span><span class="p">,</span>
-                <span class="n">test_assessment</span><span class="o">=</span><span class="s1">&#39;Not failing&#39;</span><span class="p">,</span>
+                <span class="n">test_meaning</span><span class="o">=</span><span class="s1">'Not failing quality control tests'</span><span class="p">,</span>
+                <span class="n">test_assessment</span><span class="o">=</span><span class="s1">'Not failing'</span><span class="p">,</span>
                 <span class="n">flag_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">flag_assessments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">standard_meanings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">added_assessments</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;flag_assessments&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">added_assessments</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'flag_assessments'</span><span class="p">])</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span>
                 <span class="n">flag_assessments</span>
             <span class="p">)</span>
             <span class="n">flag_assessments</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">added_assessments</span><span class="p">)</span>
@@ -561,7 +561,7 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">standard_meaning</span> <span class="o">=</span> <span class="n">standard_meanings</span><span class="p">[</span><span class="n">assessment</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">standard_meaning</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Data </span><span class="si">{</span><span class="n">assessment</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">standard_meaning</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Data </span><span class="si">{</span><span class="n">assessment</span><span class="si">}</span><span class="s2">"</span>
 
                 <span class="n">qc_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
                     <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="n">assessment</span><span class="p">,</span> <span class="n">return_mask_only</span><span class="o">=</span><span class="kc">True</span>
@@ -589,14 +589,14 @@
             <span class="kn">from</span><span class="w"> </span><span class="nn">act</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version</span>
 
             <span class="n">history_value</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Quality control summary implemented by ACT-</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> at &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> UTC&quot;</span>
+                <span class="sa">f</span><span class="s2">"Quality control summary implemented by ACT-</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> at "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> UTC"</span>
             <span class="p">)</span>
 
-            <span class="k">if</span> <span class="s1">&#39;history&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">return_ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                <span class="n">return_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; ; </span><span class="si">{</span><span class="n">history_value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="s1">'history'</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">return_ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">return_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" ; </span><span class="si">{</span><span class="n">history_value</span><span class="si">}</span><span class="s2">"</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">return_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">history_value</span>
+                <span class="n">return_ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'history'</span><span class="p">]</span> <span class="o">=</span> <span class="n">history_value</span>
 
         <span class="k">return</span> <span class="n">return_ds</span></div>
 </div>

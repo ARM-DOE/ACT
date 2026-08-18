@@ -440,12 +440,12 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.discovery.nasa</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Function for downloading data from the NASA Atmospheric Science Data Center</span>
 <span class="sd">(ASDC), which hosts data including the Atmopsheric Composition</span>
 <span class="sd">Ground Observation Network.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
@@ -466,7 +466,7 @@
     <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to download data from the NASA MPL Network Data</span>
 <span class="sd">    https://mplnet.gsfc.nasa.gov/mplnet_web_services.cgi?download</span>
 
@@ -520,68 +520,68 @@
 <span class="sd">    -------</span>
 <span class="sd">    files : list</span>
 <span class="sd">        Returns list of files retrieved.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Generate the data policy agreement information</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Please Review the MPLNET Data Policy Prior to Use of MPLNET Data&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The MPLNET Data Policy can be found at:</span><span class="se">\n\t</span><span class="s2">https://mplnet.gsfc.nasa.gov/data-policy</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Please Review the MPLNET Data Policy Prior to Use of MPLNET Data"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"The MPLNET Data Policy can be found at:</span><span class="se">\n\t</span><span class="s2">https://mplnet.gsfc.nasa.gov/data-policy</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Generate the data acknowledgement statement, might require site information.</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;Please Include the Following Acknowledgements in Any Publication </span><span class="se">\n</span><span class="s2">or&quot;</span>
-        <span class="o">+</span> <span class="s2">&quot; presentation of MPLNET data, regardless of co-authorship status:&quot;</span>
+        <span class="s2">"Please Include the Following Acknowledgements in Any Publication </span><span class="se">\n</span><span class="s2">or"</span>
+        <span class="o">+</span> <span class="s2">" presentation of MPLNET data, regardless of co-authorship status:"</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">The MPLNET project is funded by the NASA Radiation Sciences Program&quot;</span>
-        <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n\t</span><span class="s2">and Earth Observing System.&quot;</span>
+        <span class="s2">"</span><span class="se">\n\t</span><span class="s2">The MPLNET project is funded by the NASA Radiation Sciences Program"</span>
+        <span class="o">+</span> <span class="s2">" </span><span class="se">\n\t</span><span class="s2">and Earth Observing System."</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">We thank the MPLNET (PI) for (its/theirs) effort in establishing&quot;</span>
-        <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n\t</span><span class="s2">and maintaining sites.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">"</span><span class="se">\n\t</span><span class="s2">We thank the MPLNET (PI) for (its/theirs) effort in establishing"</span>
+        <span class="o">+</span> <span class="s2">" </span><span class="se">\n\t</span><span class="s2">and maintaining sites.</span><span class="se">\n</span><span class="s2">"</span>
     <span class="p">)</span>
 
     <span class="c1"># Add header</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
+        <span class="s1">'user-agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Define the base URL</span>
-    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://mplnet.gsfc.nasa.gov/download?&quot;</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">"https://mplnet.gsfc.nasa.gov/download?"</span>
 
     <span class="c1"># Add specific information to the base URL</span>
     <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide a MPLNet Product Version&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please provide a MPLNet Product Version"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;version=V&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"version=V"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide a MPLNet Product Level&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please provide a MPLNet Product Level"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;level=L&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;level=L"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">product</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide a specific MPLNet Product identifer&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please provide a specific MPLNet Product identifer"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;product=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;product="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide a specific MPLNet site&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please provide a specific MPLNet site"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;site=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;site="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Year of desired data download is required to download MPLNET data&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Year of desired data download is required to download MPLNET data"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;year=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;year="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Month of desired data download is required to download MPLNet data&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Month of desired data download is required to download MPLNet data"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;month=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;month="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">day</span><span class="p">:</span>
         <span class="c1"># Note: Day is not required for the MPLNet download</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;day=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;day="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
 
     <span class="c1"># Construct output directory</span>
     <span class="k">if</span> <span class="n">outdir</span><span class="p">:</span>
@@ -590,7 +590,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># If no folder given, add MPLNET folder</span>
         <span class="c1"># to current working dir to prevent file mix-up</span>
-        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;MPLNET&quot;</span><span class="p">)</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">"MPLNET"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
@@ -598,18 +598,18 @@
     <span class="c1"># Make a Request</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;filename=(.+)&quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">])</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">"filename=(.+)"</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Content-Disposition'</span><span class="p">])</span>
         <span class="c1"># Check for successful file check</span>
-        <span class="k">if</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;MPLNET_download_fail.txt&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"MPLNET_download_fail.txt"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Failed MPLNET Download</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="o">+</span> <span class="s2">&quot; File could not be found for the desired input parameters&quot;</span>
-                <span class="o">+</span> <span class="s2">&quot; for MPLNET Download API&quot;</span>
+                <span class="s2">"Failed MPLNET Download</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="o">+</span> <span class="s2">" File could not be found for the desired input parameters"</span>
+                <span class="o">+</span> <span class="s2">" for MPLNET Download API"</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DOWNLOADING] &quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"[DOWNLOADING] "</span><span class="p">,</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
                 <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
@@ -622,7 +622,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">get_mplnet_meta</span><span class="p">(</span>
     <span class="n">sites</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_to_screen</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a list of meta data from the NASA MPL Network Data</span>
 <span class="sd">    https://mplnet.gsfc.nasa.gov/mplnet_web_services.cgi?metadata</span>
 
@@ -633,9 +633,9 @@
 
 <span class="sd">        * all        - produces output on all sites (active and inactive)</span>
 <span class="sd">        * active     - produces output file containing only active sites</span>
-<span class="sd">          (if year, month, or day are not set then uses today&#39;s date)</span>
+<span class="sd">          (if year, month, or day are not set then uses today's date)</span>
 <span class="sd">        * inactive   - produces output file containing only inactive sites</span>
-<span class="sd">          (if year, month, or day are not set then uses today&#39;s date)</span>
+<span class="sd">          (if year, month, or day are not set then uses today's date)</span>
 <span class="sd">        * planned    - produces output file containing only planned sites</span>
 <span class="sd">        * site_name  - produces output file containing only requested site</span>
 <span class="sd">        * collection - produces output file containing sites in pre-defined</span>
@@ -662,39 +662,39 @@
 
 <span class="sd">    print_to_screen : bool</span>
 <span class="sd">        If true, print MPLNET site identifiers to screen.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Add headers</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36&#39;</span><span class="p">,</span>
+        <span class="s1">'user-agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Define the base URL</span>
-    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://mplnet.gsfc.nasa.gov/operations/sites?api&amp;format=galion&quot;</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">"https://mplnet.gsfc.nasa.gov/operations/sites?api&amp;format=galion"</span>
 
     <span class="k">if</span> <span class="n">sites</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Site Parameter is required to download MPLNET Meta Data&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Site Parameter is required to download MPLNET Meta Data"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;sites=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;sites="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">method</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;method=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;method="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">year</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;year=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;year="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">month</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;month=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;month="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">day</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">&quot;&amp;day=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s2">"&amp;day="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
         <span class="c1"># Convert to JSON</span>
         <span class="n">site_request</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">print_to_screen</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">site_request</span><span class="p">)):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">site_request</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">site_request</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'id'</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">site_request</span></div>
 

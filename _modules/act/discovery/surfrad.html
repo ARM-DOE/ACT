@@ -440,11 +440,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.discovery.surfrad</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Function for downloading data from</span>
 <span class="sd">NOAA Surface Radiation Budget network</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
@@ -458,7 +458,7 @@
 <div class="viewcode-block" id="download_surfrad_data">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.download_surfrad_data.html#act.discovery.download_surfrad_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">download_surfrad_data</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">startdate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enddate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to download data from the NOAA Surface Radiation Budget network.</span>
 <span class="sd">    https://gml.noaa.gov/grad/surfrad/</span>
 
@@ -481,32 +481,32 @@
 <span class="sd">    files : list</span>
 <span class="sd">        Returns list of files retrieved</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">startdate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;site and startdate need to be set&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'site and startdate need to be set'</span><span class="p">)</span>
 
     <span class="n">site</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">site_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;bnd&#39;</span><span class="p">:</span> <span class="s1">&#39;Bondville_IL&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;tbl&#39;</span><span class="p">:</span> <span class="s1">&#39;Boulder_CO&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;dra&#39;</span><span class="p">:</span> <span class="s1">&#39;Desert_Rock_NV&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;fpk&#39;</span><span class="p">:</span> <span class="s1">&#39;Fort_Peck_MT&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;gwn&#39;</span><span class="p">:</span> <span class="s1">&#39;Goodwin_Creek_MS&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;psu&#39;</span><span class="p">:</span> <span class="s1">&#39;Penn_State_PA&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;sxf&#39;</span><span class="p">:</span> <span class="s1">&#39;Sioux_Falls_SD&#39;</span><span class="p">,</span>
+        <span class="s1">'bnd'</span><span class="p">:</span> <span class="s1">'Bondville_IL'</span><span class="p">,</span>
+        <span class="s1">'tbl'</span><span class="p">:</span> <span class="s1">'Boulder_CO'</span><span class="p">,</span>
+        <span class="s1">'dra'</span><span class="p">:</span> <span class="s1">'Desert_Rock_NV'</span><span class="p">,</span>
+        <span class="s1">'fpk'</span><span class="p">:</span> <span class="s1">'Fort_Peck_MT'</span><span class="p">,</span>
+        <span class="s1">'gwn'</span><span class="p">:</span> <span class="s1">'Goodwin_Creek_MS'</span><span class="p">,</span>
+        <span class="s1">'psu'</span><span class="p">:</span> <span class="s1">'Penn_State_PA'</span><span class="p">,</span>
+        <span class="s1">'sxf'</span><span class="p">:</span> <span class="s1">'Sioux_Falls_SD'</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">site_name</span> <span class="o">=</span> <span class="n">site_dict</span><span class="p">[</span><span class="n">site</span><span class="p">]</span>
 
     <span class="c1"># Convert dates to day of year (doy) for NOAA folder structure</span>
-    <span class="n">s_doy</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span>
-    <span class="n">year</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">year</span>
+    <span class="n">s_doy</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startdate</span><span class="p">,</span> <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">year</span>
     <span class="k">if</span> <span class="n">enddate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">enddate</span> <span class="o">=</span> <span class="n">startdate</span>
-    <span class="n">e_doy</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">enddate</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span>
+    <span class="n">e_doy</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">enddate</span><span class="p">,</span> <span class="s1">'%Y%m</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span><span class="o">.</span><span class="n">tm_yday</span>
 
     <span class="c1"># Set base URL</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://gml.noaa.gov/aftp/data/radiation/surfrad/&#39;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">'https://gml.noaa.gov/aftp/data/radiation/surfrad/'</span>
 
     <span class="c1"># Construct output directory</span>
     <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
@@ -515,7 +515,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># If no folder given, add datastream folder</span>
         <span class="c1"># to current working dir to prevent file mix-up</span>
-        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;_surfrad&#39;</span><span class="p">)</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">site_name</span> <span class="o">+</span> <span class="s1">'_surfrad'</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
@@ -538,14 +538,14 @@
             <span class="n">year</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># Add filename to url</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="n">site</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.dat&#39;</span>
-        <span class="n">new_url</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">file</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">site</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">doy</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'.dat'</span>
+        <span class="n">new_url</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="n">site_name</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">file</span>
 
         <span class="c1"># Write each file out to a file with same name as online</span>
         <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Downloading &#39;</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'Downloading '</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_bytes_file</span><span class="p">:</span>
                 <span class="n">open_bytes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">new_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
             <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>

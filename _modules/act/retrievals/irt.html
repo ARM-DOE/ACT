@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.retrievals.irt</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functions for IRT retrievals and calculations.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -454,7 +454,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">irt_response_function</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to return the wavenumber and response function to use with AERI</span>
 <span class="sd">    to IRT conversion.</span>
 
@@ -463,7 +463,7 @@
 <span class="sd">    tuple : (wavenumber, response function)</span>
 <span class="sd">        The wavenumber and response function values as numpy float arrays.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Fill response function values.  First wavenumbers then response fraction. --;</span>
     <span class="n">wnum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span>
@@ -1384,8 +1384,8 @@
 
 <div class="viewcode-block" id="sum_function_irt">
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.sum_function_irt.html#act.retrievals.sum_function_irt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sum_function_irt</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">inTotal</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rf_wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sum_function_irt</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">inTotal</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'cm'</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rf_wnum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to calculate radiance values from temperature.</span>
 
 <span class="sd">    Parameters</span>
@@ -1402,10 +1402,10 @@
 <span class="sd">        Difference between temperatrue value converte to radiance and</span>
 <span class="sd">        the radiance value.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">rf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rf_wnum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rf_wnum</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">irt_response_function</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">'m'</span><span class="p">:</span>
             <span class="n">rf_wnum</span> <span class="o">*=</span> <span class="mf">100.0</span>
     <span class="n">rad</span> <span class="o">=</span> <span class="n">planck_converter</span><span class="p">(</span><span class="n">rf_wnum</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">)</span> <span class="o">*</span> <span class="n">rf</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span> <span class="o">-</span> <span class="n">inTotal</span></div>
@@ -1413,7 +1413,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sst_min_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Minimization function for sst</span>
 
 <span class="sd">    Parameters</span>
@@ -1428,12 +1428,12 @@
 <span class="sd">    float</span>
 <span class="sd">        result of sum function</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'m'</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">process_sst_data</span><span class="p">(</span><span class="n">sfc_t</span><span class="p">,</span> <span class="n">sky_t</span><span class="p">,</span> <span class="n">emis</span><span class="p">,</span> <span class="n">maxit</span><span class="p">,</span> <span class="n">tempLow</span><span class="p">,</span> <span class="n">tempHigh</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function called from sst_from_irt to calculate sea surface temperatures</span>
 <span class="sd">    from Sky and Surface IRT values.  This is meant to take advantage of</span>
 <span class="sd">    dask and multiprocessing</span>
@@ -1472,13 +1472,13 @@
 <span class="sd">    Radiometer (ISAR) for Deployment aboard Volunteer Observing Ships (VOS).</span>
 <span class="sd">    J. Atmos. Oceanic Technol., 25, 93–113, https://doi.org/10.1175/2007JTECHO505.1</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sfc_t</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sky_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
     <span class="c1"># Convert surface and sky irt values to radiance</span>
-    <span class="n">Lsurf</span> <span class="o">=</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">sfc_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
-    <span class="n">Lsky</span> <span class="o">=</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">sky_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+    <span class="n">Lsurf</span> <span class="o">=</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">sfc_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'m'</span><span class="p">)</span>
+    <span class="n">Lsky</span> <span class="o">=</span> <span class="n">sum_function_irt</span><span class="p">(</span><span class="n">sky_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'m'</span><span class="p">)</span>
 
     <span class="c1"># Correct sea surface brightness temperature for sky brightness</span>
     <span class="c1"># temperature using Donlon (2008)</span>
@@ -1495,16 +1495,16 @@
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.sst_from_irt.html#act.retrievals.sst_from_irt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sst_from_irt</span><span class="p">(</span>
     <span class="n">ds</span><span class="p">,</span>
-    <span class="n">sky_irt</span><span class="o">=</span><span class="s1">&#39;sky_ir_temp&#39;</span><span class="p">,</span>
-    <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">&#39;sfc_ir_temp&#39;</span><span class="p">,</span>
+    <span class="n">sky_irt</span><span class="o">=</span><span class="s1">'sky_ir_temp'</span><span class="p">,</span>
+    <span class="n">sfc_irt</span><span class="o">=</span><span class="s1">'sfc_ir_temp'</span><span class="p">,</span>
     <span class="n">emis</span><span class="o">=</span><span class="mf">0.986</span><span class="p">,</span>
     <span class="n">maxit</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">tempLow</span><span class="o">=</span><span class="mf">250.0</span><span class="p">,</span>
     <span class="n">tempHigh</span><span class="o">=</span><span class="mf">350.0</span><span class="p">,</span>
     <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">sst_variable</span><span class="o">=</span><span class="s1">&#39;sea_surface_temperature&#39;</span><span class="p">,</span>
+    <span class="n">sst_variable</span><span class="o">=</span><span class="s1">'sea_surface_temperature'</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Base function to calculate sea surface temperatures from Sky and Surface IRT values.</span>
 <span class="sd">    This is meant to take advantage of dask and multiprocessing</span>
 
@@ -1544,7 +1544,7 @@
 <span class="sd">    Radiometer (ISAR) for Deployment aboard Volunteer Observing Ships (VOS).</span>
 <span class="sd">    J. Atmos. Oceanic Technol., 25, 93–113, https://doi.org/10.1175/2007JTECHO505.1</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Get Data for surface and sky ir temperatures</span>
     <span class="n">sfc_temp</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">sfc_irt</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -1562,9 +1562,9 @@
     <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)</span>
 
     <span class="c1"># Add data back to the dataset</span>
-    <span class="n">long_name</span> <span class="o">=</span> <span class="s1">&#39;Calculated sea surface temperature&#39;</span>
-    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">}</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s1">'Calculated sea surface temperature'</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'long_name'</span><span class="p">:</span> <span class="n">long_name</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'K'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="n">sst_variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>

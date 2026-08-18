@@ -440,14 +440,14 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.discovery.neon</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Function for downloading data from NSF NEON program</span>
 <span class="sd">using their API.</span>
 
 <span class="sd">NEON sites can be found through the NEON website</span>
 <span class="sd">https://www.neonscience.org/field-sites/explore-field-sites</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
@@ -459,7 +459,7 @@
 <div class="viewcode-block" id="get_neon_site_products">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_neon_site_products.html#act.discovery.get_neon_site_products">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_neon_site_products</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">print_to_screen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a list of data products available for a NEON site</span>
 <span class="sd">    NEON sites can be found through the NEON website</span>
 <span class="sd">    https://www.neonscience.org/field-sites/explore-field-sites</span>
@@ -478,26 +478,26 @@
 <span class="sd">    products : list</span>
 <span class="sd">        Returns 2D list of data product code and title</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="c1"># Every request begins with the server&#39;s URL</span>
-    <span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;http://data.neonscience.org/api/v0/&#39;</span>
+    <span class="c1"># Every request begins with the server's URL</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="s1">'http://data.neonscience.org/api/v0/'</span>
 
     <span class="c1"># Add token to headers</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X-API-TOKEN&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"X-API-TOKEN"</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
 
     <span class="c1"># Make request, using the sites/ endpoint</span>
-    <span class="n">site_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server</span> <span class="o">+</span> <span class="s1">&#39;sites/&#39;</span> <span class="o">+</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">site_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server</span> <span class="o">+</span> <span class="s1">'sites/'</span> <span class="o">+</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
     <span class="c1"># Convert to Python JSON object</span>
     <span class="n">site_json</span> <span class="o">=</span> <span class="n">site_request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
     <span class="n">products</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># View product code and name for every available data product</span>
-    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">site_json</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;dataProducts&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">site_json</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'dataProducts'</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">print_to_screen</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;dataProductCode&#39;</span><span class="p">],</span> <span class="n">product</span><span class="p">[</span><span class="s1">&#39;dataProductTitle&#39;</span><span class="p">])</span>
-        <span class="n">products</span><span class="p">[</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;dataProductCode&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s1">&#39;dataProductTitle&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="s1">'dataProductCode'</span><span class="p">],</span> <span class="n">product</span><span class="p">[</span><span class="s1">'dataProductTitle'</span><span class="p">])</span>
+        <span class="n">products</span><span class="p">[</span><span class="n">product</span><span class="p">[</span><span class="s1">'dataProductCode'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s1">'dataProductTitle'</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">products</span></div>
 
@@ -506,7 +506,7 @@
 <div class="viewcode-block" id="get_neon_product_avail">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_neon_product_avail.html#act.discovery.get_neon_product_avail">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_neon_product_avail</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">product_code</span><span class="p">,</span> <span class="n">print_to_screen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a list of data products available for a NEON site</span>
 <span class="sd">    NEON sites can be found through the NEON website</span>
 <span class="sd">    https://www.neonscience.org/field-sites/explore-field-sites</span>
@@ -527,27 +527,27 @@
 <span class="sd">    dates : list</span>
 <span class="sd">        Returns list of available months of data</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="c1"># Every request begins with the server&#39;s URL</span>
-    <span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;http://data.neonscience.org/api/v0/&#39;</span>
+    <span class="c1"># Every request begins with the server's URL</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="s1">'http://data.neonscience.org/api/v0/'</span>
 
     <span class="c1"># Add token to headers</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X-API-TOKEN&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"X-API-TOKEN"</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
 
     <span class="c1"># Make request, using the sites/ endpoint</span>
-    <span class="n">site_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server</span> <span class="o">+</span> <span class="s1">&#39;sites/&#39;</span> <span class="o">+</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">site_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server</span> <span class="o">+</span> <span class="s1">'sites/'</span> <span class="o">+</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
     <span class="c1"># Convert to Python JSON object</span>
     <span class="n">site_json</span> <span class="o">=</span> <span class="n">site_request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
     <span class="c1"># View product code and name for every available data product</span>
-    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">site_json</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;dataProducts&#39;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">product</span><span class="p">[</span><span class="s1">&#39;dataProductCode&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">product_code</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">site_json</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'dataProducts'</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">product</span><span class="p">[</span><span class="s1">'dataProductCode'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">product_code</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">print_to_screen</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;availableMonths&#39;</span><span class="p">])</span>
-        <span class="n">dates</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s1">&#39;availableMonths&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="s1">'availableMonths'</span><span class="p">])</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s1">'availableMonths'</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">dates</span></div>
 
@@ -556,7 +556,7 @@
 <div class="viewcode-block" id="download_neon_data">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.download_neon_data.html#act.discovery.download_neon_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">download_neon_data</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">site_code</span><span class="p">,</span> <span class="n">product_code</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a list of data products available for a NEON site.  Please be sure to view the</span>
 <span class="sd">    readme files that are downloaded as well as there may be a number of different products.</span>
 
@@ -591,17 +591,17 @@
 <span class="sd">    files : list</span>
 <span class="sd">        Returns a list of files that were downloaded</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="c1"># Every request begins with the server&#39;s URL</span>
-    <span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;http://data.neonscience.org/api/v0/&#39;</span>
+    <span class="c1"># Every request begins with the server's URL</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="s1">'http://data.neonscience.org/api/v0/'</span>
 
     <span class="c1"># Add token to headers</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X-API-TOKEN&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"X-API-TOKEN"</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
 
     <span class="c1"># Get dates to pass in</span>
     <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">date_range</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">date_range</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">'MS'</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m'</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">date_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_date</span><span class="p">]</span>
 
@@ -610,20 +610,20 @@
     <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">date_range</span><span class="p">:</span>
         <span class="c1"># Make Request</span>
         <span class="n">data_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">server</span> <span class="o">+</span> <span class="s1">&#39;data/&#39;</span> <span class="o">+</span> <span class="n">product_code</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">site_code</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">date</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span>
+            <span class="n">server</span> <span class="o">+</span> <span class="s1">'data/'</span> <span class="o">+</span> <span class="n">product_code</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">site_code</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">date</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span>
         <span class="p">)</span>
         <span class="n">data_json</span> <span class="o">=</span> <span class="n">data_request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">output_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">site_code</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">product_code</span><span class="p">)</span>
+            <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">site_code</span> <span class="o">+</span> <span class="s1">'_'</span> <span class="o">+</span> <span class="n">product_code</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;files&#39;</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[DOWNLOADING] &#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
-            <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
-            <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'files'</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'[DOWNLOADING] '</span><span class="p">,</span> <span class="n">file</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span>
+            <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span>
+            <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">'url'</span><span class="p">],</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
                     <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 

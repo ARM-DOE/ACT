@@ -440,10 +440,10 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for act.discovery.improve</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Script for downloading data from the IMPROVE network</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -453,7 +453,7 @@
 <div class="viewcode-block" id="get_improve_data">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_improve_data.html#act.discovery.get_improve_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_improve_data</span><span class="p">(</span><span class="n">site_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parameter_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Retrieve IMPROVE data for the given site and variable ids and store it in an</span>
 <span class="sd">    xarray dataset. Documentation on the IMPROVE data can be found at</span>
 <span class="sd">    https://vista.cira.colostate.edu/Improve/data-user-guide/</span>
@@ -480,293 +480,293 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    act.discovery.get_improve_data(site_id=&#39;244&#39;)</span>
+<span class="sd">    act.discovery.get_improve_data(site_id='244')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Build URL</span>
-    <span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://views.cira.colostate.edu/fed/svc/DataSvc.aspx?action=getqueryresults&amp;cmdfileid=ServiceSqlCommandFile&amp;cmdid=BasicDataQuery1_Codes&#39;</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s1">'https://views.cira.colostate.edu/fed/svc/DataSvc.aspx?action=getqueryresults&amp;cmdfileid=ServiceSqlCommandFile&amp;cmdid=BasicDataQuery1_Codes'</span>
 
     <span class="k">if</span> <span class="n">site_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a site_id&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Please provide a site_id'</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;dsidse=10001&amp;siidse=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">site_id</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">'&amp;dsidse=10001&amp;siidse='</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">site_id</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">parameter_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;paidse=101,136,907,900,102,104,105,115,116,117,114,3778,142,143,144,145,3016,146,3699,141,3779,3217,108,109,112,113,301,304,303,3716,3717,3718,3719,3720,3721,3722,3730,3731,3732,3733,3734,3735,3736,3694,121,3723,3724,3725,3726,3727,3728,3729,3737,3738,3739,3740,3741,3742,3743,118,148,128,130,132,941,127,903,910,3744,3745,3746,3747,3748,3749,3750,3751,3752,3753,3754,3755,3756,3757,131,138,139,133,3704,3705,3706,3707,3708,3709,3710,3711,3712,3713,3714,3715,147,124,150,3695,3014,153,154,134,911,158,156,151,202,159,160,162,163&#39;</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">'&amp;paidse=101,136,907,900,102,104,105,115,116,117,114,3778,142,143,144,145,3016,146,3699,141,3779,3217,108,109,112,113,301,304,303,3716,3717,3718,3719,3720,3721,3722,3730,3731,3732,3733,3734,3735,3736,3694,121,3723,3724,3725,3726,3727,3728,3729,3737,3738,3739,3740,3741,3742,3743,118,148,128,130,132,941,127,903,910,3744,3745,3746,3747,3748,3749,3750,3751,3752,3753,3754,3755,3756,3757,131,138,139,133,3704,3705,3706,3707,3708,3709,3710,3711,3712,3713,3714,3715,147,124,150,3695,3014,153,154,134,911,158,156,151,202,159,160,162,163'</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;paidse=&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parameter_id</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">'&amp;paidse='</span> <span class="o">+</span> <span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parameter_id</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a start date&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Please provide a start date'</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;sd=&#39;</span> <span class="o">+</span> <span class="n">start_date</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">'&amp;sd='</span> <span class="o">+</span> <span class="n">start_date</span>
     <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide an end date&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Please provide an end date'</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">&#39;&amp;ed=&#39;</span> <span class="o">+</span> <span class="n">end_date</span>
+        <span class="n">base_url</span> <span class="o">+=</span> <span class="s1">'&amp;ed='</span> <span class="o">+</span> <span class="n">end_date</span>
 
     <span class="c1"># Read data and get variables</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_html</span><span class="p">(</span><span class="n">base_url</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">variables</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Param</span><span class="p">)</span>
 
     <span class="c1"># Print out proper acknowledgement</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please use the following acknowledgment when using IMPROVE data:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Please use the following acknowledgment when using IMPROVE data:</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;IMPROVE is a collaborative association of state, tribal, and federal agencies, and international partners. US Environmental Protection Agency is the primary funding source, with contracting and research support from the National Park Service. The Air Quality Group at the University of California, Davis is the central analytical laboratory, with ion analysis provided by Research Triangle Institute, and carbon analysis provided by Desert Research Institute.&quot;</span>
+        <span class="s2">"IMPROVE is a collaborative association of state, tribal, and federal agencies, and international partners. US Environmental Protection Agency is the primary funding source, with contracting and research support from the National Park Service. The Air Quality Group at the University of California, Davis is the central analytical laboratory, with ion analysis provided by Research Triangle Institute, and carbon analysis provided by Desert Research Institute."</span>
     <span class="p">)</span>
 
     <span class="c1"># Creat mapping of variable names to metadata</span>
     <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;ALf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;aluminum_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Aluminum (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88104&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;ASf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;arsenic_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Arsenic (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88103&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;BRf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;bromine_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Bromine (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88109&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CAf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;calcium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Calcium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88111&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CLf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chlorine_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Chlorine (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88115&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CRf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chromium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Chromium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88112&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CUf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;copper_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Copper (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88114&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;FEf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;iron_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Iron (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88126&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;PBf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;lead_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Lead (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88128&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MGf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;magnesium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Magnesium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88140&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;MNf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;manganese_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Manganese (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88132&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;NIf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;nickel_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Nickel (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88136&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;Pf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;phosphorus_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Phosphorus (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88152&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;Kf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;potassium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Potassium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88180&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;RBf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rubidium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Rubidium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88176&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;SEf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;selenium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Selenium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88154&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;SIf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;silicon_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Silicon (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88165&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;NAf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sodium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sodium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88184&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;SRf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;strontium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Strontium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88168&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;Sf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sulfur_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfur (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88169&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;TIf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;titanium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Titanium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88161&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;Vf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;vanadium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Vanadium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88164&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;ZNf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;zinc_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Zinc (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88167&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;ZRf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;zirconium_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Zirconium (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88185&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;CHLf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chloride_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Chloride (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88203&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;NO3f&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;nitrate_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrate (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88306&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;N2f&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;nitrite_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Nitrite (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88338&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;SO4f&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sulfate_fine&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sulfate (Fine)&#39;</span><span class="p">,</span> <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88403&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;OC1f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_fraction_1_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Fraction 1 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 140 °C&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88324&#39;</span><span class="p">,</span>
+        <span class="s1">'ALf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'aluminum_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Aluminum (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88104'</span><span class="p">},</span>
+        <span class="s1">'ASf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'arsenic_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Arsenic (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88103'</span><span class="p">},</span>
+        <span class="s1">'BRf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'bromine_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Bromine (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88109'</span><span class="p">},</span>
+        <span class="s1">'CAf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'calcium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Calcium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88111'</span><span class="p">},</span>
+        <span class="s1">'CLf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'chlorine_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Chlorine (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88115'</span><span class="p">},</span>
+        <span class="s1">'CRf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'chromium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Chromium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88112'</span><span class="p">},</span>
+        <span class="s1">'CUf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'copper_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Copper (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88114'</span><span class="p">},</span>
+        <span class="s1">'FEf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'iron_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Iron (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88126'</span><span class="p">},</span>
+        <span class="s1">'PBf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'lead_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Lead (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88128'</span><span class="p">},</span>
+        <span class="s1">'MGf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'magnesium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Magnesium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88140'</span><span class="p">},</span>
+        <span class="s1">'MNf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'manganese_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Manganese (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88132'</span><span class="p">},</span>
+        <span class="s1">'NIf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'nickel_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Nickel (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88136'</span><span class="p">},</span>
+        <span class="s1">'Pf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'phosphorus_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Phosphorus (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88152'</span><span class="p">},</span>
+        <span class="s1">'Kf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'potassium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Potassium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88180'</span><span class="p">},</span>
+        <span class="s1">'RBf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'rubidium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Rubidium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88176'</span><span class="p">},</span>
+        <span class="s1">'SEf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'selenium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Selenium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88154'</span><span class="p">},</span>
+        <span class="s1">'SIf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'silicon_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Silicon (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88165'</span><span class="p">},</span>
+        <span class="s1">'NAf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'sodium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Sodium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88184'</span><span class="p">},</span>
+        <span class="s1">'SRf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'strontium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Strontium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88168'</span><span class="p">},</span>
+        <span class="s1">'Sf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'sulfur_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Sulfur (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88169'</span><span class="p">},</span>
+        <span class="s1">'TIf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'titanium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Titanium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88161'</span><span class="p">},</span>
+        <span class="s1">'Vf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'vanadium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Vanadium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88164'</span><span class="p">},</span>
+        <span class="s1">'ZNf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'zinc_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Zinc (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88167'</span><span class="p">},</span>
+        <span class="s1">'ZRf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'zirconium_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Zirconium (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88185'</span><span class="p">},</span>
+        <span class="s1">'CHLf'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'chloride_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Chloride (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88203'</span><span class="p">},</span>
+        <span class="s1">'NO3f'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'nitrate_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Nitrate (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88306'</span><span class="p">},</span>
+        <span class="s1">'N2f'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'nitrite_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Nitrite (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88338'</span><span class="p">},</span>
+        <span class="s1">'SO4f'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'sulfate_fine'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Sulfate (Fine)'</span><span class="p">,</span> <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88403'</span><span class="p">},</span>
+        <span class="s1">'OC1f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_fraction_1_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Fraction 1 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 140 °C'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88324'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OC2f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_fraction_2_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Fraction 2 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 280 °C&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88325&#39;</span><span class="p">,</span>
+        <span class="s1">'OC2f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_fraction_2_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Fraction 2 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 280 °C'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88325'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OC3f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_fraction_3_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Fraction 3 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 480 °C&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88326&#39;</span><span class="p">,</span>
+        <span class="s1">'OC3f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_fraction_3_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Fraction 3 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 480 °C'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88326'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OC4f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_fraction_4_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Fraction 4 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 580 °C&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88327&#39;</span><span class="p">,</span>
+        <span class="s1">'OC4f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_fraction_4_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Fraction 4 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, pure helium (&gt;99.999%) atmosphere, temperature (T) = 580 °C'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88327'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OPf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_reflectance_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Pyrolized (Fine) by Reflectance&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, carbon that is measured after the introduction of helium/oxygen atmosphere at °550 C but beforereflectance returns to initial value&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88328&#39;</span><span class="p">,</span>
+        <span class="s1">'OPf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_reflectance_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Pyrolized (Fine) by Reflectance'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, carbon that is measured after the introduction of helium/oxygen atmosphere at °550 C but beforereflectance returns to initial value'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88328'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OPTf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_transmittance_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Pyrolized (Fine) by Transmittance&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, carbon that is measured after the introduction of helium/oxygen atmosphere at °550 C but beforetransmittance returns to initial value&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88336&#39;</span><span class="p">,</span>
+        <span class="s1">'OPTf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_transmittance_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Pyrolized (Fine) by Transmittance'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, carbon that is measured after the introduction of helium/oxygen atmosphere at °550 C but beforetransmittance returns to initial value'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88336'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OCf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_total_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Total (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic carbon from TOR carbon fractions (OC1f+OC2f+OC3f+OC4f+OPf)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88320&#39;</span><span class="p">,</span>
+        <span class="s1">'OCf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_total_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Total (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Organic carbon from TOR carbon fractions (OC1f+OC2f+OC3f+OC4f+OPf)'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88320'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;EC1f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_elemental_fraction_1_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Elemental Fraction 1 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, 98</span><span class="si">% he</span><span class="s1">lium, 2</span><span class="si">% o</span><span class="s1">xygen atmosphere, temperature (T) = 580° C.&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88329&#39;</span><span class="p">,</span>
+        <span class="s1">'EC1f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_elemental_fraction_1_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Elemental Fraction 1 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, 98</span><span class="si">% he</span><span class="s1">lium, 2</span><span class="si">% o</span><span class="s1">xygen atmosphere, temperature (T) = 580° C.'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88329'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;EC2f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_elemental_fraction_2_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Elemental Fraction 2 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, 98</span><span class="si">% he</span><span class="s1">lium, 2</span><span class="si">% o</span><span class="s1">xygen atmosphere, temperature (T) = 740° C.&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88380&#39;</span><span class="p">,</span>
+        <span class="s1">'EC2f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_elemental_fraction_2_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Elemental Fraction 2 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, 98</span><span class="si">% he</span><span class="s1">lium, 2</span><span class="si">% o</span><span class="s1">xygen atmosphere, temperature (T) = 740° C.'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88380'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;EC3f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_elemental_fraction_3_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Elemental Fraction 3 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;TOR, 98</span><span class="si">% he</span><span class="s1">lium, 2</span><span class="si">% o</span><span class="s1">xygen atmosphere, temperature (T) = 840° C.&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88331&#39;</span><span class="p">,</span>
+        <span class="s1">'EC3f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_elemental_fraction_3_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Elemental Fraction 3 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'TOR, 98</span><span class="si">% he</span><span class="s1">lium, 2</span><span class="si">% o</span><span class="s1">xygen atmosphere, temperature (T) = 840° C.'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88331'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;ECf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_elemental_total_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Elemental Total (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Elemental carbon from TOR carbon fractions (E1+E2+E3-OP)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88321&#39;</span><span class="p">,</span>
+        <span class="s1">'ECf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_elemental_total_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Elemental Total (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Elemental carbon from TOR carbon fractions (E1+E2+E3-OP)'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88321'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;fAbs&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;filter_absorption_coeff&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Filter Absorption Coefficient&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;A calibrated absorption coefficient measured from a Teflon filter using a hybrid integrating plate and sphere (HIPS) method&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;63102&#39;</span><span class="p">,</span>
+        <span class="s1">'fAbs'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'filter_absorption_coeff'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Filter Absorption Coefficient'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'A calibrated absorption coefficient measured from a Teflon filter using a hybrid integrating plate and sphere (HIPS) method'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'63102'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;FlowRate&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;flow_rate&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Flow Rate&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;The rate of air flow through an air sampling instrument&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;63102&#39;</span><span class="p">,</span>
+        <span class="s1">'FlowRate'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'flow_rate'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Flow Rate'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'The rate of air flow through an air sampling instrument'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'63102'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;MF&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;mass_pm2_5&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Mass, PM2.5 (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Gravimetric mass measurement for particles with aerodynamic diameters less than 2.5 um&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;88101&#39;</span><span class="p">,</span>
+        <span class="s1">'MF'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'mass_pm2_5'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Mass, PM2.5 (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Gravimetric mass measurement for particles with aerodynamic diameters less than 2.5 um'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'88101'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;MT&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;mass_pm10&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Mass, PM10 (Total)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Gravimetric mass measurement for particles with aerodynamic diameters less than 10 um&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;epa_code&#39;</span><span class="p">:</span> <span class="s1">&#39;85101&#39;</span><span class="p">,</span>
+        <span class="s1">'MT'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'mass_pm10'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Mass, PM10 (Total)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Gravimetric mass measurement for particles with aerodynamic diameters less than 10 um'</span><span class="p">,</span>
+            <span class="s1">'epa_code'</span><span class="p">:</span> <span class="s1">'85101'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;SampDur&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sample_duration&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sampling Duration&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;The duration of a given sampling period in minutes&#39;</span><span class="p">,</span>
+        <span class="s1">'SampDur'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'sample_duration'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Sampling Duration'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'The duration of a given sampling period in minutes'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;ammNO3f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ammonium_nitrate_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Ammonium Nitrate (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;1.29 x  NO3f&#39;</span><span class="p">,</span>
+        <span class="s1">'ammNO3f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'ammonium_nitrate_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Ammonium Nitrate (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'1.29 x  NO3f'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;ammSO4f&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ammonium_sulfate_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Ammonium Sulfate (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;1.375 x SO4f&#39;</span><span class="p">,</span>
+        <span class="s1">'ammSO4f'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'ammonium_sulfate_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Ammonium Sulfate (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'1.375 x SO4f'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OMCf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_organic_mass_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Organic Mass (fine)(1.8*OC)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;1.8 X OCf&#39;</span><span class="p">,</span>
+        <span class="s1">'OMCf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_organic_mass_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Organic Mass (fine)(1.8*OC)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'1.8 X OCf'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;TCf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;carbon_total_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carbon, Total (fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;From TOR carbon fractions (OCf+ECf)&#39;</span><span class="p">,</span>
+        <span class="s1">'TCf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'carbon_total_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Carbon, Total (fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'From TOR carbon fractions (OCf+ECf)'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;CM_calculated&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;CM_calculated&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Mass, PM10-PM2.5 (Coarse)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;MT-MF&#39;</span><span class="p">,</span>
+        <span class="s1">'CM_calculated'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'CM_calculated'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Mass, PM10-PM2.5 (Coarse)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'MT-MF'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;SeaSaltf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_salt_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sea Salt (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;1.8XCHLf&#39;</span><span class="p">,</span>
+        <span class="s1">'SeaSaltf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'sea_salt_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Sea Salt (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'1.8XCHLf'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;SOILf&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;soil_fine&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Soil (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;2.2 × ALf + 2.49 × SIf + 1.63 × CAf + 2.42 × FEf + 1.94 × TIf&#39;</span><span class="p">,</span>
+        <span class="s1">'SOILf'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'soil_fine'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Soil (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'2.2 × ALf + 2.49 × SIf + 1.63 × CAf + 2.42 × FEf + 1.94 × TIf'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;RCFM&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;mass_pm2_5_reconstructed&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Mass, PM2.5 Reconstructed (Fine)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Sum of ammSO4f, ammNO3f, OMCf, ECf, soilf, and seasaltf.&#39;</span><span class="p">,</span>
+        <span class="s1">'RCFM'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'mass_pm2_5_reconstructed'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Mass, PM2.5 Reconstructed (Fine)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Sum of ammSO4f, ammNO3f, OMCf, ECf, soilf, and seasaltf.'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;RCTM&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;mass_pmi10_reconstructed&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Mass, PM10 Reconstructed (Total)&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Sum of ammSO4f, ammNO3f, OMCf, ECf, soilf, seasaltf, and CM_calculated.&#39;</span><span class="p">,</span>
+        <span class="s1">'RCTM'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'mass_pmi10_reconstructed'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Mass, PM10 Reconstructed (Total)'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Sum of ammSO4f, ammNO3f, OMCf, ECf, soilf, seasaltf, and CM_calculated.'</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">}</span>
     <span class="n">laser_vars</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;RefF&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Final laser reflectance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;final_laser_reflectance_&#39;</span><span class="p">,</span>
+        <span class="s1">'RefF'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ratio'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Final laser reflectance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'final_laser_reflectance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;TransF&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Final laser transmittance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;final_laser_transmittance_&#39;</span><span class="p">,</span>
+        <span class="s1">'TransF'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ratio'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Final laser transmittance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'final_laser_transmittance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;RefI&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Initial laser reflectance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;initial_laser_reflectance_&#39;</span><span class="p">,</span>
+        <span class="s1">'RefI'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ratio'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Initial laser reflectance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'initial_laser_reflectance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;TransI&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Initial laser transmittance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;initial_laser_transmittance_&#39;</span><span class="p">,</span>
+        <span class="s1">'TransI'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ratio'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Initial laser transmittance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'initial_laser_transmittance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;RefM&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Minimum laser reflectance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;min_laser_reflectance_&#39;</span><span class="p">,</span>
+        <span class="s1">'RefM'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ratio'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Minimum laser reflectance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'min_laser_reflectance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;TransM&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39; Minimum laser transmittance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;min_laser_transmittance_&#39;</span><span class="p">,</span>
+        <span class="s1">'TransM'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ratio'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">' Minimum laser transmittance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'min_laser_transmittance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OP_TR&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ug m-3&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic Pyrolyzed Carbon by Reflectance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;organic_pyrolyzed_carbon_reflectance_&#39;</span><span class="p">,</span>
+        <span class="s1">'OP_TR'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ug m-3'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Organic Pyrolyzed Carbon by Reflectance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'organic_pyrolyzed_carbon_reflectance_'</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;OP_TT&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;ug m-3&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="s1">&#39;Organic Pyrolyzed Carbon by Transmittance at &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;organic_pyrolyzed_carbon_transmittance_&#39;</span><span class="p">,</span>
+        <span class="s1">'OP_TT'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'ug m-3'</span><span class="p">,</span>
+            <span class="s1">'comments'</span><span class="p">:</span> <span class="s1">'Organic Pyrolyzed Carbon by Transmittance at '</span><span class="p">,</span>
+            <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'organic_pyrolyzed_carbon_transmittance_'</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">}</span>
-    <span class="n">laser_wl</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;405&#39;</span><span class="p">,</span> <span class="s1">&#39;445&#39;</span><span class="p">,</span> <span class="s1">&#39;532&#39;</span><span class="p">,</span> <span class="s1">&#39;635&#39;</span><span class="p">,</span> <span class="s1">&#39;780&#39;</span><span class="p">,</span> <span class="s1">&#39;808&#39;</span><span class="p">,</span> <span class="s1">&#39;980&#39;</span><span class="p">]</span>
+    <span class="n">laser_wl</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'405'</span><span class="p">,</span> <span class="s1">'445'</span><span class="p">,</span> <span class="s1">'532'</span><span class="p">,</span> <span class="s1">'635'</span><span class="p">,</span> <span class="s1">'780'</span><span class="p">,</span> <span class="s1">'808'</span><span class="p">,</span> <span class="s1">'980'</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">laser_vars</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">wl</span> <span class="ow">in</span> <span class="n">laser_wl</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">wl</span>
-            <span class="k">if</span> <span class="s1">&#39;OP&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">wl</span><span class="p">])]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
-                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                    <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;comments&#39;</span><span class="p">],</span> <span class="n">wl</span><span class="p">]),</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">+</span> <span class="n">wl</span>
+            <span class="k">if</span> <span class="s1">'OP'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="s1">'_'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">wl</span><span class="p">])]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">'units'</span><span class="p">:</span> <span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'units'</span><span class="p">],</span>
+                    <span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                    <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'comments'</span><span class="p">],</span> <span class="n">wl</span><span class="p">]),</span>
                 <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">var_name</span> <span class="o">=</span> <span class="n">wl</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span>
+                <span class="n">var_name</span> <span class="o">=</span> <span class="n">wl</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">))</span>
                 <span class="n">mapping</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
-                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                    <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;comments&#39;</span><span class="p">],</span> <span class="n">wl</span><span class="p">]),</span>
+                    <span class="s1">'units'</span><span class="p">:</span> <span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'units'</span><span class="p">],</span>
+                    <span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                    <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">laser_vars</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'comments'</span><span class="p">],</span> <span class="n">wl</span><span class="p">]),</span>
                 <span class="p">}</span>
 
     <span class="c1"># Run through each variable in the dataframe and add it to a dataset</span>
     <span class="c1"># along with the appropriate metadata</span>
     <span class="n">ct</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">site</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Site</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">base_url</span><span class="p">,</span> <span class="s1">&#39;datastream&#39;</span><span class="p">:</span> <span class="n">site</span> <span class="o">+</span> <span class="s1">&#39; IMPROVE&#39;</span><span class="p">}</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'url'</span><span class="p">:</span> <span class="n">base_url</span><span class="p">,</span> <span class="s1">'datastream'</span><span class="p">:</span> <span class="n">site</span> <span class="o">+</span> <span class="s1">' IMPROVE'</span><span class="p">}</span>
 
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
         <span class="c1"># Find data for just the variable in question</span>
-        <span class="n">poc_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Parameter Occurrence Code for &#39;</span> <span class="o">+</span> <span class="n">v</span><span class="p">}</span>
+        <span class="n">poc_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Parameter Occurrence Code for '</span> <span class="o">+</span> <span class="n">v</span><span class="p">}</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">Param</span> <span class="o">==</span> <span class="n">v</span><span class="p">]</span>
 
         <span class="c1"># Get metadata</span>
         <span class="n">unit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">UnitAbbr</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Multiple types of units detected, using first one&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Multiple types of units detected, using first one'</span><span class="p">)</span>
 
         <span class="n">sites</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">Site</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Multiple sites detected, please use only one&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Multiple sites detected, please use only one'</span><span class="p">)</span>
 
         <span class="c1"># Get time, POC, and data</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">FactDate</span><span class="p">)</span>
@@ -775,78 +775,78 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">FactValue</span>
 
         <span class="c1"># Set up attributes</span>
-        <span class="n">var_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">unit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;long_name&#39;</span><span class="p">],</span> <span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">}</span>
-        <span class="k">if</span> <span class="s1">&#39;comments&#39;</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
-            <span class="n">var_attrs</span><span class="p">[</span><span class="s1">&#39;comments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;comments&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;epa_code&#39;</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
-            <span class="n">var_attrs</span><span class="p">[</span><span class="s1">&#39;epa_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;epa_code&#39;</span><span class="p">]</span>
+        <span class="n">var_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="n">unit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'long_name'</span><span class="p">],</span> <span class="s1">'_FillValue'</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">}</span>
+        <span class="k">if</span> <span class="s1">'comments'</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+            <span class="n">var_attrs</span><span class="p">[</span><span class="s1">'comments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'comments'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">'epa_code'</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+            <span class="n">var_attrs</span><span class="p">[</span><span class="s1">'epa_code'</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'epa_code'</span><span class="p">]</span>
 
         <span class="c1"># If the first variable, create the dataset and then add variables to it</span>
         <span class="k">if</span> <span class="n">ct</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
-                <span class="n">data_vars</span><span class="o">=</span><span class="p">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="p">([</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="n">var_attrs</span><span class="p">)},</span>
-                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span>
+                <span class="n">data_vars</span><span class="o">=</span><span class="p">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]:</span> <span class="p">([</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="n">var_attrs</span><span class="p">)},</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span>
                 <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;poc_&#39;</span> <span class="o">+</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">poc</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">attrs</span><span class="o">=</span><span class="n">poc_attrs</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">'poc_'</span> <span class="o">+</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">poc</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">attrs</span><span class="o">=</span><span class="n">poc_attrs</span>
             <span class="p">)</span>
             <span class="n">ct</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ds</span><span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">attrs</span><span class="o">=</span><span class="n">var_attrs</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">attrs</span><span class="o">=</span><span class="n">var_attrs</span>
             <span class="p">)</span>
-            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;poc_&#39;</span> <span class="o">+</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">poc</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">attrs</span><span class="o">=</span><span class="n">poc_attrs</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">'poc_'</span> <span class="o">+</span> <span class="n">mapping</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">poc</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">time</span><span class="p">},</span> <span class="n">attrs</span><span class="o">=</span><span class="n">poc_attrs</span>
             <span class="p">)</span>
 
     <span class="c1"># Add in metadata from site summary page</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&amp;siidse=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">'https://views.cira.colostate.edu/adms/Pub/SiteSummary.aspx?dsidse=10001&amp;siidse='</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
         <span class="n">site_id</span>
     <span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
         <span class="c1"># Add lat/lon as variables</span>
-        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Latitude'</span><span class="p">:</span>
             <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;North latitude&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_N&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.0</span><span class="p">,</span>
-                <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
-                <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
+                <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'North latitude'</span><span class="p">,</span>
+                <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'degree_N'</span><span class="p">,</span>
+                <span class="s1">'valid_min'</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.0</span><span class="p">,</span>
+                <span class="s1">'valid_max'</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
+                <span class="s1">'standard_name'</span><span class="p">:</span> <span class="s1">'latitude'</span><span class="p">,</span>
             <span class="p">}</span>
-            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">'lat'</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span>
-                <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
-                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
+                <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
                 <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Longitude&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Longitude'</span><span class="p">:</span>
             <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;East longitude&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_E&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
-                <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
-                <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
+                <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'East longitude'</span><span class="p">,</span>
+                <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'degree_E'</span><span class="p">,</span>
+                <span class="s1">'valid_min'</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
+                <span class="s1">'valid_max'</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
+                <span class="s1">'standard_name'</span><span class="p">:</span> <span class="s1">'longitude'</span><span class="p">,</span>
             <span class="p">}</span>
-            <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">[</span><span class="s1">'lon'</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span>
-                <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
-                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
+                <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
                 <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
     <span class="c1"># Add in problem information from the site summary page</span>
-    <span class="n">problem</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="s1">''</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="n">problem</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;EventDate&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;EventType&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Notes&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="n">problem</span> <span class="o">+=</span> <span class="s1">'_'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'EventDate'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'EventType'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'Notes'</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">]</span>
         <span class="p">)</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;site_problems&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">problem</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'site_problems'</span><span class="p">]</span> <span class="o">=</span> <span class="n">problem</span>
 
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="s1">'time'</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
