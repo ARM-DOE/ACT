@@ -1,7 +1,33 @@
-<!-- Please remove check-list items that aren't relevant to your changes -->
+## What changed
+2-4 bullets in plain language.
 
-- [ ] Closes #xxxx
-- [ ] Tests added
-- [ ] Documentation reflects changes
-- [ ] PEP8 Standards or use of linter
-- [ ] Xarray Dataset or DataArray variable naming follows 'ds' or 'da' naming
+-
+-
+
+## Why
+1-2 lines on the user/problem impact.
+
+
+## Issues closed
+List issue references this PR closes (for example: `Closes #123`, `Fixes #456`).
+
+## Validation
+Mark each item as done or N/A. Add one short evidence line for each item.
+
+- [ ] I ran pre-commit or ruff
+
+- [ ] I ran tests and/or added tests
+
+## AI usage & manual verification
+If AI tools were used, complete this section.
+
+- AI used: yes/no
+- Model/tooling:
+- Tasks delegated to AI:
+- Manual verification performed:
+
+## Use Xarray Dataset naming
+When adding dataset usage to the code use ds for Datasets and da for
+DataArrays
+
+Impact note (optional): breaking behavior, scientific output shift, or user-visible behavior.
