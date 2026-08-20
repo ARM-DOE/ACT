@@ -11,6 +11,7 @@ from scipy.signal import find_peaks
 
 try:
     import pywt
+
     PYWAVELETS_AVAILABLE = True
 except ImportError:
     PYWAVELETS_AVAILABLE = False
@@ -199,6 +200,7 @@ def calculate_modified_gradient_pbl(
 
     return ds
 
+
 def calculate_wavelet_pbl(
     ds,
     var_name='wind_speed',
@@ -324,10 +326,10 @@ def calculate_wavelet_pbl(
         ds['pbl_wavelet'].attrs['units'] = ds[range_name].attrs['units']
     else:
         ds['pbl_wavelet'].attrs['units'] = 'meters'
-       
+
     return ds
 
-  
+
 def calculate_tucker_method_pbl(
     ds,
     velocity="radial_velocity",
@@ -375,7 +377,7 @@ def calculate_tucker_method_pbl(
     and kinematic structure of the planetary boundary
     layer for a summer lake breeze day in Chicago. Journal of Geophysical
     Research: Atmospheres, accepted.
-    
+
     Parameters
     ----------
     ds : xarray.Dataset
@@ -397,7 +399,7 @@ def calculate_tucker_method_pbl(
         The default value of 0.2 is based on the typical noise characteristics of the ARM Doppler lidars, but may need to be adjusted for other instruments.
     min_gate_height : float
         Minimum height of the range gate to be considered for PBL height determination.
-        This is to avoid surface noise and spurious low-level signals. The default value is 100 meters. 
+        This is to avoid surface noise and spurious low-level signals. The default value is 100 meters.
         Original dataset with the following variables added:
         pbl_tucker : PBL height for each averaging interval.
         tucker_atmospheric_variance : Atmospheric variance profile for each
