@@ -21,3 +21,12 @@ def test_doppler_lidar_winds():
     assert np.round(np.nansum(result['wind_speed'].values)).astype(int) == 2854
     assert np.round(np.nansum(result['wind_direction'].values)).astype(int) == 64986
     dl_ds.close()
+
+
+def test_doppler_lidar_tucker_retrieval():
+    dl_ds = act.io.arm.read_arm_netcdf(act.tests.sample_files.EXAMPLE_DLFPT)
+    dl_ds = act.retrievals.calculate_tucker_method_pbl(dl_ds, interval="10min")
+    assert np.allclose(dl_ds['pbl_tucker'].values, [675.0, 795.0, 735.0, 825.0, 795.0, 735.0])
+    assert np.allclose(dl_ds['tucker_atmospheric_variance'].values.max(), 19.012731495487955)
+    assert np.allclose(dl_ds['tucker_noise_variance'].values.max(), 145.83166344062627)
+    dl_ds.close()
