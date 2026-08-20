@@ -17,6 +17,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'calculate_gradient_pbl',
             'calculate_modified_gradient_pbl',
             'calculate_wavelet_pbl',
+            'calculate_tucker_method_pbl',
         ],
         'radiation': [
             'calculate_dsh_from_dsdh_sdn',

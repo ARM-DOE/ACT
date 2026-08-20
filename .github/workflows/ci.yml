@@ -1,4 +1,6 @@
 name: Run Unit Tests CI
+permissions:
+  contents: read
 
 on:
   schedule:
@@ -18,7 +20,6 @@ env:
   ARM_USERNAME: ${{ secrets.ARM_USERNAME }}
   ARM_PASSWORD: ${{ secrets.ARM_PASSWORD }}
   AIRNOW_API: ${{ secrets.AIRNOW_API }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   COVERALLS_TOKEN: ${{ secrets.COVERLALLS_REPO_TOKEN }}
   AMERIFLUX_EMAIL: ${{ secrets.AMERIFLUX_EMAIL }}
   AMERIFLUX_USERNAME: ${{ secrets.AMERIFLUX_USERNAME }}
@@ -35,13 +36,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
-        os: [macOS, ubuntu, Windows]
+        python-version: ["3.12", "3.13", "3.14"]
+        os: [macos, ubuntu, windows]
     steps:
       - uses: actions/checkout@v7
 
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v3
+        uses: mamba-org/setup-micromamba@v3.2.1
         with:
           create-args: python=${{ matrix.python-version }}
           environment-file: ./continuous_integration/environment_actions.yml

@@ -4,16 +4,13 @@ Atmospheric data Community Toolkit (ACT)
 
 |AnacondaCloud| |CodeCovStatus| |Build| |Docs|
 
-|CondaDownloads| |PyPiDownloads| |Zenodo| |ARM|
+|CondaDownloads| |Zenodo| |ARM|
 
 .. |AnacondaCloud| image:: https://anaconda.org/conda-forge/act-atmos/badges/version.svg
     :target: https://anaconda.org/conda-forge/act-atmos
 
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/act-atmos/badges/downloads.svg
     :target: https://anaconda.org/conda-forge/act-atmos/files
-
-.. |PyPiDownloads| image:: https://img.shields.io/pypi/dm/act_atmos.svg
-    :target: https://pypi.org/project/act-atmos/
 
 .. |Zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3855537.svg
     :target: https://doi.org/10.5281/zenodo.3855537
