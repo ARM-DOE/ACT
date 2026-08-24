@@ -155,4 +155,4 @@ in the PR description, including the tool or model name and version where it is
 known (for example: "Claude Opus 4.7", "Cursor with GPT-5.1"). This is not
 required, but it helps reviewers calibrate their attention and helps the
 community develop shared intuition about where AI tools work well and where
-they struggle on radar-data work.
+they struggle on atmospheric datasets.
