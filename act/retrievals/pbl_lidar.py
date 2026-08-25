@@ -380,6 +380,37 @@ def calculate_profile_fit_pbl(
     ----------
     ds : xarray.Dataset
         Dataset containing the zenith-pointing remote sensing data.
+    parm : str
+        Variable in the dataset to calculate the profile fit from
+        (e.g., attenuated backscatter).
+    dis_parm : str
+        Name of the height/range coordinate in ds.
+    fit_min_height : float
+        Minimum height in meters to consider for fitting the profile.
+    fit_max_height : float
+        Maximum height in meters to consider for fitting the profile.
+    time_average : str
+        Time averaging interval for the backscatter profile before fitting.
+    allow_elevated : bool
+        Whether to allow fitting with an elevated aerosol layer above the mixed layer.
+        Determines which idealized profile function is used for fitting.
+
+    Calls
+    -----
+    idealized_profile : function
+        Idealized backscatter profile function based on an error function.
+    idealized_twolayer_profile : function
+        Idealized backscatter profile function with an additional Gaussian
+        distribution to handle an elevated aerosol layer above the mixed layer.
+    find_elevated_layer : function
+        Detects the clean air layer above the mixed layer and below the elevated
+        aerosol layer to trigger single or two layer idealized profile fitting.
+    smooth_profile : function
+        Vertical averaging that expands with height to account for decreasing
+        vertical resolution of the lidar with height.
+    fit_profile : function
+        Fits the idealized profile to the backscatter profile using least
+        squares optimization.
 
     Returns
     -------
