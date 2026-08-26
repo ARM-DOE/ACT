@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
@@ -41,10 +41,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=e2ee527d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -441,296 +441,888 @@
                 <article class="bd-article">
                    <h1>Source code for act.discovery.asos</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">Script for downloading ASOS data from the Iowa Mesonet API</span>
-
+<span class="sd">Utilities for downloading ASOS data from the Iowa Environmental Mesonet (IEM).</span>
 <span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.error</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">URLError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlencode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">urlopen</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">urllib2</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
+<span class="n">IEM_BASE_URL</span> <span class="o">=</span> <span class="s2">"https://mesonet.agron.iastate.edu"</span>
+<span class="n">IEM_ASOS_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">IEM_BASE_URL</span><span class="si">}</span><span class="s2">/cgi-bin/request/asos.py"</span>
+<span class="n">USER_AGENT</span> <span class="o">=</span> <span class="s2">"ARM-ACT/ASOS (https://github.com/ARM-DOE/ACT)"</span>
+
+<span class="n">MAX_ATTEMPTS</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">INITIAL_RETRY_DELAY</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">MAX_RETRY_DELAY</span> <span class="o">=</span> <span class="mf">120.0</span>
+<span class="n">STATION_BATCH_SIZE</span> <span class="o">=</span> <span class="mi">50</span>
 
 
 <div class="viewcode-block" id="get_asos_data">
 <a class="viewcode-back" href="../../../API/generated/act.discovery.get_asos_data.html#act.discovery.get_asos_data">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_asos_data</span><span class="p">(</span><span class="n">time_window</span><span class="p">,</span> <span class="n">lat_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lon_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">lat_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">lon_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">regions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Returns all of the station observations from the Iowa Mesonet from either</span>
-<span class="sd">    a given latitude and longitude window or a given station code.</span>
+<span class="sd">    Retrieve ASOS observations from the Iowa Environmental Mesonet.</span>
+
+<span class="sd">    Data can be requested either by station identifier, geographic bounds, or region.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time_window: tuple</span>
-<span class="sd">        A 2 member list or tuple containing the start and end times. The</span>
-<span class="sd">        times must be python datetimes.</span>
-<span class="sd">    lat_range: tuple</span>
-<span class="sd">        The latitude window to grab all of the ASOS observations from.</span>
-<span class="sd">    lon_range: tuple</span>
-<span class="sd">        The longitude window to grab all of the ASOS observations from.</span>
-<span class="sd">    station: str</span>
-<span class="sd">        The station ID to grab the ASOS observations from.</span>
-<span class="sd">    regions: str</span>
-<span class="sd">        Region that the ASOS is in.  For Alabama, it would be AL</span>
-<span class="sd">        For more than one region add it to the string with spaces between 'AL MN'</span>
+<span class="sd">    time_window : tuple</span>
+<span class="sd">        Two-member sequence containing the start and end times as Python</span>
+<span class="sd">        ``datetime`` objects.</span>
+<span class="sd">    lat_range : tuple, optional</span>
+<span class="sd">        Latitude range ``(min_latitude, max_latitude)`` used to discover ASOS</span>
+<span class="sd">        stations.</span>
+<span class="sd">    lon_range : tuple, optional</span>
+<span class="sd">        Longitude range ``(min_longitude, max_longitude)`` used to discover</span>
+<span class="sd">        ASOS stations.</span>
+<span class="sd">    station : str or sequence of str, optional</span>
+<span class="sd">        One station identifier or a sequence of station identifiers.</span>
+<span class="sd">        Examples: ``"ORD"`` or ``["ORD", "MDW", "DPA"]``.</span>
+<span class="sd">    regions : str or sequence of str, optional</span>
+<span class="sd">        Region/network identifiers. Examples: ``"IL"`` or</span>
+<span class="sd">        ``["IL", "WI", "IN"]``. Regions can be used alone to retrieve all</span>
+<span class="sd">        stations in the requested region(s), or together with latitude and</span>
+<span class="sd">        longitude bounds to narrow geographic station discovery.</span>
+<span class="sd">    variables : sequence of str, optional</span>
+<span class="sd">        IEM ASOS variables to request. If omitted, ``data=all`` is used.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    asos_ds: dict of xarray.Datasets</span>
-<span class="sd">        A dictionary of ACT datasets whose keys are the ASOS station IDs.</span>
+<span class="sd">    asos_ds : dict of xarray.Dataset</span>
+<span class="sd">        Dictionary keyed by ASOS station identifier.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    If you want to obtain timeseries of ASOS observations for Chicago O'Hare</span>
-<span class="sd">    Airport, simply do::</span>
+<span class="sd">    Retrieve data for a single ASOS station.</span>
 
-<span class="sd">        $ time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 10, 10, 0)]</span>
-<span class="sd">        $ station = "KORD"</span>
-<span class="sd">        $ my_asoses = act.discovery.get_asos(time_window, station="ORD")</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from datetime import datetime</span>
+
+<span class="sd">        import act</span>
+
+<span class="sd">        time_window = [</span>
+<span class="sd">            datetime(2020, 2, 4, 2, 0),</span>
+<span class="sd">            datetime(2020, 2, 4, 4, 0),</span>
+<span class="sd">        ]</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            station="ORD",</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Retrieve multiple ASOS stations in a single request.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            station=["ORD", "MDW", "DPA"],</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Retrieve all available ASOS stations within a latitude and longitude</span>
+<span class="sd">    bounding box.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        lat_range = (41.3, 42.3)</span>
+<span class="sd">        lon_range = (-88.2, -87.1)</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            lat_range=lat_range,</span>
+<span class="sd">            lon_range=lon_range,</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Retrieve all available ASOS stations from a region.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            regions="IL",</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Multiple regions can also be requested.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            regions=["IL", "IN", "WI"],</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Limit the request to selected ASOS variables.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            station="ORD",</span>
+<span class="sd">            variables=["tmpf", "dwpf", "relh", "drct", "sknt"],</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Regions can optionally be combined with a geographic bounding box to</span>
+<span class="sd">    limit station discovery to selected IEM networks.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        asos = act.discovery.get_asos_data(</span>
+<span class="sd">            time_window,</span>
+<span class="sd">            lat_range=lat_range,</span>
+<span class="sd">            lon_range=lon_range,</span>
+<span class="sd">            regions=["IL", "IN"],</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Explicit station requests do not require metadata-network lookups. Latitude,</span>
+<span class="sd">    longitude, and elevation are requested directly from the ASOS endpoint.</span>
+
+<span class="sd">    Geographic requests do not require ``regions``. When ``regions`` is not</span>
+<span class="sd">    supplied, ACT uses a single global IEM METAR/ASOS metadata request and</span>
+<span class="sd">    filters stations by latitude/longitude. Supplying ``regions`` alone</span>
+<span class="sd">    retrieves all stations in those regional networks. Large station sets are</span>
+<span class="sd">    automatically split into smaller batched ASOS requests.</span>
+
+<span class="sd">    Code was updated using ChatGPT following testing and feedback from the</span>
+<span class="sd">    developer.  Code was reviewed and tested by the developer before the PR.</span>
+
 <span class="sd">    """</span>
-    <span class="c1"># First query the database for all of the JSON info for every station</span>
-    <span class="c1"># Only add stations whose lat/lon are within the Grid's boundaries</span>
-    <span class="k">if</span> <span class="n">regions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">regions</span> <span class="o">=</span> <span class="s2">"""AF AL_ AI_ AQ_ AG_ AR_ AK AL AM_</span>
-<span class="s2">            AO_ AS_ AR AW_ AU_ AT_</span>
-<span class="s2">            AZ_ BA_ BE_ BB_ BG_ BO_ BR_ BF_</span>
-<span class="s2">            BT_ BS_ BI_ BM_ BB_ BY_ BZ_ BJ_ BW_ AZ CA CA_AB</span>
-<span class="s2">            CA_BC CD_ CK_ CF_ CG_ CL_ CM_ CO CO_ CN_ CR_ CT</span>
-<span class="s2">            CU_ CV_ CY_ CZ_ DE DK_ DJ_ DM_ DO_</span>
-<span class="s2">            DZ EE_ ET_ FK_ FM_ FJ_ FI_ FR_ GF_ PF_</span>
-<span class="s2">            GA_ GM_ GE_ DE_ GH_ GI_ KY_ GB_ GR_ GL_ GD_</span>
-<span class="s2">            GU_ GT_ GN_ GW_ GY_ HT_ HN_ HK_ HU_ IS_ IN_</span>
-<span class="s2">            ID_ IR_ IQ_ IE_ IL_ IT_ CI_ JM_ JP_</span>
-<span class="s2">            JO_ KZ_ KE_ KI_ KW_ LA_ LV_ LB_ LS_ LR_ LY_</span>
-<span class="s2">            LT_ LU_ MK_ MG_ MW_ MY_ MV_ ML_ CA_MB</span>
-<span class="s2">            MH_ MR_ MU_ YT_ MX_ MD_ MC_ MA_ MZ_ MM_ NA_ NP_</span>
-<span class="s2">            AN_ NL_ CA_NB NC_ CA_NF NF_ NI_</span>
-<span class="s2">            NE_ NG_ MP_ KP_ CA_NT NO_ CA_NS CA_NU OM_</span>
-<span class="s2">            CA_ON PK_ PA_ PG_ PY_ PE_ PH_ PN_ PL_</span>
-<span class="s2">            PT_ CA_PE PR_ QA_ CA_QC RO_ RU_RW_ SH_ KN_</span>
-<span class="s2">            LC_ VC_ WS_ ST_ CA_SK SA_ SN_ RS_ SC_</span>
-<span class="s2">            SL_ SG_ SK_ SI_ SB_ SO_ ZA_ KR_ ES_ LK_ SD_ SR_</span>
-<span class="s2">            SZ_ SE_ CH_ SY_ TW_ TJ_ TZ_ TH_</span>
-<span class="s2">            TG_ TO_ TT_ TU TN_ TR_ TM_ UG_ UA_ AE_ UN_ UY_</span>
-<span class="s2">            UZ_ VU_ VE_ VN_ VI_ YE_ CA_YT ZM_ ZW_</span>
-<span class="s2">            EC_ EG_ FL GA GQ_ HI HR_ IA ID IL IO_ IN KS</span>
-<span class="s2">            KH_ KY KM_ LA MA MD ME</span>
-<span class="s2">            MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK</span>
-<span class="s2">            OR PA RI SC SV_ SD TD_ TN TX UT VA VT VG_</span>
-<span class="s2">            WA WI WV WY"""</span>
+    <span class="c1"># Validate the requested period once before performing any discovery or</span>
+    <span class="c1"># network requests.</span>
+    <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="o">=</span> <span class="n">_validate_time_window</span><span class="p">(</span><span class="n">time_window</span><span class="p">)</span>
+
+    <span class="c1"># There are three supported station-selection modes:</span>
+    <span class="c1">#   1. Explicit station ID(s)</span>
+    <span class="c1">#   2. A latitude/longitude bounding box</span>
+    <span class="c1">#   3. One or more IEM regions/networks</span>
+    <span class="c1">#</span>
+    <span class="c1"># Explicit station requests can skip the metadata-discovery step entirely.</span>
+    <span class="k">if</span> <span class="n">station</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="n">_normalize_station_list</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># For a geographic request, discover the stations that fall inside the</span>
+    <span class="c1"># bounding box. If regions are supplied, they are used to narrow the</span>
+    <span class="c1"># metadata search; otherwise the global station catalog is used.</span>
+    <span class="k">elif</span> <span class="n">lat_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stations</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">_discover_asos_stations</span><span class="p">(</span>
+            <span class="n">lat_range</span><span class="o">=</span><span class="n">lat_range</span><span class="p">,</span>
+            <span class="n">lon_range</span><span class="o">=</span><span class="n">lon_range</span><span class="p">,</span>
+            <span class="n">regions</span><span class="o">=</span><span class="n">regions</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># A region-only request retrieves all stations belonging to the requested</span>
+    <span class="c1"># regional ASOS network(s).</span>
+    <span class="k">elif</span> <span class="n">regions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stations</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">_discover_region_stations</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">regions</span> <span class="o">=</span> <span class="s1">'_ '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Specify station, regions, or both lat_range and lon_range."</span><span class="p">)</span>
 
-    <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'AWOS'</span><span class="p">]</span>
-    <span class="n">metadata_list</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">lat_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lon_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span> <span class="o">=</span> <span class="n">lon_range</span>
-        <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span> <span class="o">=</span> <span class="n">lat_range</span>
-        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-            <span class="n">networks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_ASOS'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stations</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"No ASOS stations matched the request."</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
 
-        <span class="n">site_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
-            <span class="c1"># Get metadata</span>
-            <span class="n">uri</span> <span class="o">=</span> <span class="s1">'https://mesonet.agron.iastate.edu/'</span> <span class="sa">f</span><span class="s1">'geojson/network/</span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s1">.geojson'</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="n">jdict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">jdict</span><span class="p">[</span><span class="s1">'features'</span><span class="p">]:</span>
-                <span class="n">lat</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">][</span><span class="s1">'coordinates'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">lon</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">][</span><span class="s1">'coordinates'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">lat_min</span> <span class="ow">and</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">lat_max</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">lon_min</span> <span class="ow">and</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">lon_max</span><span class="p">:</span>
-                        <span class="n">station_metadata_dict</span> <span class="o">=</span> <span class="p">{}</span>
-                        <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">'site_latitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
-                        <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">'site_longitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
-                        <span class="k">for</span> <span class="n">my_keys</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">]:</span>
-                            <span class="n">station_metadata_dict</span><span class="p">[</span><span class="n">my_keys</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">][</span><span class="n">my_keys</span><span class="p">]</span>
-                        <span class="n">metadata_list</span><span class="p">[</span><span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">][</span><span class="s1">'sid'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">station_metadata_dict</span>
-                        <span class="n">site_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">][</span><span class="s1">'sid'</span><span class="p">])</span>
-    <span class="k">elif</span> <span class="n">station</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">station</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-            <span class="n">networks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_ASOS'</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
-            <span class="c1"># Get metadata</span>
-            <span class="n">uri</span> <span class="o">=</span> <span class="s1">'https://mesonet.agron.iastate.edu/'</span> <span class="sa">f</span><span class="s1">'geojson/network/</span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s1">.geojson'</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="n">jdict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">jdict</span><span class="p">[</span><span class="s1">'features'</span><span class="p">]:</span>
-                <span class="n">lat</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">][</span><span class="s1">'coordinates'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">lon</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">][</span><span class="s1">'coordinates'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">][</span><span class="s1">'sid'</span><span class="p">]</span> <span class="o">==</span> <span class="n">station</span><span class="p">:</span>
-                    <span class="n">station_metadata_dict</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">'site_latitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
-                    <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">'site_longitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
-                    <span class="k">for</span> <span class="n">my_keys</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">my_keys</span> <span class="o">==</span> <span class="s1">'elevation'</span><span class="p">:</span>
-                            <span class="n">station_metadata_dict</span><span class="p">[</span><span class="s1">'elevation'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1"> meter'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                <span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">][</span><span class="n">my_keys</span><span class="p">]</span>
-                            <span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">station_metadata_dict</span><span class="p">[</span><span class="n">my_keys</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span><span class="p">[</span><span class="s1">'properties'</span><span class="p">][</span><span class="n">my_keys</span><span class="p">]</span>
-                    <span class="n">metadata_list</span><span class="p">[</span><span class="n">station</span><span class="p">]</span> <span class="o">=</span> <span class="n">station_metadata_dict</span>
-
-        <span class="c1"># Get station metadata</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Either both lat_range and lon_range or station must '</span> <span class="o">+</span> <span class="s1">'be specified!'</span><span class="p">)</span>
-
-    <span class="c1"># Get the timestamp for each request</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time_window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="n">SERVICE</span> <span class="o">=</span> <span class="s1">'http://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?'</span>
-    <span class="n">service</span> <span class="o">=</span> <span class="n">SERVICE</span> <span class="o">+</span> <span class="s1">'data=all&amp;tz=Etc/UTC&amp;format=comma&amp;latlon=yes&amp;'</span>
-
-    <span class="n">service</span> <span class="o">+=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'year1=%Y&amp;month1=%m&amp;day1=</span><span class="si">%d</span><span class="s1">&amp;hour1=%H&amp;minute1=%M&amp;'</span><span class="p">)</span>
-    <span class="n">service</span> <span class="o">+=</span> <span class="n">end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'year2=%Y&amp;month2=%m&amp;day2=</span><span class="si">%d</span><span class="s1">&amp;hour2=%H&amp;minute2=%M'</span><span class="p">)</span>
+    <span class="c1"># Large station lists are split into batches. This avoids very long URLs</span>
+    <span class="c1"># and very large responses while still using far fewer HTTP requests than</span>
+    <span class="c1"># downloading one station at a time.</span>
     <span class="n">asos_ds</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">stations</span> <span class="ow">in</span> <span class="n">site_list</span><span class="p">:</span>
-        <span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s1">&amp;station=</span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s1">'</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Downloading: </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="n">batches</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_chunk_stations</span><span class="p">(</span><span class="n">stations</span><span class="p">,</span> <span class="n">STATION_BATCH_SIZE</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">batch_index</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batches</span><span class="p">):</span>
+        <span class="c1"># Build one IEM request containing every station in this batch.</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">_build_asos_url</span><span class="p">(</span>
+            <span class="n">stations</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="n">data</span> <span class="o">=</span> <span class="n">_download_data</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-        <span class="n">buf</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-        <span class="n">buf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">buf</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">my_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="s1">'M'</span><span class="p">)</span>
+        <span class="c1"># IEM returns all requested stations in one CSV response. Split that</span>
+        <span class="c1"># response back into one xarray Dataset per station.</span>
+        <span class="n">batch_ds</span> <span class="o">=</span> <span class="n">_parse_asos_response</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">requested_stations</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">my_df</span><span class="p">[</span><span class="s1">'lat'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">'No data available at station </span><span class="si">{}</span><span class="s1"> between time </span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">stations</span><span class="p">,</span>
-                    <span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">),</span>
-                    <span class="n">end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">),</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="n">asos_ds</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">batch_ds</span><span class="p">)</span>
 
-            <span class="k">def</span><span class="w"> </span><span class="nf">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M'</span><span class="p">)</span>
+        <span class="c1"># IEM rate-limits requests by IP. Pause between batches so normal</span>
+        <span class="c1"># regional downloads do not immediately trigger HTTP 429 responses.</span>
+        <span class="k">if</span> <span class="n">batch_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'valid'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">to_datetime</span><span class="p">)</span>
-            <span class="n">my_df</span> <span class="o">=</span> <span class="n">my_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'time'</span><span class="p">)</span>
-            <span class="n">my_df</span> <span class="o">=</span> <span class="n">my_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">'valid'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">my_df</span> <span class="o">=</span> <span class="n">my_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">'station'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">my_df</span> <span class="o">=</span> <span class="n">my_df</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
-
-            <span class="n">my_df</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">metadata_list</span><span class="p">[</span><span class="n">stations</span><span class="p">]</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'lon'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degree'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'lon'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Longitude'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'lat'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degree'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'lat'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Latitude'</span>
-
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'tmpf'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degrees Fahrenheit'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'tmpf'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Temperature in degrees Fahrenheit'</span>
-
-            <span class="c1"># Fahrenheit to Celsius</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'temp'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5.0</span> <span class="o">/</span> <span class="mf">9.0</span> <span class="o">*</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'tmpf'</span><span class="p">])</span> <span class="o">-</span> <span class="mf">32.0</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'temp'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degrees Celsius'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'temp'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Temperature in degrees Celsius'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'dwpf'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degrees Fahrenheit'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'dwpf'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Dewpoint temperature in degrees Fahrenheit'</span>
-
-            <span class="c1"># Fahrenheit to Celsius</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'dwpc'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5.0</span> <span class="o">/</span> <span class="mf">9.0</span> <span class="o">*</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'tmpf'</span><span class="p">])</span> <span class="o">-</span> <span class="mf">32.0</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'dwpc'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degrees Celsius'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'dwpc'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Dewpoint temperature in degrees Celsius'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'relh'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'percent'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'relh'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Relative humidity'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'drct'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degrees'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'drct'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wind speed in degrees'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'sknt'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'knots'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'sknt'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wind speed in knots'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'spdms'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'sknt'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.514444</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'spdms'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'spdms'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wind speed in meters per second'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'u'</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">my_df</span><span class="p">[</span><span class="s1">'drct'</span><span class="p">]))</span> <span class="o">*</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'spdms'</span><span class="p">]</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'u'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'u'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Zonal component of surface wind'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'v'</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">my_df</span><span class="p">[</span><span class="s1">'drct'</span><span class="p">]))</span> <span class="o">*</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'spdms'</span><span class="p">]</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'v'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'v'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Meridional component of surface wind'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'mslp'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'mb'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'mslp'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Mean Sea Level Pressure'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'alti'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'in Hg'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'alti'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Atmospheric pressure in inches of Mercury'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'vsby'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'mi'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'vsby'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Visibility'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'vsbykm'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'vsby'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.60934</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'vsbykm'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'km'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'vsbykm'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Visibility'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'gust'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'gust'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.514444</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'gust'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'gust'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wind gust speed'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyc1'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 1 coverage'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyc2'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 2 coverage'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyc3'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 3 coverage'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyc4'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 4 coverage'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl1'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3048</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl2'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl2'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3048</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl3'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl3'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3048</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl4'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl4'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3048</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl1'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 1 altitude'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl2'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 2 altitude'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl3'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 3 altitude'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl4'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sky level 4 altitude'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl1'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'meter'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl2'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'meter'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl3'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'meter'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'skyl4'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'meter'</span>
-
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'wxcodes'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Weather code'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_1hr'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_1hr'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">2.54</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_1hr'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'cm'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_1hr'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'1 hour ice accretion'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_3hr'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_3hr'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">2.54</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_3hr'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'cm'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_3hr'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'3 hour ice accretion'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_6hr'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_3hr'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">2.54</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_6hr'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'cm'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'ice_accretion_6hr'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'6 hour ice accretion'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_gust'</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_gust'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.514444</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_gust'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_gust'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Peak wind gust speed'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_drct'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'drct'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'degree'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_drct'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Peak wind gust direction'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'u_peak'</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_drct'</span><span class="p">]))</span> <span class="o">*</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_gust'</span><span class="p">]</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'u_peak'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'u_peak'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Zonal component of surface wind'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'v_peak'</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_drct'</span><span class="p">]))</span> <span class="o">*</span> <span class="n">my_df</span><span class="p">[</span><span class="s1">'peak_wind_gust'</span><span class="p">]</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'v_peak'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m s-1'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'v_peak'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Meridional component of surface wind'</span>
-            <span class="n">my_df</span><span class="p">[</span><span class="s1">'metar'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'long_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Raw METAR code'</span>
-            <span class="n">my_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="n">stations</span>
-            <span class="n">buf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-            <span class="n">asos_ds</span><span class="p">[</span><span class="n">stations</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_df</span>
     <span class="k">return</span> <span class="n">asos_ds</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_download_data</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
-    <span class="n">attempt</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'ERROR'</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">data</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'download_data(</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">) failed with </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">attempt</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_time_window</span><span class="p">(</span><span class="n">time_window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Validate and return the requested start/end datetimes."""</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_window</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"time_window must contain exactly two datetime objects."</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'Exhausted attempts to download, returning empty data'</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s1">''</span>
+    <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="o">=</span> <span class="n">time_window</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"time_window values must be Python datetime objects."</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">end_time</span> <span class="o">&lt;</span> <span class="n">start_time</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The end of time_window must be after the start."</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_station_list</span><span class="p">(</span><span class="n">station</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Normalize station input to a de-duplicated list of strings."""</span>
+    <span class="c1"># Treat a single station string and a sequence of station strings the</span>
+    <span class="c1"># same way internally.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="n">station</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+
+    <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stations</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stations</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"station must contain at least one valid station ID."</span><span class="p">)</span>
+
+    <span class="c1"># dict preserves insertion order, giving us a simple ordered de-duplicate.</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">stations</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Normalize region input to a de-duplicated list."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">region_list</span> <span class="o">=</span> <span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">region_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+
+    <span class="n">region_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">region_list</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">region_list</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_discover_region_stations</span><span class="p">(</span><span class="n">regions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Discover all stations in one or more requested regional ASOS networks.</span>
+
+<span class="sd">    The AWOS network is also included so regional requests retain the behavior</span>
+<span class="sd">    of ACT's historical regional discovery.</span>
+<span class="sd">    """</span>
+    <span class="n">region_list</span> <span class="o">=</span> <span class="n">_normalize_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">region_list</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"regions must contain at least one region identifier."</span><span class="p">)</span>
+
+    <span class="c1"># Include the general AWOS network in addition to each regional ASOS</span>
+    <span class="c1"># network. This preserves stations that historically appeared in ACT's</span>
+    <span class="c1"># geographic searches but are not part of a state ASOS network.</span>
+    <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AWOS"</span><span class="p">]</span>
+    <span class="n">networks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_region_to_network</span><span class="p">(</span><span class="n">region</span><span class="p">)</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">region_list</span><span class="p">)</span>
+
+    <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Metadata requests are cached by _get_network_metadata(), so repeated</span>
+    <span class="c1"># calls for the same network during one Python session do not hit IEM again.</span>
+    <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">networks</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">jdict</span> <span class="o">=</span> <span class="n">_get_network_metadata</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Unable to retrieve IEM network metadata for </span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">jdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"features"</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"geometry"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"properties"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+
+            <span class="n">station_id</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sid"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">station_id</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Preserve the IEM station properties as dataset-level metadata.</span>
+            <span class="c1"># Latitude/longitude are added explicitly because they come from the</span>
+            <span class="c1"># GeoJSON geometry rather than the properties dictionary.</span>
+            <span class="n">station_metadata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"iem_network"</span><span class="p">:</span> <span class="n">network</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">station_metadata</span><span class="p">[</span><span class="s2">"site_latitude"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
+                <span class="n">station_metadata</span><span class="p">[</span><span class="s2">"site_longitude"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
+
+            <span class="n">station_metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
+
+            <span class="n">elevation</span> <span class="o">=</span> <span class="n">station_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"elevation"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">elevation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elevation</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">station_metadata</span><span class="p">[</span><span class="s2">"elevation"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">elevation</span><span class="p">)</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> meter"</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+            <span class="n">metadata</span><span class="p">[</span><span class="n">station_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">station_metadata</span>
+            <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">stations</span><span class="p">)),</span> <span class="n">metadata</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_chunk_stations</span><span class="p">(</span><span class="n">stations</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Yield station lists in fixed-size batches."""</span>
+    <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"batch_size must be greater than zero."</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stations</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">stations</span><span class="p">[</span><span class="n">index</span> <span class="p">:</span> <span class="n">index</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_discover_asos_stations</span><span class="p">(</span><span class="n">lat_range</span><span class="p">,</span> <span class="n">lon_range</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Discover stations inside a bounding box.</span>
+
+<span class="sd">    If ``regions`` is omitted, a single IEM global METAR/ASOS GeoJSON feed is</span>
+<span class="sd">    used. If regions are supplied, only the corresponding regional ASOS</span>
+<span class="sd">    networks (plus the AWOS network) are queried.</span>
+
+<span class="sd">    Network responses are cached for the lifetime of the Python process.</span>
+<span class="sd">    """</span>
+    <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span> <span class="o">=</span> <span class="n">lat_range</span>
+    <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span> <span class="o">=</span> <span class="n">lon_range</span>
+
+    <span class="k">if</span> <span class="n">lat_min</span> <span class="o">&gt;</span> <span class="n">lat_max</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"lat_range must be ordered as (min_latitude, max_latitude)."</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">lon_min</span> <span class="o">&gt;</span> <span class="n">lon_max</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"lon_range must be ordered as (min_longitude, max_longitude)."</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">regions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># No region was supplied, so use one global metadata request and do the</span>
+        <span class="c1"># bounding-box filtering locally. This replaces the older ACT behavior</span>
+        <span class="c1"># that queried many individual ASOS networks.</span>
+        <span class="c1">#</span>
+        <span class="c1"># AZOS is IEM's global METAR/ASOS station metadata feed. Using it</span>
+        <span class="c1"># avoids querying every individual state/country ASOS network.</span>
+        <span class="n">network_metadata</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"AZOS"</span><span class="p">,</span> <span class="n">_get_network_metadata</span><span class="p">(</span><span class="s2">"AZOS"</span><span class="p">))]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># If the caller already knows the relevant regions, query only those</span>
+        <span class="c1"># smaller network catalogs rather than the global catalog.</span>
+        <span class="n">region_list</span> <span class="o">=</span> <span class="n">_normalize_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">region_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"regions must contain at least one region identifier."</span><span class="p">)</span>
+
+        <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AWOS"</span><span class="p">]</span>
+        <span class="n">networks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_region_to_network</span><span class="p">(</span><span class="n">region</span><span class="p">)</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">region_list</span><span class="p">)</span>
+
+        <span class="n">network_metadata</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">networks</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">network_metadata</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">network</span><span class="p">,</span> <span class="n">_get_network_metadata</span><span class="p">(</span><span class="n">network</span><span class="p">)))</span>
+            <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Unable to retrieve IEM network metadata for "</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">network</span><span class="p">,</span> <span class="n">jdict</span> <span class="ow">in</span> <span class="n">network_metadata</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">jdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"features"</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"geometry"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="c1"># Station filtering happens locally after the metadata are</span>
+            <span class="c1"># downloaded; no additional IEM request is needed per station.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">lat_min</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">lat_max</span> <span class="ow">and</span> <span class="n">lon_min</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">lon_max</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">properties</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"properties"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">station_id</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sid"</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">station_id</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">station_metadata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"site_latitude"</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span>
+                <span class="s2">"site_longitude"</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span>
+                <span class="s2">"iem_network"</span><span class="p">:</span> <span class="n">network</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">station_metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
+
+            <span class="n">elevation</span> <span class="o">=</span> <span class="n">station_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"elevation"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">elevation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elevation</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">station_metadata</span><span class="p">[</span><span class="s2">"elevation"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">elevation</span><span class="p">)</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> meter"</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+            <span class="n">metadata</span><span class="p">[</span><span class="n">station_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">station_metadata</span>
+            <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">stations</span><span class="p">)),</span> <span class="n">metadata</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_region_to_network</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert a short region name to the corresponding ASOS network."""</span>
+    <span class="n">region</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">region</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"_ASOS"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">region</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s2">_ASOS"</span>
+
+
+<span class="c1"># Network station lists change infrequently compared with how often users may</span>
+<span class="c1"># call get_asos_data() in a notebook or analysis workflow. Cache them in memory</span>
+<span class="c1"># for the lifetime of the Python process.</span>
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_network_metadata</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Retrieve and cache IEM GeoJSON metadata for one network."""</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">IEM_BASE_URL</span><span class="si">}</span><span class="s2">/geojson/network/</span><span class="si">{</span><span class="n">network</span><span class="si">}</span><span class="s2">.geojson"</span>
+    <span class="k">return</span> <span class="n">_download_json</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_asos_url</span><span class="p">(</span><span class="n">stations</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build a batched IEM ASOS request URL."""</span>
+    <span class="c1"># Build the query as key/value pairs and let urllib handle escaping.</span>
+    <span class="c1"># Repeated "station" and "data" parameters are supported by the IEM API.</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">"tz"</span><span class="p">,</span> <span class="s2">"Etc/UTC"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"format"</span><span class="p">,</span> <span class="s2">"onlycomma"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"latlon"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"elev"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"sts"</span><span class="p">,</span> <span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%SZ"</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">"ets"</span><span class="p">,</span> <span class="n">end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%SZ"</span><span class="p">)),</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Preserve ACT's historical behavior by requesting every available</span>
+    <span class="c1"># variable unless the caller explicitly asks for a subset.</span>
+    <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"data"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"variables must contain at least one variable name."</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"data"</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span>
+
+    <span class="c1"># Add every station in the current batch to the same HTTP request.</span>
+    <span class="k">for</span> <span class="n">station_id</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"station"</span><span class="p">,</span> <span class="n">station_id</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">IEM_ASOS_URL</span><span class="si">}</span><span class="s2">?</span><span class="si">{</span><span class="n">urlencode</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_asos_response</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">requested_stations</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">start_time</span><span class="p">,</span>
+    <span class="n">end_time</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Parse one batched IEM CSV response into station-specific datasets."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"No ASOS data were returned by IEM."</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># "onlycomma" normally returns a standard CSV without the five comment</span>
+    <span class="c1"># lines used by the older IEM comma format.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="s2">"M"</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">EmptyDataError</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"No ASOS data were returned for the requested time period."</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"No ASOS data were returned for the requested time period."</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Some IEM formats may include comment/header lines. If the normal read did</span>
+    <span class="c1"># not produce the expected columns, fall back to the historic ACT behavior.</span>
+    <span class="k">if</span> <span class="s2">"station"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">"valid"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="s2">"M"</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">EmptyDataError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s2">"station"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">"valid"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Unexpected IEM ASOS response: required columns 'station' and "</span>
+            <span class="s2">"'valid' were not present."</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Convert IEM's UTC valid time to a timezone-naive datetime coordinate,</span>
+    <span class="c1"># matching the style used by the existing ACT discovery routines.</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">"valid"</span><span class="p">],</span>
+        <span class="n">errors</span><span class="o">=</span><span class="s2">"coerce"</span><span class="p">,</span>
+        <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">"time"</span><span class="p">])</span>
+
+    <span class="n">asos_ds</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># The response contains all stations in the batch. Grouping here converts</span>
+    <span class="c1"># that single network response back into ACT's dictionary-of-Datasets API.</span>
+    <span class="k">for</span> <span class="n">station_id</span><span class="p">,</span> <span class="n">station_df</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"station"</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">station_df</span> <span class="o">=</span> <span class="n">station_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">station_df</span> <span class="o">=</span> <span class="n">station_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"time"</span><span class="p">)</span>
+        <span class="n">station_df</span> <span class="o">=</span> <span class="n">station_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"valid"</span><span class="p">,</span> <span class="s2">"station"</span><span class="p">],</span>
+            <span class="n">errors</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">station_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">station_df</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
+
+        <span class="c1"># Geographic/region discovery already provides station metadata.</span>
+        <span class="c1"># Explicit station requests leave this empty and populate basic</span>
+        <span class="c1"># latitude/longitude/elevation attributes from the returned CSV below.</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">station_id</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"_datastream"</span><span class="p">]</span> <span class="o">=</span> <span class="n">station_id</span>
+
+        <span class="c1"># Populate metadata directly from returned observation columns when</span>
+        <span class="c1"># explicit station requests did not require a network metadata lookup.</span>
+        <span class="n">_populate_returned_station_metadata</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+        <span class="n">_set_asos_attributes</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+        <span class="n">asos_ds</span><span class="p">[</span><span class="n">station_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span>
+
+    <span class="c1"># IEM may know about a station that has no observations during the</span>
+    <span class="c1"># requested period. Report those stations without failing the whole batch.</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">station</span> <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">requested_stations</span> <span class="k">if</span> <span class="n">station</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">asos_ds</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">station_id</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"No data available at station </span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2"> between "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">start_time</span><span class="si">:</span><span class="s2">%Y-%m-%d %H:%M:%S</span><span class="si">}</span><span class="s2"> and "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">end_time</span><span class="si">:</span><span class="s2">%Y-%m-%d %H:%M:%S</span><span class="si">}</span><span class="s2">."</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">asos_ds</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_populate_returned_station_metadata</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Populate dataset attributes from lat/lon/elevation returned by IEM.</span>
+
+<span class="sd">    The data variables are retained because they may be useful to downstream</span>
+<span class="sd">    workflows, while representative values are also copied into attributes.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="s2">"lat"</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"lat"</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">_first_valid_scalar</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"lat"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"site_latitude"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"lon"</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"lon"</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">_first_valid_scalar</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"lon"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"site_longitude"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">elevation_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"elevation"</span><span class="p">,</span> <span class="s2">"elev"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">elevation_name</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="n">ds</span><span class="p">[</span><span class="n">elevation_name</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_first_valid_scalar</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">elevation_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"elevation"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> meter"</span><span class="p">)</span>
+                <span class="k">break</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_first_valid_scalar</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the first non-null scalar from an array-like object."""</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">array</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"item"</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_asos_attributes</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Set units, long names, and derived ASOS variables."""</span>
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"lon"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"Longitude"</span><span class="p">)</span>
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"lat"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"Latitude"</span><span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"tmpf"</span><span class="p">,</span> <span class="s2">"degrees Fahrenheit"</span><span class="p">,</span> <span class="s2">"Temperature in degrees Fahrenheit"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"tmpf"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="c1"># Keep the original Fahrenheit variable and add an ACT-friendly Celsius</span>
+        <span class="c1"># representation rather than replacing the source observation.</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"temp"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"tmpf"</span><span class="p">]</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">5.0</span> <span class="o">/</span> <span class="mf">9.0</span><span class="p">)</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"degrees Celsius"</span><span class="p">,</span> <span class="s2">"Temperature in degrees Celsius"</span><span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span>
+        <span class="n">ds</span><span class="p">,</span>
+        <span class="s2">"dwpf"</span><span class="p">,</span>
+        <span class="s2">"degrees Fahrenheit"</span><span class="p">,</span>
+        <span class="s2">"Dewpoint temperature in degrees Fahrenheit"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"dwpf"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"dwpc"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"dwpf"</span><span class="p">]</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">5.0</span> <span class="o">/</span> <span class="mf">9.0</span><span class="p">)</span>
+        <span class="n">_set_attrs</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">,</span>
+            <span class="s2">"dwpc"</span><span class="p">,</span>
+            <span class="s2">"degrees Celsius"</span><span class="p">,</span>
+            <span class="s2">"Dewpoint temperature in degrees Celsius"</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"relh"</span><span class="p">,</span> <span class="s2">"percent"</span><span class="p">,</span> <span class="s2">"Relative humidity"</span><span class="p">)</span>
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"drct"</span><span class="p">,</span> <span class="s2">"degrees"</span><span class="p">,</span> <span class="s2">"Wind direction"</span><span class="p">)</span>
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"sknt"</span><span class="p">,</span> <span class="s2">"knots"</span><span class="p">,</span> <span class="s2">"Wind speed in knots"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"sknt"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"spdms"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"sknt"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.514444</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"spdms"</span><span class="p">,</span> <span class="s2">"m s-1"</span><span class="p">,</span> <span class="s2">"Wind speed in meters per second"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"drct"</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="s2">"spdms"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="c1"># Meteorological wind direction is the direction FROM which the wind</span>
+        <span class="c1"># blows, hence the negative signs in the u/v conversion.</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"u"</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"drct"</span><span class="p">]))</span> <span class="o">*</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"spdms"</span><span class="p">]</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"u"</span><span class="p">,</span> <span class="s2">"m s-1"</span><span class="p">,</span> <span class="s2">"Zonal component of surface wind"</span><span class="p">)</span>
+
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"v"</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"drct"</span><span class="p">]))</span> <span class="o">*</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"spdms"</span><span class="p">]</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"v"</span><span class="p">,</span> <span class="s2">"m s-1"</span><span class="p">,</span> <span class="s2">"Meridional component of surface wind"</span><span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"mslp"</span><span class="p">,</span> <span class="s2">"mb"</span><span class="p">,</span> <span class="s2">"Mean Sea Level Pressure"</span><span class="p">)</span>
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"alti"</span><span class="p">,</span> <span class="s2">"in Hg"</span><span class="p">,</span> <span class="s2">"Atmospheric pressure in inches of Mercury"</span><span class="p">)</span>
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"vsby"</span><span class="p">,</span> <span class="s2">"mi"</span><span class="p">,</span> <span class="s2">"Visibility"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"vsby"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"vsbykm"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"vsby"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.60934</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"vsbykm"</span><span class="p">,</span> <span class="s2">"km"</span><span class="p">,</span> <span class="s2">"Visibility"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"gust"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"gust"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"gust"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.514444</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"gust"</span><span class="p">,</span> <span class="s2">"m s-1"</span><span class="p">,</span> <span class="s2">"Wind gust speed"</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">skyc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"skyc</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">skyl</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"skyl</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">"</span>
+
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">skyc</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Sky level </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2"> coverage"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">skyl</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">skyl</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">skyl</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3048</span>
+            <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">skyl</span><span class="p">,</span> <span class="s2">"meter"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Sky level </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2"> altitude"</span><span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"wxcodes"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"Weather code"</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">hours</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"ice_accretion_</span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s2">hr"</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">*</span> <span class="mf">2.54</span>
+            <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="s2">"cm"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s2"> hour ice accretion"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"peak_wind_gust"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"peak_wind_gust"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"peak_wind_gust"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.514444</span>
+        <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"peak_wind_gust"</span><span class="p">,</span> <span class="s2">"m s-1"</span><span class="p">,</span> <span class="s2">"Peak wind gust speed"</span><span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"peak_wind_drct"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"Peak wind gust direction"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">"peak_wind_drct"</span> <span class="ow">in</span> <span class="n">ds</span> <span class="ow">and</span> <span class="s2">"peak_wind_gust"</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"u_peak"</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"peak_wind_drct"</span><span class="p">]))</span> <span class="o">*</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"peak_wind_gust"</span><span class="p">]</span>
+        <span class="n">_set_attrs</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">,</span>
+            <span class="s2">"u_peak"</span><span class="p">,</span>
+            <span class="s2">"m s-1"</span><span class="p">,</span>
+            <span class="s2">"Zonal component of peak surface wind"</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"v_peak"</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"peak_wind_drct"</span><span class="p">]))</span> <span class="o">*</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"peak_wind_gust"</span><span class="p">]</span>
+        <span class="n">_set_attrs</span><span class="p">(</span>
+            <span class="n">ds</span><span class="p">,</span>
+            <span class="s2">"v_peak"</span><span class="p">,</span>
+            <span class="s2">"m s-1"</span><span class="p">,</span>
+            <span class="s2">"Meridional component of peak surface wind"</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">"metar"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"Raw METAR code"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">long_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Safely set variable attributes when the variable exists."""</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+
+    <span class="k">if</span> <span class="n">long_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"long_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">long_name</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_json</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Download and decode an IEM JSON response."""</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">_request_url</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_data</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Download ASOS CSV data."""</span>
+    <span class="k">return</span> <span class="n">_request_url</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">reject_error_response</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_request_url</span><span class="p">(</span>
+    <span class="n">uri</span><span class="p">,</span>
+    <span class="n">max_attempts</span><span class="o">=</span><span class="n">MAX_ATTEMPTS</span><span class="p">,</span>
+    <span class="n">initial_delay</span><span class="o">=</span><span class="n">INITIAL_RETRY_DELAY</span><span class="p">,</span>
+    <span class="n">max_delay</span><span class="o">=</span><span class="n">MAX_RETRY_DELAY</span><span class="p">,</span>
+    <span class="n">reject_error_response</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Download data from IEM with retry, exponential backoff, and jitter.</span>
+
+<span class="sd">    HTTP 429 responses honor the ``Retry-After`` header when supplied.</span>
+<span class="sd">    HTTP 5xx responses and temporary network errors are retried.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Identify ACT to the remote service rather than relying on Python's</span>
+    <span class="c1"># default urllib User-Agent.</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"User-Agent"</span><span class="p">:</span> <span class="n">USER_AGENT</span><span class="p">}</span>
+    <span class="n">last_exception</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_attempts</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">reject_error_response</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"ERROR"</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"IEM returned an empty or ERROR response."</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">data</span>
+
+        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
+            <span class="n">last_exception</span> <span class="o">=</span> <span class="n">exp</span>
+
+            <span class="c1"># Retry only failures that are likely to be temporary:</span>
+            <span class="c1">#   429       - IEM rate limit</span>
+            <span class="c1">#   500-599   - server-side errors</span>
+            <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="mi">429</span> <span class="ow">or</span> <span class="mi">500</span> <span class="o">&lt;=</span> <span class="n">exp</span><span class="o">.</span><span class="n">code</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="n">_retry_delay</span><span class="p">(</span>
+                    <span class="n">attempt</span><span class="o">=</span><span class="n">attempt</span><span class="p">,</span>
+                    <span class="n">retry_after</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Retry-After"</span><span class="p">),</span>
+                    <span class="n">initial_delay</span><span class="o">=</span><span class="n">initial_delay</span><span class="p">,</span>
+                    <span class="n">max_delay</span><span class="o">=</span><span class="n">max_delay</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_attempts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"IEM request returned HTTP </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">. "</span>
+                        <span class="sa">f</span><span class="s2">"Retrying in </span><span class="si">{</span><span class="n">delay</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds "</span>
+                        <span class="sa">f</span><span class="s2">"(attempt </span><span class="si">{</span><span class="n">attempt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_attempts</span><span class="si">}</span><span class="s2">)."</span><span class="p">,</span>
+                        <span class="ne">UserWarning</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="k">raise</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">URLError</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
+            <span class="n">last_exception</span> <span class="o">=</span> <span class="n">exp</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="n">_retry_delay</span><span class="p">(</span>
+                <span class="n">attempt</span><span class="o">=</span><span class="n">attempt</span><span class="p">,</span>
+                <span class="n">retry_after</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">initial_delay</span><span class="o">=</span><span class="n">initial_delay</span><span class="p">,</span>
+                <span class="n">max_delay</span><span class="o">=</span><span class="n">max_delay</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_attempts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"IEM request failed: </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">. "</span>
+                    <span class="sa">f</span><span class="s2">"Retrying in </span><span class="si">{</span><span class="n">delay</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds "</span>
+                    <span class="sa">f</span><span class="s2">"(attempt </span><span class="si">{</span><span class="n">attempt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_attempts</span><span class="si">}</span><span class="s2">)."</span><span class="p">,</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Unable to download IEM ASOS data after </span><span class="si">{</span><span class="n">max_attempts</span><span class="si">}</span><span class="s2"> attempts: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">last_exception</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_retry_delay</span><span class="p">(</span><span class="n">attempt</span><span class="p">,</span> <span class="n">retry_after</span><span class="p">,</span> <span class="n">initial_delay</span><span class="p">,</span> <span class="n">max_delay</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Calculate a retry delay using Retry-After or exponential backoff."""</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Prefer the server-provided Retry-After value when available.</span>
+    <span class="k">if</span> <span class="n">retry_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">retry_after</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Otherwise progressively increase the wait time after each failure.</span>
+    <span class="k">if</span> <span class="n">delay</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">initial_delay</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">attempt</span><span class="p">)</span>
+
+    <span class="n">delay</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">max_delay</span><span class="p">)</span>
+
+    <span class="c1"># Add jitter so multiple ACT clients that were throttled at the same time</span>
+    <span class="c1"># do not all retry again at exactly the same instant.</span>
+    <span class="n">delay</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">delay</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">delay</span>
 </pre></div>
 <div class="section ablog__blog_comments">
    
@@ -763,8 +1355,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -798,7 +1390,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

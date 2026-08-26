@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -42,10 +42,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/act-theme.css?v=e2ee527d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -667,6 +667,8 @@
 <li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_pbl_liu_liang.html">act.retrievals.calculate_pbl_liu_liang</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_precipitable_water.html">act.retrievals.calculate_precipitable_water</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_stability_indicies.html">act.retrievals.calculate_stability_indicies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_tucker_method_pbl.html">act.retrievals.calculate_tucker_method_pbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="act.retrievals.calculate_wavelet_pbl.html">act.retrievals.calculate_wavelet_pbl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.retrievals.compute_winds_from_ppi.html">act.retrievals.compute_winds_from_ppi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.retrievals.generic_sobel_cbh.html">act.retrievals.generic_sobel_cbh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="act.retrievals.process_sp2_psds.html">act.retrievals.process_sp2_psds</a></li>
@@ -798,33 +800,109 @@
 <h1>act.discovery.get_asos_data<a class="headerlink" href="#act-discovery-get-asos-data" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.discovery.get_asos_data">
-<span class="sig-prename descclassname"><span class="pre">act.discovery.</span></span><span class="sig-name descname"><span class="pre">get_asos_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/discovery/asos.html#get_asos_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.discovery.get_asos_data" title="Link to this definition">#</a></dt>
-<dd><p>Returns all of the station observations from the Iowa Mesonet from either
-a given latitude and longitude window or a given station code.</p>
+<span class="sig-prename descclassname"><span class="pre">act.discovery.</span></span><span class="sig-name descname"><span class="pre">get_asos_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/discovery/asos.html#get_asos_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.discovery.get_asos_data" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve ASOS observations from the Iowa Environmental Mesonet.</p>
+<p>Data can be requested either by station identifier, geographic bounds, or region.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_window</strong> (<em>tuple</em>) – A 2 member list or tuple containing the start and end times. The
-times must be python datetimes.</p></li>
-<li><p><strong>lat_range</strong> (<em>tuple</em>) – The latitude window to grab all of the ASOS observations from.</p></li>
-<li><p><strong>lon_range</strong> (<em>tuple</em>) – The longitude window to grab all of the ASOS observations from.</p></li>
-<li><p><strong>station</strong> (<em>str</em>) – The station ID to grab the ASOS observations from.</p></li>
-<li><p><strong>regions</strong> (<em>str</em>) – Region that the ASOS is in.  For Alabama, it would be AL
-For more than one region add it to the string with spaces between ‘AL MN’</p></li>
+<li><p><strong>time_window</strong> (<em>tuple</em>) – Two-member sequence containing the start and end times as Python
+<code class="docutils literal notranslate"><span class="pre">datetime</span></code> objects.</p></li>
+<li><p><strong>lat_range</strong> (<em>tuple, optional</em>) – Latitude range <code class="docutils literal notranslate"><span class="pre">(min_latitude,</span> <span class="pre">max_latitude)</span></code> used to discover ASOS
+stations.</p></li>
+<li><p><strong>lon_range</strong> (<em>tuple, optional</em>) – Longitude range <code class="docutils literal notranslate"><span class="pre">(min_longitude,</span> <span class="pre">max_longitude)</span></code> used to discover
+ASOS stations.</p></li>
+<li><p><strong>station</strong> (<em>str or sequence of str, optional</em>) – One station identifier or a sequence of station identifiers.
+Examples: <code class="docutils literal notranslate"><span class="pre">&quot;ORD&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">[&quot;ORD&quot;,</span> <span class="pre">&quot;MDW&quot;,</span> <span class="pre">&quot;DPA&quot;]</span></code>.</p></li>
+<li><p><strong>regions</strong> (<em>str or sequence of str, optional</em>) – Region/network identifiers. Examples: <code class="docutils literal notranslate"><span class="pre">&quot;IL&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">[&quot;IL&quot;,</span> <span class="pre">&quot;WI&quot;,</span> <span class="pre">&quot;IN&quot;]</span></code>. Regions can be used alone to retrieve all
+stations in the requested region(s), or together with latitude and
+longitude bounds to narrow geographic station discovery.</p></li>
+<li><p><strong>variables</strong> (<em>sequence of str, optional</em>) – IEM ASOS variables to request. If omitted, <code class="docutils literal notranslate"><span class="pre">data=all</span></code> is used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>asos_ds</strong> (<em>dict of xarray.Datasets</em>) – A dictionary of ACT datasets whose keys are the ASOS station IDs.</p>
+<dd class="field-even"><p><strong>asos_ds</strong> (<em>dict of xarray.Dataset</em>) – Dictionary keyed by ASOS station identifier.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>If you want to obtain timeseries of ASOS observations for Chicago O’Hare
-Airport, simply do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ time_window = [datetime(2020, 2, 4, 2, 0), datetime(2020, 2, 10, 10, 0)]
-$ station = "KORD"
-$ my_asoses = act.discovery.get_asos(time_window, station="ORD")
+<p>Retrieve data for a single ASOS station.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
+
+<span class="n">time_window</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">station</span><span class="o">=</span><span class="s2">"ORD"</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
+<p>Retrieve multiple ASOS stations in a single request.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">station</span><span class="o">=</span><span class="p">[</span><span class="s2">"ORD"</span><span class="p">,</span> <span class="s2">"MDW"</span><span class="p">,</span> <span class="s2">"DPA"</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve all available ASOS stations within a latitude and longitude
+bounding box.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="mf">41.3</span><span class="p">,</span> <span class="mf">42.3</span><span class="p">)</span>
+<span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">88.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">87.1</span><span class="p">)</span>
+
+<span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">lat_range</span><span class="o">=</span><span class="n">lat_range</span><span class="p">,</span>
+    <span class="n">lon_range</span><span class="o">=</span><span class="n">lon_range</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve all available ASOS stations from a region.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">regions</span><span class="o">=</span><span class="s2">"IL"</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Multiple regions can also be requested.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">"IL"</span><span class="p">,</span> <span class="s2">"IN"</span><span class="p">,</span> <span class="s2">"WI"</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Limit the request to selected ASOS variables.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">station</span><span class="o">=</span><span class="s2">"ORD"</span><span class="p">,</span>
+    <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"tmpf"</span><span class="p">,</span> <span class="s2">"dwpf"</span><span class="p">,</span> <span class="s2">"relh"</span><span class="p">,</span> <span class="s2">"drct"</span><span class="p">,</span> <span class="s2">"sknt"</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Regions can optionally be combined with a geographic bounding box to
+limit station discovery to selected IEM networks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">asos</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_asos_data</span><span class="p">(</span>
+    <span class="n">time_window</span><span class="p">,</span>
+    <span class="n">lat_range</span><span class="o">=</span><span class="n">lat_range</span><span class="p">,</span>
+    <span class="n">lon_range</span><span class="o">=</span><span class="n">lon_range</span><span class="p">,</span>
+    <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">"IL"</span><span class="p">,</span> <span class="s2">"IN"</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>Explicit station requests do not require metadata-network lookups. Latitude,
+longitude, and elevation are requested directly from the ASOS endpoint.</p>
+<p>Geographic requests do not require <code class="docutils literal notranslate"><span class="pre">regions</span></code>. When <code class="docutils literal notranslate"><span class="pre">regions</span></code> is not
+supplied, ACT uses a single global IEM METAR/ASOS metadata request and
+filters stations by latitude/longitude. Supplying <code class="docutils literal notranslate"><span class="pre">regions</span></code> alone
+retrieves all stations in those regional networks. Large station sets are
+automatically split into smaller batched ASOS requests.</p>
+<p>Code was updated using ChatGPT following testing and feedback from the
+developer.  Code was reviewed and tested by the developer before the PR.</p>
 </dd></dl>
 
 </section>
@@ -905,8 +983,8 @@ $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -940,7 +1018,7 @@ $ my_asoses = act.discovery.get_asos(time_window, station="ORD")
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

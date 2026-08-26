@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
@@ -41,10 +41,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=e2ee527d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -447,8 +447,21 @@
 <span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_peaks</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pywt</span>
+
+    <span class="n">PYWAVELETS_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">PYWAVELETS_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">statsmodels.tsa.stattools</span><span class="w"> </span><span class="kn">import</span> <span class="n">acf</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">acf</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="calculate_gradient_pbl">
@@ -634,6 +647,295 @@
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
+
+
+<div class="viewcode-block" id="calculate_wavelet_pbl">
+<a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_wavelet_pbl.html#act.retrievals.calculate_wavelet_pbl">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_wavelet_pbl</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s1">'wind_speed'</span><span class="p">,</span>
+    <span class="n">range_name</span><span class="o">=</span><span class="s1">'height'</span><span class="p">,</span>
+    <span class="n">scale</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">continuity_window</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">min_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">max_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Estimation of the Planetary Boundary Layer (PBL) height from a ceilometer</span>
+<span class="sd">    or Doppler lidar through a Haar wavelet covariance transform. The dataset</span>
+<span class="sd">    is averaged into 5-minute periods, and each vertical profile is decomposed</span>
+<span class="sd">    with a Haar wavelet. The PBL height at each time is taken to be the range</span>
+<span class="sd">    at which the wavelet approximation coefficients show their sharpest</span>
+<span class="sd">    transition. A continuity check then replaces PBL height estimates that</span>
+<span class="sd">    jump more than 150 m above their neighbors with the local baseline.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    This retrieval method should be applied under a cloud-free, well-mixed PBL condition.</span>
+
+<span class="sd">    It is not expected perform well in cloud capped boundary layers.</span>
+<span class="sd">    Additional PRs will be included within the near future to address more PBL</span>
+<span class="sd">    environmental conditions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset containing the zenith-pointing ceilometer or Doppler lidar data.</span>
+<span class="sd">    var_name : str</span>
+<span class="sd">        Variable in the dataset to compute the wavelet transform on (e.g.,</span>
+<span class="sd">        backscatter intensity or vertical velocity).</span>
+<span class="sd">    range_name : str</span>
+<span class="sd">        Name of the range/height coordinate in the dataset.</span>
+<span class="sd">    scale : float</span>
+<span class="sd">        Approximate spatial scale, in the same units as range_name, over which</span>
+<span class="sd">        the Haar wavelet decomposition is performed. This sets the decomposition level.</span>
+<span class="sd">    continuity_window : int</span>
+<span class="sd">        Number of neighboring time steps on each side of a given time to</span>
+<span class="sd">        average over when checking for, and smoothing out, discontinuous PBL</span>
+<span class="sd">        height estimates.</span>
+<span class="sd">    min_height : float</span>
+<span class="sd">        Minimum allowed PBL height in the units of range_name. Excludes</span>
+<span class="sd">        near-surface noise from the search for the sharpest transition.</span>
+<span class="sd">    max_height : float or None</span>
+<span class="sd">        Maximum allowed PBL height in the units of range_name. Use this to</span>
+<span class="sd">        exclude elevated cloud or aerosol layers above the PBL from the</span>
+<span class="sd">        search. If None, no upper bound is applied.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset resampled to 5-minute periods with new variables</span>
+<span class="sd">        `wavelet_backscatter`, containing the Haar wavelet approximation</span>
+<span class="sd">        coefficients, and `pbl_wavelet`, containing the estimated PBL heights.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Brooks, I. M. (2003). Finding boundary layer top using</span>
+<span class="sd">        wavelet covariance transform. Journal of Atmospheric and Oceanic</span>
+<span class="sd">        Technology, 20(8), 1092-1105.</span>
+<span class="sd">        https://doi.org/10.1175/1520-0426(2003)20%3C1092:FBLTUB%3E2.0.CO;2</span>
+
+<span class="sd">    Cohn, S. A., &amp; Angevine, W. M. (2000). Boundary layer height and</span>
+<span class="sd">        entrainment zone thickness measured by lidars and wind-profiling</span>
+<span class="sd">        radars. Journal of Applied Meteorology, 39(8), 1233-1247.</span>
+<span class="sd">        https://doi.org/10.1175/1520-0450(2000)039%3C1233:BLHAEZ%3E2.0.CO;2</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">PYWAVELETS_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">'PyWavelets needs to be installed to use this feature.'</span><span class="p">)</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">'5min'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">range_resolution</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">range_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ds</span><span class="p">[</span><span class="n">range_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">scale</span> <span class="o">/</span> <span class="n">range_resolution</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="s1">'haar'</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">cA</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">resampled_range</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">range_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span> <span class="mi">2</span><span class="o">**</span><span class="n">level</span><span class="p">]</span>
+    <span class="n">resampled_time</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'resampled_range'</span><span class="p">]</span> <span class="o">=</span> <span class="n">resampled_range</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'resampled_time'</span><span class="p">]</span> <span class="o">=</span> <span class="n">resampled_time</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">([</span><span class="s1">'resampled_range'</span><span class="p">,</span> <span class="s1">'resampled_time'</span><span class="p">])</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'wavelet_backscatter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s1">'resampled_time'</span><span class="p">,</span> <span class="s1">'resampled_range'</span><span class="p">),</span> <span class="n">cA</span><span class="p">)</span>
+
+    <span class="n">range_mask</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resampled_range</span> <span class="o">&gt;=</span> <span class="n">min_height</span>
+    <span class="k">if</span> <span class="n">max_height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">range_mask</span> <span class="o">=</span> <span class="n">range_mask</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">resampled_range</span> <span class="o">&lt;=</span> <span class="n">max_height</span><span class="p">)</span>
+    <span class="n">wavelet_valid</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">wavelet_backscatter</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">range_mask</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">max_gradient</span> <span class="o">=</span> <span class="n">wavelet_valid</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="s1">'resampled_range'</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s1">'resampled_range'</span><span class="p">)</span>
+    <span class="n">pbl_heights</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">resampled_time</span><span class="p">)):</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">wavelet_valid</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">resampled_time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pbl_height</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">profile</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="s1">'resampled_range'</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_gradient</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">resampled_time</span><span class="o">=</span><span class="n">t</span><span class="p">),</span>
+                <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">resampled_range</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">pbl_height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pbl_height</span><span class="p">)</span>
+
+    <span class="n">pbl_heights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">continuity_window</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">)</span> <span class="o">-</span> <span class="n">continuity_window</span><span class="p">):</span>
+        <span class="n">neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">pbl_heights</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">continuity_window</span> <span class="p">:</span> <span class="n">i</span><span class="p">],</span>
+                <span class="n">pbl_heights</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">continuity_window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">baseline</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pbl_heights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">baseline</span> <span class="o">+</span> <span class="mi">150</span><span class="p">:</span>
+            <span class="n">pbl_heights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">baseline</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_wavelet'</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s1">'resampled_time'</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_wavelet'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+        <span class="s1">'description'</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s1">'Planetary Boundary Layer Estimate via Haar wavelet covariance transform'</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_wavelet'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'input_parameter'</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">range_name</span><span class="p">],</span> <span class="s1">'units'</span><span class="p">):</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_wavelet'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">range_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_wavelet'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'meters'</span>
+
+    <span class="k">return</span> <span class="n">ds</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_tucker_method_pbl">
+<a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_tucker_method_pbl.html#act.retrievals.calculate_tucker_method_pbl">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_tucker_method_pbl</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">velocity</span><span class="o">=</span><span class="s2">"radial_velocity"</span><span class="p">,</span>
+    <span class="n">dis_parm</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span>
+    <span class="n">interval</span><span class="o">=</span><span class="s2">"30min"</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>
+    <span class="n">noise_variance_threshold</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">min_gate_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Estimation of the Planetary Boundary Layer (PBL) height from Doppler lidar</span>
+<span class="sd">    radial velocity using the turbulence component of the Tucker et al. (2009)</span>
+<span class="sd">    method.</span>
+
+<span class="sd">    For each averaging interval and range gate, the lag-1 autocorrelation of</span>
+<span class="sd">    the radial velocity is used to separate the raw velocity variance into an</span>
+<span class="sd">    atmospheric (turbulent) component and an instrument noise component.</span>
+<span class="sd">    Since instrument noise is uncorrelated in time, it inflates the lag-0</span>
+<span class="sd">    variance but not the lag-1 autocorrelation, so the noise variance is</span>
+<span class="sd">    estimated as (1 - lag-1 autocorrelation) times the raw variance, and the</span>
+<span class="sd">    remainder is attributed to atmospheric turbulence.</span>
+
+<span class="sd">    The PBL height for each interval is identified by scanning upward from</span>
+<span class="sd">    the surface for the first run of n_layers consecutive range gates whose</span>
+<span class="sd">    atmospheric variance exceeds threshold; the PBL height is reported as the</span>
+<span class="sd">    height of the n-th (last) gate in that run.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    This is a simplified implementation of the turbulence component of the</span>
+<span class="sd">    Tucker et al. (2009) method and does not incorporate the shear or</span>
+<span class="sd">    aerosol backscatter components described in the original paper.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Tucker, S. C., et al. (2009), Doppler Lidar Estimation of Mixing Height</span>
+<span class="sd">    Using Turbulence, Shear, and Aerosol Backscatter Data, J. Atmos. Oceanic</span>
+<span class="sd">    Technol., 26, 673-688.</span>
+
+<span class="sd">    Newsom, RK, and Krishnamurthy, Raglavendra. Doppler Lidar (DL) Instrument Handbook.</span>
+<span class="sd">    United States: N. p., 2022. Web. doi:10.2172/1034640.</span>
+
+<span class="sd">    Jackson, R., O’Brien, J., Wang, J., Fytanidis, D., Muradyan, P.,</span>
+<span class="sd">    Grover, M., Raut, B., Collis, S., Tuftedal, M., Anderson, G., Wagner, T. J.,</span>
+<span class="sd">    Nesbitt, S., Tan. H., Wefer, D., &amp; Hammond, M. (2025), The thermodynamic</span>
+<span class="sd">    and kinematic structure of the planetary boundary</span>
+<span class="sd">    layer for a summer lake breeze day in Chicago. Journal of Geophysical</span>
+<span class="sd">    Research: Atmospheres, accepted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset containing the radial velocity variable.</span>
+<span class="sd">    velocity : str</span>
+<span class="sd">        Name of the radial (vertical) velocity variable in ds. Units should be m/s.</span>
+<span class="sd">    dis_parm : str</span>
+<span class="sd">        Name of the height/range coordinate in ds.</span>
+<span class="sd">    interval : str</span>
+<span class="sd">        Averaging interval, as a pandas offset alias (e.g. "10min"), over</span>
+<span class="sd">        which the velocity variance and autocorrelation are computed.</span>
+<span class="sd">    threshold : float</span>
+<span class="sd">        Atmospheric (turbulent) variance threshold, in the same units as</span>
+<span class="sd">        velocity squared, above which a range gate is considered part of</span>
+<span class="sd">        the turbulently mixed layer.</span>
+<span class="sd">    noise_variance_threshold : float</span>
+<span class="sd">        Instrument noise variance threshold, in the same units as velocity squared, above which a range gate is considered to have sufficient</span>
+<span class="sd">        signal-to-noise ratio to be included in the PBL height determination.</span>
+<span class="sd">        The default value of 0.2 is based on the typical noise characteristics of the ARM Doppler lidars, but may need to be adjusted for other instruments.</span>
+<span class="sd">    min_gate_height : float</span>
+<span class="sd">        Minimum height of the range gate to be considered for PBL height determination.</span>
+<span class="sd">        This is to avoid surface noise and spurious low-level signals. The default value is 100 meters.</span>
+<span class="sd">        Original dataset with the following variables added:</span>
+<span class="sd">        pbl_tucker : PBL height for each averaging interval.</span>
+<span class="sd">        tucker_atmospheric_variance : Atmospheric variance profile for each</span>
+<span class="sd">            averaging interval and range gate.</span>
+<span class="sd">        tucker_noise_variance : Instrument noise variance profile for each</span>
+<span class="sd">            averaging interval and range gate.</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">acf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"statsmodels is required for the Tucker method but is not installed."</span><span class="p">)</span>
+
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">velocity</span><span class="p">]</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">n_heights</span> <span class="o">=</span> <span class="n">height</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">interval_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pbl_heights</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">noise_variance</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">atmos_variance</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">interval_start</span><span class="p">,</span> <span class="n">velocity_interval</span> <span class="ow">in</span> <span class="n">vel</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">interval</span><span class="p">):</span>
+        <span class="n">vel_interval</span> <span class="o">=</span> <span class="n">velocity_interval</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">"time"</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
+
+        <span class="n">noise_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_heights</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">atmos_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_heights</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_heights</span><span class="p">):</span>
+            <span class="n">series</span> <span class="o">=</span> <span class="n">vel_interval</span><span class="o">.</span><span class="n">isel</span><span class="p">({</span><span class="n">dis_parm</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">"time"</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">total_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+            <span class="n">acf_values</span> <span class="o">=</span> <span class="n">acf</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">nlags</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">noise_var</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">acf_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">acf_values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">total_var</span>
+            <span class="n">atmos_var</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_var</span> <span class="o">-</span> <span class="n">noise_var</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># PBL height is the height of the n-th consecutive range gate,</span>
+        <span class="c1"># counted from the surface, whose atmospheric variance exceeds</span>
+        <span class="c1"># threshold</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">atmos_var</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">noise_var</span> <span class="o">&lt;</span> <span class="n">noise_variance_threshold</span><span class="p">)</span>
+        <span class="n">height_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">height</span> <span class="o">&gt;</span> <span class="n">min_gate_height</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">height_inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:]</span>
+        <span class="n">match_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">match_inds</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pbl_height</span> <span class="o">=</span> <span class="n">height</span><span class="p">[</span><span class="n">height_inds</span><span class="p">][</span><span class="n">match_inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pbl_height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">interval_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interval_start</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pbl_height</span><span class="p">)</span>
+        <span class="n">noise_variance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">noise_var</span><span class="p">)</span>
+        <span class="n">atmos_variance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atmos_var</span><span class="p">)</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span><span class="n">pbl_time</span><span class="o">=</span><span class="p">(</span><span class="s2">"pbl_time"</span><span class="p">,</span> <span class="n">interval_times</span><span class="p">))</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+        <span class="n">pbl_tucker</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">"pbl_time"</span><span class="p">),</span>
+        <span class="n">tucker_noise_variance</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">noise_variance</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">"pbl_time"</span><span class="p">,</span> <span class="n">dis_parm</span><span class="p">)),</span>
+        <span class="n">tucker_atmospheric_variance</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">atmos_variance</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">"pbl_time"</span><span class="p">,</span> <span class="n">dis_parm</span><span class="p">)),</span>
+    <span class="p">)</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"pbl_tucker"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
+        <span class="s2">"description"</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">"Planetary Boundary Layer Estimate via the Tucker et al. (2009) turbulence method"</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"pbl_tucker"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"input_parameter"</span><span class="p">]</span> <span class="o">=</span> <span class="n">velocity</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"pbl_tucker"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"variance_threshold"</span><span class="p">]</span> <span class="o">=</span> <span class="n">threshold</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">],</span> <span class="s2">"units"</span><span class="p">):</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"pbl_tucker"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">"pbl_tucker"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"meters"</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"tucker_noise_variance"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"Instrument noise velocity variance estimated from the lag-1 "</span>
+        <span class="s2">"autocorrelation of radial velocity"</span>
+    <span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"tucker_noise_variance"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m^2/s^2'</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"tucker_atmospheric_variance"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"Atmospheric (turbulent) velocity variance estimated from the lag-1 "</span>
+        <span class="s2">"autocorrelation of radial velocity"</span>
+    <span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s2">"tucker_atmospheric_variance"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m^2/s^2'</span>
+
+    <span class="k">return</span> <span class="n">ds</span></div>
+
 </pre></div>
 <div class="section ablog__blog_comments">
    
@@ -666,8 +968,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -701,7 +1003,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
