@@ -449,7 +449,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_peaks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">least_squares</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">argrelextrema</span><span class="p">,</span> <span class="n">find_peaks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pywt</span>
@@ -933,6 +935,371 @@
         <span class="s2">"autocorrelation of radial velocity"</span>
     <span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="s2">"tucker_atmospheric_variance"</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'m^2/s^2'</span>
+
+    <span class="k">return</span> <span class="n">ds</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_profile_fit_pbl">
+<a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_profile_fit_pbl.html#act.retrievals.calculate_profile_fit_pbl">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_profile_fit_pbl</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">parm</span><span class="o">=</span><span class="s2">"beta_att"</span><span class="p">,</span>
+    <span class="n">dis_parm</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span>
+    <span class="n">fit_min_height</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+    <span class="n">fit_max_height</span><span class="o">=</span><span class="mf">2500.0</span><span class="p">,</span>
+    <span class="n">time_average</span><span class="o">=</span><span class="s1">'30min'</span><span class="p">,</span>
+    <span class="n">allow_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Estimation of the Planetary Boundary Layer (PBL) height from a LIDAR</span>
+<span class="sd">    through fitting a backscatter profile to an idealized profile via an error function.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    This retrieval method should be applied under a cloud-free, well-mixed PBL condition.</span>
+<span class="sd">    It is not expected perform well in cloud capped boundary layers.</span>
+
+<span class="sd">    It is expected to perform better than the gradient method in cases where</span>
+<span class="sd">    the mixed-layer has not yet fully developed or is beginning to collapse.</span>
+
+<span class="sd">    Retrieval should be applied prior to applying corrections to the backscatter</span>
+<span class="sd">    profile.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset containing the zenith-pointing remote sensing data.</span>
+<span class="sd">    parm : str</span>
+<span class="sd">        Variable in the dataset to calculate the profile fit from</span>
+<span class="sd">        (e.g., attenuated backscatter).</span>
+<span class="sd">    dis_parm : str</span>
+<span class="sd">        Name of the height/range coordinate in ds.</span>
+<span class="sd">    fit_min_height : float</span>
+<span class="sd">        Minimum height in meters to consider for fitting the profile.</span>
+<span class="sd">    fit_max_height : float</span>
+<span class="sd">        Maximum height in meters to consider for fitting the profile.</span>
+<span class="sd">    time_average : str</span>
+<span class="sd">        Time averaging interval for the backscatter profile before fitting.</span>
+<span class="sd">    allow_elevated : bool</span>
+<span class="sd">        Whether to allow fitting with an elevated aerosol layer above the mixed layer.</span>
+<span class="sd">        Determines which idealized profile function is used for fitting.</span>
+
+<span class="sd">    Calls</span>
+<span class="sd">    -----</span>
+<span class="sd">    idealized_profile : function</span>
+<span class="sd">        Idealized backscatter profile function based on an error function.</span>
+<span class="sd">    idealized_twolayer_profile : function</span>
+<span class="sd">        Idealized backscatter profile function with an additional Gaussian</span>
+<span class="sd">        distribution to handle an elevated aerosol layer above the mixed layer.</span>
+<span class="sd">    find_elevated_layer : function</span>
+<span class="sd">        Detects the clean air layer above the mixed layer and below the elevated</span>
+<span class="sd">        aerosol layer to trigger single or two layer idealized profile fitting.</span>
+<span class="sd">    smooth_profile : function</span>
+<span class="sd">        Vertical averaging that expands with height to account for decreasing</span>
+<span class="sd">        vertical resolution of the lidar with height.</span>
+<span class="sd">    fit_profile : function</span>
+<span class="sd">        Fits the idealized profile to the backscatter profile using least</span>
+<span class="sd">        squares optimization.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset with a new variable `pbl_profile_fit` containing PBL heights at</span>
+<span class="sd">        the specified time average.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Steyn, D. G., M. Baldi, and R. M. Hoff, 1999: The Detection of Mixed Layer</span>
+<span class="sd">    Depth and Entrainment Zone Thickness from Lidar Backscatter Profiles.</span>
+<span class="sd">    J. Atmos. Oceanic Technol., 16, 953–959,</span>
+<span class="sd">    https://doi.org/10.1175/1520-0426(1999)016&lt;0953:TDOMLD&gt;2.0.CO;2.</span>
+
+<span class="sd">    Sawyer, V., and Z. Li, 2013: Detection, variations and intercomparison of</span>
+<span class="sd">    the planetary boundary layer depth from radiosonde, lidar and infrared</span>
+<span class="sd">    spectrometer. *Atmos. Environ.*, **79**, 518–528,</span>
+<span class="sd">    https://doi.org/10.1016/j.atmosenv.2013.07.019.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">idealized_profile</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">backs_mix</span><span class="p">,</span> <span class="n">backs_free</span><span class="p">,</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Idealized backscatter profile function based on an error function.</span>
+<span class="sd">        (Steyn, Baldi and Hoff (1999), Equaiton 1)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : array-like</span>
+<span class="sd">            Height coordinate.</span>
+<span class="sd">        backs_mix : float</span>
+<span class="sd">            Backscatter value in the mixed layer.</span>
+<span class="sd">        backs_free : float</span>
+<span class="sd">            Backscatter value in the free troposphere.</span>
+<span class="sd">        z_mix : float</span>
+<span class="sd">            Estimated PBL height (inversion height).</span>
+<span class="sd">        s : float</span>
+<span class="sd">            Depth of the entrainment zone in meters,</span>
+<span class="sd">            which controls the smoothness of the transition between</span>
+<span class="sd">            the mixed layer and free troposphere.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array-like</span>
+<span class="sd">            Idealized backscatter profile.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">backs_mix</span> <span class="o">+</span> <span class="n">backs_free</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">backs_mix</span> <span class="o">-</span> <span class="n">backs_free</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">erf</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_mix</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">idealized_twolayer_profile</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">backs_mix</span><span class="p">,</span> <span class="n">backs_free</span><span class="p">,</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">elev_floor</span><span class="p">,</span> <span class="n">z_elev</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Steyn, Baldi and Hoff (1999) Equation 1 with an additional</span>
+<span class="sd">        Gaussian distribution to explicitly handle an elevated aerosol layer</span>
+<span class="sd">        above the mixed layer.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : array-like</span>
+<span class="sd">            Height coordinate.</span>
+<span class="sd">        backs_mix : float</span>
+<span class="sd">            Backscatter value in the mixed layer.</span>
+<span class="sd">        backs_free : float</span>
+<span class="sd">            Backscatter value in the free troposphere.</span>
+<span class="sd">        z_mix : float</span>
+<span class="sd">            Estimated PBL height (inversion height).</span>
+<span class="sd">        s : float</span>
+<span class="sd">            Depth of the entrainment zone in meters</span>
+<span class="sd">        elev_floor : float</span>
+<span class="sd">             Peak Height of the Gaussian that represents the elevated mixed layer.</span>
+<span class="sd">        z_elev : float</span>
+<span class="sd">            Estimated height of the elevated mixed layer.</span>
+<span class="sd">        sigma : float</span>
+<span class="sd">            Standard deviation of the Gaussian distribution representing</span>
+<span class="sd">            the elevated aerosol layer.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">idealized_profile</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">backs_mix</span><span class="p">,</span> <span class="n">backs_free</span><span class="p">,</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">elev_floor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+            <span class="o">-</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_elev</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_elevated_layer</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Detect the clean air layer above the mixed layer</span>
+<span class="sd">        and below the elevated aerosol layer to trigger single or two layer</span>
+<span class="sd">        idealized profile fitting.</span>
+
+<span class="sd">        If montonically decreasing backscatter is detected,</span>
+<span class="sd">        then a single layer fit is performed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        profile : array-like</span>
+<span class="sd">            Backscatter profile.</span>
+<span class="sd">        z : array-like</span>
+<span class="sd">            Height coordinate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        z_slot, z_bump : float</span>
+<span class="sd">            min and max heights of the clean air layer above the mixed-layer,</span>
+<span class="sd">            respectively.</span>
+<span class="sd">        """</span>
+        <span class="c1"># Locate the clean slot and the elevated maximum above it, if the profile has them.</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">argrelextrema</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">12</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">z</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="mi">300</span><span class="p">]</span>
+        <span class="n">maxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">argrelextrema</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">12</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">z</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="mi">500</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mins</span> <span class="ow">and</span> <span class="n">maxs</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">mx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">z</span><span class="p">[</span><span class="n">mn</span><span class="p">]</span> <span class="k">for</span> <span class="n">mn</span> <span class="ow">in</span> <span class="n">mins</span> <span class="k">for</span> <span class="n">mx</span> <span class="ow">in</span> <span class="n">maxs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">z</span><span class="p">[</span><span class="n">mins</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">z</span><span class="p">[</span><span class="n">maxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">smooth_profile</span><span class="p">(</span><span class="n">profiles</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">min_havg</span><span class="o">=</span><span class="mf">80.0</span><span class="p">,</span> <span class="n">max_havg</span><span class="o">=</span><span class="mf">360.0</span><span class="p">,</span> <span class="n">thresh_havg</span><span class="o">=</span><span class="mf">1500.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Vertical Averaging that expands with height to account</span>
+<span class="sd">        for decreasing vertical resolution of the lidar with height.</span>
+
+<span class="sd">        Critical for the standard deviation of the backscatter</span>
+<span class="sd">        profile to be meaningful for the least squares fitting.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        profile : array-like</span>
+<span class="sd">            Backscatter profile.</span>
+<span class="sd">        z : array-like</span>
+<span class="sd">            Height coordinate.</span>
+<span class="sd">        min_havg : float</span>
+<span class="sd">            Minimum averaging height in meters.</span>
+<span class="sd">        max_havg : float</span>
+<span class="sd">            Maximum averaging height in meters.</span>
+<span class="sd">        thresh_havg : float</span>
+<span class="sd">            Height threshold in meters where the averaging height</span>
+<span class="sd">            transitions from min_havg to max_havg.</span>
+<span class="sd">        """</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">min_havg</span> <span class="o">+</span> <span class="p">(</span><span class="n">max_havg</span> <span class="o">-</span> <span class="n">min_havg</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">z</span> <span class="o">/</span> <span class="n">thresh_havg</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">smooth_window</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">z</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">width</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">smooth_window</span> <span class="o">/=</span> <span class="n">smooth_window</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">valid_pro</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">num</span><span class="p">,</span> <span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span> <span class="o">@</span> <span class="n">smooth_window</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">valid_pro</span> <span class="o">@</span> <span class="n">smooth_window</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">den</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">num</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">den</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">den</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_profile</span><span class="p">(</span>
+        <span class="n">profile</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">min_snr</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="n">fit_max_height</span><span class="p">,</span> <span class="n">allow_elevated</span><span class="o">=</span><span class="n">allow_elevated</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Fit the idealized profile to the backscatter profile using least squares optimization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        profile : array-like</span>
+<span class="sd">            Backscatter profile.</span>
+<span class="sd">        z : array-like</span>
+<span class="sd">            Height coordinate.</span>
+<span class="sd">        min_snr : float</span>
+<span class="sd">            Minimum signal-to-noise ratio for valid fitting.</span>
+<span class="sd">        allow_elevated : bool</span>
+<span class="sd">            Whether to allow fitting with an elevated aerosol layer.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Fitted parameters including PBL height and other relevant metrics.</span>
+<span class="sd">        """</span>
+        <span class="c1"># Determine the valid data points for fitting</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">valid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Check for the elevated aerosol layer above mixed layer</span>
+        <span class="k">if</span> <span class="n">allow_elevated</span><span class="p">:</span>
+            <span class="n">z_slot</span><span class="p">,</span> <span class="n">z_bump</span> <span class="o">=</span> <span class="n">find_elevated_layer</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">z_slot</span><span class="p">,</span> <span class="n">z_bump</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Single Layer Fit:</span>
+        <span class="c1"># If no elevated layer is detected, fit the idealized profile</span>
+        <span class="c1">#   to the backscatter profile</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">z_slot</span><span class="p">):</span>
+            <span class="c1"># Define the initial guess for the least squares fitting</span>
+            <span class="n">p0</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="mi">300</span><span class="p">]),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="mi">800</span><span class="p">]),</span>
+                <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">])[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])],</span>
+                <span class="mf">100.0</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">idealized_profile</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span>
+                <span class="n">p0</span><span class="p">,</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="p">(</span>
+                    <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="mi">20</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">500</span><span class="p">],</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">backs_mix</span><span class="p">,</span> <span class="n">backs_free</span><span class="p">,</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">rmsd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="n">idealized_profile</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">backs_mix</span><span class="p">,</span> <span class="n">backs_free</span><span class="p">,</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                            <span class="o">-</span> <span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="o">**</span> <span class="mi">2</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">success</span> <span class="ow">or</span> <span class="n">backs_mix</span> <span class="o">&lt;=</span> <span class="n">backs_free</span> <span class="ow">or</span> <span class="n">rmsd</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">z_mix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">backs_mix</span> <span class="o">-</span> <span class="n">backs_free</span><span class="p">)</span> <span class="o">/</span> <span class="n">rmsd</span> <span class="o">&gt;=</span> <span class="n">min_snr</span> <span class="k">else</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Two Layer Fit:</span>
+        <span class="c1"># If an elevated layer is detected, fit the idealized two-layer profile</span>
+        <span class="n">below</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">z_slot</span>
+        <span class="n">z_mix_base</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">below</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">below</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">below</span><span class="p">])[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">below</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">4</span>
+            <span class="k">else</span> <span class="n">z_slot</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">near_slot</span><span class="p">,</span> <span class="n">near_bump</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_slot</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_bump</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">200</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">near_slot</span><span class="p">])</span> <span class="k">if</span> <span class="n">near_slot</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">amp0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">near_bump</span><span class="p">])</span> <span class="o">-</span> <span class="n">base</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="k">if</span> <span class="n">near_bump</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="k">else</span> <span class="mf">0.1</span>
+
+        <span class="c1"># Define the bounds/intial guesses for the least squares fitting</span>
+        <span class="n">lo</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">z_slot</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">]</span>
+        <span class="n">hi</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">z_slot</span><span class="p">,</span> <span class="mf">400.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_height</span><span class="p">,</span> <span class="mf">600.0</span><span class="p">]</span>
+        <span class="c1"># Generate the initial guess for the least squares fitting</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="mi">300</span><span class="p">]),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">][</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="mi">400</span><span class="p">]),</span>
+                <span class="n">z_mix_base</span><span class="p">,</span>
+                <span class="mf">100.0</span><span class="p">,</span>
+                <span class="n">amp0</span><span class="p">,</span>
+                <span class="n">z_bump</span><span class="p">,</span>
+                <span class="mf">200.0</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lo</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hi</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">idealized_twolayer_profile</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">profile</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span>
+            <span class="n">p0</span><span class="p">,</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">),</span>
+            <span class="n">max_nfev</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">backs_mix</span><span class="p">,</span> <span class="n">backs_free</span><span class="p">,</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">elev_floor</span><span class="p">,</span> <span class="n">z_elev</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">success</span> <span class="ow">or</span> <span class="n">backs_mix</span> <span class="o">&lt;=</span> <span class="n">backs_free</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">return</span> <span class="n">z_mix</span><span class="p">,</span> <span class="n">z_elev</span>
+
+    <span class="c1"># Average and smooth the backscatter profile over time to reduce noise</span>
+    <span class="c1"># and improve fitting stability</span>
+    <span class="n">averaged</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">parm</span><span class="p">]</span>
+        <span class="o">.</span><span class="n">sel</span><span class="p">({</span><span class="n">dis_parm</span><span class="p">:</span> <span class="nb">slice</span><span class="p">(</span><span class="n">fit_min_height</span><span class="p">,</span> <span class="n">fit_max_height</span><span class="p">)})</span>
+        <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time_average</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">profiles</span> <span class="o">=</span> <span class="n">smooth_profile</span><span class="p">(</span><span class="n">averaged</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">averaged</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="c1"># Fit the idealized profile to the averaged backscatter profile for each time step</span>
+    <span class="c1"># Check if elevated layers are allowed and fit accordingly</span>
+    <span class="k">if</span> <span class="n">allow_elevated</span><span class="p">:</span>
+        <span class="n">pbl_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">fit_profile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">averaged</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">allow_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">pbl_heights</span><span class="p">,</span> <span class="n">elev_heights</span> <span class="o">=</span> <span class="n">pbl_fit</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pbl_fit</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pbl_heights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">fit_profile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">averaged</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">allow_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">elev_heights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">)</span>
+
+    <span class="c1"># Add result to dataset - Mixing Layer Height</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="n">averaged</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="s2">"time"</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">pbl_profile_fit</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">"ffill"</span><span class="p">))</span>
+
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_profile_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"Planetary Boundary Layer Estimate via Steyn, Baldi &amp; Hoff (1999)"</span>
+        <span class="o">+</span> <span class="s2">"idealized profile fitting method"</span>
+    <span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_profile_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"input_parameter"</span><span class="p">]</span> <span class="o">=</span> <span class="n">parm</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_profile_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"time_average"</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_average</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">],</span> <span class="s2">"units"</span><span class="p">):</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_profile_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'pbl_profile_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"meters"</span>
+
+    <span class="c1"># Add result to dataset - Elevated Layer Height</span>
+    <span class="n">da_el</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">elev_heights</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">"time"</span><span class="p">:</span> <span class="n">averaged</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="s2">"time"</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">elevated_layer_fit</span><span class="o">=</span><span class="n">da_el</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">"ffill"</span><span class="p">))</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'elevated_layer_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"Estimated height of the elevated aerosol layer above the mixed layer"</span>
+        <span class="o">+</span> <span class="s2">"via Steyn, Baldi &amp; Hoff (1999) idealized profile fitting method"</span>
+    <span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'elevated_layer_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"input_parameter"</span><span class="p">]</span> <span class="o">=</span> <span class="n">parm</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'elevated_layer_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"time_average"</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_average</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">],</span> <span class="s2">"units"</span><span class="p">):</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'elevated_layer_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">'elevated_layer_fit'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"meters"</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 
