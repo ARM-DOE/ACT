@@ -7,7 +7,9 @@ related calculations from lidar
 import numpy as np
 import pandas as pd
 import xarray as xr
-from scipy.signal import find_peaks
+from scipy.optimize import least_squares
+from scipy.signal import argrelextrema, find_peaks
+from scipy.special import erf
 
 try:
     import pywt
@@ -480,5 +482,367 @@ def calculate_tucker_method_pbl(
         "autocorrelation of radial velocity"
     )
     ds["tucker_atmospheric_variance"].attrs["units"] = 'm^2/s^2'
+
+    return ds
+
+
+def calculate_profile_fit_pbl(
+    ds,
+    parm="beta_att",
+    dis_parm="range",
+    fit_min_height=100.0,
+    fit_max_height=2500.0,
+    time_average='30min',
+    allow_elevated=True,
+):
+    """
+    Estimation of the Planetary Boundary Layer (PBL) height from a LIDAR
+    through fitting a backscatter profile to an idealized profile via an error function.
+
+    Note:
+    This retrieval method should be applied under a cloud-free, well-mixed PBL condition.
+    It is not expected perform well in cloud capped boundary layers.
+
+    It is expected to perform better than the gradient method in cases where
+    the mixed-layer has not yet fully developed or is beginning to collapse.
+
+    Retrieval should be applied prior to applying corrections to the backscatter
+    profile.
+
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Dataset containing the zenith-pointing remote sensing data.
+    parm : str
+        Variable in the dataset to calculate the profile fit from
+        (e.g., attenuated backscatter).
+    dis_parm : str
+        Name of the height/range coordinate in ds.
+    fit_min_height : float
+        Minimum height in meters to consider for fitting the profile.
+    fit_max_height : float
+        Maximum height in meters to consider for fitting the profile.
+    time_average : str
+        Time averaging interval for the backscatter profile before fitting.
+    allow_elevated : bool
+        Whether to allow fitting with an elevated aerosol layer above the mixed layer.
+        Determines which idealized profile function is used for fitting.
+
+    Calls
+    -----
+    idealized_profile : function
+        Idealized backscatter profile function based on an error function.
+    idealized_twolayer_profile : function
+        Idealized backscatter profile function with an additional Gaussian
+        distribution to handle an elevated aerosol layer above the mixed layer.
+    find_elevated_layer : function
+        Detects the clean air layer above the mixed layer and below the elevated
+        aerosol layer to trigger single or two layer idealized profile fitting.
+    smooth_profile : function
+        Vertical averaging that expands with height to account for decreasing
+        vertical resolution of the lidar with height.
+    fit_profile : function
+        Fits the idealized profile to the backscatter profile using least
+        squares optimization.
+
+    Returns
+    -------
+    ds : xarray.Dataset
+        Dataset with a new variable `pbl_profile_fit` containing PBL heights at
+        the specified time average.
+
+    References
+    ----------
+    Steyn, D. G., M. Baldi, and R. M. Hoff, 1999: The Detection of Mixed Layer
+    Depth and Entrainment Zone Thickness from Lidar Backscatter Profiles.
+    J. Atmos. Oceanic Technol., 16, 953–959,
+    https://doi.org/10.1175/1520-0426(1999)016<0953:TDOMLD>2.0.CO;2.
+
+    Sawyer, V., and Z. Li, 2013: Detection, variations and intercomparison of
+    the planetary boundary layer depth from radiosonde, lidar and infrared
+    spectrometer. *Atmos. Environ.*, **79**, 518–528,
+    https://doi.org/10.1016/j.atmosenv.2013.07.019.
+    """
+
+    def idealized_profile(z, backs_mix, backs_free, z_mix, s):
+        """
+        Idealized backscatter profile function based on an error function.
+        (Steyn, Baldi and Hoff (1999), Equaiton 1)
+
+        Parameters
+        ----------
+        z : array-like
+            Height coordinate.
+        backs_mix : float
+            Backscatter value in the mixed layer.
+        backs_free : float
+            Backscatter value in the free troposphere.
+        z_mix : float
+            Estimated PBL height (inversion height).
+        s : float
+            Depth of the entrainment zone in meters,
+            which controls the smoothness of the transition between
+            the mixed layer and free troposphere.
+
+        Returns
+        -------
+        array-like
+            Idealized backscatter profile.
+        """
+        return (backs_mix + backs_free) / 2 - (backs_mix - backs_free) / 2 * erf((z - z_mix) / s)
+
+    def idealized_twolayer_profile(z, backs_mix, backs_free, z_mix, s, elev_floor, z_elev, sigma):
+        """
+        Steyn, Baldi and Hoff (1999) Equation 1 with an additional
+        Gaussian distribution to explicitly handle an elevated aerosol layer
+        above the mixed layer.
+
+        Parameters
+        ----------
+        z : array-like
+            Height coordinate.
+        backs_mix : float
+            Backscatter value in the mixed layer.
+        backs_free : float
+            Backscatter value in the free troposphere.
+        z_mix : float
+            Estimated PBL height (inversion height).
+        s : float
+            Depth of the entrainment zone in meters
+        elev_floor : float
+             Peak Height of the Gaussian that represents the elevated mixed layer.
+        z_elev : float
+            Estimated height of the elevated mixed layer.
+        sigma : float
+            Standard deviation of the Gaussian distribution representing
+            the elevated aerosol layer.
+        """
+        return idealized_profile(z, backs_mix, backs_free, z_mix, s) + elev_floor * np.exp(
+            -((z - z_elev) ** 2) / (2 * sigma**2)
+        )
+
+    def find_elevated_layer(profile, z):
+        """
+        Detect the clean air layer above the mixed layer
+        and below the elevated aerosol layer to trigger single or two layer
+        idealized profile fitting.
+
+        If montonically decreasing backscatter is detected,
+        then a single layer fit is performed.
+
+        Parameters
+        ----------
+        profile : array-like
+            Backscatter profile.
+        z : array-like
+            Height coordinate.
+
+        Returns
+        -------
+        z_slot, z_bump : float
+            min and max heights of the clean air layer above the mixed-layer,
+            respectively.
+        """
+        # Locate the clean slot and the elevated maximum above it, if the profile has them.
+        mins = [m for m in argrelextrema(profile, np.less, order=12)[0] if z[m] > z.min() + 300]
+        maxs = [m for m in argrelextrema(profile, np.greater, order=12)[0] if z[m] > z.min() + 500]
+        if mins and maxs and any(z[mx] > z[mn] for mn in mins for mx in maxs):
+            return z[mins[0]], z[maxs[0]]
+        return np.nan, np.nan
+
+    def smooth_profile(profiles, z, min_havg=80.0, max_havg=360.0, thresh_havg=1500.0):
+        """
+        Vertical Averaging that expands with height to account
+        for decreasing vertical resolution of the lidar with height.
+
+        Critical for the standard deviation of the backscatter
+        profile to be meaningful for the least squares fitting.
+
+        Parameters
+        ----------
+        profile : array-like
+            Backscatter profile.
+        z : array-like
+            Height coordinate.
+        min_havg : float
+            Minimum averaging height in meters.
+        max_havg : float
+            Maximum averaging height in meters.
+        thresh_havg : float
+            Height threshold in meters where the averaging height
+            transitions from min_havg to max_havg.
+        """
+        width = min_havg + (max_havg - min_havg) * np.clip(z / thresh_havg, 0, 1)
+        smooth_window = (np.abs(z[None, :] - z[:, None]) <= (width[:, None] / 2.0)).astype(float)
+        smooth_window /= smooth_window.sum(axis=1, keepdims=True)
+
+        valid_pro = np.isfinite(profiles).astype(float)
+        num, den = np.nan_to_num(profiles) @ smooth_window.T, valid_pro @ smooth_window.T
+
+        return np.where(den > 0, num / np.where(den == 0, 1, den), np.nan)
+
+    def fit_profile(
+        profile, z, min_snr=2.0, max_height=fit_max_height, allow_elevated=allow_elevated
+    ):
+        """
+        Fit the idealized profile to the backscatter profile using least squares optimization.
+
+        Parameters
+        ----------
+        profile : array-like
+            Backscatter profile.
+        z : array-like
+            Height coordinate.
+        min_snr : float
+            Minimum signal-to-noise ratio for valid fitting.
+        allow_elevated : bool
+            Whether to allow fitting with an elevated aerosol layer.
+
+        Returns
+        -------
+        dict
+            Fitted parameters including PBL height and other relevant metrics.
+        """
+        # Determine the valid data points for fitting
+        valid = np.isfinite(profile)
+        if valid.sum() < 20:
+            return np.nan, np.nan
+
+        # Check for the elevated aerosol layer above mixed layer
+        if allow_elevated:
+            z_slot, z_bump = find_elevated_layer(profile[valid], z[valid])
+        else:
+            z_slot, z_bump = np.nan, np.nan
+
+        # Single Layer Fit:
+        # If no elevated layer is detected, fit the idealized profile
+        #   to the backscatter profile
+        if not np.isfinite(z_slot):
+            # Define the initial guess for the least squares fitting
+            p0 = [
+                np.nanmean(profile[valid][z[valid] < z[valid].min() + 300]),
+                np.nanmean(profile[valid][z[valid] > z[valid].max() - 800]),
+                z[valid][1:-1][np.argmin(np.gradient(profile[valid], z[valid])[1:-1])],
+                100.0,
+            ]
+            res = least_squares(
+                lambda p: idealized_profile(z[valid], *p) - profile[valid],
+                p0,
+                bounds=(
+                    [-np.inf, -np.inf, z[valid].min(), 20],
+                    [np.inf, np.inf, z[valid].max(), 500],
+                ),
+            )
+            backs_mix, backs_free, z_mix, s = res.x
+            rmsd = float(
+                np.sqrt(
+                    np.mean(
+                        (
+                            idealized_profile(z[valid], backs_mix, backs_free, z_mix, s)
+                            - profile[valid]
+                        )
+                        ** 2
+                    )
+                )
+            )
+            if not res.success or backs_mix <= backs_free or rmsd <= 0:
+                return np.nan, np.nan
+            return (
+                (z_mix, np.nan) if (backs_mix - backs_free) / rmsd >= min_snr else (np.nan, np.nan)
+            )
+
+        # Two Layer Fit:
+        # If an elevated layer is detected, fit the idealized two-layer profile
+        below = z[valid] < z_slot
+        z_mix_base = (
+            z[valid][below][1:-1][
+                np.argmin(np.gradient(profile[valid][below], z[valid][below])[1:-1])
+            ]
+            if below.sum() > 4
+            else z_slot / 2
+        )
+        near_slot, near_bump = np.abs(z[valid] - z_slot) < 120, np.abs(z[valid] - z_bump) < 200
+        base = np.nanmin(profile[valid][near_slot]) if near_slot.any() else 0.0
+        amp0 = max(np.nanmax(profile[valid][near_bump]) - base, 0.1) if near_bump.any() else 0.1
+
+        # Define the bounds/intial guesses for the least squares fitting
+        lo = [-np.inf, -np.inf, 100.0, 20.0, 0.0, z_slot, 50.0]
+        hi = [np.inf, np.inf, z_slot, 400.0, np.inf, max_height, 600.0]
+        # Generate the initial guess for the least squares fitting
+        p0 = np.clip(
+            [
+                np.nanmean(profile[valid][z[valid] < z[valid].min() + 300]),
+                np.nanmean(profile[valid][z[valid] > z[valid].max() - 400]),
+                z_mix_base,
+                100.0,
+                amp0,
+                z_bump,
+                200.0,
+            ],
+            np.array(lo) + 1e-6,
+            np.array(hi) - 1e-6,
+        )
+        res = least_squares(
+            lambda p: idealized_twolayer_profile(z[valid], *p) - profile[valid],
+            p0,
+            bounds=(lo, hi),
+            max_nfev=20000,
+        )
+        backs_mix, backs_free, z_mix, s, elev_floor, z_elev, sigma = res.x
+        if not res.success or backs_mix <= backs_free:
+            return np.nan, np.nan
+        return z_mix, z_elev
+
+    # Average and smooth the backscatter profile over time to reduce noise
+    # and improve fitting stability
+    averaged = (
+        ds[parm]
+        .sel({dis_parm: slice(fit_min_height, fit_max_height)})
+        .resample(time=time_average)
+        .mean()
+    )
+    profiles = smooth_profile(averaged.values, averaged[dis_parm].values)
+
+    # Fit the idealized profile to the averaged backscatter profile for each time step
+    # Check if elevated layers are allowed and fit accordingly
+    if allow_elevated:
+        pbl_fit = np.array(
+            [fit_profile(p, averaged[dis_parm].values, allow_elevated=True) for p in profiles]
+        )
+        pbl_heights, elev_heights = pbl_fit[:, 0], pbl_fit[:, 1]
+    else:
+        pbl_heights = np.array(
+            [fit_profile(p, averaged[dis_parm].values, allow_elevated=False)[0] for p in profiles]
+        )
+        elev_heights = np.nan * np.ones_like(pbl_heights)
+
+    # Add result to dataset - Mixing Layer Height
+    da = xr.DataArray(pbl_heights, coords={"time": averaged["time"].values}, dims="time")
+    ds = ds.assign(pbl_profile_fit=da.reindex(time=ds["time"], method="ffill"))
+
+    ds['pbl_profile_fit'].attrs["description"] = (
+        "Planetary Boundary Layer Estimate via Steyn, Baldi & Hoff (1999)"
+        + "idealized profile fitting method"
+    )
+    ds['pbl_profile_fit'].attrs["input_parameter"] = parm
+    ds['pbl_profile_fit'].attrs["time_average"] = time_average
+    if hasattr(ds[dis_parm], "units"):
+        ds['pbl_profile_fit'].attrs["units"] = ds[dis_parm].attrs["units"]
+    else:
+        ds['pbl_profile_fit'].attrs["units"] = "meters"
+
+    # Add result to dataset - Elevated Layer Height
+    da_el = xr.DataArray(elev_heights, coords={"time": averaged["time"].values}, dims="time")
+    ds = ds.assign(elevated_layer_fit=da_el.reindex(time=ds["time"], method="ffill"))
+    ds['elevated_layer_fit'].attrs["description"] = (
+        "Estimated height of the elevated aerosol layer above the mixed layer"
+        + "via Steyn, Baldi & Hoff (1999) idealized profile fitting method"
+    )
+    ds['elevated_layer_fit'].attrs["input_parameter"] = parm
+    ds['elevated_layer_fit'].attrs["time_average"] = time_average
+    if hasattr(ds[dis_parm], "units"):
+        ds['elevated_layer_fit'].attrs["units"] = ds[dis_parm].attrs["units"]
+    else:
+        ds['elevated_layer_fit'].attrs["units"] = "meters"
 
     return ds
