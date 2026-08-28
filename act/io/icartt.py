@@ -21,6 +21,11 @@ from pathlib import Path
 import numpy as np
 import xarray as xr
 
+#: The only file format index this module implements. ICARTT defines several
+#: FFIs; 1001 is the one-dimensional time series described by ESDS-RFC-029v2
+#: section 2.3, and the format is fixed rather than selectable.
+SUPPORTED_FFI = 1001
+
 #: Field delimiter for the ICARTT format (ESDS-RFC-029v2 section 2.3.2).
 DEFAULT_FIELD_DELIM = ','
 
@@ -71,6 +76,41 @@ def _as_number(value, label):
         return float(value)
     except (TypeError, ValueError) as err:
         raise ValueError(f'ICARTT {label} must be numeric, got {value!r}') from err
+
+
+def _lod_mask(values, attrs):
+    """
+    Mark the points that a scale factor must not be applied to.
+
+    Limit of detection flags are not metadata, they sit in the data column as
+    literal values: -7777 above the ULOD and -8888 below the LLOD
+    (ESDS-RFC-029v2 section 2.1.4.3). Scaling them would turn a flag into a
+    number that no longer reads as a flag, so they are held out of the
+    arithmetic in both directions. Missing values need no mask, they are
+    already NaN by the time the data reaches here.
+
+    Parameters
+    ----------
+    values : numpy.ndarray
+        Data column to inspect.
+    attrs : dict
+        Variable attributes, read for ``ULOD_Flag`` and ``LLOD_Flag``. The
+        standard's 'N/A' stand-in, and anything else non-numeric, is ignored.
+
+    Returns
+    -------
+    mask : numpy.ndarray
+        Boolean array, True where the value is a limit of detection flag.
+
+    """
+    mask = np.zeros(np.shape(values), dtype=bool)
+    for key in ('ULOD_Flag', 'LLOD_Flag'):
+        try:
+            flag = float(attrs.get(key))
+        except (TypeError, ValueError):
+            continue
+        mask |= values == flag
+    return mask
 
 
 class IcarttVariable:
@@ -168,7 +208,7 @@ class Icartt:
 
     def __init__(self):
         # Line 1 - file format information.
-        self.FFI = 1001
+        self.FFI = SUPPORTED_FFI
         self.version = None
         # Number of header lines declared by the file, kept for validation only.
         # The authoritative value is the computed ``NLHEAD`` property.
@@ -345,9 +385,10 @@ class Icartt:
         if len(first) > 2 and first[2]:
             self.version = first[2]
 
-        if self.FFI != 1001:
+        if self.FFI != SUPPORTED_FFI:
             raise NotImplementedError(
-                f'ACT supports the ICARTT FFI 1001 format only, this file declares {self.FFI}'
+                f'ACT supports the ICARTT FFI {SUPPORTED_FFI} format only, '
+                f'this file declares {self.FFI}'
             )
 
         # Lines 2-5.
@@ -662,11 +703,23 @@ class Icartt:
                 obj.XNAME.units = str(attrs.get('units', obj.XNAME.units))
                 obj.data[ivar] = values
                 continue
+            # A read that applied the scale factor left the spent factor under
+            # 'scale_factor_applied', so undo it and restore the file's own
+            # header. Without that record there is nothing to reverse and the
+            # data is written as it stands against a scale factor of 1.
+            scale = attrs.get('scale_factor', DEFAULT_SCALE_FACTOR)
+            applied = attrs.get('scale_factor_applied', DEFAULT_SCALE_FACTOR)
+            if applied != DEFAULT_SCALE_FACTOR:
+                scale = applied
+                values = np.array(values, dtype=np.float64, copy=True)
+                keep = ~_lod_mask(values, attrs)
+                values[keep] /= applied
+
             obj.VNAME.append(
                 IcarttVariable(
                     name,
                     str(attrs.get('units', 'none')),
-                    scale=attrs.get('scale_factor', DEFAULT_SCALE_FACTOR),
+                    scale=scale,
                     miss=attrs.get('mvc', DEFAULT_MISSING_VALUE),
                 )
             )
@@ -794,22 +847,111 @@ class Icartt:
         self.name = str(filename)
 
 
-def read_icartt(filename, ict_format=1001, return_None=False, **kwargs):
+def _apply_scale_factors(ds):
+    """
+    Apply the ICARTT scale factors, in place. See :func:`apply_scale_factors`.
+
+    Kept private and separate from the public wrapper because the
+    ``apply_scale_factors`` keyword of :func:`read_icartt` shadows the public
+    function's name inside that function's body.
+
+    """
+    for name in ds.data_vars:
+        attrs = ds[name].attrs
+        scale = attrs.get('scale_factor', DEFAULT_SCALE_FACTOR)
+        if scale == DEFAULT_SCALE_FACTOR:
+            continue
+
+        values = np.array(ds[name].values, dtype=np.float64, copy=True)
+        keep = ~_lod_mask(values, attrs)
+        values[keep] *= scale
+        ds[name].values = values
+
+        # The factor has been spent. Leaving it in place would invite a second
+        # application, by another call to this function or by any CF decoder,
+        # since 'scale_factor' is a reserved CF attribute. The original is kept
+        # under a name CF does not act on so the write path can reverse this.
+        attrs['scale_factor'] = DEFAULT_SCALE_FACTOR
+        attrs['scale_factor_applied'] = scale
+
+    return ds
+
+
+def apply_scale_factors(ds):
+    """
+
+    Apply the ICARTT scale factors to the data variables of a Dataset.
+
+    Header line 11 gives one scale factor per dependent variable, and the value
+    in the file is the reported value divided by it, so reading multiplies
+    (ESDS-RFC-029v2 sections 2.1.4 and 2.3.2.11). Factors should be 1, but the
+    standard permits fractional and exponential values and its own examples use
+    them.
+
+    Limit of detection flags are left alone. They sit in the data column as
+    literal -7777 and -8888 values rather than as metadata (section 2.1.4.3),
+    and scaling them would destroy them.
+
+    Scale factors are applied to the data columns only. The ``ULOD_Value``,
+    ``LLOD_Value`` and ``uncertainty`` attributes are carried through exactly as
+    the file states them, unscaled, so a numeric limit of detection is not
+    directly comparable to the scaled values in the array. Section 2.1.4.3 also
+    allows those keywords to hold 'N/A' or the short name of another dependent
+    variable, so they are treated as verbatim file metadata.
+
+    On each scaled variable ``scale_factor`` is reset to 1.0 and the original
+    factor recorded as ``scale_factor_applied``, which makes the call
+    idempotent, stops any CF decoder applying the factor a second time, and lets
+    :func:`write_icartt` restore the original header.
+
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Dataset from :func:`read_icartt`. Modified in place.
+
+    Returns
+    -------
+    ds : xarray.Dataset
+        The same Dataset, with scale factors applied.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from act.io.icartt import apply_scale_factors, read_icartt
+
+        ds = read_icartt(filename, apply_scale_factors=False)
+        ds = apply_scale_factors(ds)
+
+    """
+    return _apply_scale_factors(ds)
+
+
+def read_icartt(filename, return_None=False, apply_scale_factors=True, **kwargs):
     """
 
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ICARTT from a single datastream. Has some procedures to ensure
     time is correctly formatted in returned Dataset.
 
+    Scale factors from header line 11 are applied by default. They are applied
+    to the data columns only, so the ``ULOD_Value``, ``LLOD_Value`` and
+    ``uncertainty`` attributes are carried through exactly as the file states
+    them, unscaled. Limit of detection flags in the data are left untouched.
+
     Parameters
     ----------
     filename : str
         Name of file to read.
-    ict_format : int or str
-        ICARTT format to read. Only FFI 1001 is supported.
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
         Default is False.
+    apply_scale_factors : bool, optional
+        Multiply each dependent variable by its scale factor. Default is True.
+        When False the values are returned exactly as the file records them and
+        the scale factor is left live in the ``scale_factor`` attribute, which
+        is a reserved CF name that xarray will act on if the Dataset is written
+        to netCDF and read back.
     **kwargs : keywords
         keywords to pass on through to Icartt.from_file.
 
@@ -818,11 +960,6 @@ def read_icartt(filename, ict_format=1001, return_None=False, **kwargs):
     ds : xarray.Dataset (or None)
         ACT Xarray dataset (or None if no data file(s) found).
     """
-    if str(ict_format) not in ('1001', 'FFI1001', 'Formats.FFI1001'):
-        raise NotImplementedError(
-            f'ACT supports the ICARTT FFI 1001 format only, got {ict_format!r}'
-        )
-
     try:
         ict = Icartt.from_file(filename, **kwargs)
     except (FileNotFoundError, OSError) as exception:
@@ -834,7 +971,20 @@ def read_icartt(filename, ict_format=1001, return_None=False, **kwargs):
             return None
         raise
 
-    return ict.to_xarray()
+    ds = ict.to_xarray()
+    if apply_scale_factors:
+        return _apply_scale_factors(ds)
+
+    if any(scale != DEFAULT_SCALE_FACTOR for scale in ict.VSCAL):
+        warnings.warn(
+            f'ICARTT file {ict.name} declares non-unity scale factors that were not '
+            'applied, so the values are as recorded in the file. The unapplied factor '
+            "is left in each variable's 'scale_factor' attribute, which xarray will "
+            'apply on a netCDF round trip. Pass apply_scale_factors=True to apply it '
+            'here instead.',
+            stacklevel=2,
+        )
+    return ds
 
 
 def write_icartt(ds, filename, **kwargs):

@@ -1,9 +1,12 @@
+import inspect
+import warnings
+
 import numpy as np
 import pytest
 import xarray as xr
 
 import act
-from act.io.icartt import Icartt, read_icartt, write_icartt
+from act.io.icartt import Icartt, apply_scale_factors, read_icartt, write_icartt
 
 # A minimal but spec-legal FFI 1001 normal comments section. Includes free-form
 # text ahead of the first keyword, a keyword value spanning several lines, one
@@ -39,7 +42,15 @@ SAMPLE_NCOM = [
 SAMPLE_DATA = ['0,20.5,1013.2', '1,-9999,1012.8', '2,21.0,-8888']
 
 
-def build_ict(tmp_path, name='TEST_20240315_R1.ict', ncom=None, data=None, nlhead=None):
+def build_ict(
+    tmp_path,
+    name='TEST_20240315_R1.ict',
+    ncom=None,
+    data=None,
+    nlhead=None,
+    vscal='1, 1',
+    vmiss='-9999, -8888',
+):
     """Write a synthetic FFI 1001 file and return its path."""
     ncom = list(SAMPLE_NCOM if ncom is None else ncom)
     data = list(SAMPLE_DATA if data is None else data)
@@ -57,8 +68,8 @@ def build_ict(tmp_path, name='TEST_20240315_R1.ict', ncom=None, data=None, nlhea
         '1.0',
         'Start_UTC, seconds',
         str(nv),
-        '1, 1',
-        '-9999, -8888',
+        vscal,
+        vmiss,
         'temperature, degC',
         'pressure, hPa',
         str(nscoml),
@@ -83,6 +94,9 @@ def test_read_icartt_lazy_loader():
     assert act.io.read_icartt is read_icartt
     assert act.io.write_icartt is write_icartt
     assert act.io.Icartt is Icartt
+    # apply_scale_factors is deliberately not in the shared act.io namespace:
+    # the name does not say ICARTT, and it does not implement CF add_offset.
+    assert 'apply_scale_factors' not in act.io.__all__
 
 
 def test_read_icartt_structure():
@@ -283,12 +297,16 @@ def test_read_icartt_bad_format_line(tmp_path):
 
 
 def test_read_icartt_unsupported_ffi(tmp_path):
-    path = tmp_path / 'FFI_20240315_R0.ict'
-    path.write_text('12, 2110\nDoe, Jane\n')
-    with pytest.raises(NotImplementedError, match='FFI 1001'):
-        read_icartt(str(path))
-    with pytest.raises(NotImplementedError, match='FFI 1001'):
-        read_icartt(act.tests.EXAMPLE_AAF_ICARTT, ict_format=2110)
+    # The format is not selectable, so the only way to hit this is a file that
+    # declares an FFI other than 1001 on its first line.
+    for ffi in ('2110', '2310'):
+        path = tmp_path / f'FFI{ffi}_20240315_R0.ict'
+        path.write_text(f'12, {ffi}\nDoe, Jane\n')
+        with pytest.raises(NotImplementedError, match=f'declares {ffi}'):
+            read_icartt(str(path))
+
+    # A supported file reads normally, and read_icartt takes no format keyword.
+    assert 'ict_format' not in inspect.signature(read_icartt).parameters
 
 
 def test_read_icartt_variable_count_mismatch(tmp_path):
@@ -314,3 +332,106 @@ def test_read_icartt_variable_count_mismatch(tmp_path):
     )
     with pytest.raises(ValueError, match='scale factor line'):
         read_icartt(str(path))
+
+
+# ----------------------------------------------------------------------
+# Scale factors (ESDS-RFC-029v2 sections 2.1.4, 2.3.2.11)
+# ----------------------------------------------------------------------
+
+# Two dependent variables carrying a fractional and an exponential scale
+# factor, with a distinct missing flag so the LOD flags stay visible in the
+# data. temperature holds a real value, an LLOD flag and a ULOD flag.
+SCALED_DATA = ['0,113178,1.5', '1,-8888,2.5', '2,-7777,-9999']
+
+
+def test_read_icartt_applies_scale_factors(tmp_path):
+    path = build_ict(tmp_path, vscal='0.0001, 1.0e9', vmiss='-9999, -9999', data=SCALED_DATA)
+    ds = read_icartt(path)
+
+    # 113178 * 0.0001, then the two LOD flags, which must not be scaled.
+    np.testing.assert_allclose(ds['temperature'].values, [11.3178, -8888.0, -7777.0])
+    np.testing.assert_allclose(ds['pressure'].values, [1.5e9, 2.5e9, np.nan])
+
+
+def test_read_icartt_scale_factor_attrs(tmp_path):
+    path = build_ict(tmp_path, vscal='0.0001, 1', vmiss='-9999, -9999', data=SCALED_DATA)
+    ds = read_icartt(path)
+
+    # The spent factor is neutralised so no CF decoder applies it twice, and
+    # the original is kept for the write path.
+    assert ds['temperature'].attrs['scale_factor'] == 1.0
+    assert ds['temperature'].attrs['scale_factor_applied'] == 0.0001
+    # A unity factor is untouched and gains no provenance attribute.
+    assert ds['pressure'].attrs['scale_factor'] == 1.0
+    assert 'scale_factor_applied' not in ds['pressure'].attrs
+
+
+def test_read_icartt_scale_factors_leave_lod_values_unscaled(tmp_path):
+    path = build_ict(tmp_path, vscal='0.0001, 1', vmiss='-9999, -9999', data=SCALED_DATA)
+    ds = read_icartt(path)
+
+    # Data columns only: LOD values and uncertainty stay as the file states them.
+    assert ds['temperature'].attrs['ULOD_Value'] == '100'
+    assert ds['temperature'].attrs['LLOD_Value'] == '-50'
+    assert ds['temperature'].attrs['uncertainty'] == '0.5'
+
+
+def test_read_icartt_scale_factors_opt_out(tmp_path):
+    path = build_ict(tmp_path, vscal='0.0001, 1', vmiss='-9999, -9999', data=SCALED_DATA)
+    with pytest.warns(UserWarning, match='non-unity scale factors'):
+        ds = read_icartt(path, apply_scale_factors=False)
+
+    np.testing.assert_allclose(ds['temperature'].values, [113178.0, -8888.0, -7777.0])
+    assert ds['temperature'].attrs['scale_factor'] == 0.0001
+    assert 'scale_factor_applied' not in ds['temperature'].attrs
+
+
+def test_read_icartt_opt_out_does_not_warn_for_unity(tmp_path):
+    # The common all-1s file has nothing to warn about either way.
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        read_icartt(build_ict(tmp_path), apply_scale_factors=False)
+        read_icartt(build_ict(tmp_path))
+
+
+def test_apply_scale_factors_standalone_and_idempotent(tmp_path):
+    path = build_ict(tmp_path, vscal='0.0001, 1', vmiss='-9999, -9999', data=SCALED_DATA)
+    with pytest.warns(UserWarning, match='non-unity scale factors'):
+        ds = read_icartt(path, apply_scale_factors=False)
+
+    apply_scale_factors(ds)
+    np.testing.assert_allclose(ds['temperature'].values, [11.3178, -8888.0, -7777.0])
+
+    # A second pass sees a unity factor and changes nothing.
+    apply_scale_factors(ds)
+    np.testing.assert_allclose(ds['temperature'].values, [11.3178, -8888.0, -7777.0])
+
+
+def test_write_icartt_reverses_scale_factors(tmp_path):
+    path = build_ict(tmp_path, vscal='0.0001, 1.0e9', vmiss='-9999, -9999', data=SCALED_DATA)
+    ds1 = read_icartt(path)
+
+    out = tmp_path / 'OUT_20240315_R1.ict'
+    write_icartt(ds1, out)
+    written = out.read_text().splitlines()
+
+    # Header line 11 and the data columns come back as the file had them.
+    assert [x.strip() for x in written[10].split(',')] == ['0.0001', '1000000000']
+    assert written[-3:] == ['0,113178,1.5', '1,-8888,2.5', '2,-7777,-9999']
+
+    ds2 = read_icartt(str(out))
+    xr.testing.assert_allclose(ds1, ds2, rtol=1e-9)
+
+
+def test_write_icartt_without_applied_record(tmp_path):
+    # Nothing to reverse, so the scaled values are written against a scale of 1.
+    path = build_ict(tmp_path, vscal='0.0001, 1', vmiss='-9999, -9999', data=SCALED_DATA)
+    ds = read_icartt(path)
+    del ds['temperature'].attrs['scale_factor_applied']
+
+    out = tmp_path / 'NOREC_20240315_R1.ict'
+    write_icartt(ds, out)
+    written = out.read_text().splitlines()
+
+    assert [x.strip() for x in written[10].split(',')] == ['1', '1']
+    assert written[-3].startswith('0,11.3178,')
