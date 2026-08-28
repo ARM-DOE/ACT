@@ -3,7 +3,7 @@ Planetary Boundary Layer Height Profile Fit Retrievals
 ----------------------------------------------------------
 
 This example shows how to estimate the planetary boundary layer
-height via a Profile Method PBLH scheme,
+height via a Profile Method scheme,
 where a backscatter profile is fit to an idealized profile
 via an error function using non-linear least-squares optimization.
 
