@@ -1,9 +1,11 @@
 """
-Planetary Boundary Layer Height Gradient Method Retrievals
+Planetary Boundary Layer Height Profile Fit Retrievals
 ----------------------------------------------------------
 
 This example shows how to estimate the planetary boundary layer
-height via a gradient method retrieval
+height via a Profile Method PBLH scheme,
+where a backscatter profile is fit to an idealized profile
+via an error function using non-linear least-squares optimization.
 
 Author: Joe O'Brien
 """
