@@ -129,8 +129,8 @@ def test_read_icartt_variable_attributes():
     ds = read_icartt(act.tests.EXAMPLE_AAF_ICARTT)
     attrs = ds['static_pressure'].attrs
     assert attrs['units'] == 'hPa'
-    assert attrs['mvc'] == '-9999'
-    assert attrs['scale_factor'] == '1'
+    assert attrs['mvc'] == -9999.0
+    assert attrs['scale_factor'] == 1.0
     assert attrs['ULOD_Flag'] == '-7777'
     assert attrs['LLOD_Flag'] == '-8888'
     # This file supplies no per-variable uncertainty or LOD values.
@@ -288,7 +288,7 @@ def test_read_icartt_unsupported_ffi(tmp_path):
     with pytest.raises(NotImplementedError, match='FFI 1001'):
         read_icartt(str(path))
     with pytest.raises(NotImplementedError, match='FFI 1001'):
-        read_icartt(act.tests.EXAMPLE_AAF_ICARTT, format=2110)
+        read_icartt(act.tests.EXAMPLE_AAF_ICARTT, ict_format=2110)
 
 
 def test_read_icartt_variable_count_mismatch(tmp_path):

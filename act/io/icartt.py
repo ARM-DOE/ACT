@@ -21,10 +21,6 @@ from pathlib import Path
 import numpy as np
 import xarray as xr
 
-# Deprecated. ICARTT support is built in now, so this is always True. Retained so
-# existing ``skipif`` guards and downstream references keep working.
-_ICARTT_AVAILABLE = True
-
 #: Field delimiter for the ICARTT format (ESDS-RFC-029v2 section 2.3.2).
 DEFAULT_FIELD_DELIM = ','
 
@@ -61,6 +57,22 @@ REQUIRED_KEYWORDS = (
 _REVISION_RE = re.compile(r'^R[A-Za-z0-9]{1,2}$')
 
 
+def _as_number(value, label):
+    """
+    Coerce a header scale factor or missing data flag to a float.
+
+    Both are numeric per ESDS-RFC-029v2: scale factors may be fractional or in
+    exponential notation such as ``1.0e9`` (sections 2.1.4, 2.3.2.11), and
+    missing data flags are negative numbers such as -9999 (sections 2.1.4.2,
+    2.3.2.12).
+
+    """
+    try:
+        return float(value)
+    except (TypeError, ValueError) as err:
+        raise ValueError(f'ICARTT {label} must be numeric, got {value!r}') from err
+
+
 class IcarttVariable:
     """
     A single ICARTT variable description.
@@ -75,10 +87,10 @@ class IcarttVariable:
         Variable standard name from the controlled list.
     longname : str, optional
         Free-form descriptive name.
-    scale : str or float, optional
-        Scale factor for the variable.
-    miss : str or float, optional
-        Missing data flag for the variable.
+    scale : float, optional
+        Scale factor for the variable. Coerced to float.
+    miss : float, optional
+        Missing data flag for the variable. Coerced to float.
 
     """
 
@@ -97,8 +109,8 @@ class IcarttVariable:
         self.units = units
         self.standardname = standardname
         self.longname = longname
-        self.scale = scale
-        self.miss = miss
+        self.scale = _as_number(scale, 'scale factor')
+        self.miss = _as_number(miss, 'missing data flag')
 
     @classmethod
     def from_desc(cls, parts, **kwargs):
@@ -367,15 +379,21 @@ class Icartt:
         # Line 10 - number of dependent variables.
         nvar = int(readline()[0])
 
-        # Lines 11-12 - scale factors and missing value flags.
-        vscal = readline()
-        vmiss = readline()
-        for label, values in (('scale factor', vscal), ('missing value', vmiss)):
+        # Lines 11-12 - scale factors and missing data flags, both numeric.
+        parsed = []
+        for label, values in (('scale factor', readline()), ('missing value', readline())):
             if len(values) != nvar:
                 raise ValueError(
                     f'ICARTT {label} line of {self.name} has {len(values)} entries '
                     f'but the file declares {nvar} dependent variables'
                 )
+            try:
+                parsed.append([float(x) for x in values])
+            except ValueError as err:
+                raise ValueError(
+                    f'ICARTT {label} line of {self.name} has a non-numeric entry: {values!r}'
+                ) from err
+        vscal, vmiss = parsed
 
         # Lines 13 to 12+NV - dependent variable definitions.
         self.VNAME = [
@@ -745,10 +763,7 @@ class Icartt:
         columns = [np.asarray(self.data[ivar], dtype=np.float64)]
         for var in self.VNAME:
             column = np.array(self.data[var.shortname], dtype=np.float64, copy=True)
-            try:
-                column[np.isnan(column)] = float(var.miss)
-            except (TypeError, ValueError):
-                column[np.isnan(column)] = DEFAULT_MISSING_VALUE
+            column[np.isnan(column)] = var.miss
             columns.append(column)
 
         header = [f'{self.NLHEAD}{delimiter} {self.FFI}']
@@ -763,8 +778,8 @@ class Icartt:
         header.append(delimiter.join(str(x) for x in self.DX))
         header.append(self.XNAME.desc(delimiter + ' '))
         header.append(str(self.NV))
-        header.append(delimiter.join(str(x) for x in self.VSCAL))
-        header.append(delimiter.join(str(x) for x in self.VMISS))
+        header.append(delimiter.join(DEFAULT_NUM_FORMAT % x for x in self.VSCAL))
+        header.append(delimiter.join(DEFAULT_NUM_FORMAT % x for x in self.VMISS))
         header.extend(var.desc(delimiter + ' ') for var in self.VNAME)
         header.append(str(self.NSCOML))
         header.extend(self.SCOM)
@@ -779,18 +794,18 @@ class Icartt:
         self.name = str(filename)
 
 
-def read_icartt(filename, format=1001, return_None=False, **kwargs):
+def read_icartt(filename, ict_format=1001, return_None=False, **kwargs):
     """
 
     Returns `xarray.Dataset` with stored data and metadata from a user-defined
     query of ICARTT from a single datastream. Has some procedures to ensure
-    time is correctly fomatted in returned Dataset.
+    time is correctly formatted in returned Dataset.
 
     Parameters
     ----------
     filename : str
         Name of file to read.
-    format : int or str
+    ict_format : int or str
         ICARTT format to read. Only FFI 1001 is supported.
     return_None : bool, optional
         Catch IOError exception when file not found and return None.
@@ -803,8 +818,10 @@ def read_icartt(filename, format=1001, return_None=False, **kwargs):
     ds : xarray.Dataset (or None)
         ACT Xarray dataset (or None if no data file(s) found).
     """
-    if str(format) not in ('1001', 'FFI1001', 'Formats.FFI1001'):
-        raise NotImplementedError(f'ACT supports the ICARTT FFI 1001 format only, got {format!r}')
+    if str(ict_format) not in ('1001', 'FFI1001', 'Formats.FFI1001'):
+        raise NotImplementedError(
+            f'ACT supports the ICARTT FFI 1001 format only, got {ict_format!r}'
+        )
 
     try:
         ict = Icartt.from_file(filename, **kwargs)
