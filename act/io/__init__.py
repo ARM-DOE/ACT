@@ -30,7 +30,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
         ],
         'ameriflux': ['convert_to_ameriflux', 'read_ameriflux'],
         'text': ['read_csv'],
-        'icartt': ['read_icartt'],
+        'icartt': ['Icartt', 'read_icartt', 'write_icartt'],
         'mpl': ['proc_sigma_mplv5_read', 'read_sigma_mplv5'],
         'neon': ['read_neon_csv'],
         'noaagml': [
