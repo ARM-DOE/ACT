@@ -1,55 +1,80 @@
 """
-Airnow Data
+AirNow Data
 -----------
 
-This example shows the different ways to pull
-air quality information from EPA's AirNow API for
-a station near to SGP
+This example shows the different ways to pull air quality information
+from EPA's AirNow API for an area near the ARM Southern Great Plains
+(SGP) atmospheric observatory.
 
 """
 
 import os
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 
 import act
 
-# You need an account and token from https://docs.airnowapi.org/ first
+# You need an account and token from https://docs.airnowapi.org/ first.
 token = os.getenv('AIRNOW_API')
 
 if token is not None and len(token) > 0:
-    # This first example will get the forcasted values for the date passed
-    # at stations within 100 miles of the Zipcode. Can also use latlon instead as
-    # results = act.discovery.get_airnow_forecast(token, '2022-05-01', distance=100,
-    #                                             latlon=[41.958, -88.12])
-    # If the username and token are not set, use the existing sample file
-    results = act.discovery.get_airnow_forecast(token, '2022-05-01', zipcode=74630, distance=100)
+    # Get current forecast values for reporting areas within 100 miles of
+    # the ZIP code. A latitude/longitude location can also be used instead:
+    #
+    # results = act.discovery.get_airnow_forecast(
+    #     token, date, distance=100, latlon=[41.958, -88.12]
+    # )
+    #
+    # The updated AirNow forecast service provides current forecast
+    # information, so use today's date.
+    date = datetime.now().strftime('%Y-%m-%d')
+    results = act.discovery.get_airnow_forecast(token, date, zipcode=74630, distance=100)
 
-    # The results show a dataset with air quality information from Oklahoma City
-    # The data is not indexed by time and just a rudimentary xarray object from
-    # converted from a pandas DataFrame.  Note that the AirNow API labels the data
-    # returned as AQI.
+    # The results are returned as a simple xarray Dataset converted from
+    # the AirNow tabular response. ACT normalizes the forecast AQI field
+    # to "AQI".
     print(results)
 
-    # This call gives the daily average for Ozone, PM2.5 and PM10
-    results = act.discovery.get_airnow_obs(token, date='2022-05-01', zipcode=74630, distance=100)
+    # Historical daily observations are now requested by state rather than
+    # by ZIP code or latitude/longitude. This returns daily AQI values for
+    # reporting areas across the selected state.
+    results = act.discovery.get_airnow_obs(token, date='2025-05-01', state='OK')
+
+    # Historical observations include fields such as DailyAQI and
+    # DailyAQICategoryName.
     print(results)
 
-    # This call will get all the station data for a time period within
-    # the bounding box provided.  This will return the object with time
-    # as a coordinate and can be used with ACT Plotting to plot after
-    # squeezing the dimensions.  It can be a 2D time series
+    # Current observations can still be requested using either a ZIP code
+    # or latitude/longitude. The updated service returns nearby monitoring
+    # sites and includes fields such as NowcastAQI and AqiCategoryName.
+    results = act.discovery.get_airnow_obs(token, zipcode=74630, distance=100)
+
+    print(results)
+
+    # This call gets station data for a time period within the provided
+    # bounding box. The existing /aq/data/ endpoint is not being retired.
+    # The returned object has time as a coordinate and can be used with
+    # ACT plotting after reducing the site dimension.
     lat_lon = '-98.172,35.879,-96.76,37.069'
     results = act.discovery.get_airnow_bounded_obs(
-        token, '2022-05-01T00', '2022-05-01T12', lat_lon, 'OZONE,PM25', data_type='B'
+        token,
+        '2022-05-01T00',
+        '2022-05-01T12',
+        lat_lon,
+        'OZONE,PM25',
+        data_type='B',
     )
-    # Reduce to 1D timeseries
+
+    # Reduce to a 1D time series for this example.
     results = results.squeeze(dim='sites', drop=False)
+
     print(results)
 
-    # Plot out data but note that Ozone was not return in the results
+    # Plot the available PM2.5 concentration and AQI data.
     display = act.plotting.TimeSeriesDisplay(results)
     display.plot('PM2.5', label='PM2.5')
     display.plot('AQI', label='AQI')
+
     plt.legend()
     plt.show()

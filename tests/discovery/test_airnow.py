@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import numpy as np
 import pytest
@@ -11,40 +12,62 @@ def test_get_airnow():
     if token is not None:
         if len(token) == 0:
             return
-        results = act.discovery.get_airnow_forecast(token, '2022-05-01', zipcode=60108, distance=50)
-        assert results['CategoryName'].values[0] == 'Good'
-        assert results['AQI'].values[2] == -1
-        assert results['ReportingArea'].values[3] == 'South and West Suburbs (Chicago)'
+
+        # The new forecast/current service replaces the separate ZIP code and
+        # Lat/Lon forecast endpoints. Use today's date since this service
+        # provides current forecast information rather than archived forecasts.
+        date = datetime.now().strftime('%Y-%m-%d')
+
+        results = act.discovery.get_airnow_forecast(token, date, zipcode=60108, distance=50)
+        assert 'CategoryName' in results
+        assert 'AQI' in results
+        assert 'ReportingArea' in results
 
         results = act.discovery.get_airnow_forecast(
-            token, '2022-05-01', distance=50, latlon=[41.958, -88.12]
+            token, date, distance=50, latlon=[41.958, -88.12]
         )
-        assert results['CategoryName'].values[3] == 'Moderate'
-        assert results['AQI'].values[2] == -1
-        assert results['ReportingArea'].values[3] == 'North and West Suburbs (Chicago)'
+        assert 'CategoryName' in results
+        assert 'AQI' in results
+        assert 'ReportingArea' in results
 
-        # results = act.discovery.get_airnow_obs(token, date='2025-05-01', zipcode=60108, distance=50)
-        # assert results['AQI'].values[1] == 39
-        # assert results['ParameterName'].values[1] == 'PM2.5'
-        # assert results['CategoryName'].values[1] == 'Good'
+        # Current observations now use the combined ZIP/LatLon endpoint.
+        results = act.discovery.get_airnow_obs(token, zipcode=60108, distance=50)
 
-        # results = act.discovery.get_airnow_obs(token, zipcode=60108, distance=50)
-        # assert results['ReportingArea'].values[0] == 'South and West Suburbs (Chicago)'
+        assert 'ReportingAreaName' in results
+        assert 'SiteID' in results
+        assert 'SiteName' in results
+        assert 'NowcastAQI' in results
+        assert 'AqiCategoryName' in results
+
         results = act.discovery.get_airnow_obs(token, latlon=[41.958, -88.12], distance=50)
-        assert results['StateCode'].values[0] == 'IL'
+
+        assert 'ReportingAreaName' in results
+        assert 'SiteID' in results
+        assert 'SiteName' in results
+        assert 'NowcastAQI' in results
+        assert 'AqiCategoryName' in results
 
         with pytest.raises(NameError):
             results = act.discovery.get_airnow_obs(token)
+
         with pytest.raises(NameError):
-            results = act.discovery.get_airnow_forecast(token, '2022-05-01')
+            results = act.discovery.get_airnow_forecast(token, date)
 
-        results = act.discovery.get_airnow_obs(
-            token, date='2025-05-01', distance=50, latlon=[41.958, -88.12]
-        )
-        assert results['AQI'].values[1] == 39
-        assert results['ParameterName'].values[1] == 'PM2.5'
-        assert results['CategoryName'].values[1] == 'Good'
+        # Historical observations can no longer be requested by ZIP code or
+        # Lat/Lon. AirNow's replacement service is queried by state.
+        results = act.discovery.get_airnow_obs(token, date='2025-05-01', state='IL')
+        assert 'DailyAQI' in results
+        assert 'ParameterName' in results
+        assert 'DailyAQICategoryName' in results
+        assert 'StateCode' in results
+        assert np.all(results['StateCode'].values == 'IL')
 
+        with pytest.raises(NameError):
+            results = act.discovery.get_airnow_obs(
+                token, date='2025-05-01', latlon=[41.958, -88.12]
+            )
+
+        # The hourly monitoring-site bounding-box service is not being retired.
         lat_lon = '-88.245401,41.871346,-87.685099,42.234359'
         results = act.discovery.get_airnow_bounded_obs(
             token, '2022-05-01T00', '2022-05-01T12', lat_lon, 'OZONE,PM25', data_type='B'
