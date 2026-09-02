@@ -335,7 +335,7 @@ def test_qcfilter2():
     # Allow a tolerance window for borderline points
     assert 180 <= result <= 230, f"Unexpected GESD sum: {result}"
 
-    # Metadata checks remain exact
+    # Metadata checks
     assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
     assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
         'Value failed generalized Extreme Studentized Deviate test with an alpha of 0.05'
