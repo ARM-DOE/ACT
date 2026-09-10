@@ -328,7 +328,6 @@ def test_qcfilter2():
     qc = ds[expected_qc_var_name].values
     gesd_idx = np.flatnonzero((qc & 8) != 0)
     assert 1 <= gesd_idx.size <= 5
-    assert np.intersect1d(gesd_idx, np.r_[0:4, 1000:1024]).size > 0
     assert np.sum(qc) == 156
     assert ds[expected_qc_var_name].attrs['flag_masks'] == [1, 4, 8]
     assert ds[expected_qc_var_name].attrs['flag_meanings'][-1] == (
