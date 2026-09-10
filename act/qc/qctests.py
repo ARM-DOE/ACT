@@ -1485,8 +1485,10 @@ class QCTests:
         data = data[np.isfinite(data)]
 
         index = outliers_gesd(data, outliers=outliers, hypo=True, alpha=alpha)
+        # Ensure index is a numpy array for consistent dtype checking
+        index = np.asarray(index)
 
-        if index.dtype == np.bool_:
+        if index.dtype.kind == 'b':
             fail_data = data[index]
             index = np.array([], dtype=int)
             for ii in np.unique(fail_data):
