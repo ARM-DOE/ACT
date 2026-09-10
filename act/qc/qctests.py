@@ -1461,7 +1461,7 @@ class QCTests:
             from scikit_posthocs import outliers_gesd
         except ImportError:
             raise ImportError(
-                'scikit_posthocs needs to be installed on your system to ' 'run add_gesd_test.'
+                'scikit_posthocs needs to be installed on your system to run add_gesd_test.'
             )
 
         if test_meaning is None:
@@ -1482,20 +1482,23 @@ class QCTests:
         else:
             outliers = int(outliers)
 
-        data = data[np.isfinite(data)]
+        finite_mask = np.isfinite(data)
+        finite_indices = np.flatnonzero(finite_mask)
+        finite_data = data[finite_mask]
 
-        index = outliers_gesd(data, outliers=outliers, hypo=True, alpha=alpha)
-        # Ensure index is a numpy array for consistent dtype checking
-        index = np.asarray(index)
+        result = outliers_gesd(finite_data, outliers=outliers, hypo=True, alpha=alpha)
 
-        if index.dtype.kind == 'b':
-            fail_data = data[index]
-            index = np.array([], dtype=int)
-            for ii in np.unique(fail_data):
-                ind = (self._ds[var_name].values == ii).nonzero()
-                index = np.append(index, ind)
+        if hasattr(result, "to_numpy"):
+            result = result.to_numpy()
         else:
-            index = []
+            result = np.asarray(result)
+
+        if result.dtype.kind == 'b':
+            index = finite_indices[result]
+        elif np.issubdtype(result.dtype, np.integer):
+            index = finite_indices[result]
+        else:
+            index = np.array([], dtype=int)
 
         result = self._ds.qcfilter.add_test(
             var_name,
