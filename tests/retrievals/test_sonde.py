@@ -133,3 +133,67 @@ def test_calculate_heffter_pbl():
     np.testing.assert_almost_equal(ds['potential_temperature_ss'].values[4], 298.4, 1)
     assert np.sum(ds['bottom_inversion'].values) == 7426.0
     assert np.sum(ds['top_inversion'].values) == 7903.0
+
+
+def test_calculate_pbl_bulk_richardson():
+    files = act.tests.sample_files.EXAMPLE_TWP_SONDE_20060121.copy()
+    files.sort()
+
+    pt25 = []
+    pt5 = []
+    for file in files:
+        ds = act.io.arm.read_arm_netcdf(file)
+        ds['tdry'].attrs['units'] = 'degree_Celsius'
+        ds = act.retrievals.sonde.calculate_pbl_bulk_richardson(ds)
+        pt25.append(float(ds['pblht_bulk_richardson_pt25'].values))
+        pt5.append(float(ds['pblht_bulk_richardson_pt5'].values))
+
+    np.testing.assert_array_almost_equal(pt25, [1212.0, 230.0, 177.0, 780.0], decimal=1)
+    np.testing.assert_array_almost_equal(pt5, [1417.0, 455.0, 177.0, 976.0], decimal=1)
+
+    # Check the profile variables and metadata on the last sonde processed
+    assert ds['pblht_bulk_richardson_pt25'].attrs['units'] == 'm'
+    np.testing.assert_almost_equal(ds['bulk_richardson_number'].values[0], 0.0, decimal=6)
+    np.testing.assert_almost_equal(
+        ds['virtual_potential_temperature_ss'].values[0], 302.94, decimal=2
+    )
+    # Virtual potential temperature exceeds the dry value for moist air
+    assert np.all(
+        ds['virtual_potential_temperature_ss'].values >= ds['potential_temperature_ss'].values
+    )
+
+    ds = act.io.arm.read_arm_netcdf(files[0])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.retrievals.sonde.calculate_pbl_bulk_richardson(ds, vapor_pressure_method='metpy')
+    # Eq 12 diverges from MetPy aloft, but that is well above the PBL, so the
+    # retrieved heights are unchanged for the ARM test soundings
+    np.testing.assert_almost_equal(ds['pblht_bulk_richardson_pt25'].values, 1212.0, decimal=1)
+    np.testing.assert_almost_equal(ds['pblht_bulk_richardson_pt5'].values, 1417.0, decimal=1)
+
+    with pytest.raises(ValueError):
+        act.retrievals.sonde.calculate_pbl_bulk_richardson(ds, vapor_pressure_method='other')
+
+    # Threshold that is never reached is flagged bad
+    ds = act.io.arm.read_arm_netcdf(files[2])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.retrievals.sonde.calculate_pbl_bulk_richardson(ds, thresholds=(1000.0,))
+    assert ds['pblht_bulk_richardson_pt1000'].values == -9999.0
+
+    # A height above max_pbl_height AGL is flagged bad
+    ds = act.io.arm.read_arm_netcdf(files[2])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.retrievals.sonde.calculate_pbl_bulk_richardson(ds, max_pbl_height=100.0)
+    assert ds['pblht_bulk_richardson_pt25'].values == -9999.0
+
+    # Non-default thresholds still produce sensible variable names
+    ds = act.io.arm.read_arm_netcdf(files[2])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    ds = act.retrievals.sonde.calculate_pbl_bulk_richardson(ds, thresholds=(0.75,))
+    np.testing.assert_almost_equal(ds['pblht_bulk_richardson_pt75'].values, 177.0, decimal=1)
+
+    # Preprocessing guards still apply
+    ds = act.io.arm.read_arm_netcdf(files[2])
+    ds['tdry'].attrs['units'] = 'degree_Celsius'
+    with pytest.raises(ValueError):
+        ds2 = ds.where(ds['alt'].load() < 1000.0, drop=True)
+        act.retrievals.sonde.calculate_pbl_bulk_richardson(ds2)

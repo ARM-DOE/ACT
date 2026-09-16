@@ -31,6 +31,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             'calculate_precipitable_water',
             'calculate_stability_indicies',
             'calculate_pbl_heffter',
+            'calculate_pbl_bulk_richardson',
         ],
         'sp2': ['calc_sp2_diams_masses', 'process_sp2_psds'],
     },
