@@ -676,9 +676,9 @@ def calculate_pbl_bulk_richardson(
         Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program
         (United States) (2013).
 
-    Sorensen, J. H., A. Rasmussen, T. Ellermann, and E. Lyck, 1998: Mesoscale Influence on
-        Long-range Transport - Evidence From ETEX Modeling and Observations. Atmospheric
-        Environment, 32(24), 4207-4217. https://doi.org/10.1016/S1352-2310(98)00171-4
+    Sørensen, J. H., A. Rasmussen, T. Ellermann, and E. Lyck, 1998: Mesoscale Influence on
+        Long-range Transport - Evidence From ETEX Modelling and Observations. Atmospheric
+        Environment, 32(24), 4207-4217. https://doi.org/10.1016/S1352-2310(98)00183-6
 
     .. note::
         Eq 12 of Sivaraman et al. (2013) approximates the saturation vapor
@@ -688,15 +688,6 @@ def calculate_pbl_bulk_richardson(
         ~50%.  It is the default here because it reproduces the ARM
         pblhtsonde1mcfarl VAP; set vapor_pressure_method='metpy' for the more
         accurate form.
-
-    .. note::
-        Sivaraman et al. (2013) give the reference values in Eq 12
-        (es1 = 6.11 hPa, T1 = 273.15 K) but leave the latent heat of
-        vaporization and the gas constant for water vapor as symbols.  The
-        values from metpy.constants are used here.  Substituting the common
-        textbook pair (2.5e6 J/kg and 461.5 J/(kg K)) leaves the retrieved
-        heights unchanged for the ARM test soundings.
-
     """
 
     if vapor_pressure_method not in ('vap', 'metpy'):
