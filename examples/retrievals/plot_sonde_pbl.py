@@ -1,6 +1,6 @@
 """
 Planetary Boundary Layer Height Profile via Radiosonde Retrievals
-----------------------------------------------------------
+-----------------------------------------------------------------
 
 This examples shoes how to estimate the planetary boundary layer height
 via the Liu-Liang 2010 technique, a Bulk Richardson Number method,
