@@ -40,14 +40,6 @@ def calculate_precipitable_water(ds, temp_name='tdry', rh_name='rh', pres_name='
     Buck, A. L., 1981: New Equations for Computing Vapor Pressure and
         Enhancement Factor. Journal of Applied Meteorology, 20(12), 1527-1532.
         https://doi.org/10.1175/1520-0450(1981)020<1527:NEFCVP>2.0.CO;2
-
-    .. note::
-        The coefficients used below (0.61121, 18.678, 234.5, 257.14 over water
-        and 0.61115, 23.036, 333.7, 279.82 over ice) are not from Buck (1981)
-        but from the later revision published in the Buck Research CR-1A
-        manual, commonly cited as Buck (1996). TODO: add that citation once the
-        manual has been obtained and the coefficients confirmed against it.
-
     """
     temp = ds[temp_name].values
     rh = ds[rh_name].values
