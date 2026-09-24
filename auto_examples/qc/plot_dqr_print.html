@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -743,18 +744,17 @@ D170217.3,sgp30ecorE14.b1,Incorrect,SGP/ECOR/E14 - Sensible and Latent Heat Flux
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-
-<span class="c1"># Pass in a datastream, start date, and end date to get all DQRs in that range</span>
-<span class="c1"># This will print it in a user readable format</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dqr</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">qc</span><span class="o">.</span><span class="n">print_dqr</span><span class="p">(</span><span class="s1">'sgp30ecorE14.b1'</span><span class="p">,</span> <span class="s1">'20150101'</span><span class="p">,</span> <span class="s1">'20190101'</span><span class="p">)</span>
-
-<span class="c1"># If you want something that can be copy and pasted into a spreadsheet</span>
-<span class="c1"># set pretty_print=False</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">dqr</span></a> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">qc</span><span class="o">.</span><span class="n">print_dqr</span><span class="p">(</span><span class="s1">'sgp30ecorE14.b1'</span><span class="p">,</span> <span class="s1">'20150101'</span><span class="p">,</span> <span class="s1">'20190101'</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.194 seconds)</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Pass in a datastream, start date, and end date to get all DQRs in that range</span><span class="w">
+</span><span class="c1"># This will print it in a user readable format</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="dict"><span class="n">dqr</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-act-qc sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.qc.print_dqr.html#act.qc.print_dqr" title="act.qc.print_dqr"><span class="n">act</span><span class="o">.</span><span class="n">qc</span><span class="o">.</span><span class="n">print_dqr</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">sgp30ecorE14.b1</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'</span><span class="s1">20150101</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'</span><span class="s1">20190101</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># If you want something that can be copy and pasted into a spreadsheet</span><span class="w">
+</span><span class="c1"># set pretty_print=False</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="dict"><span class="n">dqr</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-act-qc sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.qc.print_dqr.html#act.qc.print_dqr" title="act.qc.print_dqr"><span class="n">act</span><span class="o">.</span><span class="n">qc</span><span class="o">.</span><span class="n">print_dqr</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">sgp30ecorE14.b1</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'</span><span class="s1">20150101</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'</span><span class="s1">20190101</span><span class="s1">'</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.548 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-qc-plot-dqr-print-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/cddebda02592a68576c8a6081111e72c/plot_dqr_print.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_dqr_print.ipynb</span></code></a></p>

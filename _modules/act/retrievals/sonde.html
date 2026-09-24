@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -449,6 +449,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">metpy.calc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpcalc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">metpy.constants</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpconsts</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">metpy.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
@@ -478,6 +479,11 @@
 <span class="sd">        Name of atmospheric pressure field to use. Defaults to 'pres' for</span>
 <span class="sd">        sondewnpn b1 level data.</span>
 
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Buck, A. L., 1981: New Equations for Computing Vapor Pressure and</span>
+<span class="sd">        Enhancement Factor. Journal of Applied Meteorology, 20(12), 1527-1532.</span>
+<span class="sd">        https://doi.org/10.1175/1520-0450(1981)020&lt;1527:NEFCVP&gt;2.0.CO;2</span>
 <span class="sd">    """</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">rh</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">rh_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -569,6 +575,13 @@
 <span class="sd">    -------</span>
 <span class="sd">    ds : ACT dataset</span>
 <span class="sd">        An ACT dataset with additional stability indicies added.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert,</span>
+<span class="sd">    K., Thielen, J. E., and Bruick, Z., 2021: MetPy: A Python Package for</span>
+<span class="sd">    Meteorological Data. Unidata, https://github.com/Unidata/MetPy,</span>
+<span class="sd">    doi:10.5065/D6WW7G29.</span>
 
 <span class="sd">    """</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">temp_name</span><span class="p">]</span>
@@ -1026,6 +1039,214 @@
         <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">ds</span><span class="p">[</span><span class="s1">'top_inversion'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="k">return</span> <span class="n">ds</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_pbl_bulk_richardson">
+<a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_pbl_bulk_richardson.html#act.retrievals.calculate_pbl_bulk_richardson">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_pbl_bulk_richardson</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="s1">'tdry'</span><span class="p">,</span>
+    <span class="n">pressure</span><span class="o">=</span><span class="s1">'pres'</span><span class="p">,</span>
+    <span class="n">rh</span><span class="o">=</span><span class="s1">'rh'</span><span class="p">,</span>
+    <span class="n">u_wind</span><span class="o">=</span><span class="s1">'u_wind'</span><span class="p">,</span>
+    <span class="n">v_wind</span><span class="o">=</span><span class="s1">'v_wind'</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="s1">'alt'</span><span class="p">,</span>
+    <span class="n">smooth_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">base</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+    <span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">vapor_pressure_method</span><span class="o">=</span><span class="s1">'vap'</span><span class="p">,</span>
+    <span class="n">max_pbl_height</span><span class="o">=</span><span class="mf">4000.0</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function for calculating the PBL height from a radiosonde profile using</span>
+<span class="sd">    the bulk Richardson number technique.  The bulk Richardson number relates</span>
+<span class="sd">    vertical stability to vertical shear, representing the ratio of thermally</span>
+<span class="sd">    produced turbulence to that generated by vertical shear.  The method</span>
+<span class="sd">    assumes there is no turbulence production at the top of the boundary</span>
+<span class="sd">    layer, so the bulk Richardson number exceeds its critical value there.</span>
+<span class="sd">    The PBL height is taken as the lowest height at which it reaches a</span>
+<span class="sd">    critical threshold.</span>
+
+<span class="sd">    The literature does not settle on a single critical threshold, so the ARM</span>
+<span class="sd">    VAP reports heights for both 0.25 and 0.5.  Both are returned by default.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        Dataset housing radiosonde profile for calculations</span>
+<span class="sd">    temperature : str</span>
+<span class="sd">        The name of the temperature field.</span>
+<span class="sd">    pressure : str</span>
+<span class="sd">        The name of the pressure field.  Expected to be in hPa.</span>
+<span class="sd">    rh : str</span>
+<span class="sd">        The name of the relative humidity field, in percent.</span>
+<span class="sd">    u_wind : str</span>
+<span class="sd">        The name of the eastward wind component field.</span>
+<span class="sd">    v_wind : str</span>
+<span class="sd">        The name of the northward wind component field.</span>
+<span class="sd">    height : str</span>
+<span class="sd">        The name of the height field</span>
+<span class="sd">    smooth_height : int</span>
+<span class="sd">        Number of points to do a moving average on sounding height data to reduce noise</span>
+<span class="sd">    base : int</span>
+<span class="sd">        Interval for pressure gridding.  In testing, 5 mb was found to produce results with</span>
+<span class="sd">        the lowest RMS</span>
+<span class="sd">    thresholds : tuple or list</span>
+<span class="sd">        Critical bulk Richardson number thresholds to evaluate.  One PBL height</span>
+<span class="sd">        variable is returned per threshold, named from the threshold value, so</span>
+<span class="sd">        the default of (0.25, 0.5) produces 'pblht_bulk_richardson_pt25' and</span>
+<span class="sd">        'pblht_bulk_richardson_pt5' to match the ARM VAP field names.</span>
+<span class="sd">    vapor_pressure_method : str</span>
+<span class="sd">        Method used to calculate saturation vapor pressure.  'vap' (default)</span>
+<span class="sd">        reproduces Eq 12 of Sivaraman et al. (2013); 'metpy' uses</span>
+<span class="sd">        metpy.calc.saturation_vapor_pressure.  See the note below.</span>
+<span class="sd">    max_pbl_height : float</span>
+<span class="sd">        Maximum PBL height AGL, in meters.  Following the VAP, heights above</span>
+<span class="sd">        this are flagged as bad and set to -9999.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xarray Dataset</span>
+<span class="sd">        xarray dataset with results stored in pblht_bulk_richardson_* variables</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Seibert, P., F. Beyrich, S. E. Gryning, S. Joffre, A. Rasmussen, and P. Tercier, 2000:</span>
+<span class="sd">        Review and Intercomparison of Operational Methods for the Determination of the</span>
+<span class="sd">        Mixing Height. Atmospheric Environment, 34(7), 1001-1027.</span>
+<span class="sd">        https://doi.org/10.1016/S1352-2310(99)00349-0</span>
+
+<span class="sd">    Sivaraman, C., S. McFarlane, E. Chapman, M. Jensen, T. Toto, S. Liu, and M. Fischer.</span>
+<span class="sd">        "Planetary boundary layer (PBL) height value added product (VAP): Radiosonde retrievals."</span>
+<span class="sd">        Department of Energy Office of Science Atmospheric Radiation Measurement (ARM) Program</span>
+<span class="sd">        (United States) (2013).</span>
+
+<span class="sd">    Sørensen, J. H., A. Rasmussen, T. Ellermann, and E. Lyck, 1998: Mesoscale Influence on</span>
+<span class="sd">        Long-range Transport - Evidence From ETEX Modelling and Observations. Atmospheric</span>
+<span class="sd">        Environment, 32(24), 4207-4217. https://doi.org/10.1016/S1352-2310(98)00183-6</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Eq 12 of Sivaraman et al. (2013) approximates the saturation vapor</span>
+<span class="sd">        pressure assuming the latent heat of vaporization is constant.  That</span>
+<span class="sd">        holds near the surface but degrades at the cold temperatures aloft,</span>
+<span class="sd">        where it departs from the formulation used by MetPy by as much as</span>
+<span class="sd">        ~50%.  It is the default here because it reproduces the ARM</span>
+<span class="sd">        pblhtsonde1mcfarl VAP; set vapor_pressure_method='metpy' for the more</span>
+<span class="sd">        accurate form.</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="n">vapor_pressure_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'vap'</span><span class="p">,</span> <span class="s1">'metpy'</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"vapor_pressure_method must be either 'vap' or 'metpy'"</span><span class="p">)</span>
+
+    <span class="c1"># Preprocess the sonde data to ensure the same methods across all retrievals</span>
+    <span class="n">ds2</span> <span class="o">=</span> <span class="n">preprocess_sonde_data</span><span class="p">(</span>
+        <span class="n">ds</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+        <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+        <span class="n">smooth_height</span><span class="o">=</span><span class="n">smooth_height</span><span class="p">,</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get data.  Cast to float so the wind QC below can assign NaN</span>
+    <span class="n">pres</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">pressure</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">temperature</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">relh</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">rh</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">u_wind</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">v_wind</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">alt</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="n">height</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">ds2</span><span class="p">[</span><span class="s1">'potential_temperature'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Calculate AGL, using the lowest valid level as the surface reference</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">sfc_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alt</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sfc_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">agl</span> <span class="o">=</span> <span class="n">alt</span> <span class="o">-</span> <span class="n">alt</span><span class="p">[</span><span class="n">sfc_idx</span><span class="p">]</span>
+
+    <span class="c1"># Windspeeds below 50m AGL that exceed 33.5 m/s are treated as missing</span>
+    <span class="n">fast_wind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">agl</span> <span class="o">&lt;</span> <span class="mf">50.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="n">v</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">33.5</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">u</span><span class="p">[</span><span class="n">fast_wind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">v</span><span class="p">[</span><span class="n">fast_wind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># Calculate saturation vapor pressure, in hPa</span>
+    <span class="n">temp_k</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">+</span> <span class="mf">273.15</span>
+    <span class="k">if</span> <span class="n">vapor_pressure_method</span> <span class="o">==</span> <span class="s1">'vap'</span><span class="p">:</span>
+        <span class="n">lv_over_rv</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mpconsts</span><span class="o">.</span><span class="n">water_heat_vaporization</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'J/kg'</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+            <span class="o">/</span> <span class="n">mpconsts</span><span class="o">.</span><span class="n">water_gas_constant</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'J/(kg K)'</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+        <span class="p">)</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="mf">6.11</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lv_over_rv</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">temp_k</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">273.15</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">saturation_vapor_pressure</span><span class="p">(</span><span class="n">temp</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'hPa'</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+
+    <span class="c1"># Partial pressure of water vapor and the resulting virtual temperature</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="n">relh</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">es</span>
+    <span class="n">temp_v</span> <span class="o">=</span> <span class="n">temp_k</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">e</span> <span class="o">/</span> <span class="n">pres</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.622</span><span class="p">))</span>
+
+    <span class="c1"># Use the same conversion as the dry potential temperature so that the two</span>
+    <span class="c1"># profiles share an exponent</span>
+    <span class="n">theta_v</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">convert_to_potential_temp</span><span class="p">(</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">temp_v</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">,</span>
+            <span class="n">temp_var_units</span><span class="o">=</span><span class="s1">'degC'</span><span class="p">,</span>
+            <span class="n">pressure</span><span class="o">=</span><span class="n">pres</span><span class="p">,</span>
+            <span class="n">press_var_units</span><span class="o">=</span><span class="s1">'hPa'</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="mf">273.15</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Calculate the bulk Richardson number.  At the surface the expression is</span>
+    <span class="c1"># 0/0, so it is set explicitly</span>
+    <span class="n">gravity</span> <span class="o">=</span> <span class="n">mpconsts</span><span class="o">.</span><span class="n">earth_gravity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'m/s^2'</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">):</span>
+        <span class="n">rib</span> <span class="o">=</span> <span class="p">(</span><span class="n">gravity</span> <span class="o">*</span> <span class="n">agl</span> <span class="o">/</span> <span class="n">theta_v</span><span class="p">[</span><span class="n">sfc_idx</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">theta_v</span> <span class="o">-</span> <span class="n">theta_v</span><span class="p">[</span><span class="n">sfc_idx</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="n">v</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">rib</span><span class="p">[</span><span class="n">sfc_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Find the lowest height reaching each threshold and add it to the dataset</span>
+    <span class="k">for</span> <span class="n">threshold</span> <span class="ow">in</span> <span class="n">thresholds</span><span class="p">:</span>
+        <span class="n">crossing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rib</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">crossing</span> <span class="o">=</span> <span class="n">crossing</span><span class="p">[</span><span class="n">crossing</span> <span class="o">&gt;</span> <span class="n">sfc_idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">crossing</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">agl</span><span class="p">[</span><span class="n">crossing</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="n">max_pbl_height</span><span class="p">:</span>
+            <span class="n">pbl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pbl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">alt</span><span class="p">[</span><span class="n">crossing</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s1">'pt'</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">'</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">'0'</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+        <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'units'</span><span class="p">:</span> <span class="s1">'m'</span><span class="p">,</span>
+            <span class="s1">'long_name'</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">'Planetary Boundary Layer Height Bulk Richardson, '</span>
+                <span class="sa">f</span><span class="s1">'critical threshold </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="sa">f</span><span class="s1">'pblht_bulk_richardson_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">'mb'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Gridded pressure'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'atm_pres_ss'</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'atm_pres_ss'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'atm_pres_ss'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">'K'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Gridded potential temperature'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'atm_pres_ss'</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'atm_pres_ss'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'potential_temperature_ss'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">'K'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Gridded virtual potential temperature'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">theta_v</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'atm_pres_ss'</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'atm_pres_ss'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'virtual_potential_temperature_ss'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">'m'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Gridded altitude'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'atm_pres_ss'</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'atm_pres_ss'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'alt_ss'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+    <span class="n">atts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'units'</span><span class="p">:</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'long_name'</span><span class="p">:</span> <span class="s1">'Bulk Richardson number'</span><span class="p">}</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">rib</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s1">'atm_pres_ss'</span><span class="p">:</span> <span class="n">pres</span><span class="p">},</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'atm_pres_ss'</span><span class="p">],</span> <span class="n">attrs</span><span class="o">=</span><span class="n">atts</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'bulk_richardson_number'</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
 
     <span class="k">return</span> <span class="n">ds</span></div>
 

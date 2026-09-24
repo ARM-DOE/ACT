@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -568,43 +569,42 @@ to download the full example code.</p>
 <p>Plot up climate stripes plots from already
 existing climatologies from ARM data.
 Author: Adam Theisen</p>
-<img src="../../_images/sphx_glr_plot_stripes_001.png" srcset="../../_images/sphx_glr_plot_stripes_001.png" alt="act_datastream temperature Stripes on 19930101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-
-<span class="c1"># SGP E13 MET data has already been processed to yearly averages,</span>
-<span class="c1"># removing data flagged by embedded qc and DQRs</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv'</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">col_names</span></a> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'time'</span><span class="p">,</span>
-    <span class="s1">'temperature'</span><span class="p">,</span>
-    <span class="s1">'count'</span><span class="p">,</span>
-    <span class="s1">'minimum'</span><span class="p">,</span>
-    <span class="s1">'maximum'</span><span class="p">,</span>
-    <span class="s1">'standard_deviation'</span><span class="p">,</span>
-    <span class="s1">'standard_error'</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-    <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">url</span></a><span class="p">,</span>
-    <span class="n">column_names</span><span class="o">=</span><a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">col_names</span></a><span class="p">,</span>
-    <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
-    <span class="n">date_format</span><span class="o">=</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S"</span><span class="p">,</span>
-    <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Drop years with less than 500000 samples</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'count'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">500000</span><span class="p">)</span>
-
-<span class="c1"># Create plot display</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">reference</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">'2003-01-01'</span><span class="p">,</span> <span class="s1">'2013-01-01'</span><span class="p">]</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_stripes</span><span class="p">(</span><span class="s1">'temperature'</span><span class="p">,</span> <span class="n">reference_period</span><span class="o">=</span><a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">reference</span></a><span class="p">)</span>
-
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.287 seconds)</p>
+<img src="../../_images/sphx_glr_plot_stripes_001.png" srcset="../../_images/sphx_glr_plot_stripes_001.png" alt="act_datastream temperature Stripes on 19930101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># SGP E13 MET data has already been processed to yearly averages,</span><span class="w">
+</span><span class="c1"># removing data flagged by embedded qc and DQRs</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">url</span></a> <span class="o">=</span> <span class="s1">'</span><span class="s1">https://raw.githubusercontent.com/AdamTheisen/ARM-Climatologies/refs/heads/main/results/sgpmetE13.b1_temp_mean_YS.csv</span><span class="s1">'</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">col_names</span></a> <span class="o">=</span> <span class="p">[</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">time</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temperature</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">count</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">minimum</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">maximum</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">standard_deviation</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">standard_error</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.io.read_csv.html#act.io.read_csv" title="act.io.read_csv"><span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_csv</span></a><span class="p">(</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">url</span></a><span class="p">,</span><span class="w">
+</span>    <span class="n">column_names</span><span class="o">=</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">col_names</span></a><span class="p">,</span><span class="w">
+</span>    <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w">
+</span>    <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s1">'</span><span class="s1">time</span><span class="s1">'</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">date_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">Y-</span><span class="s2">%</span><span class="s2">m-</span><span class="si">%d</span><span class="s2">T</span><span class="s2">%</span><span class="s2">H:</span><span class="s2">%</span><span class="s2">M:</span><span class="s2">%</span><span class="s2">S</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Drop years with less than 500000 samples</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'</span><span class="s1">count</span><span class="s1">'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">500000</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Create plot display</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><span class="n">display</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span></a><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">reference</span></a> <span class="o">=</span> <span class="p">[</span><span class="s1">'</span><span class="s1">2003-01-01</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'</span><span class="s1">2013-01-01</span><span class="s1">'</span><span class="p">]</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.plot_stripes.html#act.plotting.TimeSeriesDisplay.plot_stripes" title="act.plotting.TimeSeriesDisplay.plot_stripes"><span class="n">display</span><span class="o">.</span><span class="n">plot_stripes</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">temperature</span><span class="s1">'</span><span class="p">,</span> <span class="n">reference_period</span><span class="o">=</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">reference</span></a><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.277 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plotting-plot-stripes-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/b5b6e24b5dbc5e93d7eed811fdfaf5f3/plot_stripes.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_stripes.ipynb</span></code></a></p>

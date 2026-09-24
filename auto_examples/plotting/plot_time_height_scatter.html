@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -567,25 +568,24 @@ to download the full example code.</p>
 <span id="sphx-glr-auto-examples-plotting-plot-time-height-scatter-py"></span><h1>Time-Height Scatter Plot<a class="headerlink" href="#time-height-scatter-plot" title="Link to this heading">#</a></h1>
 <p>This will show how to use the time-height scatter
 plot function that’s part of the TimeSeries Display.</p>
-<img src="../../_images/sphx_glr_plot_time_height_scatter_001.png" srcset="../../_images/sphx_glr_plot_time_height_scatter_001.png" alt="sgpsondewnpnC1.b1 tdry on 20190101, sgpsondewnpnC1.b1 rh on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">act.tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">sample_files</span>
-
-<span class="c1"># Read in radiosonde data</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span></a><span class="p">)</span>
-
-<span class="c1"># Create scatter plots of the sonde data</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">time_height_scatter</span><span class="p">(</span><span class="s1">'tdry'</span><span class="p">,</span> <span class="n">plot_alt_field</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
-<span class="n">display</span><span class="o">.</span><span class="n">time_height_scatter</span><span class="p">(</span><span class="s1">'rh'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">cvd_friendly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.537 seconds)</p>
+<img src="../../_images/sphx_glr_plot_time_height_scatter_001.png" srcset="../../_images/sphx_glr_plot_time_height_scatter_001.png" alt="sgpsondewnpnC1.b1 tdry on 20190101, sgpsondewnpnC1.b1 rh on 20190101" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">act</span><span class="nn">.</span><span class="nn">tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">sample_files</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Read in radiosonde data</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.io.read_arm_netcdf.html#act.io.read_arm_netcdf" title="act.io.read_arm_netcdf"><span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">sample_files</span><span class="o">.</span><span class="n">EXAMPLE_SONDE1</span></a><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Create scatter plots of the sonde data</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><span class="n">display</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span></a><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.time_height_scatter.html#act.plotting.TimeSeriesDisplay.time_height_scatter" title="act.plotting.TimeSeriesDisplay.time_height_scatter"><span class="n">display</span><span class="o">.</span><span class="n">time_height_scatter</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">tdry</span><span class="s1">'</span><span class="p">,</span> <span class="n">plot_alt_field</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.time_height_scatter.html#act.plotting.TimeSeriesDisplay.time_height_scatter" title="act.plotting.TimeSeriesDisplay.time_height_scatter"><span class="n">display</span><span class="o">.</span><span class="n">time_height_scatter</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">rh</span><span class="s1">'</span><span class="p">,</span> <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="p">)</span><span class="p">,</span> <span class="n">cvd_friendly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">day_night_background</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.449 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plotting-plot-time-height-scatter-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/2b6ff01e13b621292ceb2f96ace2c1b1/plot_time_height_scatter.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_time_height_scatter.ipynb</span></code></a></p>

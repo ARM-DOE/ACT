@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Airnow Data &#8212; ACT Documentation</title>
+    <title>AirNow Data &#8212; ACT Documentation</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -76,8 +76,8 @@
     <script src="../../_static/doc_shared.js?v=4c9803b4"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="NEON Data" href="plot_neon.html" />
-    <link rel="prev" title="NOAA FMCW and parsivel plot" href="plot_noaa_fmcw_moment.html" /> 
+    <link rel="next" title="Input/Output Examples" href="../io/index.html" />
+    <link rel="prev" title="NEON Data" href="plot_neon.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -542,7 +543,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Discovery examples</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Airnow Data</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">AirNow Data</span></li>
   </ul>
 </nav>
 </div>
@@ -564,43 +565,45 @@
 to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="airnow-data">
-<span id="sphx-glr-auto-examples-discovery-plot-airnow-py"></span><h1>Airnow Data<a class="headerlink" href="#airnow-data" title="Link to this heading">#</a></h1>
-<p>This example shows the different ways to pull
-air quality information from EPA’s AirNow API for
-a station near to SGP</p>
-<img src="../../_images/sphx_glr_plot_airnow_001.png" srcset="../../_images/sphx_glr_plot_airnow_001.png" alt="act_datastream AQI on 20220501" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt; Size: 776B
-Dimensions:         (index: 8)
+<span id="sphx-glr-auto-examples-discovery-plot-airnow-py"></span><h1>AirNow Data<a class="headerlink" href="#airnow-data" title="Link to this heading">#</a></h1>
+<p>This example shows the different ways to pull air quality information
+from EPA’s AirNow API for an area near the ARM Southern Great Plains
+(SGP) atmospheric observatory.</p>
+<img src="../../_images/sphx_glr_plot_airnow_001.png" srcset="../../_images/sphx_glr_plot_airnow_001.png" alt="act_datastream AQI on 20220501" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt; Size: 16B
+Dimensions:          (index: 1)
 Coordinates:
-  * index           (index) int64 64B 0 1 2 3 4 5 6 7
+  * index            (index) int64 8B 0
 Data variables:
-    DateIssue       (index) object 64B '2022-04-29' ... '2022-04-29'
-    DateForecast    (index) object 64B '2022-05-01' ... '2022-05-04'
-    ReportingArea   (index) object 64B 'Oklahoma City' ... 'Oklahoma City'
-    StateCode       (index) object 64B 'OK' 'OK' 'OK' 'OK' 'OK' 'OK' 'OK' 'OK'
-    Latitude        (index) float64 64B 35.51 35.51 35.51 ... 35.51 35.51 35.51
-    Longitude       (index) float64 64B -97.47 -97.47 -97.47 ... -97.47 -97.47
-    ParameterName   (index) object 64B 'O3' 'PM2.5' 'O3' ... 'O3' 'PM2.5'
-    AQI             (index) int64 64B 50 40 30 20 50 30 30 20
-    CategoryNumber  (index) int64 64B 1 1 1 1 1 1 1 1
-    CategoryName    (index) object 64B 'Good' 'Good' 'Good' ... 'Good' 'Good'
-    ActionDay       (index) bool 8B False False False ... False False False
-    Discussion      (index) object 64B 'Southerly winds today will bring mois...
-&lt;xarray.Dataset&gt; Size: 288B
-Dimensions:         (index: 3)
+    WebServiceError  (index) object 8B 'Error - There is no reporting area at...
+&lt;xarray.Dataset&gt; Size: 1kB
+Dimensions:               (index: 19)
 Coordinates:
-  * index           (index) int64 24B 0 1 2
+  * index                 (index) int64 152B 0 1 2 3 4 5 6 ... 13 14 15 16 17 18
 Data variables:
-    DateObserved    (index) object 24B '2022-05-01' '2022-05-01' '2022-05-01'
-    HourObserved    (index) int64 24B 0 0 0
-    LocalTimeZone   (index) object 24B 'CST' 'CST' 'CST'
-    ReportingArea   (index) object 24B 'Oklahoma City' ... 'Oklahoma City'
-    StateCode       (index) object 24B 'OK' 'OK' 'OK'
-    Latitude        (index) float64 24B 35.51 35.51 35.51
-    Longitude       (index) float64 24B -97.47 -97.47 -97.47
-    ParameterName   (index) object 24B 'OZONE' 'PM2.5' 'PM10'
-    AQI             (index) int64 24B 51 39 19
-    CategoryNumber  (index) int64 24B 2 1 1
-    CategoryName    (index) object 24B 'Moderate' 'Good' 'Good'
+    DateObserved          (index) object 152B '2025-05-01' ... '2025-05-01'
+    StateCode             (index) object 152B 'OK' 'OK' 'OK' ... 'OK' 'OK' 'OK'
+    ReportingAreaName     (index) object 152B 'Miami' 'Miami' ... 'McAlester'
+    ParameterName         (index) object 152B 'PM2.5' 'OZONE' ... 'PM10' 'OZONE'
+    DailyAQI              (index) int64 152B 32 38 23 9 90 32 ... 7 51 24 10 49
+    DailyAQICategoryName  (index) object 152B 'Good' 'Good' ... 'Good' 'Good'
+&lt;xarray.Dataset&gt; Size: 112B
+Dimensions:             (index: 1)
+Coordinates:
+  * index               (index) int64 8B 0
+Data variables: (12/13)
+    DateObserved        (index) object 8B '2026-09-24'
+    HourObserved        (index) object 8B '12:00'
+    LocalTimeZone       (index) object 8B 'CDT'
+    ReportingAreaName   (index) float64 8B nan
+    SiteID              (index) int64 8B 400710604
+    SiteName            (index) object 8B 'Ponca City'
+    ...                  ...
+    NowcastAQI          (index) int64 8B 34
+    AqiCategoryName     (index) object 8B 'Good'
+    ReportingAgency     (index) object 8B 'Oklahoma Department of Environment...
+    LookupBehavior      (index) object 8B 'Closest Reading By Pollutant'
+    ConsideredMonitors  (index) object 8B 'All'
+    LookupBoundary      (index) object 8B '50 Miles'
 &lt;xarray.Dataset&gt; Size: 584B
 Dimensions:            (time: 13)
 Coordinates:
@@ -621,54 +624,78 @@ Data variables:
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-
-<span class="c1"># You need an account and token from https://docs.airnowapi.org/ first</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/os.html#os.getenv" title="os.getenv" class="sphx-glr-backref-module-os sphx-glr-backref-type-py-function"><span class="n">os</span><span class="o">.</span><span class="n">getenv</span></a><span class="p">(</span><span class="s1">'AIRNOW_API'</span><span class="p">)</span>
-
-<span class="k">if</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="c1"># This first example will get the forcasted values for the date passed</span>
-    <span class="c1"># at stations within 100 miles of the Zipcode. Can also use latlon instead as</span>
-    <span class="c1"># results = act.discovery.get_airnow_forecast(token, '2022-05-01', distance=100,</span>
-    <span class="c1">#                                             latlon=[41.958, -88.12])</span>
-    <span class="c1"># If the username and token are not set, use the existing sample file</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_forecast</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">'2022-05-01'</span><span class="p">,</span> <span class="n">zipcode</span><span class="o">=</span><span class="mi">74630</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-    <span class="c1"># The results show a dataset with air quality information from Oklahoma City</span>
-    <span class="c1"># The data is not indexed by time and just a rudimentary xarray object from</span>
-    <span class="c1"># converted from a pandas DataFrame.  Note that the AirNow API labels the data</span>
-    <span class="c1"># returned as AQI.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-
-    <span class="c1"># This call gives the daily average for Ozone, PM2.5 and PM10</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_obs</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">'2022-05-01'</span><span class="p">,</span> <span class="n">zipcode</span><span class="o">=</span><span class="mi">74630</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-
-    <span class="c1"># This call will get all the station data for a time period within</span>
-    <span class="c1"># the bounding box provided.  This will return the object with time</span>
-    <span class="c1"># as a coordinate and can be used with ACT Plotting to plot after</span>
-    <span class="c1"># squeezing the dimensions.  It can be a 2D time series</span>
-    <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">lat_lon</span></a> <span class="o">=</span> <span class="s1">'-98.172,35.879,-96.76,37.069'</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_bounded_obs</span><span class="p">(</span>
-        <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">token</span></a><span class="p">,</span> <span class="s1">'2022-05-01T00'</span><span class="p">,</span> <span class="s1">'2022-05-01T12'</span><span class="p">,</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">lat_lon</span></a><span class="p">,</span> <span class="s1">'OZONE,PM25'</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">'B'</span>
-    <span class="p">)</span>
-    <span class="c1"># Reduce to 1D timeseries</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">'sites'</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-
-    <span class="c1"># Plot out data but note that Ozone was not return in the results</span>
-    <span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-    <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'PM2.5'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'PM2.5'</span><span class="p">)</span>
-    <span class="n">display</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'AQI'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'AQI'</span><span class="p">)</span>
-    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html#matplotlib.pyplot.legend" title="matplotlib.pyplot.legend" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span></a><span class="p">()</span>
-    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.380 seconds)</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># You need an account and token from https://docs.airnowapi.org/ first.</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-os sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/os.html#os.getenv" title="os.getenv"><span class="n">os</span><span class="o">.</span><span class="n">getenv</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">AIRNOW_API</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="k">if</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>    <span class="c1"># Get current forecast values for reporting areas within 100 miles of</span><span class="w">
+</span>    <span class="c1"># the ZIP code. A latitude/longitude location can also be used instead:</span><span class="w">
+</span>    <span class="c1">#</span><span class="w">
+</span>    <span class="c1"># results = act.discovery.get_airnow_forecast(</span><span class="w">
+</span>    <span class="c1">#     token, date, distance=100, latlon=[41.958, -88.12]</span><span class="w">
+</span>    <span class="c1"># )</span><span class="w">
+</span>    <span class="c1">#</span><span class="w">
+</span>    <span class="c1"># The updated AirNow forecast service provides current forecast</span><span class="w">
+</span>    <span class="c1"># information, so use today's date.</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">date</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">(</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'</span><span class="s1">%</span><span class="s1">Y-</span><span class="s1">%</span><span class="s1">m-</span><span class="si">%d</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span>    <span class="n">results</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-discovery sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.discovery.get_airnow_forecast.html#act.discovery.get_airnow_forecast" title="act.discovery.get_airnow_forecast"><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_forecast</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">date</span></a><span class="p">,</span> <span class="n">zipcode</span><span class="o">=</span><span class="mi">74630</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># The results are returned as a simple xarray Dataset converted from</span><span class="w">
+</span>    <span class="c1"># the AirNow tabular response. ACT normalizes the forecast AQI field</span><span class="w">
+</span>    <span class="c1"># to &quot;AQI&quot;.</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Historical daily observations are now requested by state rather than</span><span class="w">
+</span>    <span class="c1"># by ZIP code or latitude/longitude. This returns daily AQI values for</span><span class="w">
+</span>    <span class="c1"># reporting areas across the selected state.</span><span class="w">
+</span>    <span class="n">results</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-discovery sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.discovery.get_airnow_obs.html#act.discovery.get_airnow_obs" title="act.discovery.get_airnow_obs"><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_obs</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">date</span></a><span class="o">=</span><span class="s1">'</span><span class="s1">2025-05-01</span><span class="s1">'</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">'</span><span class="s1">OK</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Historical observations include fields such as DailyAQI and</span><span class="w">
+</span>    <span class="c1"># DailyAQICategoryName.</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Current observations can still be requested using either a ZIP code</span><span class="w">
+</span>    <span class="c1"># or latitude/longitude. The updated service returns nearby monitoring</span><span class="w">
+</span>    <span class="c1"># sites and includes fields such as NowcastAQI and AqiCategoryName.</span><span class="w">
+</span>    <span class="n">results</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-discovery sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.discovery.get_airnow_obs.html#act.discovery.get_airnow_obs" title="act.discovery.get_airnow_obs"><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_obs</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a><span class="p">,</span> <span class="n">zipcode</span><span class="o">=</span><span class="mi">74630</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># This call gets station data for a time period within the provided</span><span class="w">
+</span>    <span class="c1"># bounding box. The existing /aq/data/ endpoint is not being retired.</span><span class="w">
+</span>    <span class="c1"># The returned object has time as a coordinate and can be used with</span><span class="w">
+</span>    <span class="c1"># ACT plotting after reducing the site dimension.</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">lat_lon</span></a> <span class="o">=</span> <span class="s1">'</span><span class="s1">-98.172,35.879,-96.76,37.069</span><span class="s1">'</span><span class="w">
+</span>    <span class="n">results</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-discovery sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.discovery.get_airnow_bounded_obs.html#act.discovery.get_airnow_bounded_obs" title="act.discovery.get_airnow_bounded_obs"><span class="n">act</span><span class="o">.</span><span class="n">discovery</span><span class="o">.</span><span class="n">get_airnow_bounded_obs</span></a><span class="p">(</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">token</span></a><span class="p">,</span><span class="w">
+</span>        <span class="s1">'</span><span class="s1">2022-05-01T00</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>        <span class="s1">'</span><span class="s1">2022-05-01T12</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">lat_lon</span></a><span class="p">,</span><span class="w">
+</span>        <span class="s1">'</span><span class="s1">OZONE,PM25</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>        <span class="n">data_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">B</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Reduce to a 1D time series for this example.</span><span class="w">
+</span>    <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">'</span><span class="s1">sites</span><span class="s1">'</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Plot the available PM2.5 concentration and AQI data.</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><span class="n">display</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.html#act.plotting.TimeSeriesDisplay" title="act.plotting.TimeSeriesDisplay"><span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">TimeSeriesDisplay</span></a><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.plot.html#act.plotting.TimeSeriesDisplay.plot" title="act.plotting.TimeSeriesDisplay.plot"><span class="n">display</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">PM2.5</span><span class="s1">'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'</span><span class="s1">PM2.5</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.TimeSeriesDisplay.plot.html#act.plotting.TimeSeriesDisplay.plot" title="act.plotting.TimeSeriesDisplay.plot"><span class="n">display</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">AQI</span><span class="s1">'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'</span><span class="s1">AQI</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html#matplotlib.pyplot.legend" title="matplotlib.pyplot.legend"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.333 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-discovery-plot-airnow-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/f7dce7755ebac54743b4b6225a01566a/plot_airnow.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_airnow.ipynb</span></code></a></p>
@@ -697,20 +724,20 @@ Data variables:
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="plot_noaa_fmcw_moment.html"
+       href="plot_neon.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">NOAA FMCW and parsivel plot</p>
+        <p class="prev-next-title">NEON Data</p>
       </div>
     </a>
     <a class="right-next"
-       href="plot_neon.html"
+       href="../io/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">NEON Data</p>
+        <p class="prev-next-title">Input/Output Examples</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

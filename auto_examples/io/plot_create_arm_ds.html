@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Input/Output Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -613,53 +614,52 @@ random 1234253sdgfadf
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-
-<span class="c1"># Create an empty dataset using an ARM DOD</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">create_ds_from_arm_dod</span><span class="p">(</span><span class="s1">'vdis.b1'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'time'</span><span class="p">:</span> <span class="mi">1440</span><span class="p">},</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">)</span>
-
-<span class="c1"># Print out the xarray dataset to see that it's empty</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
-
-<span class="c1"># The user could populate this through a number of ways</span>
-<span class="c1"># and that's best left up to the user on how to do it.</span>
-<span class="c1"># If one has an existing dataset, a mapping of variable</span>
-<span class="c1"># names is sometimes the easiest way</span>
-
-<span class="c1"># Let's look at some variable attributes</span>
-<span class="c1"># These can be updated and it would be up to the</span>
-<span class="c1"># user to ensure these tests are being applied</span>
-<span class="c1"># and are appropriately set in the cooresponding QC variable</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'num_drops'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
-
-<span class="c1"># Next, let's print out the global attribuets</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
-
-<span class="c1"># Add additional attributes or append to existing</span>
-<span class="c1"># if they are needed using a dictionary</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">atts</span></a> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'command_line'</span><span class="p">:</span> <span class="s1">'python  plot_create_arm_ds.py'</span><span class="p">,</span>
-    <span class="s1">'process_version'</span><span class="p">:</span> <span class="s1">'1.2.3'</span><span class="p">,</span>
-    <span class="s1">'history'</span><span class="p">:</span> <span class="s1">'Processed with Jupyter Workbench'</span><span class="p">,</span>
-    <span class="s1">'random'</span><span class="p">:</span> <span class="s1">'1234253sdgfadf'</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="k">for</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a> <span class="ow">in</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">atts</span></a><span class="p">:</span>
-    <span class="k">if</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">]</span> <span class="o">+=</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">atts</span></a><span class="p">[</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">]</span> <span class="o">=</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">atts</span></a><span class="p">[</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">]</span>
-    <span class="c1"># Print out the attribute</span>
-    <span class="nb">print</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">a</span></a><span class="p">])</span>
-
-<span class="c1"># Write data out to netcdf</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">'./sgpvdisX1.b1.20230101.000000.nc'</span><span class="p">)</span>
-
-<span class="c1"># If one wants to clean up the dataset to better match CF standards</span>
-<span class="c1"># the following can be done as well</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">write_netcdf</span><span class="p">(</span><span class="n">cf_compliant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">'./sgpvdisX1.b1.20230101.000000.cf'</span><span class="p">)</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.708 seconds)</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Create an empty dataset using an ARM DOD</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.io.create_ds_from_arm_dod.html#act.io.create_ds_from_arm_dod" title="act.io.create_ds_from_arm_dod"><span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">create_ds_from_arm_dod</span></a><span class="p">(</span><span class="s1">'</span><span class="s1">vdis.b1</span><span class="s1">'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'</span><span class="s1">time</span><span class="s1">'</span><span class="p">:</span> <span class="mi">1440</span><span class="p">}</span><span class="p">,</span> <span class="n">scalar_fill_dim</span><span class="o">=</span><span class="s1">'</span><span class="s1">time</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Print out the xarray dataset to see that it's empty</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># The user could populate this through a number of ways</span><span class="w">
+</span><span class="c1"># and that's best left up to the user on how to do it.</span><span class="w">
+</span><span class="c1"># If one has an existing dataset, a mapping of variable</span><span class="w">
+</span><span class="c1"># names is sometimes the easiest way</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Let's look at some variable attributes</span><span class="w">
+</span><span class="c1"># These can be updated and it would be up to the</span><span class="w">
+</span><span class="c1"># user to ensure these tests are being applied</span><span class="w">
+</span><span class="c1"># and are appropriately set in the cooresponding QC variable</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'</span><span class="s1">num_drops</span><span class="s1">'</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Next, let's print out the global attribuets</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Add additional attributes or append to existing</span><span class="w">
+</span><span class="c1"># if they are needed using a dictionary</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="dict"><span class="n">atts</span></a> <span class="o">=</span> <span class="p">{</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">command_line</span><span class="s1">'</span><span class="p">:</span> <span class="s1">'</span><span class="s1">python  plot_create_arm_ds.py</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">process_version</span><span class="s1">'</span><span class="p">:</span> <span class="s1">'</span><span class="s1">1.2.3</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">history</span><span class="s1">'</span><span class="p">:</span> <span class="s1">'</span><span class="s1">Processed with Jupyter Workbench</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">random</span><span class="s1">'</span><span class="p">:</span> <span class="s1">'</span><span class="s1">1234253sdgfadf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="k">for</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a> <span class="ow">in</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="dict"><span class="n">atts</span></a><span class="p">:</span><span class="w">
+</span>    <span class="k">if</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span><span class="w">
+</span>        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a><span class="p">]</span> <span class="o">+</span><span class="o">=</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="dict"><span class="n">atts</span></a><span class="p">[</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a><span class="p">]</span><span class="w">
+</span>    <span class="k">else</span><span class="p">:</span><span class="w">
+</span>        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a><span class="p">]</span> <span class="o">=</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="dict"><span class="n">atts</span></a><span class="p">[</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a><span class="p">]</span><span class="w">
+</span>    <span class="c1"># Print out the attribute</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">a</span></a><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Write data out to netcdf</span><span class="w">
+</span><span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s1">'</span><span class="s1">./sgpvdisX1.b1.20230101.000000.nc</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># If one wants to clean up the dataset to better match CF standards</span><span class="w">
+</span><span class="c1"># the following can be done as well</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.io.WriteDataset.write_netcdf.html#act.io.WriteDataset.write_netcdf" title="act.io.WriteDataset.write_netcdf"><span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">write_netcdf</span></a><span class="p">(</span><span class="n">cf_compliant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">'</span><span class="s1">./sgpvdisX1.b1.20230101.000000.cf</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.887 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-io-plot-create-arm-ds-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/0463614145b45ecde06f0c2d49ed0594/plot_create_arm_ds.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_create_arm_ds.ipynb</span></code></a></p>

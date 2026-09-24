@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -575,37 +576,36 @@ wind speed and direction data.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">arm_test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATASETS</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-
-<span class="c1"># Read in the navigation data, mainly for the lat/lon</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_nav</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'marnavM1.a1.20180201.000000.nc'</span><span class="p">)</span>
-<span class="n">nav_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_nav</span></a><span class="p">)</span>
-
-<span class="c1"># Calculate course and speed over ground from the NAV</span>
-<span class="c1"># lat and lon data</span>
-<span class="n">nav_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">ship_utils</span><span class="o">.</span><span class="n">calc_cog_sog</span><span class="p">(</span><span class="n">nav_ds</span><span class="p">)</span>
-
-<span class="c1"># Read in the data containing the wind speed and direction</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_aosmet</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'maraosmetM1.a1.20180201.000000.nc'</span><span class="p">)</span>
-<span class="n">aosmet_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">filename_aosmet</span></a><span class="p">)</span>
-
-<span class="c1"># Merge the navigation and wind data together</span>
-<span class="c1"># This have been previously resampled to 1-minute data</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">([</span><span class="n">nav_ds</span><span class="p">,</span> <span class="n">aosmet_ds</span><span class="p">],</span> <span class="n">compat</span><span class="o">=</span><span class="s1">'override'</span><span class="p">)</span>
-
-<span class="c1"># Call the correction for the winds.  Note, that this only</span>
-<span class="c1"># corrects for ship course and speed, not roll and pitch.</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">ship</span><span class="o">.</span><span class="n">correct_wind_for_ship_motion</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
-
-<span class="n">nav_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="n">aosmet_ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 8.471 seconds)</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">arm_test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATASETS</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Read in the navigation data, mainly for the lat/lon</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">filename_nav</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'</span><span class="s1">marnavM1.a1.20180201.000000.nc</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="n">nav_ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.io.read_arm_netcdf.html#act.io.read_arm_netcdf" title="act.io.read_arm_netcdf"><span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">filename_nav</span></a><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Calculate course and speed over ground from the NAV</span><span class="w">
+</span><span class="c1"># lat and lon data</span><span class="w">
+</span><span class="n">nav_ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-utils sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.utils.calc_cog_sog.html#act.utils.calc_cog_sog" title="act.utils.calc_cog_sog"><span class="n">act</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">ship_utils</span><span class="o">.</span><span class="n">calc_cog_sog</span></a><span class="p">(</span><span class="n">nav_ds</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Read in the data containing the wind speed and direction</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">filename_aosmet</span></a> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'</span><span class="s1">maraosmetM1.a1.20180201.000000.nc</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="n">aosmet_ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.io.read_arm_netcdf.html#act.io.read_arm_netcdf" title="act.io.read_arm_netcdf"><span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="str"><span class="n">filename_aosmet</span></a><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Merge the navigation and wind data together</span><span class="w">
+</span><span class="c1"># This have been previously resampled to 1-minute data</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="p">[</span><span class="n">nav_ds</span><span class="p">,</span> <span class="n">aosmet_ds</span><span class="p">]</span><span class="p">,</span> <span class="n">compat</span><span class="o">=</span><span class="s1">'</span><span class="s1">override</span><span class="s1">'</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Call the correction for the winds.  Note, that this only</span><span class="w">
+</span><span class="c1"># corrects for ship course and speed, not roll and pitch.</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-corrections sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.corrections.correct_wind_for_ship_motion.html#act.corrections.correct_wind_for_ship_motion" title="act.corrections.correct_wind_for_ship_motion"><span class="n">act</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">ship</span><span class="o">.</span><span class="n">correct_wind_for_ship_motion</span></a><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">nav_ds</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">aosmet_ds</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 8.549 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-corrections-plot-correct-ship-wind-data-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/547700a4e4d8c73434020c0f9f7b8672/plot_correct_ship_wind_data.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_correct_ship_wind_data.ipynb</span></code></a></p>

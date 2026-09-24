@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -413,8 +413,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_asos_temp.html">Query and plot ASOS data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_improve.html">IMPROVE Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_noaa_fmcw_moment.html">NOAA FMCW and parsivel plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">Airnow Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../discovery/plot_neon.html">NEON Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../discovery/plot_airnow.html">AirNow Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../io/index.html">Input/Output Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -477,6 +477,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_profile_fit_pbl.html">Planetary Boundary Layer Height Profile Fit Retrievals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_wavelet_pbl.html">Planetary Boundary Layer Height Wavelet Method Retrieval</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_gradient_pbl.html">Planetary Boundary Layer Height Gradient Method Retrievals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../retrievals/plot_sonde_pbl.html">Planetary Boundary Layer Height Profile via Radiosonde Retrievals</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html">Utility examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -573,99 +574,98 @@ get lower temperatures when winds are out of the N/NE as
 would be expected at this location.  This can be extended
 to easily review other types of data as well like aerosols
 and fluxes.</p>
-<img src="../../_images/sphx_glr_plot_data_rose_001.png" srcset="../../_images/sphx_glr_plot_data_rose_001.png" alt="Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Median of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Standard Deviation of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Heatmap of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Boxplot of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">arm_test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATASETS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
-
-<span class="c1"># Read in some data with wind speed/direction in the file</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'sgpmetE13.b1.20190101.000000.cdf'</span><span class="p">,</span>
-    <span class="s1">'sgpmetE13.b1.20190102.000000.cdf'</span><span class="p">,</span>
-    <span class="s1">'sgpmetE13.b1.20190103.000000.cdf'</span><span class="p">,</span>
-    <span class="s1">'sgpmetE13.b1.20190104.000000.cdf'</span><span class="p">,</span>
-    <span class="s1">'sgpmetE13.b1.20190105.000000.cdf'</span><span class="p">,</span>
-    <span class="s1">'sgpmetE13.b1.20190106.000000.cdf'</span><span class="p">,</span>
-    <span class="s1">'sgpmetE13.b1.20190107.000000.cdf'</span><span class="p">,</span>
-<span class="p">]</span>
-<a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_filenames</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_wildcard_list</span></a><span class="p">]</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><a href="https://docs.python.org/3/builtins/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">met_filenames</span></a><span class="p">)</span>
-
-<span class="c1"># Set up wind rose display object</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">WindRoseDisplay</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># Plot mean temperature based on wind direction</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span>
-    <span class="s1">'wdir_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'wspd_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'temp_mean'</span><span class="p">,</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'line'</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="c1"># Plot median temperature based on wind direction</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span>
-    <span class="s1">'wdir_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'wspd_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'temp_mean'</span><span class="p">,</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'line'</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="n">line_plot_calc</span><span class="o">=</span><span class="s1">'median'</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Plot standard deviation of temperature based on wind direction</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span>
-    <span class="s1">'wdir_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'wspd_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'temp_mean'</span><span class="p">,</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'line'</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="n">line_plot_calc</span><span class="o">=</span><span class="s1">'stdev'</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Plot a contour of counts of temperature based on wind direction</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span>
-    <span class="s1">'wdir_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'wspd_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'temp_mean'</span><span class="p">,</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'contour'</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="c1"># Plot a contour of mean temperature based on wind direction and wind speed</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span>
-    <span class="s1">'wdir_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'wspd_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'temp_mean'</span><span class="p">,</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'contour'</span><span class="p">,</span>
-    <span class="n">contour_type</span><span class="o">=</span><span class="s1">'mean'</span><span class="p">,</span>
-    <span class="n">num_data_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">clevels</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">'rainbow'</span><span class="p">,</span>
-    <span class="n">vmin</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="c1"># Plot a boxplot of temperature based on wind direction</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span>
-    <span class="s1">'wdir_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'wspd_vec_mean'</span><span class="p">,</span>
-    <span class="s1">'temp_mean'</span><span class="p">,</span>
-    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'boxplot'</span><span class="p">,</span>
-    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-<span class="p">)</span>
-
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.178 seconds)</p>
+<img src="../../_images/sphx_glr_plot_data_rose_001.png" srcset="../../_images/sphx_glr_plot_data_rose_001.png" alt="Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Median of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Standard Deviation of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Heatmap of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Mean of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107, Boxplot of temp_mean (degC) by  wdir_vec_mean from 20190101 to 20190107" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">arm_test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATASETS</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Read in some data with wind speed/direction in the file</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">met_wildcard_list</span></a> <span class="o">=</span> <span class="p">[</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190101.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190102.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190103.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190104.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190105.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190106.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">sgpmetE13.b1.20190107.000000.cdf</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">met_filenames</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">met_wildcard_list</span></a><span class="p">]</span><span class="w">
+</span><span class="n">ds</span> <span class="o">=</span> <a class="sphx-glr-backref-module-act-io sphx-glr-backref-type-py-function reference internal" href="../../API/generated/act.io.read_arm_netcdf.html#act.io.read_arm_netcdf" title="act.io.read_arm_netcdf"><span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span></a><span class="p">(</span><a class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="list"><span class="n">met_filenames</span></a><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Set up wind rose display object</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.html#act.plotting.WindRoseDisplay" title="act.plotting.WindRoseDisplay"><span class="n">display</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-class reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.html#act.plotting.WindRoseDisplay" title="act.plotting.WindRoseDisplay"><span class="n">act</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">WindRoseDisplay</span></a><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">subplot_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Plot mean temperature based on wind direction</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data" title="act.plotting.WindRoseDisplay.plot_data"><span class="n">display</span><span class="o">.</span><span class="n">plot_data</span></a><span class="p">(</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wdir_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wspd_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temp_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="w">
+</span>    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">line</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Plot median temperature based on wind direction</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data" title="act.plotting.WindRoseDisplay.plot_data"><span class="n">display</span><span class="o">.</span><span class="n">plot_data</span></a><span class="p">(</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wdir_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wspd_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temp_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="w">
+</span>    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">line</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">line_plot_calc</span><span class="o">=</span><span class="s1">'</span><span class="s1">median</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Plot standard deviation of temperature based on wind direction</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data" title="act.plotting.WindRoseDisplay.plot_data"><span class="n">display</span><span class="o">.</span><span class="n">plot_data</span></a><span class="p">(</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wdir_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wspd_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temp_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="w">
+</span>    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">line</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">line_plot_calc</span><span class="o">=</span><span class="s1">'</span><span class="s1">stdev</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Plot a contour of counts of temperature based on wind direction</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data" title="act.plotting.WindRoseDisplay.plot_data"><span class="n">display</span><span class="o">.</span><span class="n">plot_data</span></a><span class="p">(</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wdir_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wspd_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temp_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="w">
+</span>    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">contour</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Plot a contour of mean temperature based on wind direction and wind speed</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data" title="act.plotting.WindRoseDisplay.plot_data"><span class="n">display</span><span class="o">.</span><span class="n">plot_data</span></a><span class="p">(</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wdir_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wspd_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temp_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="w">
+</span>    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">contour</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">contour_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_data_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w">
+</span>    <span class="n">clevels</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span><span class="w">
+</span>    <span class="n">cmap</span><span class="o">=</span><span class="s1">'</span><span class="s1">rainbow</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">vmin</span><span class="o">=</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="w">
+</span>    <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="w">
+</span>    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Plot a boxplot of temperature based on wind direction</span><span class="w">
+</span><a class="sphx-glr-backref-module-act-plotting sphx-glr-backref-type-py-method reference internal" href="../../API/generated/act.plotting.WindRoseDisplay.plot_data.html#act.plotting.WindRoseDisplay.plot_data" title="act.plotting.WindRoseDisplay.plot_data"><span class="n">display</span><span class="o">.</span><span class="n">plot_data</span></a><span class="p">(</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wdir_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">wspd_vec_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="s1">'</span><span class="s1">temp_mean</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_dirs</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="w">
+</span>    <span class="n">plot_type</span><span class="o">=</span><span class="s1">'</span><span class="s1">boxplot</span><span class="s1">'</span><span class="p">,</span><span class="w">
+</span>    <span class="n">subplot_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.780 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plotting-plot-data-rose-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/94f8f7b526aed8322975e75a8f568cfa/plot_data_rose.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_data_rose.ipynb</span></code></a></p>

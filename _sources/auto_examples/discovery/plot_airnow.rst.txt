@@ -18,14 +18,14 @@
 .. _sphx_glr_auto_examples_discovery_plot_airnow.py:
 
 
-Airnow Data
+AirNow Data
 -----------
 
-This example shows the different ways to pull
-air quality information from EPA's AirNow API for
-a station near to SGP
+This example shows the different ways to pull air quality information
+from EPA's AirNow API for an area near the ARM Southern Great Plains
+(SGP) atmospheric observatory.
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-56
+.. GENERATED FROM PYTHON SOURCE LINES 10-81
 
 
 
@@ -39,39 +39,41 @@ a station near to SGP
 
  .. code-block:: none
 
-    <xarray.Dataset> Size: 776B
-    Dimensions:         (index: 8)
+    <xarray.Dataset> Size: 16B
+    Dimensions:          (index: 1)
     Coordinates:
-      * index           (index) int64 64B 0 1 2 3 4 5 6 7
+      * index            (index) int64 8B 0
     Data variables:
-        DateIssue       (index) object 64B '2022-04-29' ... '2022-04-29'
-        DateForecast    (index) object 64B '2022-05-01' ... '2022-05-04'
-        ReportingArea   (index) object 64B 'Oklahoma City' ... 'Oklahoma City'
-        StateCode       (index) object 64B 'OK' 'OK' 'OK' 'OK' 'OK' 'OK' 'OK' 'OK'
-        Latitude        (index) float64 64B 35.51 35.51 35.51 ... 35.51 35.51 35.51
-        Longitude       (index) float64 64B -97.47 -97.47 -97.47 ... -97.47 -97.47
-        ParameterName   (index) object 64B 'O3' 'PM2.5' 'O3' ... 'O3' 'PM2.5'
-        AQI             (index) int64 64B 50 40 30 20 50 30 30 20
-        CategoryNumber  (index) int64 64B 1 1 1 1 1 1 1 1
-        CategoryName    (index) object 64B 'Good' 'Good' 'Good' ... 'Good' 'Good'
-        ActionDay       (index) bool 8B False False False ... False False False
-        Discussion      (index) object 64B 'Southerly winds today will bring mois...
-    <xarray.Dataset> Size: 288B
-    Dimensions:         (index: 3)
+        WebServiceError  (index) object 8B 'Error - There is no reporting area at...
+    <xarray.Dataset> Size: 1kB
+    Dimensions:               (index: 19)
     Coordinates:
-      * index           (index) int64 24B 0 1 2
+      * index                 (index) int64 152B 0 1 2 3 4 5 6 ... 13 14 15 16 17 18
     Data variables:
-        DateObserved    (index) object 24B '2022-05-01' '2022-05-01' '2022-05-01'
-        HourObserved    (index) int64 24B 0 0 0
-        LocalTimeZone   (index) object 24B 'CST' 'CST' 'CST'
-        ReportingArea   (index) object 24B 'Oklahoma City' ... 'Oklahoma City'
-        StateCode       (index) object 24B 'OK' 'OK' 'OK'
-        Latitude        (index) float64 24B 35.51 35.51 35.51
-        Longitude       (index) float64 24B -97.47 -97.47 -97.47
-        ParameterName   (index) object 24B 'OZONE' 'PM2.5' 'PM10'
-        AQI             (index) int64 24B 51 39 19
-        CategoryNumber  (index) int64 24B 2 1 1
-        CategoryName    (index) object 24B 'Moderate' 'Good' 'Good'
+        DateObserved          (index) object 152B '2025-05-01' ... '2025-05-01'
+        StateCode             (index) object 152B 'OK' 'OK' 'OK' ... 'OK' 'OK' 'OK'
+        ReportingAreaName     (index) object 152B 'Miami' 'Miami' ... 'McAlester'
+        ParameterName         (index) object 152B 'PM2.5' 'OZONE' ... 'PM10' 'OZONE'
+        DailyAQI              (index) int64 152B 32 38 23 9 90 32 ... 7 51 24 10 49
+        DailyAQICategoryName  (index) object 152B 'Good' 'Good' ... 'Good' 'Good'
+    <xarray.Dataset> Size: 112B
+    Dimensions:             (index: 1)
+    Coordinates:
+      * index               (index) int64 8B 0
+    Data variables: (12/13)
+        DateObserved        (index) object 8B '2026-09-24'
+        HourObserved        (index) object 8B '12:00'
+        LocalTimeZone       (index) object 8B 'CDT'
+        ReportingAreaName   (index) float64 8B nan
+        SiteID              (index) int64 8B 400710604
+        SiteName            (index) object 8B 'Ponca City'
+        ...                  ...
+        NowcastAQI          (index) int64 8B 34
+        AqiCategoryName     (index) object 8B 'Good'
+        ReportingAgency     (index) object 8B 'Oklahoma Department of Environment...
+        LookupBehavior      (index) object 8B 'Closest Reading By Pollutant'
+        ConsideredMonitors  (index) object 8B 'All'
+        LookupBoundary      (index) object 8B '50 Miles'
     <xarray.Dataset> Size: 584B
     Dimensions:            (time: 13)
     Coordinates:
@@ -99,55 +101,80 @@ a station near to SGP
 
 
     import os
+    from datetime import datetime
 
     import matplotlib.pyplot as plt
 
     import act
 
-    # You need an account and token from https://docs.airnowapi.org/ first
+    # You need an account and token from https://docs.airnowapi.org/ first.
     token = os.getenv('AIRNOW_API')
 
     if token is not None and len(token) > 0:
-        # This first example will get the forcasted values for the date passed
-        # at stations within 100 miles of the Zipcode. Can also use latlon instead as
-        # results = act.discovery.get_airnow_forecast(token, '2022-05-01', distance=100,
-        #                                             latlon=[41.958, -88.12])
-        # If the username and token are not set, use the existing sample file
-        results = act.discovery.get_airnow_forecast(token, '2022-05-01', zipcode=74630, distance=100)
+        # Get current forecast values for reporting areas within 100 miles of
+        # the ZIP code. A latitude/longitude location can also be used instead:
+        #
+        # results = act.discovery.get_airnow_forecast(
+        #     token, date, distance=100, latlon=[41.958, -88.12]
+        # )
+        #
+        # The updated AirNow forecast service provides current forecast
+        # information, so use today's date.
+        date = datetime.now().strftime('%Y-%m-%d')
+        results = act.discovery.get_airnow_forecast(token, date, zipcode=74630, distance=100)
 
-        # The results show a dataset with air quality information from Oklahoma City
-        # The data is not indexed by time and just a rudimentary xarray object from
-        # converted from a pandas DataFrame.  Note that the AirNow API labels the data
-        # returned as AQI.
+        # The results are returned as a simple xarray Dataset converted from
+        # the AirNow tabular response. ACT normalizes the forecast AQI field
+        # to "AQI".
         print(results)
 
-        # This call gives the daily average for Ozone, PM2.5 and PM10
-        results = act.discovery.get_airnow_obs(token, date='2022-05-01', zipcode=74630, distance=100)
+        # Historical daily observations are now requested by state rather than
+        # by ZIP code or latitude/longitude. This returns daily AQI values for
+        # reporting areas across the selected state.
+        results = act.discovery.get_airnow_obs(token, date='2025-05-01', state='OK')
+
+        # Historical observations include fields such as DailyAQI and
+        # DailyAQICategoryName.
         print(results)
 
-        # This call will get all the station data for a time period within
-        # the bounding box provided.  This will return the object with time
-        # as a coordinate and can be used with ACT Plotting to plot after
-        # squeezing the dimensions.  It can be a 2D time series
+        # Current observations can still be requested using either a ZIP code
+        # or latitude/longitude. The updated service returns nearby monitoring
+        # sites and includes fields such as NowcastAQI and AqiCategoryName.
+        results = act.discovery.get_airnow_obs(token, zipcode=74630, distance=100)
+
+        print(results)
+
+        # This call gets station data for a time period within the provided
+        # bounding box. The existing /aq/data/ endpoint is not being retired.
+        # The returned object has time as a coordinate and can be used with
+        # ACT plotting after reducing the site dimension.
         lat_lon = '-98.172,35.879,-96.76,37.069'
         results = act.discovery.get_airnow_bounded_obs(
-            token, '2022-05-01T00', '2022-05-01T12', lat_lon, 'OZONE,PM25', data_type='B'
+            token,
+            '2022-05-01T00',
+            '2022-05-01T12',
+            lat_lon,
+            'OZONE,PM25',
+            data_type='B',
         )
-        # Reduce to 1D timeseries
+
+        # Reduce to a 1D time series for this example.
         results = results.squeeze(dim='sites', drop=False)
+
         print(results)
 
-        # Plot out data but note that Ozone was not return in the results
+        # Plot the available PM2.5 concentration and AQI data.
         display = act.plotting.TimeSeriesDisplay(results)
         display.plot('PM2.5', label='PM2.5')
         display.plot('AQI', label='AQI')
+
         plt.legend()
         plt.show()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.380 seconds)
+   **Total running time of the script:** (0 minutes 2.333 seconds)
 
 
 .. _sphx_glr_download_auto_examples_discovery_plot_airnow.py:

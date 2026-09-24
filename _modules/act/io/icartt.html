@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -444,173 +444,1030 @@
 <span class="sd">Modules for Reading/Writing the International Consortium for Atmospheric</span>
 <span class="sd">Research on Transport and Transformation (ICARTT) file format standards V2.0</span>
 
+<span class="sd">This module implements the ICARTT FFI 1001 format directly, so no third-party</span>
+<span class="sd">ICARTT library is required.</span>
+
 <span class="sd">References:</span>
 <span class="sd">    ICARTT V2.0 Standards/Conventions:</span>
 <span class="sd">    - https://www.earthdata.nasa.gov/s3fs-public/imported/ESDS-RFC-029v2.pdf</span>
 
 <span class="sd">"""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">icartt</span>
+<span class="c1">#: The only file format index this module implements. ICARTT defines several</span>
+<span class="c1">#: FFIs; 1001 is the one-dimensional time series described by ESDS-RFC-029v2</span>
+<span class="c1">#: section 2.3, and the format is fixed rather than selectable.</span>
+<span class="n">SUPPORTED_FFI</span> <span class="o">=</span> <span class="mi">1001</span>
 
-    <span class="n">_ICARTT_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">_format</span> <span class="o">=</span> <span class="n">icartt</span><span class="o">.</span><span class="n">Formats</span><span class="o">.</span><span class="n">FFI1001</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">_ICARTT_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">_format</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1">#: Field delimiter for the ICARTT format (ESDS-RFC-029v2 section 2.3.2).</span>
+<span class="n">DEFAULT_FIELD_DELIM</span> <span class="o">=</span> <span class="s1">','</span>
+
+<span class="c1">#: Numeric format used when writing data records.</span>
+<span class="n">DEFAULT_NUM_FORMAT</span> <span class="o">=</span> <span class="s1">'</span><span class="si">%.10g</span><span class="s1">'</span>
+
+<span class="c1">#: Scale factor and missing value assumed for the independent variable, which</span>
+<span class="c1">#: carries neither in the header (ESDS-RFC-029v2 section 2.3.2.12).</span>
+<span class="n">DEFAULT_SCALE_FACTOR</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">DEFAULT_MISSING_VALUE</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.0</span>
+
+<span class="c1">#: Required normal-comment keywords, in the order given by ESDS-RFC-029v2 Table 1.</span>
+<span class="n">REQUIRED_KEYWORDS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">'PI_CONTACT_INFO'</span><span class="p">,</span>
+    <span class="s1">'PLATFORM'</span><span class="p">,</span>
+    <span class="s1">'LOCATION'</span><span class="p">,</span>
+    <span class="s1">'ASSOCIATED_DATA'</span><span class="p">,</span>
+    <span class="s1">'INSTRUMENT_INFO'</span><span class="p">,</span>
+    <span class="s1">'DATA_INFO'</span><span class="p">,</span>
+    <span class="s1">'UNCERTAINTY'</span><span class="p">,</span>
+    <span class="s1">'ULOD_FLAG'</span><span class="p">,</span>
+    <span class="s1">'ULOD_VALUE'</span><span class="p">,</span>
+    <span class="s1">'LLOD_FLAG'</span><span class="p">,</span>
+    <span class="s1">'LLOD_VALUE'</span><span class="p">,</span>
+    <span class="s1">'DM_CONTACT_INFO'</span><span class="p">,</span>
+    <span class="s1">'PROJECT_INFO'</span><span class="p">,</span>
+    <span class="s1">'STIPULATIONS_ON_USE'</span><span class="p">,</span>
+    <span class="s1">'OTHER_COMMENTS'</span><span class="p">,</span>
+    <span class="s1">'REVISION'</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Revision keywords are the current and all previous revision identifiers, e.g.</span>
+<span class="c1"># "R0", "RA", "R12" (ESDS-RFC-029v2 Table 1, row 17).</span>
+<span class="n">_REVISION_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'^R[A-Za-z0-9]{1,2}$'</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_as_number</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Coerce a header scale factor or missing data flag to a float.</span>
+
+<span class="sd">    Both are numeric per ESDS-RFC-029v2: scale factors may be fractional or in</span>
+<span class="sd">    exponential notation such as ``1.0e9`` (sections 2.1.4, 2.3.2.11), and</span>
+<span class="sd">    missing data flags are negative numbers such as -9999 (sections 2.1.4.2,</span>
+<span class="sd">    2.3.2.12).</span>
+
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'ICARTT </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1"> must be numeric, got </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">'</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_lod_mask</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Mark the points that a scale factor must not be applied to.</span>
+
+<span class="sd">    Limit of detection flags are not metadata, they sit in the data column as</span>
+<span class="sd">    literal values: -7777 above the ULOD and -8888 below the LLOD</span>
+<span class="sd">    (ESDS-RFC-029v2 section 2.1.4.3). Scaling them would turn a flag into a</span>
+<span class="sd">    number that no longer reads as a flag, so they are held out of the</span>
+<span class="sd">    arithmetic in both directions. Missing values need no mask, they are</span>
+<span class="sd">    already NaN by the time the data reaches here.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : numpy.ndarray</span>
+<span class="sd">        Data column to inspect.</span>
+<span class="sd">    attrs : dict</span>
+<span class="sd">        Variable attributes, read for ``ULOD_Flag`` and ``LLOD_Flag``. The</span>
+<span class="sd">        standard's 'N/A' stand-in, and anything else non-numeric, is ignored.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mask : numpy.ndarray</span>
+<span class="sd">        Boolean array, True where the value is a limit of detection flag.</span>
+
+<span class="sd">    """</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'ULOD_Flag'</span><span class="p">,</span> <span class="s1">'LLOD_Flag'</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">mask</span> <span class="o">|=</span> <span class="n">values</span> <span class="o">==</span> <span class="n">flag</span>
+    <span class="k">return</span> <span class="n">mask</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">IcarttVariable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A single ICARTT variable description.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shortname : str</span>
+<span class="sd">        Variable short name, used as the data column header.</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Variable units, or 'none' if unitless.</span>
+<span class="sd">    standardname : str, optional</span>
+<span class="sd">        Variable standard name from the controlled list.</span>
+<span class="sd">    longname : str, optional</span>
+<span class="sd">        Free-form descriptive name.</span>
+<span class="sd">    scale : float, optional</span>
+<span class="sd">        Scale factor for the variable. Coerced to float.</span>
+<span class="sd">    miss : float, optional</span>
+<span class="sd">        Missing data flag for the variable. Coerced to float.</span>
+
+<span class="sd">    """</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'shortname'</span><span class="p">,</span> <span class="s1">'units'</span><span class="p">,</span> <span class="s1">'standardname'</span><span class="p">,</span> <span class="s1">'longname'</span><span class="p">,</span> <span class="s1">'scale'</span><span class="p">,</span> <span class="s1">'miss'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">shortname</span><span class="p">,</span>
+        <span class="n">units</span><span class="p">,</span>
+        <span class="n">standardname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">longname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="o">=</span><span class="n">DEFAULT_SCALE_FACTOR</span><span class="p">,</span>
+        <span class="n">miss</span><span class="o">=</span><span class="n">DEFAULT_MISSING_VALUE</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortname</span> <span class="o">=</span> <span class="n">shortname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standardname</span> <span class="o">=</span> <span class="n">standardname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longname</span> <span class="o">=</span> <span class="n">longname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">_as_number</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="s1">'scale factor'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">miss</span> <span class="o">=</span> <span class="n">_as_number</span><span class="p">(</span><span class="n">miss</span><span class="p">,</span> <span class="s1">'missing data flag'</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_desc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Build a variable from a split header description line.</span>
+
+<span class="sd">        Per ESDS-RFC-029v2 section 2.3.2.13 the line is</span>
+<span class="sd">        ``shortname, units, standardname, [longname]``. The long name may itself</span>
+<span class="sd">        contain commas, so any trailing fields are rejoined into it.</span>
+
+<span class="sd">        """</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">]</span>
+        <span class="n">shortname</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">parts</span> <span class="k">else</span> <span class="s1">''</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">''</span>
+        <span class="n">standardname</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">longname</span> <span class="o">=</span> <span class="n">DEFAULT_FIELD_DELIM</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">shortname</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">standardname</span><span class="p">,</span> <span class="n">longname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">desc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Variable description string as it appears in an ICARTT file."""</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shortname</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">standardname</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">longname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">longname</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'IcarttVariable(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shortname</span><span class="si">!r}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="si">!r}</span><span class="s1">)'</span>
+
+
+<div class="viewcode-block" id="Icartt">
+<a class="viewcode-back" href="../../../API/generated/act.io.Icartt.html#act.io.Icartt">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Icartt</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+
+<span class="sd">    Container for an ICARTT FFI 1001 file: the full header model plus the data</span>
+<span class="sd">    records. Reads and writes the format described by ESDS-RFC-029v2.</span>
+
+<span class="sd">    Attributes are named after the fields in the standard, so the header can be</span>
+<span class="sd">    inspected and edited directly before writing.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block :: python</span>
+
+<span class="sd">        from act.io.icartt import Icartt</span>
+
+<span class="sd">        ict = Icartt.from_file('AAFNAV_COR_20181104_R0.ict')</span>
+<span class="sd">        print(ict.NV, ict.keywords['PLATFORM'])</span>
+<span class="sd">        ds = ict.to_xarray()</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Line 1 - file format information.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FFI</span> <span class="o">=</span> <span class="n">SUPPORTED_FFI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Number of header lines declared by the file, kept for validation only.</span>
+        <span class="c1"># The authoritative value is the computed ``NLHEAD`` property.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">declared_nlhead</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Lines 2-5 - originator, affiliation, data source, mission.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ONAME</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ORG</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SNAME</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MNAME</span> <span class="o">=</span> <span class="s1">''</span>
+
+        <span class="c1"># Line 6 - file volume number, total number of file volumes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IVOL</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">VVOL</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Line 7 - collection and revision dates as (yyyy, mm, dd) tuples.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RDATE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Line 8 - data interval code(s).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+
+        <span class="c1"># Line 9 - independent variable definition.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Lines 10 to 12+NV - dependent variable definitions.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Special comments.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SCOM</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Normal comments, split into the three parts of section 2.3.2.17.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freeform</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">REQUIRED_KEYWORDS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortnames</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Data records, keyed by variable short name.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Source or destination path.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">''</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Derived header fields</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NV</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Number of dependent variables (header line 10)."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">VSCAL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Scale factors, one per dependent variable (header line 11)."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">scale</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">VMISS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Missing data flags, one per dependent variable (header line 12)."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">miss</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NSCOML</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Number of special comment lines."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SCOM</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NCOM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Normal comment lines, rebuilt from the parsed parts.</span>
+
+<span class="sd">        Ordered as free-form text, then the keyword block, then the variable</span>
+<span class="sd">        short name list, which must always be the last line.</span>
+
+<span class="sd">        """</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freeform</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">value</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s1">'N/A'</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s1">'</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">))</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shortnames</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">lines</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NNCOML</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Number of normal comment lines."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NCOM</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NLHEAD</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Number of header lines.</span>
+
+<span class="sd">        Computed rather than stored, per ESDS-RFC-029v2 section 2.3.2.1: 14</span>
+<span class="sd">        fixed lines plus one line per dependent variable, special comment and</span>
+<span class="sd">        normal comment.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="mi">14</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">NV</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">NSCOML</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">NNCOML</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""All variables, independent first, keyed by short name."""</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">shortname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">shortname</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Time steps of the data as a ``numpy.datetime64[ns]`` array.</span>
+
+<span class="sd">        The independent variable is seconds since UTC midnight of the collection</span>
+<span class="sd">        date (ESDS-RFC-029v2 section 2.3.2.9).</span>
+
+<span class="sd">        """</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span> <span class="s1">'ns'</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">shortname</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ref</span> <span class="o">+</span> <span class="p">(</span><span class="n">values</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'timedelta64[ns]'</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Reading</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Icartt.from_file">
+<a class="viewcode-back" href="../../../API/generated/act.io.Icartt.from_file.html#act.io.Icartt.from_file">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Read an ICARTT FFI 1001 file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str or pathlib.Path</span>
+<span class="sd">            Path to the file to read.</span>
+<span class="sd">        delimiter : str, optional</span>
+<span class="sd">            Field delimiter. The standard mandates a comma.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ict : Icartt</span>
+
+<span class="sd">        """</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">'replace'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_read_header</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_read_data</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Read the header, following the line order of section 2.3.2."""</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">readline</span><span class="p">(</span><span class="n">split</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">''</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'Unexpected end of file while reading the ICARTT header of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span>
+                <span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">'</span><span class="se">\r\n</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">split</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">line</span>
+
+        <span class="c1"># Line 1 - number of header lines, file format index, optional version.</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">declared_nlhead</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FFI</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'Could not parse the ICARTT file format line of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">first</span><span class="si">!r}</span><span class="s1">'</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">first</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">first</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FFI</span> <span class="o">!=</span> <span class="n">SUPPORTED_FFI</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'ACT supports the ICARTT FFI </span><span class="si">{</span><span class="n">SUPPORTED_FFI</span><span class="si">}</span><span class="s1"> format only, '</span>
+                <span class="sa">f</span><span class="s1">'this file declares </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">FFI</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Lines 2-5.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ONAME</span> <span class="o">=</span> <span class="n">readline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ORG</span> <span class="o">=</span> <span class="n">readline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SNAME</span> <span class="o">=</span> <span class="n">readline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MNAME</span> <span class="o">=</span> <span class="n">readline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Line 6 - file volume number, total number of file volumes.</span>
+        <span class="n">volumes</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IVOL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">volumes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">VVOL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">volumes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Line 7 - collection date, revision date.</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'ICARTT date line of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> needs six fields, found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATE</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RDATE</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+
+        <span class="c1"># Line 8 - data interval code.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">readline</span><span class="p">()]</span>
+
+        <span class="c1"># Line 9 - independent variable definition.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span> <span class="o">=</span> <span class="n">IcarttVariable</span><span class="o">.</span><span class="n">from_desc</span><span class="p">(</span><span class="n">readline</span><span class="p">())</span>
+
+        <span class="c1"># Line 10 - number of dependent variables.</span>
+        <span class="n">nvar</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Lines 11-12 - scale factors and missing data flags, both numeric.</span>
+        <span class="n">parsed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="p">((</span><span class="s1">'scale factor'</span><span class="p">,</span> <span class="n">readline</span><span class="p">()),</span> <span class="p">(</span><span class="s1">'missing value'</span><span class="p">,</span> <span class="n">readline</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nvar</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'ICARTT </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1"> line of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1"> entries '</span>
+                    <span class="sa">f</span><span class="s1">'but the file declares </span><span class="si">{</span><span class="n">nvar</span><span class="si">}</span><span class="s1"> dependent variables'</span>
+                <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">parsed</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'ICARTT </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1"> line of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> has a non-numeric entry: </span><span class="si">{</span><span class="n">values</span><span class="si">!r}</span><span class="s1">'</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+        <span class="n">vscal</span><span class="p">,</span> <span class="n">vmiss</span> <span class="o">=</span> <span class="n">parsed</span>
+
+        <span class="c1"># Lines 13 to 12+NV - dependent variable definitions.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">IcarttVariable</span><span class="o">.</span><span class="n">from_desc</span><span class="p">(</span><span class="n">readline</span><span class="p">(),</span> <span class="n">scale</span><span class="o">=</span><span class="n">vscal</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">miss</span><span class="o">=</span><span class="n">vmiss</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvar</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Special comments.</span>
+        <span class="n">nscoml</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SCOM</span> <span class="o">=</span> <span class="p">[</span><span class="n">readline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nscoml</span><span class="p">)]</span>
+
+        <span class="c1"># Normal comments.</span>
+        <span class="n">nncoml</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ingest_normal_comments</span><span class="p">([</span><span class="n">readline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nncoml</span><span class="p">)])</span>
+
+        <span class="c1"># Validate against the counts the file itself declared. The NLHEAD</span>
+        <span class="c1"># property is the canonical count for writing, which can legitimately</span>
+        <span class="c1"># differ here when a required keyword was absent and gets restored.</span>
+        <span class="n">parsed_nlhead</span> <span class="o">=</span> <span class="mi">14</span> <span class="o">+</span> <span class="n">nvar</span> <span class="o">+</span> <span class="n">nscoml</span> <span class="o">+</span> <span class="n">nncoml</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">declared_nlhead</span> <span class="o">!=</span> <span class="n">parsed_nlhead</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'ICARTT file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> declares </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">declared_nlhead</span><span class="si">}</span><span class="s1"> header lines '</span>
+                <span class="sa">f</span><span class="s1">'but </span><span class="si">{</span><span class="n">parsed_nlhead</span><span class="si">}</span><span class="s1"> were parsed'</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ingest_normal_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Split the normal comments into free-form text, keywords and short names.</span>
+
+<span class="sd">        Follows ESDS-RFC-029v2 section 2.3.2.17: free-form text runs until the</span>
+<span class="sd">        first required keyword, keyword values continue until the next keyword</span>
+<span class="sd">        line, and the final line is always the variable short name list.</span>
+
+<span class="sd">        """</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'ICARTT file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> has an empty normal comments section, but the '</span>
+                <span class="s1">'variable short name line is required'</span>
+            <span class="p">)</span>
+
+        <span class="c1"># The last line is always the comma separated list of short names.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">)]</span>
+
+        <span class="n">buffers</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">REQUIRED_KEYWORDS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freeform</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="n">keyword</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># Keywords start the line with no leading whitespace and are followed</span>
+            <span class="c1"># by a colon. The space before the colon seen in some revision lines</span>
+            <span class="c1"># is tolerated.</span>
+            <span class="k">if</span> <span class="s1">':'</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+                <span class="n">head</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">head</span> <span class="ow">in</span> <span class="n">buffers</span> <span class="ow">or</span> <span class="n">_REVISION_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">head</span><span class="p">):</span>
+                    <span class="n">keyword</span> <span class="o">=</span> <span class="n">head</span>
+
+            <span class="k">if</span> <span class="n">keyword</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="n">keyword</span>
+                <span class="n">buffers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">buffers</span><span class="p">[</span><span class="n">current</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">current</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">freeform</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Continuation of the previous keyword's value.</span>
+                <span class="n">buffers</span><span class="p">[</span><span class="n">current</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">REQUIRED_KEYWORDS</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">buffers</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'ICARTT file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> is missing required normal comment '</span>
+                <span class="sa">f</span><span class="s2">"keywords: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">buffers</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Read the data records into ``self.data``, missing values as NaN."""</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">miss</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="c1"># genfromtxt warns on an empty file; an empty dataset is legal here.</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span>
+                <span class="n">fh</span><span class="p">,</span>
+                <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">],</span>
+                <span class="n">missing_values</span><span class="o">=</span><span class="n">missing</span><span class="p">,</span>
+                <span class="n">usemask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">,</span>
+                <span class="n">deletechars</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">records</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Conversion</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Keyword value, with the standard's 'N/A' stand-in for an empty one."""</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s1">'N/A'</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_revision_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Comments for the revision named by the REVISION keyword."""</span>
+        <span class="n">revision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'REVISION'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">revision</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="n">revision</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">REQUIRED_KEYWORDS</span> <span class="ow">and</span> <span class="n">_REVISION_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s1">'N/A'</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_per_variable_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Map a keyword holding one entry per dependent variable onto short names.</span>
+
+<span class="sd">        Sized against NV, not the total variable count: the independent variable</span>
+<span class="sd">        has no uncertainty or limit of detection entry (sections 2.3.2.12,</span>
+<span class="sd">        2.1.4.3). Returns an empty mapping when the counts do not line up, which</span>
+<span class="sd">        means the file did not supply per-variable values.</span>
+
+<span class="sd">        """</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NV</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">var</span><span class="o">.</span><span class="n">shortname</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">,</span> <span class="n">parts</span><span class="p">)}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_per_variable_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Map a limit of detection flag keyword onto short names.</span>
+
+<span class="sd">        Section 2.1.4.3 allows either a single flag for the whole file or one per</span>
+<span class="sd">        dependent variable.</span>
+
+<span class="sd">        """</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">NV</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">NV</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">var</span><span class="o">.</span><span class="n">shortname</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">,</span> <span class="n">parts</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">raw</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Icartt.to_xarray">
+<a class="viewcode-back" href="../../../API/generated/act.io.Icartt.to_xarray.html#act.io.Icartt.to_xarray">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_xarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Convert to an `xarray.Dataset` with a ``time`` coordinate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ds : xarray.Dataset</span>
+
+<span class="sd">        """</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span>
+
+        <span class="n">uncertainty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_per_variable_values</span><span class="p">(</span><span class="s1">'UNCERTAINTY'</span><span class="p">)</span>
+        <span class="n">ulod_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_per_variable_values</span><span class="p">(</span><span class="s1">'ULOD_VALUE'</span><span class="p">)</span>
+        <span class="n">llod_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_per_variable_values</span><span class="p">(</span><span class="s1">'LLOD_VALUE'</span><span class="p">)</span>
+        <span class="n">ulod_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_per_variable_flags</span><span class="p">(</span><span class="s1">'ULOD_FLAG'</span><span class="p">)</span>
+        <span class="n">llod_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_per_variable_flags</span><span class="p">(</span><span class="s1">'LLOD_FLAG'</span><span class="p">)</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Short name for a quality flag is standardised on read.</span>
+            <span class="n">out_name</span> <span class="o">=</span> <span class="s1">'quality_flag'</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">'qc_flag'</span> <span class="k">else</span> <span class="n">name</span>
+            <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">out_name</span><span class="p">,</span>
+                <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'uncertainty'</span><span class="p">]</span> <span class="o">=</span> <span class="n">uncertainty</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">)</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'ULOD_Value'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ulod_value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">)</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'LLOD_Value'</span><span class="p">]</span> <span class="o">=</span> <span class="n">llod_value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">)</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">units</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'mvc'</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">miss</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'scale_factor'</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">scale</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'ULOD_Flag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ulod_flag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">)</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'LLOD_Flag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">llod_flag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">)</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">out_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'PI'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ONAME</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'PI_Affiliation'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ORG</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Platform'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'PLATFORM'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Mission'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MNAME</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'DateOfCollection'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DATE</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'DateOfRevision'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RDATE</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Data_Interval'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DX</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Independent_Var'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Dependent_Var_Num'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NV</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'PI_Contact'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'PI_CONTACT_INFO'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'LOCATION'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Associated_Data'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'ASSOCIATED_DATA'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Instrument_Info'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'INSTRUMENT_INFO'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Data_Info'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'DATA_INFO'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'DM_Contact'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'DM_CONTACT_INFO'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Project_Info'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'PROJECT_INFO'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Stipulations'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'STIPULATIONS_ON_USE'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Comments'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'OTHER_COMMENTS'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Revision'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyword</span><span class="p">(</span><span class="s1">'REVISION'</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Revision_Comments'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_revision_comments</span><span class="p">()</span>
+
+        <span class="c1"># Additional ARM metadata.</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ds</span></div>
+
+
+<div class="viewcode-block" id="Icartt.from_xarray">
+<a class="viewcode-back" href="../../../API/generated/act.io.Icartt.from_xarray.html#act.io.Icartt.from_xarray">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_xarray</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">''</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Build an `Icartt` from an `xarray.Dataset` produced by :func:`read_icartt`.</span>
+
+<span class="sd">        Reverses the mapping applied by `to_xarray`, including the</span>
+<span class="sd">        ``qc_flag`` to ``quality_flag`` rename.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ds : xarray.Dataset</span>
+<span class="sd">            Dataset to convert.</span>
+<span class="sd">        filename : str or pathlib.Path, optional</span>
+<span class="sd">            Name to record on the object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ict : Icartt</span>
+
+<span class="sd">        """</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">tuple_attr</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">])))</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">default</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">ONAME</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'PI'</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">ORG</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'PI_Affiliation'</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">SNAME</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Platform'</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">MNAME</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Mission'</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">DATE</span> <span class="o">=</span> <span class="n">tuple_attr</span><span class="p">(</span><span class="s1">'DateOfCollection'</span><span class="p">,</span> <span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">RDATE</span> <span class="o">=</span> <span class="n">tuple_attr</span><span class="p">(</span><span class="s1">'DateOfRevision'</span><span class="p">,</span> <span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Data_Interval'</span><span class="p">]))]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+
+        <span class="n">independent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Independent_Var'</span><span class="p">,</span> <span class="s1">'Start_UTC,seconds'</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">XNAME</span> <span class="o">=</span> <span class="n">IcarttVariable</span><span class="o">.</span><span class="n">from_desc</span><span class="p">(</span><span class="n">independent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">))</span>
+        <span class="n">ivar</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">shortname</span>
+
+        <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'qc_flag'</span> <span class="k">if</span> <span class="n">out_name</span> <span class="o">==</span> <span class="s1">'quality_flag'</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">out_name</span><span class="p">)</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">out_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">out_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">ivar</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'units'</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ivar</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+                <span class="k">continue</span>
+            <span class="c1"># A read that applied the scale factor left the spent factor under</span>
+            <span class="c1"># 'scale_factor_applied', so undo it and restore the file's own</span>
+            <span class="c1"># header. Without that record there is nothing to reverse and the</span>
+            <span class="c1"># data is written as it stands against a scale factor of 1.</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'scale_factor'</span><span class="p">,</span> <span class="n">DEFAULT_SCALE_FACTOR</span><span class="p">)</span>
+            <span class="n">applied</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'scale_factor_applied'</span><span class="p">,</span> <span class="n">DEFAULT_SCALE_FACTOR</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">applied</span> <span class="o">!=</span> <span class="n">DEFAULT_SCALE_FACTOR</span><span class="p">:</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="n">applied</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">keep</span> <span class="o">=</span> <span class="o">~</span><span class="n">_lod_mask</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span> <span class="o">/=</span> <span class="n">applied</span>
+
+            <span class="n">obj</span><span class="o">.</span><span class="n">VNAME</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">IcarttVariable</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'units'</span><span class="p">,</span> <span class="s1">'none'</span><span class="p">)),</span>
+                    <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+                    <span class="n">miss</span><span class="o">=</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'mvc'</span><span class="p">,</span> <span class="n">DEFAULT_MISSING_VALUE</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+
+        <span class="k">if</span> <span class="n">ivar</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="c1"># The independent variable was dropped from the Dataset, so rebuild it</span>
+            <span class="c1"># as seconds since UTC midnight of the collection date.</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="n">obj</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span> <span class="s1">'ns'</span><span class="p">)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span> <span class="o">-</span> <span class="n">ref</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ivar</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'timedelta64[ns]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span>
+
+        <span class="n">obj</span><span class="o">.</span><span class="n">shortnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivar</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">shortname</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">VNAME</span><span class="p">]</span>
+
+        <span class="n">keyword_attrs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s1">'PI_CONTACT_INFO'</span><span class="p">,</span> <span class="s1">'PI_Contact'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'PLATFORM'</span><span class="p">,</span> <span class="s1">'Platform'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'LOCATION'</span><span class="p">,</span> <span class="s1">'Location'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'ASSOCIATED_DATA'</span><span class="p">,</span> <span class="s1">'Associated_Data'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'INSTRUMENT_INFO'</span><span class="p">,</span> <span class="s1">'Instrument_Info'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'DATA_INFO'</span><span class="p">,</span> <span class="s1">'Data_Info'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'DM_CONTACT_INFO'</span><span class="p">,</span> <span class="s1">'DM_Contact'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'PROJECT_INFO'</span><span class="p">,</span> <span class="s1">'Project_Info'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'STIPULATIONS_ON_USE'</span><span class="p">,</span> <span class="s1">'Stipulations'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'OTHER_COMMENTS'</span><span class="p">,</span> <span class="s1">'Comments'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'REVISION'</span><span class="p">,</span> <span class="s1">'Revision'</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">keyword_attrs</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">))</span>
+
+        <span class="c1"># Per-variable metadata is reconstructed from the variable attributes when</span>
+        <span class="c1"># every dependent variable carries the same value, matching how the reader</span>
+        <span class="c1"># broadcasts a single file-wide entry.</span>
+        <span class="k">for</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s1">'UNCERTAINTY'</span><span class="p">,</span> <span class="s1">'uncertainty'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'ULOD_FLAG'</span><span class="p">,</span> <span class="s1">'ULOD_Flag'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'ULOD_VALUE'</span><span class="p">,</span> <span class="s1">'ULOD_Value'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'LLOD_FLAG'</span><span class="p">,</span> <span class="s1">'LLOD_Flag'</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">'LLOD_VALUE'</span><span class="p">,</span> <span class="s1">'LLOD_Value'</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">VNAME</span><span class="p">:</span>
+                <span class="n">out_name</span> <span class="o">=</span> <span class="s1">'quality_flag'</span> <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">shortname</span> <span class="o">==</span> <span class="s1">'qc_flag'</span> <span class="k">else</span> <span class="n">var</span><span class="o">.</span><span class="n">shortname</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">out_name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'N/A'</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_FIELD_DELIM</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">revision</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="s1">'REVISION'</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_REVISION_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">revision</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="n">revision</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Revision_Comments'</span><span class="p">,</span> <span class="s1">'N/A'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Writing</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Icartt.write">
+<a class="viewcode-back" href="../../../API/generated/act.io.Icartt.write.html#act.io.Icartt.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">DEFAULT_NUM_FORMAT</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">DEFAULT_FIELD_DELIM</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Write the object to an ICARTT FFI 1001 file.</span>
+
+<span class="sd">        ``NLHEAD`` is recomputed from the content, so the header count is always</span>
+<span class="sd">        consistent with what is written.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str or pathlib.Path, optional</span>
+<span class="sd">            Destination path. Defaults to the object's ``name`` attribute.</span>
+<span class="sd">        fmt : str, optional</span>
+<span class="sd">            Numeric format for the data records.</span>
+<span class="sd">        delimiter : str, optional</span>
+<span class="sd">            Field delimiter. The standard mandates a comma.</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'No filename given and the Icartt object has no name set'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Cannot write an Icartt object with no independent variable'</span><span class="p">)</span>
+
+        <span class="n">ivar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">shortname</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivar</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">shortname</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No data present for the variable </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s1">'</span><span class="p">)</span>
+
+        <span class="c1"># Missing values go back out as the file's own flag rather than NaN.</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ivar</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">:</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">shortname</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">column</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">miss</span>
+            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+        <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">NLHEAD</span><span class="si">}{</span><span class="n">delimiter</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">FFI</span><span class="si">}</span><span class="s1">'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
+            <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">delimiter</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ONAME</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ORG</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SNAME</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MNAME</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">IVOL</span><span class="si">}{</span><span class="n">delimiter</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">VVOL</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">part</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">'</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">RDATE</span><span class="p">)))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DX</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XNAME</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="n">delimiter</span> <span class="o">+</span> <span class="s1">' '</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NV</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DEFAULT_NUM_FORMAT</span> <span class="o">%</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VSCAL</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DEFAULT_NUM_FORMAT</span> <span class="o">%</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VMISS</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="n">delimiter</span> <span class="o">+</span> <span class="s1">' '</span><span class="p">)</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VNAME</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NSCOML</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SCOM</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NNCOML</span><span class="p">))</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NCOM</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">columns</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_scale_factors</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Apply the ICARTT scale factors, in place. See :func:`apply_scale_factors`.</span>
+
+<span class="sd">    Kept private and separate from the public wrapper because the</span>
+<span class="sd">    ``apply_scale_factors`` keyword of :func:`read_icartt` shadows the public</span>
+<span class="sd">    function's name inside that function's body.</span>
+
+<span class="sd">    """</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="p">:</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'scale_factor'</span><span class="p">,</span> <span class="n">DEFAULT_SCALE_FACTOR</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="n">DEFAULT_SCALE_FACTOR</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="o">~</span><span class="n">_lod_mask</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span> <span class="o">*=</span> <span class="n">scale</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+
+        <span class="c1"># The factor has been spent. Leaving it in place would invite a second</span>
+        <span class="c1"># application, by another call to this function or by any CF decoder,</span>
+        <span class="c1"># since 'scale_factor' is a reserved CF attribute. The original is kept</span>
+        <span class="c1"># under a name CF does not act on so the write path can reverse this.</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">'scale_factor'</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_SCALE_FACTOR</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">'scale_factor_applied'</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+
+    <span class="k">return</span> <span class="n">ds</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_scale_factors</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+
+<span class="sd">    Apply the ICARTT scale factors to the data variables of a Dataset.</span>
+
+<span class="sd">    Header line 11 gives one scale factor per dependent variable, and the value</span>
+<span class="sd">    in the file is the reported value divided by it, so reading multiplies</span>
+<span class="sd">    (ESDS-RFC-029v2 sections 2.1.4 and 2.3.2.11). Factors should be 1, but the</span>
+<span class="sd">    standard permits fractional and exponential values and its own examples use</span>
+<span class="sd">    them.</span>
+
+<span class="sd">    Limit of detection flags are left alone. They sit in the data column as</span>
+<span class="sd">    literal -7777 and -8888 values rather than as metadata (section 2.1.4.3),</span>
+<span class="sd">    and scaling them would destroy them.</span>
+
+<span class="sd">    Scale factors are applied to the data columns only. The ``ULOD_Value``,</span>
+<span class="sd">    ``LLOD_Value`` and ``uncertainty`` attributes are carried through exactly as</span>
+<span class="sd">    the file states them, unscaled, so a numeric limit of detection is not</span>
+<span class="sd">    directly comparable to the scaled values in the array. Section 2.1.4.3 also</span>
+<span class="sd">    allows those keywords to hold 'N/A' or the short name of another dependent</span>
+<span class="sd">    variable, so they are treated as verbatim file metadata.</span>
+
+<span class="sd">    On each scaled variable ``scale_factor`` is reset to 1.0 and the original</span>
+<span class="sd">    factor recorded as ``scale_factor_applied``, which makes the call</span>
+<span class="sd">    idempotent, stops any CF decoder applying the factor a second time, and lets</span>
+<span class="sd">    :func:`write_icartt` restore the original header.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset from :func:`read_icartt`. Modified in place.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        The same Dataset, with scale factors applied.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from act.io.icartt import apply_scale_factors, read_icartt</span>
+
+<span class="sd">        ds = read_icartt(filename, apply_scale_factors=False)</span>
+<span class="sd">        ds = apply_scale_factors(ds)</span>
+
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">_apply_scale_factors</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="read_icartt">
 <a class="viewcode-back" href="../../../API/generated/act.io.read_icartt.html#act.io.read_icartt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_icartt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">_format</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_icartt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">return_None</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">apply_scale_factors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Returns `xarray.Dataset` with stored data and metadata from a user-defined</span>
 <span class="sd">    query of ICARTT from a single datastream. Has some procedures to ensure</span>
-<span class="sd">    time is correctly fomatted in returned Dataset.</span>
+<span class="sd">    time is correctly formatted in returned Dataset.</span>
+
+<span class="sd">    Scale factors from header line 11 are applied by default. They are applied</span>
+<span class="sd">    to the data columns only, so the ``ULOD_Value``, ``LLOD_Value`` and</span>
+<span class="sd">    ``uncertainty`` attributes are carried through exactly as the file states</span>
+<span class="sd">    them, unscaled. Limit of detection flags in the data are left untouched.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str</span>
 <span class="sd">        Name of file to read.</span>
-<span class="sd">    format : str</span>
-<span class="sd">        ICARTT Format to Read: FFI1001 or FFI2110.</span>
 <span class="sd">    return_None : bool, optional</span>
 <span class="sd">        Catch IOError exception when file not found and return None.</span>
 <span class="sd">        Default is False.</span>
+<span class="sd">    apply_scale_factors : bool, optional</span>
+<span class="sd">        Multiply each dependent variable by its scale factor. Default is True.</span>
+<span class="sd">        When False the values are returned exactly as the file records them and</span>
+<span class="sd">        the scale factor is left live in the ``scale_factor`` attribute, which</span>
+<span class="sd">        is a reserved CF name that xarray will act on if the Dataset is written</span>
+<span class="sd">        to netCDF and read back.</span>
 <span class="sd">    **kwargs : keywords</span>
-<span class="sd">        keywords to pass on through to icartt.Dataset.</span>
+<span class="sd">        keywords to pass on through to Icartt.from_file.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ds : xarray.Dataset (or None)</span>
 <span class="sd">        ACT Xarray dataset (or None if no data file(s) found).</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    This example will load the example sounding data used for unit testing.</span>
-
-<span class="sd">    .. code-block :: python</span>
-
-<span class="sd">        import act</span>
-<span class="sd">        ds = act.io.icartt.read_icartt(act.tests.sample_files.AAF_SAMPLE_FILE)</span>
-<span class="sd">        print(ds.attrs['_datastream'])</span>
-
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_ICARTT_AVAILABLE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"ICARTT is required to use to read ICARTT files but is not installed"</span><span class="p">)</span>
-
-    <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1"># Create an exception tuple to use with try statements. Doing it this way</span>
-    <span class="c1"># so we can add the FileNotFoundError if requested. Can add more error</span>
-    <span class="c1"># handling in the future.</span>
-    <span class="n">except_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,)</span>
-    <span class="k">if</span> <span class="n">return_None</span><span class="p">:</span>
-        <span class="n">except_tuple</span> <span class="o">=</span> <span class="n">except_tuple</span> <span class="o">+</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span>
-
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Read data file with ICARTT dataset.</span>
-        <span class="n">ict</span> <span class="o">=</span> <span class="n">icartt</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="n">except_tuple</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
-        <span class="c1"># If requested return None for File not found error</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'FileNotFoundError'</span><span class="p">:</span>
+        <span class="n">ict</span> <span class="o">=</span> <span class="n">Icartt</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">return_None</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="c1"># If requested return None for File not found error</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'OSError'</span> <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'no files to open'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span> <span class="ow">and</span> <span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'no files to open'</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">raise</span>
 
-    <span class="c1"># Define the Uncertainty for each variable. Note it may not be calculated.</span>
-    <span class="c1"># If not calculated, assign 'N/A' to the attribute</span>
-    <span class="n">uncertainty</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">to_xarray</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">apply_scale_factors</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_apply_scale_factors</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
-    <span class="c1"># Define the Upper and Lower Limit of Detection Flags</span>
-    <span class="n">ulod_flag</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ulod_value</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
-    <span class="n">llod_flag</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">llod_value</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
-
-    <span class="c1"># Convert ICARTT Object to Xarray Dataset</span>
-    <span class="n">ds_container</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># Counter for uncertainty/LOD values</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="c1"># Loop over ICART variables, convert to Xarray DataArray, Append.</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-        <span class="c1"># Note time is the only independent variable within ICARTT</span>
-        <span class="c1"># Short name for time must be "Start_UTC" for ICARTT files.</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">'Start_UTC'</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'qc_flag'</span><span class="p">:</span>
-                <span class="n">key2</span> <span class="o">=</span> <span class="s1">'quality_flag'</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">key2</span> <span class="o">=</span> <span class="n">key</span>
-            <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ict</span><span class="o">.</span><span class="n">times</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">key2</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s1">'time'</span><span class="p">])</span>
-            <span class="c1"># Assume if Uncertainity does not match the number of variables,</span>
-            <span class="c1"># values were not set within the file. Needs to be string!</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uncertainty</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
-                <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'uncertainty'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'N/A'</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'uncertainty'</span><span class="p">]</span> <span class="o">=</span> <span class="n">uncertainty</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
-
-            <span class="c1"># Assume if ULOD does not match the number of variables within the</span>
-            <span class="c1"># the file, ULOD values were not set.</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ulod_value</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
-                <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'ULOD_Value'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'N/A'</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'ULOD_Value'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ulod_value</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
-
-            <span class="c1"># Assume if LLOD does not match the number of variables within the</span>
-            <span class="c1"># the file, LLOD values were not set.</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">llod_value</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
-                <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'LLOD_Value'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'N/A'</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'LLOD_Value'</span><span class="p">]</span> <span class="o">=</span> <span class="n">llod_value</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
-            <span class="c1"># Define the meta data:</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'mvc'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">miss</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'scale_factor'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'ULOD_Flag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ulod_flag</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'LLOD_Flag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">llod_flag</span>
-            <span class="c1"># Append to ds container</span>
-            <span class="n">ds_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">key2</span><span class="p">))</span>
-            <span class="c1"># up the counter</span>
-            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="c1"># Concatenate each of the Xarray DataArrays into a single Xarray DataSet</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ds_container</span><span class="p">)</span>
-
-    <span class="c1"># Assign ICARTT Meta data to Xarray DataSet</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'PI'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">PIName</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'PI_Affiliation'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">PIAffiliation</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Platform'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">dataSourceDescription</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Mission'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">missionName</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'DateOfCollection'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">dateOfCollection</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'DateOfRevision'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">dateOfRevision</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Data_Interval'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">dataIntervalCode</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Independent_Var'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">independentVariable</span><span class="p">)</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Dependent_Var_Num'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="o">.</span><span class="n">dependentVariables</span><span class="p">)</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'PI_Contact'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Platform'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Associated_Data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Instrument_Info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Data_Info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">5</span><span class="p">][</span><span class="mi">11</span><span class="p">:]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'DM_Contact'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Project_Info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Stipulations'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Comments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Revision'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'Revision_Comments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ict</span><span class="o">.</span><span class="n">normalComments</span><span class="p">[</span><span class="mi">15</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># Assign Additional ARM meta data to Xarray DatatSet</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_datastream'</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="c1"># Return Xarray Dataset</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">scale</span> <span class="o">!=</span> <span class="n">DEFAULT_SCALE_FACTOR</span> <span class="k">for</span> <span class="n">scale</span> <span class="ow">in</span> <span class="n">ict</span><span class="o">.</span><span class="n">VSCAL</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'ICARTT file </span><span class="si">{</span><span class="n">ict</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> declares non-unity scale factors that were not '</span>
+            <span class="s1">'applied, so the values are as recorded in the file. The unapplied factor '</span>
+            <span class="s2">"is left in each variable's 'scale_factor' attribute, which xarray will "</span>
+            <span class="s1">'apply on a netCDF round trip. Pass apply_scale_factors=True to apply it '</span>
+            <span class="s1">'here instead.'</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">ds</span></div>
+
+
+
+<div class="viewcode-block" id="write_icartt">
+<a class="viewcode-back" href="../../../API/generated/act.io.write_icartt.html#act.io.write_icartt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_icartt</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+
+<span class="sd">    Write an `xarray.Dataset` to an ICARTT FFI 1001 file.</span>
+
+<span class="sd">    Intended as the inverse of :func:`read_icartt`, so a Dataset produced by it</span>
+<span class="sd">    round-trips back to a valid ICARTT file. Header metadata is taken from the</span>
+<span class="sd">    Dataset attributes, and anything absent falls back to 'N/A'.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Dataset to write. Must have a ``time`` coordinate.</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Destination path.</span>
+<span class="sd">    **kwargs : keywords</span>
+<span class="sd">        keywords to pass on through to Icartt.write, such as ``fmt``.</span>
+<span class="sd">    """</span>
+    <span class="n">Icartt</span><span class="o">.</span><span class="n">from_xarray</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>
 <div class="section ablog__blog_comments">
