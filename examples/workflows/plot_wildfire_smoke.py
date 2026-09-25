@@ -37,7 +37,6 @@ from matplotlib.patches import Patch
 
 import act
 
-
 # ---------------------------------------------------------------------------
 # Fixed date window (UTC). AirNow expects 'YYYY-MM-DDTHH'. Pinning the dates
 # (rather than using the current time) keeps the example reproducible.
@@ -83,12 +82,7 @@ if token is not None and len(token) > 0:
     pm[pm < 0] = np.nan
 
     latest = np.array(
-        [
-            col[np.where(~np.isnan(col))[0][-1]]
-            if np.any(~np.isnan(col))
-            else np.nan
-            for col in pm.T
-        ]
+        [col[np.where(~np.isnan(col))[0][-1]] if np.any(~np.isnan(col)) else np.nan for col in pm.T]
     )
 
     ds_latest = xr.Dataset(
@@ -167,15 +161,10 @@ if token is not None and len(token) > 0:
 
     # GeographicPlotDisplay creates the colorbar on the same figure.
     # Move it alongside the resized map.
-    cbar_axes = [
-        ax for ax in fig.axes
-        if ax is not map_ax
-    ]
+    cbar_axes = [ax for ax in fig.axes if ax is not map_ax]
 
     if cbar_axes:
-        cbar_axes[-1].set_position(
-            [0.92, 0.50, 0.018, 0.40]
-        )
+        cbar_axes[-1].set_position([0.92, 0.50, 0.018, 0.40])
 
     # -----------------------------------------------------------------------
     # 4. Create the three time-series axes directly on the same figure.
