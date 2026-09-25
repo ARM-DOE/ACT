@@ -1357,6 +1357,15 @@ class QCTests:
             A tuple containing test information including var_name, qc
             variable name, test_number, test_meaning, test_assessment
 
+        References
+        ----------
+        Tukey, J. W., 1977: Exploratory Data Analysis. Addison-Wesley,
+        Reading, Massachusetts. Source of the coef x IQR boxplot rule.
+
+        Terpilowski, M., 2019: scikit-posthocs: Pairwise multiple comparison tests
+        in Python. Journal of Open Source Software, 4(36), 1169.
+        https://doi.org/10.21105/joss.01169
+
         """
 
         try:
@@ -1454,6 +1463,20 @@ class QCTests:
         test_info : tuple
             A tuple containing test information including var_name, qc
             variable name, test_number, test_meaning, test_assessment
+
+        References
+        ----------
+        Rosner, B., 1983: Percentage Points for a Generalized ESD Many-Outlier
+        Procedure. Technometrics, 25(2), 165-172.
+        https://doi.org/10.1080/00401706.1983.10487848
+
+        Grubbs, F. E., 1969: Procedures for Detecting Outlying Observations in
+        Samples. Technometrics, 11(1), 1-21.
+        https://doi.org/10.1080/00401706.1969.10490657
+
+        Terpilowski, M., 2019: scikit-posthocs: Pairwise multiple comparison tests
+        in Python. Journal of Open Source Software, 4(36), 1169.
+        https://doi.org/10.21105/joss.01169
 
         """
 
@@ -1569,6 +1592,14 @@ class QCTests:
         test_info : tuple
             A tuple containing test information including var_name, qc
             variable name, test_number, test_meaning, test_assessment.
+
+        References
+        ----------
+        May, R. M., Arms, S. C., Marsh, P., Bruning, E., Leeman, J. R., Goebbert,
+        K., Thielen, J. E., and Bruick, Z., 2021: MetPy: A Python Package for
+        Meteorological Data. Unidata, https://github.com/Unidata/MetPy,
+        doi:10.5065/D6WW7G29. Pressure at altitude is derived using
+        metpy.calc.add_height_to_pressure.
 
         Examples
         --------
@@ -1695,6 +1726,11 @@ class QCTests:
         test_info : tuple
             A tuple containing test information including var_name, qc
             variable name, test_number, test_meaning, test_assessment
+
+        References
+        ----------
+        Page, E. S., 1954: Continuous Inspection Schemes. Biometrika, 41(1/2),
+        100. https://doi.org/10.2307/2333009
 
         """
 

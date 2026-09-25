@@ -153,12 +153,13 @@ def calculate_modified_gradient_pbl(
         & Wagner, T. (2025). Boundary Layer in Multiple Places (BLIMP)
         (v2025.05.29). Zenodo. https://doi.org/10.5281/zenodo.15545989
 
-    Jackson, R., O’Brien, J., Wang, J., Fytanidis, D., Muradyan, P.,
-        Grover, M., Raut, B., Collis, S., Tuftedal, M., Anderson, G.,
-        agner, T. J., Nesbitt, S., Tan. H., Wefer, D., & Hammond, M. (2025).
-        The thermodynamic and kinematic structure of the planetary boundary
-        layer for a summer lake breeze day in Chicago. Journal of Geophysical
-        Research: Atmospheres, in preparation.
+    Jackson, R., O’Brien, J., Wang, J., Fytanidis, D. K., Kotamarthi, R.,
+        Muradyan, P., Grover, M., Raut, B., Collis, S., Tuftedal, M.,
+        Anderson, G., Wagner, T. J., Nesbitt, S. W., Tan, H., Wefer, D., &
+        Hammond, M. (2026). The thermodynamic and kinematic structure of the
+        planetary boundary layer for a summer lake breeze day in Chicago.
+        Journal of Geophysical Research: Atmospheres, 131(16), e2025JD046032.
+        https://doi.org/10.1029/2025JD046032
     """
     # smooth the data within the range bins (~20m bins)
     smoothed = ds[parm].rolling({dis_parm: smooth_dis}, center=True).mean()
@@ -261,10 +262,10 @@ def calculate_wavelet_pbl(
 
     References
     ----------
-    Brooks, I. M. (2003). Finding boundary layer top using
-        wavelet covariance transform. Journal of Atmospheric and Oceanic
-        Technology, 20(8), 1092-1105.
-        https://doi.org/10.1175/1520-0426(2003)20%3C1092:FBLTUB%3E2.0.CO;2
+    Brooks, I. M. (2003). Finding boundary layer top: application of a
+        wavelet covariance transform to lidar backscatter profiles. Journal of
+        Atmospheric and Oceanic Technology, 20(8), 1092-1105.
+        https://doi.org/10.1175/1520-0426(2003)020%3C1092:FBLTAO%3E2.0.CO;2
 
     Cohn, S. A., & Angevine, W. M. (2000). Boundary layer height and
         entrainment zone thickness measured by lidars and wind-profiling
@@ -367,18 +368,19 @@ def calculate_tucker_method_pbl(
     References
     ----------
     Tucker, S. C., et al. (2009), Doppler Lidar Estimation of Mixing Height
-    Using Turbulence, Shear, and Aerosol Backscatter Data, J. Atmos. Oceanic
-    Technol., 26, 673-688.
+    Using Turbulence, Shear, and Aerosol Profiles, J. Atmos. Oceanic
+    Technol., 26(4), 673-688. https://doi.org/10.1175/2008JTECHA1157.1
 
     Newsom, RK, and Krishnamurthy, Raglavendra. Doppler Lidar (DL) Instrument Handbook.
     United States: N. p., 2022. Web. doi:10.2172/1034640.
 
-    Jackson, R., O’Brien, J., Wang, J., Fytanidis, D., Muradyan, P.,
-    Grover, M., Raut, B., Collis, S., Tuftedal, M., Anderson, G., Wagner, T. J.,
-    Nesbitt, S., Tan. H., Wefer, D., & Hammond, M. (2025), The thermodynamic
-    and kinematic structure of the planetary boundary
+    Jackson, R., O’Brien, J., Wang, J., Fytanidis, D. K., Kotamarthi, R.,
+    Muradyan, P., Grover, M., Raut, B., Collis, S., Tuftedal, M., Anderson, G.,
+    Wagner, T. J., Nesbitt, S. W., Tan, H., Wefer, D., & Hammond, M. (2026).
+    The thermodynamic and kinematic structure of the planetary boundary
     layer for a summer lake breeze day in Chicago. Journal of Geophysical
-    Research: Atmospheres, accepted.
+    Research: Atmospheres, 131(16), e2025JD046032.
+    https://doi.org/10.1029/2025JD046032
 
     Parameters
     ----------
