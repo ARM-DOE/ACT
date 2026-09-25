@@ -37,6 +37,7 @@ from matplotlib.patches import Patch
 
 import act
 
+
 # ---------------------------------------------------------------------------
 # Fixed date window (UTC). AirNow expects 'YYYY-MM-DDTHH'. Pinning the dates
 # (rather than using the current time) keeps the example reproducible.
@@ -49,8 +50,7 @@ token = os.getenv('AIRNOW_API')
 # Map colorbar ceiling (ug/m^3).
 PM25_MAX = 250.0
 
-# EPA PM2.5 AQI category bands: (low, high, color, label), ug/m^3. Shaded
-# behind the time series so the severity is legible at a glance.
+# EPA PM2.5 AQI category bands: (low, high, color, label), ug/m^3.
 EPA_BANDS = [
     (0.0, 12.0, '#2c7fb8', 'Good'),
     (12.0, 35.4, '#fdae61', 'Moderate'),
@@ -59,6 +59,7 @@ EPA_BANDS = [
     (150.4, 600.0, '#4d004b', 'Hazardous'),
 ]
 
+
 if token is not None and len(token) > 0:
     # -----------------------------------------------------------------------
     # 1. Pull every station in the map region through ACT. data_type='B'
@@ -66,15 +67,28 @@ if token is not None and len(token) > 0:
     #    and mobile monitors. The result is a (time, sites) xarray.Dataset.
     # -----------------------------------------------------------------------
     map_bounds = '-104,40,-74,50'
+
     ds_map = act.discovery.get_airnow_bounded_obs(
-        token, START_DATE, END_DATE, map_bounds, 'PM25', mon_type=2, data_type='B'
+        token,
+        START_DATE,
+        END_DATE,
+        map_bounds,
+        'PM25',
+        mon_type=2,
+        data_type='B',
     )
 
     # Reduce to the latest valid PM2.5 per site. AirNow flags missing as -999.
     pm = ds_map['PM2.5'].values.copy()
     pm[pm < 0] = np.nan
+
     latest = np.array(
-        [col[np.where(~np.isnan(col))[0][-1]] if np.any(~np.isnan(col)) else np.nan for col in pm.T]
+        [
+            col[np.where(~np.isnan(col))[0][-1]]
+            if np.any(~np.isnan(col))
+            else np.nan
+            for col in pm.T
+        ]
     )
 
     ds_latest = xr.Dataset(
@@ -84,7 +98,11 @@ if token is not None and len(token) > 0:
             'longitude': ('sites', ds_map['longitude'].values),
         },
     )
-    ds_latest['PM2.5'].attrs = {'long_name': 'PM2.5', 'units': 'ug/m^3'}
+
+    ds_latest['PM2.5'].attrs = {
+        'long_name': 'PM2.5',
+        'units': 'ug/m^3',
+    }
 
     # -----------------------------------------------------------------------
     # 2. Pull a tight bounding box around one site in each of three cities.
@@ -96,24 +114,28 @@ if token is not None and len(token) > 0:
     }
 
     ds_cities = {}
+
     for city, (bounds, site) in cities.items():
         ds = act.discovery.get_airnow_bounded_obs(
-            token, START_DATE, END_DATE, bounds, 'PM25', mon_type=2, data_type='B'
+            token,
+            START_DATE,
+            END_DATE,
+            bounds,
+            'PM25',
+            mon_type=2,
+            data_type='B',
         )
+
         ds_cities[city] = ds.sel(sites=site)
 
     # -----------------------------------------------------------------------
-    # 3. Build one four-panel figure. ACT's GeographicPlotDisplay and
-    #    TimeSeriesDisplay each normally own a whole figure, so we place both
-    #    on a single matplotlib figure by hand: geoplot draws onto the current
-    #    figure and returns its GeoAxes (plus a colorbar), which we reposition
-    #    into the top band; the three shared-y series go in a GridSpec row
-    #    below. geoplot calls plt.axes() on the *current* figure, so we build
-    #    the display first, then create our figure so it is the current one.
+    # 3. Create the map using GeographicPlotDisplay.
+    #
+    #    geoplot() creates the Cartopy GeoAxes required by the map and
+    #    returns that axis. Use the returned axis and its figure directly
+    #    rather than creating and subsequently closing another figure.
     # -----------------------------------------------------------------------
     geo = act.plotting.GeographicPlotDisplay(ds_latest)
-    plt.close('all')  # drop the stray figure the ctor made
-    fig = plt.figure(figsize=(13, 10))  # our figure is now the current one
 
     map_ax = geo.geoplot(
         'PM2.5',
@@ -130,46 +152,116 @@ if token is not None and len(token) > 0:
         edgecolor='white',
         linewidth=0.3,
     )
-    map_ax.set_extent([-104, -74, 39.5, 50.5], crs=ccrs.PlateCarree())
 
-    # geoplot added [GeoAxes, colorbar]; move both into the top band.
-    cbar_ax = [a for a in fig.axes if a is not map_ax][0]
-    map_ax.set_position([0.06, 0.44, 0.82, 0.52])
-    cbar_ax.set_position([0.90, 0.47, 0.018, 0.44])
+    # Use the figure created by GeographicPlotDisplay as the common figure.
+    fig = map_ax.figure
+    fig.set_size_inches(13, 10)
 
-    # Bottom row: three shared-y series with EPA category bands behind them.
-    gs = fig.add_gridspec(1, 3, left=0.06, right=0.97, bottom=0.14, top=0.34, wspace=0.12)
-    bottom_axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
+    map_ax.set_extent(
+        [-104, -74, 39.5, 50.5],
+        crs=ccrs.PlateCarree(),
+    )
 
-    tsd = act.plotting.TimeSeriesDisplay(ds_cities, subplot_shape=(1, 3))
-    plt.close(tsd.fig)  # discard its throwaway figure
-    tsd.fig = fig  # point it at our figure and axes
-    tsd.axes = np.array([bottom_axes])
+    # Position the map in the upper portion of the combined figure.
+    map_ax.set_position([0.06, 0.48, 0.84, 0.44])
+
+    # GeographicPlotDisplay creates the colorbar on the same figure.
+    # Move it alongside the resized map.
+    cbar_axes = [
+        ax for ax in fig.axes
+        if ax is not map_ax
+    ]
+
+    if cbar_axes:
+        cbar_axes[-1].set_position(
+            [0.92, 0.50, 0.018, 0.40]
+        )
+
+    # -----------------------------------------------------------------------
+    # 4. Create the three time-series axes directly on the same figure.
+    # -----------------------------------------------------------------------
+    gs = fig.add_gridspec(
+        1,
+        3,
+        left=0.06,
+        right=0.97,
+        bottom=0.14,
+        top=0.36,
+        wspace=0.12,
+    )
+
+    bottom_axes = []
+
+    for idx in range(3):
+        if idx == 0:
+            ax = fig.add_subplot(gs[0, idx])
+        else:
+            ax = fig.add_subplot(
+                gs[0, idx],
+                sharey=bottom_axes[0],
+            )
+
+        bottom_axes.append(ax)
+
+    # -----------------------------------------------------------------------
+    # 5. Assign an ACT TimeSeriesDisplay to each existing axis.
+    #
+    #    This avoids creating a TimeSeriesDisplay figure, closing it, and
+    #    manually replacing tsd.fig and tsd.axes.
+    # -----------------------------------------------------------------------
     for idx, (city, (_, site)) in enumerate(cities.items()):
         ax = bottom_axes[idx]
+
+        # Add the EPA category bands before the data so they remain in
+        # the background.
         for lo, hi, color, _ in EPA_BANDS:
-            ax.axhspan(lo, hi, color=color, alpha=0.13, zorder=0, linewidth=0)
+            ax.axhspan(
+                lo,
+                hi,
+                color=color,
+                alpha=0.13,
+                zorder=0,
+                linewidth=0,
+            )
+
+        tsd = act.plotting.TimeSeriesDisplay(
+            ds_cities[city],
+            subplot_shape=None,
+        )
+
+        tsd.assign_to_figure_axis(fig, ax)
+
         tsd.plot(
             'PM2.5',
-            dsname=city,
-            subplot_index=(0, idx),
             y_rng=(0, 600),
             force_line_plot=True,
             marker='o',
-            set_title=f'{city} \u2014 {site}',
+            set_title=f'{city} — {site}',
         )
-        if idx > 0:  # label the y-axis once
+
+        if idx > 0:
             ax.set_ylabel('')
             ax.tick_params(labelleft=False)
 
-    handles = [Patch(facecolor=c, alpha=0.5, label=lbl) for _, _, c, lbl in EPA_BANDS]
+    # -----------------------------------------------------------------------
+    # 6. Add the EPA category legend.
+    # -----------------------------------------------------------------------
+    handles = [
+        Patch(
+            facecolor=color,
+            alpha=0.5,
+            label=label,
+        )
+        for _, _, color, label in EPA_BANDS
+    ]
+
     fig.legend(
         handles=handles,
         loc='lower center',
         ncol=5,
         frameon=False,
         fontsize=9,
-        bbox_to_anchor=(0.5, 0.02),
+        bbox_to_anchor=(0.5, 0.035),
         title='EPA PM2.5 AQI category (bands)',
     )
 
