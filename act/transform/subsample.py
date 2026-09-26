@@ -35,7 +35,7 @@ def _subsample_kernel_impl(
     distance,
     t_range,
 ):
-    status = -1
+    status = 0
 
     j = 0
     smallest_d_last_good_value = 0.0

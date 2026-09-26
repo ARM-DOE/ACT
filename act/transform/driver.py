@@ -146,12 +146,11 @@ _KERNEL_ERRORS = {
 
 
 def _check_kernel_status(status, transform):
-    """Raise if a bin_average or interpolate kernel reported an error status.
+    """Raise if a transform kernel reported an error status.
 
     The kernels signal failure with a negative return code and leave their
     output arrays untouched, which would otherwise be returned as all-missing
-    data with no QC flags set. The subsample kernel is not checked: it follows
-    libtrans in returning -1 on success.
+    data with no QC flags set.
     """
     if status < 0:
         reason = _KERNEL_ERRORS.get(status, "unknown kernel error")
@@ -336,7 +335,7 @@ def transform_1d(
             t_range = _infer_t_range(input_coord)
         for col in range(n_other):
             distance = np.full(nt, output_missing_value)
-            _subsample_1d(
+            status = _subsample_1d(
                 array=data_2d[:, col],
                 qc_array=qc_2d[:, col],
                 qc_mask=qc_mask,
@@ -351,6 +350,7 @@ def transform_1d(
                 rmet=[distance],
                 t_range=t_range,
             )
+            _check_kernel_status(status, transform)
 
     else:
         raise ValueError(

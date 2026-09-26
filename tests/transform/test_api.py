@@ -256,6 +256,13 @@ class TestSubsample:
         assert result.values[1] == pytest.approx(20.0)
         assert result.values[2] == pytest.approx(30.0)
 
+    def test_targets_outside_range_do_not_raise(self):
+        da = _da([10.0, 20.0, 30.0], coord=np.array([0.0, 1.0, 2.0]))
+        target = np.array([0.9, 5.0])
+        result, qc = act.transform.subsample(da, target, dim='time', t_range=0.5)
+        assert result.values[0] == pytest.approx(20.0)
+        assert qc.values[1] & act.transform.constants.QC_OUTSIDE_RANGE
+
     def test_accessor_matches_function(self):
         da = _da([10.0, 20.0, 30.0], coord=np.array([0.0, 1.0, 2.0]))
         ds = xr.Dataset({'temp': da})
