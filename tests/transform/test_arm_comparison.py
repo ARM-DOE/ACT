@@ -83,18 +83,10 @@ def _assert_values_match(actual, expected, *, rtol=1e-5, atol=2e-4):
     np.testing.assert_allclose(actual[valid], expected[valid], rtol=rtol, atol=atol)
 
 
-def _assert_qc_match(actual, expected, *, ignore_bits=0, arm_bit_map=None):
+def _assert_qc_match(actual, expected, *, ignore_bits=0):
     actual = np.asarray(actual, dtype=np.int64)
     expected = np.asarray(expected, dtype=np.int64)
     assert actual.shape == expected.shape
-    if arm_bit_map:
-        mapped = np.zeros_like(expected)
-        remaining = expected.copy()
-        for arm_bit, act_bit in arm_bit_map.items():
-            mapped |= np.where(expected & arm_bit, act_bit, 0)
-            remaining &= ~arm_bit
-        mapped |= remaining
-        expected = mapped
     np.testing.assert_array_equal(actual & ~ignore_bits, expected & ~ignore_bits)
 
 
@@ -127,14 +119,12 @@ def test_arm_bin_average_reference():
         )
 
         _assert_values_match(result.values, reference["aerosol_count"].values)
-        # ACT reports the same conditions with its public transform flags.  ARM
-        # stores the corresponding bad-input/zero-weight conditions as 32/64;
-        # compare the shared conditions and allow those representation details.
+        # ARM also sets QC_SOME_BAD_INPUTS when every input is bad, contradicting
+        # its own flag definition ("some, but not all"); ACT does not.
         _assert_qc_match(
             qc.values,
             reference["qc_aerosol_count"].values,
-            ignore_bits=2 | 64 | 256 | 512,
-            arm_bit_map={32: 64, 289: 578},
+            ignore_bits=act.transform.constants.QC_SOME_BAD_INPUTS,
         )
 
         for source_name, reference_name in (
@@ -222,8 +212,4 @@ def test_arm_interpolate_reference():
                 t_range=np.timedelta64(600, "s"),
             )
             _assert_values_match(transformed.values, reference[name].values, atol=2e-4)
-            _assert_qc_match(
-                transformed_qc.values,
-                reference["qc_" + name].values,
-                arm_bit_map={8: 16},
-            )
+            _assert_qc_match(transformed_qc.values, reference["qc_" + name].values)
