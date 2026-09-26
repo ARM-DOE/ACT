@@ -219,12 +219,13 @@ def subsample(data, target, dim, qc=None, qc_mask=None, t_range=None):
     qc_mask : int, str, list[str], or None
         Integer bitmask, QC assessment name, or None. An assessment name is
         matched against ``qc.attrs['flag_assessments']``; None selects
-        ``"Bad"`` when QC metadata is available and otherwise excludes no QC
-        bits.
+        ``"Bad"``, which requires ``flag_masks`` metadata on ``qc`` (a
+        ``ValueError`` is raised otherwise); without ``qc`` no QC bits are
+        excluded.
     t_range : float or numpy.timedelta64, optional
         Maximum distance from a target point to an input point for selection.
-        May be given as a timedelta when ``dim`` is a datetime coordinate.
-        Defaults to the median spacing of input coordinate values.
+        Must be a timedelta when ``dim`` is a datetime coordinate and a number
+        otherwise. Defaults to no limit.
 
     Returns
     -------
@@ -261,8 +262,8 @@ def subsample(data, target, dim, qc=None, qc_mask=None, t_range=None):
     Honor input QC and cap how far the search may reach. When the nearest sample
     is excluded by ``qc_mask`` a farther one is used instead, and the output is
     flagged ``QC_NOT_USING_CLOSEST`` so the substitution is visible. When the
-    coordinate is a datetime, ``t_range`` may be a timedelta; it defaults to the
-    median input spacing.
+    coordinate is a datetime, ``t_range`` must be a timedelta; by default there
+    is no limit.
 
     .. code-block:: python
 

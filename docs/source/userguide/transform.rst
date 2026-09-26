@@ -85,8 +85,8 @@ record; bin-averaging is correct there.
 
 Only ``bin_average`` accepts bounds and the coverage thresholds. Only ``interpolate``
 and ``subsample`` accept ``t_range``, the maximum distance from an output point to an
-input sample beyond which no value is produced (it defaults to the median input
-spacing).
+input sample beyond which no value is produced. As in ARM's libtrans, there is no limit
+by default.
 
 
 A first example
@@ -153,8 +153,10 @@ name as ``qc_mask``:
 The three supported forms are:
 
 * ``None`` (the default): derive a mask for ``"Bad"`` from the QC variable's
-  ``flag_assessments`` and ``flag_masks`` metadata. If no QC variable is supplied,
-  no QC bits are excluded.
+  ``flag_assessments`` and ``flag_masks`` metadata. If the QC variable has no
+  ``flag_masks``, a ``ValueError`` is raised rather than silently excluding nothing:
+  read the data with ``read_arm_netcdf(..., cleanup_qc=True)`` or pass an integer
+  mask. If no QC variable is supplied, no QC bits are excluded.
 * A string such as ``'Bad'`` or ``'Indeterminate'``: derive a mask for that exact
   assessment from the QC metadata. An explicit assessment string requires a QC
   variable with both metadata attributes.
@@ -420,8 +422,9 @@ normalized to nanoseconds internally, so values from coordinates and bounds reco
 different units stay mutually comparable. The output coordinate is returned as a datetime,
 not as a number.
 
-For ``interpolate`` and ``subsample``, ``t_range`` may be given as a timedelta when the
-coordinate is a datetime:
+For ``interpolate`` and ``subsample``, ``t_range`` must be given as a timedelta when the
+coordinate is a datetime. A bare number raises ``TypeError`` rather than being silently
+read as nanoseconds:
 
 .. code-block:: python
 

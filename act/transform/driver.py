@@ -24,9 +24,8 @@ DEFAULT_MISSING = -9999.0
 def _resolve_qc_mask(qc, qc_mask):
     """Resolve an integer QC mask from bitmasks or flag assessments.
 
-    ``None`` selects the ``Bad`` assessment when QC metadata is available and
-    otherwise means that no QC bits are excluded. Integer masks are returned
-    unchanged. A string or list of strings is matched against the QC variable's
+    ``None`` selects the ``Bad`` assessment; without a QC variable it means
+    that no QC bits are excluded. Integer masks are returned unchanged. A string or list of strings is matched against the QC variable's
     ``flag_assessments`` metadata and the corresponding ``flag_masks`` are ORed
     together.
     """
@@ -50,10 +49,14 @@ def _resolve_qc_mask(qc, qc_mask):
             return 0
         raise ValueError(f"Cannot resolve QC assessment(s) {assessments!r} without a QC DataArray")
 
-    # A QC array without CF assessment metadata cannot resolve the implicit
-    # default, so retain the historical no-mask behavior for qc_mask=None.
+    # Silently excluding nothing would let bad values into the output, so a
+    # QC variable without CF metadata requires an explicit integer mask.
     if qc_mask is None and 'flag_masks' not in qc.attrs:
-        return 0
+        raise ValueError(
+            "QC variable has no 'flag_masks' metadata, so the default 'Bad' mask cannot be "
+            "resolved. Pass an integer qc_mask, or read the data with "
+            "act.io.arm.read_arm_netcdf(..., cleanup_qc=True)."
+        )
 
     try:
         flag_masks = qc.attrs['flag_masks']
@@ -78,13 +81,6 @@ def _resolve_qc_mask(qc, qc_mask):
     if missing:
         raise ValueError(f"QC assessment(s) {missing!r} were not found in flag_assessments")
     return mask
-
-
-def _infer_t_range(index):
-    """Return the median absolute spacing between index values."""
-    if len(index) < 2:
-        return np.inf
-    return float(np.median(np.abs(np.diff(index))))
 
 
 def _is_datetime_like_array(arr):
@@ -157,13 +153,24 @@ def _check_kernel_status(status, transform):
         raise ValueError(f"{transform} failed with status {status}: {reason}")
 
 
-def _to_numeric_scalar(value):
-    """Convert a scalar distance like ``t_range`` to float64 nanoseconds if it is a duration."""
+def _to_numeric_t_range(value, datetime_coord):
+    """Convert ``t_range`` to float64 in the units of the numeric coordinate.
+
+    A datetime coordinate is reduced to nanoseconds, so its ``t_range`` must be
+    a timedelta; a bare number would otherwise be read as nanoseconds. A numeric
+    coordinate requires a numeric ``t_range``. None means no limit.
+    """
     if value is None:
-        return None
-    arr = np.asarray(value)
-    if arr.dtype.kind == 'm' or isinstance(value, pd.Timedelta):
-        return float(arr.astype('timedelta64[ns]').astype(np.float64))
+        return np.inf
+    is_duration = isinstance(value, pd.Timedelta) or np.asarray(value).dtype.kind == 'm'
+    if datetime_coord and not is_duration:
+        raise TypeError(
+            "t_range must be a timedelta (e.g. np.timedelta64(5, 'm')) for a datetime coordinate"
+        )
+    if not datetime_coord and is_duration:
+        raise TypeError("t_range must be a number for a numeric coordinate")
+    if is_duration:
+        return float(np.asarray(value).astype('timedelta64[ns]').astype(np.float64))
     return float(value)
 
 
@@ -199,8 +206,8 @@ def transform_1d(
         all-zero / no QC).
     qc_mask : int, str, list[str], or None
         Bitmask, assessment name, or None. An assessment name is matched
-        against ``qc_data`` metadata; None selects ``"Bad"`` when QC metadata
-        is available and otherwise excludes no QC bits.
+        against ``qc_data`` metadata; None selects ``"Bad"``, which requires
+        ``flag_masks`` metadata, and excludes no QC bits without QC data.
     input_coord : numpy.ndarray
         1-D coordinate values for the transform dimension (length == ``data.shape[axis]``).
     output_coord : numpy.ndarray
@@ -230,9 +237,8 @@ def transform_1d(
     goodfrac_ind_min : float
         Coverage fraction below which output is flagged ``QC_INDETERMINATE_GOODFRAC``.
     t_range : float or numpy.timedelta64, optional
-        Max distance for interpolate/subsample; a timedelta is converted to
-        nanoseconds to match a datetime coordinate. Defaults to median input
-        spacing.
+        Max distance for interpolate/subsample. Must be a timedelta for a
+        datetime coordinate and a number otherwise. Defaults to no limit.
 
     Returns
     -------
@@ -250,9 +256,10 @@ def transform_1d(
     # The kernels do arithmetic directly on the coordinate arrays, so reduce
     # datetime-like coordinates to numbers up front for every transform.
     # bin_average used to get this only incidentally, via _get_bounds().
+    datetime_coord = _is_datetime_like_array(np.asarray(input_coord))
     input_coord = _to_numeric(input_coord)
     output_coord = _to_numeric(output_coord)
-    t_range = _to_numeric_scalar(t_range)
+    t_range = _to_numeric_t_range(t_range, datetime_coord)
 
     if data.shape[axis] != ni:
         raise ValueError(
@@ -279,8 +286,20 @@ def transform_1d(
     qc_out_2d = np.zeros((nt, n_other), dtype=np.int32)
 
     if transform == 'bin_average':
+        # The numba kernel does no bounds checking, so a short weights array
+        # would be read past its end rather than raising.
+        if weights is not None:
+            weights = np.asarray(weights, dtype=np.float64)
+            if weights.shape != (ni,):
+                raise ValueError(f"weights has shape {weights.shape}; expected ({ni},)")
         in_start, in_end = _get_bounds(input_coord, input_bounds)
         out_start, out_end = _get_bounds(output_coord, output_bounds)
+        # libtrans rejects zero-width output bins: nothing can be averaged over them.
+        if np.any(out_start == out_end):
+            raise ValueError(
+                "bin_average output bins must have nonzero width; pass output_bounds "
+                "when averaging onto a single target point"
+            )
         for col in range(n_other):
             stdev = np.full(nt, output_missing_value)
             coverage = np.full(nt, output_missing_value)
@@ -308,8 +327,6 @@ def transform_1d(
             _check_kernel_status(status, transform)
 
     elif transform == 'interpolate':
-        if t_range is None:
-            t_range = _infer_t_range(input_coord)
         for col in range(n_other):
             dist_1 = np.full(nt, output_missing_value)
             dist_2 = np.full(nt, output_missing_value)
@@ -331,8 +348,6 @@ def transform_1d(
             _check_kernel_status(status, transform)
 
     elif transform == 'subsample':
-        if t_range is None:
-            t_range = _infer_t_range(input_coord)
         for col in range(n_other):
             distance = np.full(nt, output_missing_value)
             status = _subsample_1d(
@@ -457,8 +472,9 @@ def apply_transform(
     qc_mask : int, str, list[str], or None
         Integer bitmask, QC assessment name, or None. An assessment name is
         matched against ``qc.attrs['flag_assessments']``; None selects
-        ``"Bad"`` when QC metadata is available and otherwise excludes no QC
-        bits.
+        ``"Bad"``, which requires ``flag_masks`` metadata on ``qc`` (a
+        ``ValueError`` is raised otherwise); without ``qc`` no QC bits are
+        excluded.
     **kwargs
         Additional keyword arguments forwarded to :func:`transform_1d`.
 
@@ -678,8 +694,8 @@ def transform_dataset(
     qc_mask : int, str, list[str], or None
         Integer bitmask, QC assessment name, or None. An assessment name is
         matched against each QC companion's ``flag_assessments`` metadata;
-        None selects ``"Bad"`` when metadata is available and otherwise
-        excludes no QC bits.
+        None selects ``"Bad"``, which requires ``flag_masks`` metadata on
+        each QC companion (a ``ValueError`` is raised otherwise).
     target_ds : xarray.Dataset, optional
         Source dataset containing the target coordinate. If its coordinate
         declares a CF bounds variable, that target-grid bounds variable is

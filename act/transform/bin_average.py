@@ -316,16 +316,19 @@ def bin_average(
     qc_mask : int, str, list[str], or None
         Integer bitmask, QC assessment name, or None. An assessment name is
         matched against ``qc.attrs['flag_assessments']``; None selects
-        ``"Bad"`` when QC metadata is available and otherwise excludes no QC
-        bits.
+        ``"Bad"``, which requires ``flag_masks`` metadata on ``qc`` (a
+        ``ValueError`` is raised otherwise); without ``qc`` no QC bits are
+        excluded.
     input_bounds : numpy.ndarray, optional
         Shape ``(ni, 2)`` array of [start, end] bounds for each input bin.
         Inferred from midpoints if None.
     output_bounds : numpy.ndarray, optional
         Shape ``(nt, 2)`` array of [start, end] bounds for each output bin.
-        Inferred from midpoints if None.
+        Inferred from midpoints if None. Every bin must have nonzero width, so
+        a single target point requires explicit bounds.
     weights : numpy.ndarray, optional
-        Per-input-sample weights. Defaults to ones.
+        Per-input-sample weights, one per input point along ``dim``. Defaults
+        to ones.
     std_bad_max : float
         Stdev above which output is flagged ``QC_BAD_STD``.
     std_ind_max : float

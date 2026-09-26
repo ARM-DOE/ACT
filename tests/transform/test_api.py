@@ -71,6 +71,19 @@ class TestInterpolate:
         with pytest.raises(ValueError, match='not found'):
             act.transform.interpolate(da, np.array([0.5]), dim='height')
 
+    def test_default_t_range_is_unlimited(self):
+        # libtrans places no range limit by default, so the missing neighbour
+        # is stepped over rather than failing the target.
+        da = _da([0.0, 10.0, MISSING, 30.0, 40.0])
+        da.encoding['_FillValue'] = MISSING
+        result, qc = act.transform.interpolate(da, np.array([2.5]), dim='time')
+        assert result.values[0] == pytest.approx(25.0)
+        assert qc.values[0] & act.transform.QC_INTERPOLATE
+        limited, limited_qc = act.transform.interpolate(
+            da, np.array([2.5]), dim='time', t_range=1.0
+        )
+        assert limited_qc.values[0] & act.transform.QC_OUTSIDE_RANGE
+
     def test_mismatched_ordering_raises(self):
         da = _da([0.0, 1.0, 2.0, 3.0])
         target = xr.DataArray(np.array([2.5, 0.5]), dims=['time'])
@@ -169,6 +182,46 @@ class TestBinAverage:
         np.testing.assert_array_equal(default_qc.values, bad_qc.values)
         assert bad_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
         assert indeterminate_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
+
+    def test_qc_without_flag_masks_requires_explicit_mask(self):
+        da = _da([1.0, 100.0, 1.0, 1.0])
+        qc = xr.DataArray([0, 1, 0, 0], coords=da.coords, dims=da.dims)
+        target = np.array([0.5, 2.5])
+        bounds = np.array([[0.0, 2.0], [2.0, 4.0]])
+        with pytest.raises(ValueError, match='flag_masks'):
+            act.transform.bin_average(da, target, dim='time', qc=qc, output_bounds=bounds)
+        result, _ = act.transform.bin_average(
+            da,
+            target,
+            dim='time',
+            qc=qc,
+            qc_mask=1,
+            input_bounds=np.array([[0.0, 1.0], [1.0, 2.0], [2.0, 3.0], [3.0, 4.0]]),
+            output_bounds=bounds,
+        )
+        np.testing.assert_allclose(result.values, [1.0, 1.0])
+
+    def test_wrong_length_weights_raise(self):
+        da = _da([0.0, 2.0, 4.0, 6.0])
+        target = np.array([1.0, 3.0])
+        with pytest.raises(ValueError, match='weights'):
+            act.transform.bin_average(da, target, dim='time', weights=np.ones(2))
+
+    def test_zero_width_output_bins_raise(self):
+        da = _da([0.0, 2.0, 4.0, 6.0])
+        with pytest.raises(ValueError, match='nonzero width'):
+            act.transform.bin_average(da, np.array([1.5]), dim='time')
+        with pytest.raises(ValueError, match='nonzero width'):
+            act.transform.bin_average(
+                da,
+                np.array([0.5, 2.5]),
+                dim='time',
+                output_bounds=np.array([[0.0, 1.0], [2.5, 2.5]]),
+            )
+        result, _ = act.transform.bin_average(
+            da, np.array([1.5]), dim='time', output_bounds=np.array([[-0.5, 3.5]])
+        )
+        assert result.values[0] == pytest.approx(3.0)
 
     def test_unknown_qc_assessment_raises(self):
         da = _da([1.0, 2.0])
@@ -280,7 +333,12 @@ class TestTransformDataset:
                 'temp': xr.DataArray(
                     [10.0, 20.0, 30.0, 40.0], coords={'time': time}, dims=['time']
                 ),
-                'qc_temp': xr.DataArray([0, 0, 0, 0], coords={'time': time}, dims=['time']),
+                'qc_temp': xr.DataArray(
+                    [0, 0, 0, 0],
+                    coords={'time': time},
+                    dims=['time'],
+                    attrs={'flag_masks': [1], 'flag_assessments': ['Bad']},
+                ),
                 'pressure': xr.DataArray(
                     [1000.0, 900.0, 800.0, 700.0], coords={'time': time}, dims=['time']
                 ),
@@ -574,10 +632,29 @@ class TestDatetimeCoordinates:
         da = self._datetime_da()
         target = act.transform.make_coord('2023-01-01T00:00', '2023-01-01T02:00', '30min')
 
+        numeric_da = da.assign_coords(time=da['time'].values.astype(np.float64))
+        numeric_target = target.values.astype('datetime64[ns]').astype(np.float64)
+
         result, _ = act.transform.subsample(da, target, dim='time', t_range=np.timedelta64(30, 's'))
-        expected, _ = act.transform.subsample(da, target, dim='time', t_range=30e9)
+        expected, _ = act.transform.subsample(numeric_da, numeric_target, dim='time', t_range=30e9)
 
         np.testing.assert_allclose(result.values, expected.values)
+
+    @pytest.mark.parametrize('transform', ['interpolate', 'subsample'])
+    def test_numeric_t_range_on_datetime_raises(self, transform):
+        """A bare number would be read as nanoseconds, so it must be rejected."""
+        da = self._datetime_da()
+        target = act.transform.make_coord('2023-01-01T00:00', '2023-01-01T02:00', '30min')
+        with pytest.raises(TypeError, match='timedelta'):
+            getattr(act.transform, transform)(da, target, dim='time', t_range=120)
+
+    @pytest.mark.parametrize('transform', ['interpolate', 'subsample'])
+    def test_timedelta_t_range_on_numeric_raises(self, transform):
+        da = _da([0.0, 1.0, 2.0])
+        with pytest.raises(TypeError, match='number'):
+            getattr(act.transform, transform)(
+                da, np.array([0.5]), dim='time', t_range=np.timedelta64(1, 's')
+            )
 
 
 class TestDatetimeCoordinatesFromReader:
