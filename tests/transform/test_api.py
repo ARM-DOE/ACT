@@ -320,6 +320,39 @@ class TestTransformDataset:
         assert result['time'].shape == (2,)
         assert list(result['time'].values) == [0.5, 1.5]
 
+    def test_output_bounds_from_target_dataset_are_preserved(self):
+        ds = self._make_ds()
+        target_time = np.array([0.5, 1.5])
+        target_bounds = xr.DataArray(
+            [[0.0, 1.0], [1.0, 2.0]],
+            coords={'time': target_time},
+            dims=['time', 'bound'],
+            name='time_bounds',
+        )
+        target_ds = xr.Dataset({'time_bounds': target_bounds})
+        target_ds = target_ds.assign_coords(time=target_time)
+        target_ds['time'].attrs['bounds'] = 'time_bounds'
+
+        result = act.transform.transform_dataset(
+            ds, target_ds=target_ds, dim='time', transform='interpolate'
+        )
+
+        assert result['time'].attrs['bounds'] == 'time_bounds'
+        np.testing.assert_array_equal(result['time_bounds'].values, target_bounds.values)
+        assert result['time_bounds'].sizes['time'] == result.sizes['time']
+
+    def test_output_coordinate_drops_unavailable_bounds_reference(self):
+        ds = self._make_ds()
+        ds['time'].attrs['bounds'] = 'time_bounds'
+        target = xr.DataArray(np.array([0.5, 1.5]), dims=['time'])
+
+        result = act.transform.transform_dataset(
+            ds, target=target, dim='time', transform='interpolate'
+        )
+
+        assert 'bounds' not in result['time'].attrs
+        assert 'time_bounds' not in result
+
     def test_bounds_autodetect(self):
         time = np.array([1.0, 3.0])
         time_bounds = xr.DataArray(

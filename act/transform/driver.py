@@ -659,7 +659,10 @@ def transform_dataset(
         None selects ``"Bad"`` when metadata is available and otherwise
         excludes no QC bits.
     target_ds : xarray.Dataset, optional
-        Source dataset containing the target coordinate.
+        Source dataset containing the target coordinate. If its coordinate
+        declares a CF bounds variable, that target-grid bounds variable is
+        included in the output; input bounds are only consumed for the
+        transform and are not copied.
     per_var_transform : dict, optional
         Mapping of variable name to a transform override.
     per_var_kwargs : dict, optional
@@ -745,6 +748,29 @@ def transform_dataset(
     else:
         target_da = target
 
+    # A coordinate's bounds attribute is valid in the output only when its
+    # referenced variable describes the output grid. Source bounds are used
+    # for bin averaging below, but must not be left as dangling references.
+    target_bounds = None
+    target_bounds_name = target_da.attrs.get('bounds') if hasattr(target_da, 'attrs') else None
+    if target_bounds_name is None and dim in ds.coords:
+        target_bounds_name = ds[dim].attrs.get('bounds')
+    if target_ds is not None and target_bounds_name in target_ds:
+        target_bounds = target_ds[target_bounds_name]
+    elif target_bounds_name and transform == 'bin_average':
+        explicit_bounds = kwargs.get('output_bounds')
+        if explicit_bounds is not None:
+            target_bounds = xr.DataArray(
+                explicit_bounds,
+                dims=(dim, 'bound'),
+                coords={dim: np.asarray(target_da)},
+                name=target_bounds_name,
+            )
+
+    if target_bounds is None and hasattr(target_da, 'attrs'):
+        target_da = target_da.copy()
+        target_da.attrs.pop('bounds', None)
+
     _transform_fn = {
         'bin_average': bin_average,
         'interpolate': interpolate,
@@ -805,8 +831,18 @@ def transform_dataset(
                         var_kwargs['output_bounds'] = ob
 
         out, out_qc = fn(da, target_da, dim, qc=qc_da, qc_mask=qc_mask, **var_kwargs)
+        # apply_transform also preserves source coordinate attrs. Override its
+        # bounds reference here so the returned coordinate cannot point at an
+        # omitted source-grid bounds variable.
+        if target_bounds is None:
+            out[dim].attrs.pop('bounds', None)
+        elif target_bounds_name is not None:
+            out[dim].attrs['bounds'] = target_bounds_name
         result_vars[name] = out
         result_vars[qc_name] = out_qc
+
+    if target_bounds is not None:
+        result_vars[target_bounds_name] = target_bounds
 
     return xr.Dataset(result_vars, attrs=ds.attrs)
 

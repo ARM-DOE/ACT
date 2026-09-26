@@ -355,7 +355,9 @@ Dataset that has ``dim``:
 * **CF bounds auto-detection.** For ``bin_average``, the coordinate's ``bounds`` attribute
   is followed and the named variable used as ``input_bounds``. The bounds variable itself
   is skipped rather than transformed, since it describes coordinate cells rather than
-  measured data.
+  measured data. If the target coordinate has its own bounds variable, that output-grid
+  variable is preserved; otherwise the output coordinate does not retain a dangling
+  ``bounds`` reference.
 * **Pass-through.** Variables without ``dim`` are copied across unchanged, and the
   Dataset's global ``attrs`` are preserved.
 
