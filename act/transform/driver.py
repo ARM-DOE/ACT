@@ -138,6 +138,26 @@ def _to_numeric(values):
     return arr.astype(np.float64)
 
 
+_KERNEL_ERRORS = {
+    -1: "input or output bin bounds are inconsistent (each bin's end must follow its start "
+    "in the direction of the coordinate)",
+    -5: "input and target coordinates must be monotonic in the same direction",
+}
+
+
+def _check_kernel_status(status, transform):
+    """Raise if a bin_average or interpolate kernel reported an error status.
+
+    The kernels signal failure with a negative return code and leave their
+    output arrays untouched, which would otherwise be returned as all-missing
+    data with no QC flags set. The subsample kernel is not checked: it follows
+    libtrans in returning -1 on success.
+    """
+    if status < 0:
+        reason = _KERNEL_ERRORS.get(status, "unknown kernel error")
+        raise ValueError(f"{transform} failed with status {status}: {reason}")
+
+
 def _to_numeric_scalar(value):
     """Convert a scalar distance like ``t_range`` to float64 nanoseconds if it is a duration."""
     if value is None:
@@ -265,7 +285,7 @@ def transform_1d(
         for col in range(n_other):
             stdev = np.full(nt, output_missing_value)
             coverage = np.full(nt, output_missing_value)
-            _bin_average_1d(
+            status = _bin_average_1d(
                 array=data_2d[:, col],
                 qc_array=qc_2d[:, col],
                 qc_mask=qc_mask,
@@ -286,6 +306,7 @@ def transform_1d(
                 goodfrac_bad_min=goodfrac_bad_min,
                 goodfrac_ind_min=goodfrac_ind_min,
             )
+            _check_kernel_status(status, transform)
 
     elif transform == 'interpolate':
         if t_range is None:
@@ -293,7 +314,7 @@ def transform_1d(
         for col in range(n_other):
             dist_1 = np.full(nt, output_missing_value)
             dist_2 = np.full(nt, output_missing_value)
-            _bilinear_interpolate_1d(
+            status = _bilinear_interpolate_1d(
                 array=data_2d[:, col],
                 qc_array=qc_2d[:, col],
                 qc_mask=qc_mask,
@@ -308,6 +329,7 @@ def transform_1d(
                 rmet=[dist_1, dist_2],
                 t_range=t_range,
             )
+            _check_kernel_status(status, transform)
 
     elif transform == 'subsample':
         if t_range is None:

@@ -71,6 +71,12 @@ class TestInterpolate:
         with pytest.raises(ValueError, match='not found'):
             act.transform.interpolate(da, np.array([0.5]), dim='height')
 
+    def test_mismatched_ordering_raises(self):
+        da = _da([0.0, 1.0, 2.0, 3.0])
+        target = xr.DataArray(np.array([2.5, 0.5]), dims=['time'])
+        with pytest.raises(ValueError, match='status -5'):
+            act.transform.interpolate(da, target, dim='time')
+
     def test_2d_dataarray(self):
         time = np.array([0.0, 1.0, 2.0, 3.0])
         height = np.array([100.0, 200.0, 300.0])
@@ -101,6 +107,18 @@ class TestBinAverage:
         target = xr.DataArray(np.array([1.0, 3.0]), dims=['time'])
         result, qc = act.transform.bin_average(da, target, dim='time')
         assert result.shape == (2,)
+
+    def test_mismatched_ordering_raises(self):
+        da = _da([0.0, 2.0, 4.0, 6.0], coord=np.array([0.0, 1.0, 2.0, 3.0]))
+        target = xr.DataArray(np.array([3.0, 1.0]), dims=['time'])
+        with pytest.raises(ValueError, match='status -5'):
+            act.transform.bin_average(da, target, dim='time')
+
+    def test_matched_descending_ordering_succeeds(self):
+        da = _da([6.0, 4.0, 2.0, 0.0], coord=np.array([3.0, 2.0, 1.0, 0.0]))
+        target = xr.DataArray(np.array([2.5, 0.5]), dims=['time'])
+        result, qc = act.transform.bin_average(da, target, dim='time')
+        np.testing.assert_allclose(result.values, [5.0, 1.0])
 
     def test_attrs_preserved(self):
         da = _da([1.0, 2.0, 3.0])
