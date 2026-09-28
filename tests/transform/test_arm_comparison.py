@@ -1,11 +1,3 @@
-"""Unofficial comparisons with the ARM transformation-library outputs.
-
-These tests are intentionally fixture-based rather than part of ACT's public API
-contract.  The NetCDF input and ARM outputs are local artifacts kept under
-``data/`` while the transform implementation is being brought into alignment
-with ARM's ``mslBinAverage`` and ``mslInterpolate`` processes.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -14,29 +6,14 @@ import xarray as xr
 
 import act
 
-DATA_DIR = Path(__file__).parents[2] / "data"
-INPUT = DATA_DIR / "sgpaossmpsE13.b1.20230601.000000.nc"
-BIN_AVERAGE = (
-    DATA_DIR
-    / "bin_average/datastream_output/sgp/sgpmslBinAverageE13.c1"
-    / "sgpmslBinAverageE13.c1.20230601.000000.nc"
-)
-INTERPOLATE = (
-    DATA_DIR
-    / "interpolate_auto/datastream_output/sgp/sgpmslInterpolateE13.c1"
-    / "sgpmslInterpolateE13.c1.20230601.000000.cdf"
-)
-
-
-def _require_fixtures(*paths):
-    missing = [str(path) for path in paths if not path.exists()]
-    if missing:
-        pytest.skip("local ARM comparison fixtures are unavailable: " + ", ".join(missing))
+FIXTURE_DIR = Path(__file__).parents[1] / "data/transform/arm_reference"
+INPUT = FIXTURE_DIR / "input.nc"
+BIN_AVERAGE = FIXTURE_DIR / "expected_bin_average.nc"
+INTERPOLATE = FIXTURE_DIR / "expected_interpolate.nc"
 
 
 class _OpenedDatasets:
     def __init__(self, *paths):
-        _require_fixtures(*paths)
         self.datasets = [xr.open_dataset(path).load() for path in paths]
 
     def __enter__(self):
@@ -168,7 +145,7 @@ def test_arm_interpolate_reference():
             dim="time",
             qc=source["qc_dN_dlogDp"],
             qc_mask=1,
-            t_range=np.timedelta64(600, "s"),
+            t_range=600,
         )
         result, qc = act.transform.interpolate(
             time_result,
@@ -196,7 +173,9 @@ def test_arm_interpolate_reference():
         # The ARM and ACT kernels make slightly different choices around
         # missing SMPS bins.  Away from those edge choices, the discrepancy is
         # small relative to the distribution magnitude.
-        relative_error = np.abs(actual[valid] - expected[valid]) / (np.abs(expected[valid]) + 1e-6)
+        relative_error = np.abs(actual[valid] - expected[valid]) / (
+            np.abs(expected[valid]) + 1e-6
+        )
         assert np.mean(relative_error < 0.2) > 0.98
         np.testing.assert_allclose(actual[valid], expected[valid], rtol=3.0, atol=2.0)
 
@@ -209,7 +188,7 @@ def test_arm_interpolate_reference():
                 dim="time",
                 qc=source.get("qc_" + name),
                 qc_mask=1,
-                t_range=np.timedelta64(600, "s"),
+                t_range=600,
             )
             _assert_values_match(transformed.values, reference[name].values, atol=2e-4)
             _assert_qc_match(transformed_qc.values, reference["qc_" + name].values)
