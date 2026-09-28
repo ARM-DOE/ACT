@@ -103,6 +103,45 @@ class TestInterpolate:
         target = xr.DataArray(np.array([0.5, 1.5, 2.5]), dims=['time'])
         result, qc = act.transform.interpolate(da, target, dim='time')
         assert result.shape == (3, 3)
+        np.testing.assert_allclose(result.values, (data[:-1] + data[1:]) / 2)
+        np.testing.assert_array_equal(qc.values, np.zeros((3, 3)))
+
+    @pytest.mark.parametrize(
+        'values, flags, target, t_range, expected, expected_qc',
+        [
+            ([0, 100, 20], [0, 1, 0], 0.5, None, 5.0, act.transform.QC_INTERPOLATE),
+            ([0, 10, 20], [2, 0, 0], 0.5, None, 5.0, act.transform.QC_INDETERMINATE),
+            ([0, 10, 20], [0, 0, 0], 0.5, 0.4, MISSING,
+             act.transform.QC_OUTSIDE_RANGE | act.transform.QC_BAD),
+        ],
+    )
+    def test_qc_and_range(self, values, flags, target, t_range, expected, expected_qc):
+        da = _da(values)
+        qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
+        result, result_qc = act.transform.interpolate(
+            da, [target], dim='time', qc=qc, qc_mask=1, t_range=t_range
+        )
+        assert result.values[0] == pytest.approx(expected)
+        assert result_qc.values[0] == expected_qc
+
+    def test_single_input_is_outside_range(self):
+        result, qc = act.transform.interpolate(_da([10]), [0], dim='time')
+        np.testing.assert_array_equal(result.values, [MISSING])
+        np.testing.assert_array_equal(qc.values, [act.transform.QC_BAD | act.transform.QC_OUTSIDE_RANGE])
+
+    def test_only_one_usable_input_marks_all_targets_bad(self):
+        da = _da([10, MISSING, MISSING])
+        result, qc = act.transform.interpolate(da, [0.5, 1.5], dim='time')
+        np.testing.assert_array_equal(result.values, [MISSING, MISSING])
+        assert np.all(qc.values & act.transform.QC_ALL_BAD_INPUTS)
+        assert np.all(qc.values & act.transform.QC_BAD)
+
+    def test_matched_descending_order(self):
+        result, qc = act.transform.interpolate(
+            _da([20, 10, 0], coord=[2, 1, 0]), [1.5, 0.5], dim='time'
+        )
+        np.testing.assert_allclose(result.values, [15, 5])
+        np.testing.assert_array_equal(qc.values, [0, 0])
 
     def test_accessor_matches_function(self):
         da = _da([0.0, 1.0, 4.0, 9.0], coord=np.array([0.0, 1.0, 2.0, 3.0]))
@@ -120,6 +159,8 @@ class TestBinAverage:
         target = xr.DataArray(np.array([1.0, 3.0]), dims=['time'])
         result, qc = act.transform.bin_average(da, target, dim='time')
         assert result.shape == (2,)
+        np.testing.assert_allclose(result.values, [2.0, 8.0 / 1.5])
+        np.testing.assert_array_equal(qc.values, [0, 0])
 
     def test_mismatched_ordering_raises(self):
         da = _da([0.0, 2.0, 4.0, 6.0], coord=np.array([0.0, 1.0, 2.0, 3.0]))
@@ -200,6 +241,68 @@ class TestBinAverage:
             output_bounds=bounds,
         )
         np.testing.assert_allclose(result.values, [1.0, 1.0])
+
+    @pytest.mark.parametrize(
+        'bounds, flags, kwargs, expected, expected_qc',
+        [
+            ([[0, 2]], [0, 0], {'weights': [1, 3]}, 7.5, 0),
+            ([[0, 1.25]], [0, 0], {}, 2.0, 0),
+            ([[0, 2]], [0, 1], {'goodfrac_bad_min': 0.75}, 0.0,
+             act.transform.QC_SOME_BAD_INPUTS | act.transform.QC_BAD_GOODFRAC),
+            ([[0, 2]], [0, 0], {'std_ind_max': 4}, 5.0,
+             act.transform.QC_INDETERMINATE_STD),
+        ],
+    )
+    def test_weights_overlap_and_thresholds(self, bounds, flags, kwargs, expected, expected_qc):
+        da = _da([0, 10], coord=np.array([0.5, 1.5]))
+        qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
+        result, result_qc = act.transform.bin_average(
+            da, [1.0], dim='time', qc=qc, qc_mask=1,
+            input_bounds=[[0, 1], [1, 2]], output_bounds=bounds, **kwargs
+        )
+        assert result.values[0] == pytest.approx(expected)
+        assert result_qc.values[0] == expected_qc
+
+    @pytest.mark.parametrize(
+        'bounds, weights, expected, expected_qc',
+        [
+            ([[0, 2]], [0, 0], 0, act.transform.QC_ZERO_WEIGHT),
+            ([[3, 4]], None, MISSING, act.transform.QC_OUTSIDE_RANGE | act.transform.QC_BAD),
+        ],
+    )
+    def test_zero_weight_and_no_overlap(self, bounds, weights, expected, expected_qc):
+        result, qc = act.transform.bin_average(
+            _da([0, 10], coord=[0.5, 1.5]), [3.5], dim='time',
+            input_bounds=[[0, 1], [1, 2]], output_bounds=bounds, weights=weights,
+        )
+        np.testing.assert_array_equal(result.values, [expected])
+        np.testing.assert_array_equal(qc.values, [expected_qc])
+
+    @pytest.mark.parametrize(
+        'kwargs, expected_qc',
+        [
+            ({'std_bad_max': 4}, act.transform.QC_BAD_STD),
+            ({'goodfrac_ind_min': 0.75},
+             act.transform.QC_SOME_BAD_INPUTS | act.transform.QC_INDETERMINATE_GOODFRAC),
+        ],
+    )
+    def test_bad_std_and_indeterminate_coverage(self, kwargs, expected_qc):
+        da = _da([0, 10], coord=[0.5, 1.5])
+        flags = [0, 1] if 'goodfrac_ind_min' in kwargs else [0, 0]
+        qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
+        result, result_qc = act.transform.bin_average(
+            da, [1.0], dim='time', qc=qc, qc_mask=1,
+            input_bounds=[[0, 1], [1, 2]], output_bounds=[[0, 2]], **kwargs,
+        )
+        assert result.values[0] == pytest.approx(0 if flags[1] else 5)
+        assert result_qc.values[0] == expected_qc
+
+    def test_inconsistent_input_bounds_raise(self):
+        with pytest.raises(ValueError, match='status -1'):
+            act.transform.bin_average(
+                _da([10, 20], coord=[0.5, 1.5]), [1.0], dim='time',
+                input_bounds=[[0, -1], [1, 2]], output_bounds=[[-2, 2]],
+            )
 
     def test_wrong_length_weights_raise(self):
         da = _da([0.0, 2.0, 4.0, 6.0])
@@ -308,6 +411,40 @@ class TestSubsample:
         assert result.values[0] == pytest.approx(10.0)
         assert result.values[1] == pytest.approx(20.0)
         assert result.values[2] == pytest.approx(30.0)
+
+    @pytest.mark.parametrize(
+        'values, flags, target, expected, expected_qc',
+        [
+            ([10, 20, 30], [0, 1, 0], 0.9, 10,
+             act.transform.QC_NOT_USING_CLOSEST),
+            ([10, 20, 30], [2, 0, 0], 0.1, 10,
+             act.transform.QC_INDETERMINATE),
+            ([10, 20, 30], [1, 1, 1], 0.9, MISSING,
+             act.transform.QC_ALL_BAD_INPUTS | act.transform.QC_BAD),
+        ],
+    )
+    def test_qc_selection(self, values, flags, target, expected, expected_qc):
+        da = _da(values)
+        qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
+        result, result_qc = act.transform.subsample(
+            da, [target], dim='time', qc=qc, qc_mask=1, t_range=1.0
+        )
+        assert result.values[0] == pytest.approx(expected)
+        assert result_qc.values[0] == expected_qc
+
+    def test_bad_tail_distinguishes_all_bad_from_outside_range(self):
+        da = _da([10, 20, 30], coord=[0, 1, 2])
+        qc = xr.DataArray([0, 0, 1], coords=da.coords, dims=da.dims)
+        result, result_qc = act.transform.subsample(
+            da, [1.9, 2.1, 4.0], dim='time', qc=qc, qc_mask=1, t_range=0.5
+        )
+        np.testing.assert_array_equal(result.values, [MISSING] * 3)
+        np.testing.assert_array_equal(
+            result_qc.values,
+            [act.transform.QC_ALL_BAD_INPUTS | act.transform.QC_BAD,
+             act.transform.QC_ALL_BAD_INPUTS | act.transform.QC_BAD,
+             act.transform.QC_OUTSIDE_RANGE | act.transform.QC_BAD],
+        )
 
     def test_targets_outside_range_do_not_raise(self):
         da = _da([10.0, 20.0, 30.0], coord=np.array([0.0, 1.0, 2.0]))
