@@ -247,54 +247,26 @@ class TestBinAverage:
         [
             ([[0, 2]], [0, 0], {'weights': [1, 3]}, 7.5, 0),
             ([[0, 1.25]], [0, 0], {}, 2.0, 0),
-            ([[0, 2]], [0, 1], {'goodfrac_bad_min': 0.75}, 0.0,
+            ([[0, 2]], [0, 1], {'goodfrac_bad_min': 0.75}, 0,
              act.transform.QC_SOME_BAD_INPUTS | act.transform.QC_BAD_GOODFRAC),
-            ([[0, 2]], [0, 0], {'std_ind_max': 4}, 5.0,
+            ([[0, 2]], [0, 0], {'std_ind_max': 4}, 5,
              act.transform.QC_INDETERMINATE_STD),
+            ([[0, 2]], [0, 0], {'weights': [0, 0]}, 0, act.transform.QC_ZERO_WEIGHT),
+            ([[3, 4]], [0, 0], {}, MISSING,
+             act.transform.QC_OUTSIDE_RANGE | act.transform.QC_BAD),
+            ([[0, 2]], [0, 0], {'std_bad_max': 4}, 5, act.transform.QC_BAD_STD),
+            ([[0, 2]], [0, 1], {'goodfrac_ind_min': 0.75}, 0,
+             act.transform.QC_SOME_BAD_INPUTS | act.transform.QC_INDETERMINATE_GOODFRAC),
         ],
     )
     def test_weights_overlap_and_thresholds(self, bounds, flags, kwargs, expected, expected_qc):
-        da = _da([0, 10], coord=np.array([0.5, 1.5]))
+        da = _da([0, 10], coord=[0.5, 1.5])
         qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
         result, result_qc = act.transform.bin_average(
             da, [1.0], dim='time', qc=qc, qc_mask=1,
             input_bounds=[[0, 1], [1, 2]], output_bounds=bounds, **kwargs
         )
         assert result.values[0] == pytest.approx(expected)
-        assert result_qc.values[0] == expected_qc
-
-    @pytest.mark.parametrize(
-        'bounds, weights, expected, expected_qc',
-        [
-            ([[0, 2]], [0, 0], 0, act.transform.QC_ZERO_WEIGHT),
-            ([[3, 4]], None, MISSING, act.transform.QC_OUTSIDE_RANGE | act.transform.QC_BAD),
-        ],
-    )
-    def test_zero_weight_and_no_overlap(self, bounds, weights, expected, expected_qc):
-        result, qc = act.transform.bin_average(
-            _da([0, 10], coord=[0.5, 1.5]), [3.5], dim='time',
-            input_bounds=[[0, 1], [1, 2]], output_bounds=bounds, weights=weights,
-        )
-        np.testing.assert_array_equal(result.values, [expected])
-        np.testing.assert_array_equal(qc.values, [expected_qc])
-
-    @pytest.mark.parametrize(
-        'kwargs, expected_qc',
-        [
-            ({'std_bad_max': 4}, act.transform.QC_BAD_STD),
-            ({'goodfrac_ind_min': 0.75},
-             act.transform.QC_SOME_BAD_INPUTS | act.transform.QC_INDETERMINATE_GOODFRAC),
-        ],
-    )
-    def test_bad_std_and_indeterminate_coverage(self, kwargs, expected_qc):
-        da = _da([0, 10], coord=[0.5, 1.5])
-        flags = [0, 1] if 'goodfrac_ind_min' in kwargs else [0, 0]
-        qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
-        result, result_qc = act.transform.bin_average(
-            da, [1.0], dim='time', qc=qc, qc_mask=1,
-            input_bounds=[[0, 1], [1, 2]], output_bounds=[[0, 2]], **kwargs,
-        )
-        assert result.values[0] == pytest.approx(0 if flags[1] else 5)
         assert result_qc.values[0] == expected_qc
 
     def test_inconsistent_input_bounds_raise(self):
@@ -326,14 +298,6 @@ class TestBinAverage:
         )
         assert result.values[0] == pytest.approx(3.0)
 
-    def test_unknown_qc_assessment_raises(self):
-        da = _da([1.0, 2.0])
-        qc = xr.DataArray([0, 0], coords=da.coords, dims=da.dims)
-        qc.attrs['flag_masks'] = [1]
-        qc.attrs['flag_assessments'] = ['Bad']
-        with pytest.raises(ValueError, match='not found'):
-            act.transform.bin_average(da, [0.5], dim='time', qc=qc, qc_mask='Suspect')
-
     def test_multiple_qc_assessments_are_combined(self):
         da = _da([1.0, 2.0, 3.0], coord=np.array([0.0, 1.0, 2.0]))
         qc = xr.DataArray([1, 2, 4], coords=da.coords, dims=da.dims)
@@ -351,55 +315,35 @@ class TestBinAverage:
         )
         assert result.values[0] == pytest.approx(3.0)
 
-    def test_invalid_qc_assessment_list_raises(self):
+    @pytest.mark.parametrize(
+        'mask, exception, message',
+        [
+            ('Suspect', ValueError, 'not found'),
+            (['Bad', 1], TypeError, 'assessment string'),
+        ],
+    )
+    def test_invalid_qc_assessment_raises(self, mask, exception, message):
         da = _da([1.0, 2.0])
         qc = xr.DataArray([0, 0], coords=da.coords, dims=da.dims)
-        qc.attrs['flag_masks'] = [1]
-        qc.attrs['flag_assessments'] = ['Bad']
-        with pytest.raises(TypeError, match='assessment string'):
-            act.transform.bin_average(da, [0.5], dim='time', qc=qc, qc_mask=['Bad', 1])
+        qc.attrs.update(flag_masks=[1], flag_assessments=['Bad'])
+        with pytest.raises(exception, match=message):
+            act.transform.bin_average(da, [0.5], dim='time', qc=qc, qc_mask=mask)
 
-    def test_some_bad_inputs_excludes_all_bad_flag(self):
-        da = _da([1.0, 2.0], coord=np.array([0.0, 1.0]))
-        qc = xr.DataArray([act.transform.QC_BAD, 0], coords=da.coords, dims=da.dims)
-        target = xr.DataArray([0.0], dims=['time'])
-        bounds = np.array([[0.0, 2.0]])
-
+    @pytest.mark.parametrize(
+        'flags, expected_qc',
+        [
+            ([act.transform.QC_BAD, 0], act.transform.QC_SOME_BAD_INPUTS),
+            ([act.transform.QC_BAD] * 2, act.transform.QC_ALL_BAD_INPUTS | act.transform.QC_BAD),
+        ],
+    )
+    def test_partial_vs_all_bad_inputs(self, flags, expected_qc):
+        da = _da([1.0, 2.0])
+        qc = xr.DataArray(flags, coords=da.coords, dims=da.dims)
         _, result_qc = act.transform.bin_average(
-            da,
-            target,
-            dim='time',
-            qc=qc,
-            qc_mask=act.transform.QC_BAD,
-            input_bounds=np.array([[0.0, 1.0], [1.0, 2.0]]),
-            output_bounds=bounds,
+            da, [1.0], dim='time', qc=qc, qc_mask=act.transform.QC_BAD,
+            input_bounds=[[0.0, 1.0], [1.0, 2.0]], output_bounds=[[0.0, 2.0]],
         )
-
-        assert result_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
-        assert not result_qc.values[0] & act.transform.QC_ALL_BAD_INPUTS
-
-    def test_all_bad_inputs_excludes_some_bad_flag(self):
-        da = _da([1.0, 2.0], coord=np.array([0.0, 1.0]))
-        qc = xr.DataArray(
-            [act.transform.QC_BAD, act.transform.QC_BAD],
-            coords=da.coords,
-            dims=da.dims,
-        )
-        target = xr.DataArray([0.0], dims=['time'])
-        bounds = np.array([[0.0, 2.0]])
-
-        _, result_qc = act.transform.bin_average(
-            da,
-            target,
-            dim='time',
-            qc=qc,
-            qc_mask=act.transform.QC_BAD,
-            input_bounds=np.array([[0.0, 1.0], [1.0, 2.0]]),
-            output_bounds=bounds,
-        )
-
-        assert result_qc.values[0] & act.transform.QC_ALL_BAD_INPUTS
-        assert not result_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
+        assert result_qc.values[0] == expected_qc
 
 
 class TestSubsample:
@@ -778,20 +722,18 @@ class TestDatetimeCoordinates:
         np.testing.assert_allclose(result.values, expected.values)
 
     @pytest.mark.parametrize('transform', ['interpolate', 'subsample'])
-    def test_numeric_t_range_on_datetime_raises(self, transform):
-        """A bare number would be read as nanoseconds, so it must be rejected."""
-        da = self._datetime_da()
-        target = act.transform.make_coord('2023-01-01T00:00', '2023-01-01T02:00', '30min')
-        with pytest.raises(TypeError, match='timedelta'):
-            getattr(act.transform, transform)(da, target, dim='time', t_range=120)
-
-    @pytest.mark.parametrize('transform', ['interpolate', 'subsample'])
-    def test_timedelta_t_range_on_numeric_raises(self, transform):
-        da = _da([0.0, 1.0, 2.0])
-        with pytest.raises(TypeError, match='number'):
-            getattr(act.transform, transform)(
-                da, np.array([0.5]), dim='time', t_range=np.timedelta64(1, 's')
-            )
+    @pytest.mark.parametrize('datetime_coord', [True, False], ids=['datetime', 'numeric'])
+    def test_mismatched_t_range_type_raises(self, transform, datetime_coord):
+        if datetime_coord:
+            da = self._datetime_da()
+            target = act.transform.make_coord('2023-01-01T00:00', '2023-01-01T02:00', '30min')
+            t_range, message = 120, 'timedelta'
+        else:
+            da = _da([0.0, 1.0, 2.0])
+            target = np.array([0.5])
+            t_range, message = np.timedelta64(1, 's'), 'number'
+        with pytest.raises(TypeError, match=message):
+            getattr(act.transform, transform)(da, target, dim='time', t_range=t_range)
 
 
 class TestDatetimeCoordinatesFromReader:
