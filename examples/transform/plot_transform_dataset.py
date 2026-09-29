@@ -29,6 +29,7 @@ target = act.transform.make_coord('2023-03-01', '2023-03-02', '30min', name='tim
 #   * time_bounds is followed as CF bounds for bin_average, and is not itself
 #     transformed as if it were measured data.
 #   * pwd_pw_code_inst is a categorical code, so it is subsampled instead.
+#   * wdir_vec_mean is circular; subsampling avoids averaging across 0°/360°.
 #   * wspd_arith_mean gets a standard-deviation threshold, flagging bins whose
 #     input was too variable for a single mean to represent.
 new_ds = act.transform.transform_dataset(
@@ -37,13 +38,12 @@ new_ds = act.transform.transform_dataset(
     dim='time',
     transform='bin_average',
     qc_mask=4,
-    per_var_transform={'pwd_pw_code_inst': 'subsample'},
+    per_var_transform={'pwd_pw_code_inst': 'subsample', 'wdir_vec_mean': 'subsample'},
     per_var_kwargs={'wspd_arith_mean': {'std_ind_max': 0.8, 'std_bad_max': 1.5}},
 )
 
 print(f'Input:  {ds.sizes["time"]} times, {len(ds.data_vars)} variables')
 print(f'Output: {new_ds.sizes["time"]} times, {len(new_ds.data_vars)} variables')
-print(f'time_bounds transformed as data: {"time_bounds" in new_ds.data_vars}')
 print(f'Global attributes preserved: {len(new_ds.attrs) > 0}')
 
 # Every transformed variable arrives with a companion QC variable carrying CF

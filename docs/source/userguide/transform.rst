@@ -83,10 +83,17 @@ present-weather *code* produces a number that means nothing; subsampling is corr
 there. Subsampling a temperature onto a much coarser grid throws away most of the
 record; bin-averaging is correct there.
 
+**Circular variables need special care.** ``bin_average`` and ``interpolate`` treat
+values as linear numbers, so directions near the wrap point can give misleading
+results. For example, averaging 359° and 1° yields 180° instead of a direction near 0°.
+For wind direction, angles, and other circular quantities, use a circular-aware
+method (for example, transform sine and cosine components separately and recover
+the angle with ``atan2``), or use ``subsample`` if retaining an observed value
+is appropriate.
+
 Only ``bin_average`` accepts bounds and the coverage thresholds. Only ``interpolate``
-and ``subsample`` accept ``t_range``, the maximum distance from an output point to an
-input sample beyond which no value is produced. As in ARM's libtrans, there is no limit
-by default.
+and ``subsample`` accept ``t_range``, the maximum distance from a target point to an
+input sample beyond which no value is produced.
 
 
 A first example
@@ -377,11 +384,20 @@ overrides are supported:
         per_var_transform={
             # Averaging a present-weather code is meaningless; take a real sample.
             'pwd_pw_code_inst': 'subsample',
+            # Wind direction is circular; avoid averaging across 0°/360°.
+            'wdir_vec_mean': 'subsample',
         },
         per_var_kwargs={
             'wspd_arith_mean': {'std_ind_max': 0.8},
         },
     )
+
+.. warning::
+
+   Check every variable when transforming a whole Dataset. Wind direction is circular
+   circular, so ``bin_average`` (or ``interpolate``) can give misleading values near the
+   0°/360° boundary. The override above retains an observed direction instead. Support
+   for circular-aware averaging/interpolation is not yet implemented.
 
 You can also give ``target_ds=`` another Dataset instead of ``target=`` to transform onto
 an existing file's coordinate -- convenient for putting two datastreams on a common time
