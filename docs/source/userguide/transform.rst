@@ -394,10 +394,10 @@ overrides are supported:
 
 .. warning::
 
-   Check every variable when transforming a whole Dataset. Wind direction is circular
-   circular, so ``bin_average`` (or ``interpolate``) can give misleading values near the
-   0°/360° boundary. The override above retains an observed direction instead. Support
-   for circular-aware averaging/interpolation is not yet implemented.
+   Check every variable when transforming a whole Dataset. Wind direction is circular,
+   so ``bin_average`` (or ``interpolate``) can give misleading values near the 0°/360°
+   boundary. The override above retains an observed direction instead. Support for
+   circular-aware averaging/interpolation is not yet implemented.
 
 You can also give ``target_ds=`` another Dataset instead of ``target=`` to transform onto
 an existing file's coordinate -- convenient for putting two datastreams on a common time
