@@ -173,9 +173,7 @@ def test_arm_interpolate_reference():
         # The ARM and ACT kernels make slightly different choices around
         # missing SMPS bins.  Away from those edge choices, the discrepancy is
         # small relative to the distribution magnitude.
-        relative_error = np.abs(actual[valid] - expected[valid]) / (
-            np.abs(expected[valid]) + 1e-6
-        )
+        relative_error = np.abs(actual[valid] - expected[valid]) / (np.abs(expected[valid]) + 1e-6)
         assert np.mean(relative_error < 0.2) > 0.98
         np.testing.assert_allclose(actual[valid], expected[valid], rtol=3.0, atol=2.0)
 

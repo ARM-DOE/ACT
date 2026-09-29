@@ -110,9 +110,7 @@ class TestTransformDataset:
     def test_transforms_all_dim_vars(self):
         ds = self._make_ds()
         target = xr.DataArray(np.array([0.5, 1.5, 2.5]), dims=["time"])
-        result = act.transform.transform_dataset(
-            ds, target, dim="time", transform="interpolate"
-        )
+        result = act.transform.transform_dataset(ds, target, dim="time", transform="interpolate")
         assert "temp" in result
         assert "pressure" in result
         assert result["temp"].shape == (3,)
@@ -121,9 +119,7 @@ class TestTransformDataset:
     def test_qc_companions_included(self):
         ds = self._make_ds()
         target = xr.DataArray(np.array([0.5, 1.5]), dims=["time"])
-        result = act.transform.transform_dataset(
-            ds, target, dim="time", transform="interpolate"
-        )
+        result = act.transform.transform_dataset(ds, target, dim="time", transform="interpolate")
         assert "qc_temp" in result
 
     def test_dataset_attrs_preserved(self):
@@ -138,9 +134,7 @@ class TestTransformDataset:
     def test_invalid_transform_raises(self):
         ds = self._make_ds()
         with pytest.raises(ValueError, match="Unknown transform"):
-            act.transform.transform_dataset(
-                ds, np.array([0.5]), dim="time", transform="magic"
-            )
+            act.transform.transform_dataset(ds, np.array([0.5]), dim="time", transform="magic")
 
     def test_per_variable_controls(self):
         ds = self._make_ds()
@@ -189,9 +183,7 @@ class TestTransformDataset:
         )
 
         assert result["time"].attrs["bounds"] == "time_bounds"
-        np.testing.assert_array_equal(
-            result["time_bounds"].values, target_bounds.values
-        )
+        np.testing.assert_array_equal(result["time_bounds"].values, target_bounds.values)
         assert result["time_bounds"].sizes["time"] == result.sizes["time"]
 
     def test_output_coordinate_drops_unavailable_bounds_reference(self):
@@ -233,9 +225,7 @@ class TestTransformDataset:
 
     def test_coord_encoding_preservation(self):
         time = np.array([0.0, 1.0, 2.0])
-        da = xr.DataArray(
-            [1.0, 2.0, 3.0], coords={"time": time}, dims=["time"], name="data"
-        )
+        da = xr.DataArray([1.0, 2.0, 3.0], coords={"time": time}, dims=["time"], name="data")
         da["time"].attrs["units"] = "seconds since 2026-01-01"
         da["time"].encoding["calendar"] = "standard"
 
@@ -247,12 +237,8 @@ class TestTransformDataset:
     def test_accessor_matches_function(self):
         ds = self._make_ds()
         target = xr.DataArray(np.array([0.5, 1.5]), dims=["time"])
-        expected = act.transform.transform_dataset(
-            ds, target, dim="time", transform="interpolate"
-        )
-        result = ds.transform.transform_dataset(
-            target=target, dim="time", transform="interpolate"
-        )
+        expected = act.transform.transform_dataset(ds, target, dim="time", transform="interpolate")
+        result = ds.transform.transform_dataset(target=target, dim="time", transform="interpolate")
         np.testing.assert_allclose(result["temp"].values, expected["temp"].values)
 
 

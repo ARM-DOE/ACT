@@ -23,9 +23,9 @@ class TestDatetimeCoordinates:
 
     @staticmethod
     def _datetime_da(n=120, name="temp"):
-        time = np.arange(n, dtype="timedelta64[m]").astype(
-            "timedelta64[ns]"
-        ) + np.datetime64("2023-01-01T00:00", "ns")
+        time = np.arange(n, dtype="timedelta64[m]").astype("timedelta64[ns]") + np.datetime64(
+            "2023-01-01T00:00", "ns"
+        )
         values = np.arange(n, dtype=float)
         return xr.DataArray(values, coords={"time": time}, dims=["time"], name=name)
 
@@ -43,9 +43,7 @@ class TestDatetimeCoordinates:
     @pytest.mark.parametrize("transform", ["bin_average", "interpolate", "subsample"])
     def test_datetime64_coord_runs(self, transform):
         da = self._datetime_da()
-        target = act.transform.make_coord(
-            "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-        )
+        target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
 
         result, qc = getattr(act.transform, transform)(da, target, dim="time")
 
@@ -60,15 +58,11 @@ class TestDatetimeCoordinates:
     def test_datetime64_matches_numeric_nanoseconds(self, transform):
         """A datetime axis must give the same numbers as the equivalent numeric axis."""
         da = self._datetime_da()
-        target = act.transform.make_coord(
-            "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-        )
+        target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
 
         numeric_da = xr.DataArray(
             da.values,
-            coords={
-                "time": da["time"].values.astype("datetime64[ns]").astype(np.float64)
-            },
+            coords={"time": da["time"].values.astype("datetime64[ns]").astype(np.float64)},
             dims=["time"],
             name=da.name,
         )
@@ -101,13 +95,9 @@ class TestDatetimeCoordinates:
         da = self._datetime_da()
         time = da["time"].values
         bounds = np.stack([time, time + np.timedelta64(1, "m")], axis=1)
-        target = act.transform.make_coord(
-            "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-        )
+        target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
 
-        result, _ = act.transform.bin_average(
-            da, target, dim="time", input_bounds=bounds
-        )
+        result, _ = act.transform.bin_average(da, target, dim="time", input_bounds=bounds)
 
         assert np.any(result.values != MISSING)
         # Same bounds expressed in coarser units must agree -- normalization
@@ -122,13 +112,9 @@ class TestDatetimeCoordinates:
         da = self._datetime_da()
         bounds = self._cftime_bounds(da.sizes["time"])
         assert bounds.dtype == object
-        target = act.transform.make_coord(
-            "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-        )
+        target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
 
-        result, _ = act.transform.bin_average(
-            da, target, dim="time", input_bounds=bounds
-        )
+        result, _ = act.transform.bin_average(da, target, dim="time", input_bounds=bounds)
 
         # Must match the identical bounds expressed as datetime64.
         expected, _ = act.transform.bin_average(
@@ -145,9 +131,7 @@ class TestDatetimeCoordinates:
         ds["time_bounds"] = xr.DataArray(bounds, dims=["time", "bound"])
         ds["time"].attrs["bounds"] = "time_bounds"
 
-        target = act.transform.make_coord(
-            "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-        )
+        target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
         result = act.transform.transform_dataset(
             ds, target=target, dim="time", transform="bin_average"
         )
@@ -155,40 +139,28 @@ class TestDatetimeCoordinates:
         assert np.any(result["temp"].values != MISSING)
         # The bounds variable is metadata: consumed as bounds, never transformed.
         assert "time_bounds" not in result
-        expected, _ = act.transform.bin_average(
-            da, target, dim="time", input_bounds=bounds
-        )
+        expected, _ = act.transform.bin_average(da, target, dim="time", input_bounds=bounds)
         np.testing.assert_allclose(result["temp"].values, expected.values)
 
     def test_timedelta_t_range(self):
         """A timedelta t_range must be comparable with a datetime coordinate."""
         da = self._datetime_da()
-        target = act.transform.make_coord(
-            "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-        )
+        target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
 
         numeric_da = da.assign_coords(time=da["time"].values.astype(np.float64))
         numeric_target = target.values.astype("datetime64[ns]").astype(np.float64)
 
-        result, _ = act.transform.subsample(
-            da, target, dim="time", t_range=np.timedelta64(30, "s")
-        )
-        expected, _ = act.transform.subsample(
-            numeric_da, numeric_target, dim="time", t_range=30e9
-        )
+        result, _ = act.transform.subsample(da, target, dim="time", t_range=np.timedelta64(30, "s"))
+        expected, _ = act.transform.subsample(numeric_da, numeric_target, dim="time", t_range=30e9)
 
         np.testing.assert_allclose(result.values, expected.values)
 
     @pytest.mark.parametrize("transform", ["interpolate", "subsample"])
-    @pytest.mark.parametrize(
-        "datetime_coord", [True, False], ids=["datetime", "numeric"]
-    )
+    @pytest.mark.parametrize("datetime_coord", [True, False], ids=["datetime", "numeric"])
     def test_mismatched_t_range_type_raises(self, transform, datetime_coord):
         if datetime_coord:
             da = self._datetime_da()
-            target = act.transform.make_coord(
-                "2023-01-01T00:00", "2023-01-01T02:00", "30min"
-            )
+            target = act.transform.make_coord("2023-01-01T00:00", "2023-01-01T02:00", "30min")
             t_range, message = 120, "timedelta"
         else:
             da = _da([0.0, 1.0, 2.0])
@@ -234,9 +206,7 @@ class TestDatetimeCoordinatesFromReader:
         time = ds["time"].values
         target = act.transform.make_coord(time[0], time[-1], "30min")
 
-        result, qc = getattr(act.transform, transform)(
-            ds["first_cbh"], target, dim="time"
-        )
+        result, qc = getattr(act.transform, transform)(ds["first_cbh"], target, dim="time")
 
         assert result.shape == target.shape
         assert np.issubdtype(result["time"].dtype, np.datetime64)

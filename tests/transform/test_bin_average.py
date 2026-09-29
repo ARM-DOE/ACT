@@ -16,17 +16,20 @@ def test_basic_1d():
     np.testing.assert_allclose(result.values, [2.0, 8.0 / 1.5])
     np.testing.assert_array_equal(qc.values, [0, 0])
 
+
 def test_mismatched_ordering_raises():
     da = _da([0.0, 2.0, 4.0, 6.0], coord=np.array([0.0, 1.0, 2.0, 3.0]))
     target = xr.DataArray(np.array([3.0, 1.0]), dims=["time"])
     with pytest.raises(ValueError, match="status -5"):
         act.transform.bin_average(da, target, dim="time")
 
+
 def test_matched_descending_ordering_succeeds():
     da = _da([6.0, 4.0, 2.0, 0.0], coord=np.array([3.0, 2.0, 1.0, 0.0]))
     target = xr.DataArray(np.array([2.5, 0.5]), dims=["time"])
     result, qc = act.transform.bin_average(da, target, dim="time")
     np.testing.assert_allclose(result.values, [5.0, 1.0])
+
 
 def test_qc_mask_assessment_and_default():
     da = _da([1.0, 2.0], coord=np.array([0.0, 1.0]))
@@ -68,15 +71,14 @@ def test_qc_mask_assessment_and_default():
     assert bad_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
     assert indeterminate_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
 
+
 def test_qc_without_flag_masks_requires_explicit_mask():
     da = _da([1.0, 100.0, 1.0, 1.0])
     qc = xr.DataArray([0, 1, 0, 0], coords=da.coords, dims=da.dims)
     target = np.array([0.5, 2.5])
     bounds = np.array([[0.0, 2.0], [2.0, 4.0]])
     with pytest.raises(ValueError, match="flag_masks"):
-        act.transform.bin_average(
-            da, target, dim="time", qc=qc, output_bounds=bounds
-        )
+        act.transform.bin_average(da, target, dim="time", qc=qc, output_bounds=bounds)
     result, _ = act.transform.bin_average(
         da,
         target,
@@ -87,6 +89,7 @@ def test_qc_without_flag_masks_requires_explicit_mask():
         output_bounds=bounds,
     )
     np.testing.assert_allclose(result.values, [1.0, 1.0])
+
 
 @pytest.mark.parametrize(
     "bounds, flags, kwargs, expected, expected_qc",
@@ -121,8 +124,7 @@ def test_qc_without_flag_masks_requires_explicit_mask():
             [0, 1],
             {"goodfrac_ind_min": 0.75},
             0,
-            act.transform.QC_SOME_BAD_INPUTS
-            | act.transform.QC_INDETERMINATE_GOODFRAC,
+            act.transform.QC_SOME_BAD_INPUTS | act.transform.QC_INDETERMINATE_GOODFRAC,
         ),
     ],
 )
@@ -142,6 +144,7 @@ def test_weights_overlap_and_thresholds(bounds, flags, kwargs, expected, expecte
     assert result.values[0] == pytest.approx(expected)
     assert result_qc.values[0] == expected_qc
 
+
 def test_inconsistent_input_bounds_raise():
     with pytest.raises(ValueError, match="status -1"):
         act.transform.bin_average(
@@ -152,11 +155,13 @@ def test_inconsistent_input_bounds_raise():
             output_bounds=[[-2, 2]],
         )
 
+
 def test_wrong_length_weights_raise():
     da = _da([0.0, 2.0, 4.0, 6.0])
     target = np.array([1.0, 3.0])
     with pytest.raises(ValueError, match="weights"):
         act.transform.bin_average(da, target, dim="time", weights=np.ones(2))
+
 
 def test_zero_width_output_bins_raise():
     da = _da([0.0, 2.0, 4.0, 6.0])
@@ -173,6 +178,7 @@ def test_zero_width_output_bins_raise():
         da, np.array([1.5]), dim="time", output_bounds=np.array([[-0.5, 3.5]])
     )
     assert result.values[0] == pytest.approx(3.0)
+
 
 def test_multiple_qc_assessments_are_combined():
     da = _da([1.0, 2.0, 3.0], coord=np.array([0.0, 1.0, 2.0]))
@@ -191,6 +197,7 @@ def test_multiple_qc_assessments_are_combined():
     )
     assert result.values[0] == pytest.approx(3.0)
 
+
 @pytest.mark.parametrize(
     "mask, exception, message",
     [
@@ -204,6 +211,7 @@ def test_invalid_qc_assessment_raises(mask, exception, message):
     qc.attrs.update(flag_masks=[1], flag_assessments=["Bad"])
     with pytest.raises(exception, match=message):
         act.transform.bin_average(da, [0.5], dim="time", qc=qc, qc_mask=mask)
+
 
 @pytest.mark.parametrize(
     "flags, expected_qc",

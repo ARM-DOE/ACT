@@ -17,6 +17,7 @@ def test_basic_1d():
     assert result.values[1] == pytest.approx(20.0)
     assert result.values[2] == pytest.approx(30.0)
 
+
 @pytest.mark.parametrize(
     "values, flags, target, expected, expected_qc",
     [
@@ -40,6 +41,7 @@ def test_qc_selection(values, flags, target, expected, expected_qc):
     assert result.values[0] == pytest.approx(expected)
     assert result_qc.values[0] == expected_qc
 
+
 def test_bad_tail_distinguishes_all_bad_from_outside_range():
     da = _da([10, 20, 30], coord=[0, 1, 2])
     qc = xr.DataArray([0, 0, 1], coords=da.coords, dims=da.dims)
@@ -55,6 +57,7 @@ def test_bad_tail_distinguishes_all_bad_from_outside_range():
             act.transform.QC_OUTSIDE_RANGE | act.transform.QC_BAD,
         ],
     )
+
 
 def test_targets_outside_range_do_not_raise():
     da = _da([10.0, 20.0, 30.0], coord=np.array([0.0, 1.0, 2.0]))
