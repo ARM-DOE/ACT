@@ -276,7 +276,7 @@ def calculate_wavelet_pbl(
 
     ds = ds.resample(time='5min').mean()
     range_resolution = ds[range_name].values[1] - ds[range_name].values[0]
-    level = int(scale / range_resolution) - 1
+    level = int(np.log2(int(scale / range_resolution) - 1))
 
     coeffs = pywt.wavedec(ds[var_name].values, 'haar', level=level)
     cA = coeffs[0]
@@ -294,13 +294,13 @@ def calculate_wavelet_pbl(
         range_mask = range_mask & (ds.resampled_range <= max_height)
     wavelet_valid = ds.wavelet_backscatter.where(range_mask, drop=True)
 
-    max_gradient = wavelet_valid.diff('resampled_range').max('resampled_range')
+    min_gradient = wavelet_valid.diff('resampled_range').min('resampled_range')
     pbl_heights = []
     for t in range(len(ds.resampled_time)):
         profile = wavelet_valid.isel(resampled_time=t)
         try:
             pbl_height = profile.where(
-                profile.diff('resampled_range') == max_gradient.isel(resampled_time=t),
+                profile.diff('resampled_range') == min_gradient.isel(resampled_time=t),
                 drop=True,
             ).resampled_range.values[0]
         except IndexError:

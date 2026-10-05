@@ -138,9 +138,9 @@ def test_calculate_wavelet_pbl():
     # create a subset for testing
     subset = ds.sel(resampled_time=slice("2019-01-01T11:30:00", "2019-01-01T11:40:00"))
     # Test the mean of the profile for the subset time
-    np.testing.assert_array_almost_equal(subset.pbl_wavelet.mean(), 4569.961, decimal=3)
+    np.testing.assert_array_almost_equal(subset.pbl_wavelet.mean(), 4516.875, decimal=3)
     # Test the minimum PBL Height during the period
-    np.testing.assert_almost_equal(subset.pbl_wavelet.min(), 3435.0, 1)
+    np.testing.assert_almost_equal(subset.pbl_wavelet.min(), 4335.0, 1)
 
     # test attributes
     assert ds['pbl_wavelet'].attrs["input_parameter"] == "backscatter"
@@ -163,4 +163,4 @@ def test_calculate_wavelet_pbl_max_height():
     # Test that the upper bound is respected and no longer picks up the
     # higher-altitude layers found without max_height set
     assert subset.pbl_wavelet.max() <= 1000.0
-    np.testing.assert_array_almost_equal(subset.pbl_wavelet.mean(), 615.0, decimal=3)
+    np.testing.assert_array_almost_equal(subset.pbl_wavelet.mean(), 895.0, decimal=3)
