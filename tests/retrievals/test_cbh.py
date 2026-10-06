@@ -14,6 +14,6 @@ def test_generic_sobel_cbh():
         edge_thresh=5,
     )
     cbh = ceil['cbh_sobel_backscatter'].values
-    assert cbh[500] == 615.0
-    assert cbh[1000] == 555.0
+    assert cbh[500] == 585.0
+    assert cbh[1000] == 525.0
     ceil.close()

@@ -11,7 +11,7 @@ from scipy import ndimage
 def generic_sobel_cbh(
     ds,
     variable=None,
-    height_dim=None,
+    height_dim='range',
     var_thresh=None,
     fill_na=None,
     return_thresh=False,
@@ -35,7 +35,7 @@ def generic_sobel_cbh(
     variable : string
         Variable on which to process.
     height_dim : string
-        Height variable to use for CBH values.
+        Height variable to use for CBH values. Default is 'range'.
     var_thresh : float
         Thresholding for variable if needed.
     fill_na : float
@@ -87,6 +87,11 @@ def generic_sobel_cbh(
     """
     if variable is None:
         return
+    if height_dim is None:
+        raise ValueError(
+            "height_dim must be specified. Please provide the name of the height "
+            "dimension (e.g., 'range', 'range_bins')."
+        )
     if fill_na is None:
         fill_na = var_thresh
 
@@ -119,7 +124,7 @@ def generic_sobel_cbh(
     edge_da = edge_da.fillna(fill_na)
 
     # Do a diff along the height dimension to define edge
-    diff = edge_da.diff(dim=1).values
+    diff = edge_da.diff(dim=height_dim).values
 
     # Get height variable to use for cbh
     height = ds[height_dim].values
