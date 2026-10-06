@@ -44,6 +44,13 @@ def calculate_dsh_from_dsdh_sdn(
     ds: xarray.Dataset
         ACT Xarray Dataset with calculations included as new variable.
 
+    References
+    ----------
+    Sengupta, Manajit, Habte, Aron, Wilbert, Stefan, Christian Gueymard, Jan Remund, Elke Lorenz,
+        Wilfried van Sark, and Adam R. Jensen "Best Practices Handbook for the Collection and Use of
+        Solar Resource Data for Solar Energy Applications: Fourth Edition" (2024).
+        https://doi.org/10.69766/eneh5295
+
     """
 
     ds = calculate_ghi_from_dni_dhi(ds, dni=sdn, dhi=dsdh, lat=lat, lon=lon)
@@ -94,6 +101,13 @@ def calculate_ghi_from_dni_dhi(
 
     ds: xarray.Dataset
         ACT Xarray Dataset with global horizontal irradiance included as new DataArray.
+
+    References
+    ----------
+    Sengupta, Manajit, Habte, Aron, Wilbert, Stefan, Christian Gueymard, Jan Remund, Elke Lorenz,
+        Wilfried van Sark, and Adam R. Jensen "Best Practices Handbook for the Collection and Use of
+        Solar Resource Data for Solar Energy Applications: Fourth Edition" (2024).
+        https://doi.org/10.69766/eneh5295
 
     """
 
@@ -167,6 +181,13 @@ def calculate_dni_from_dhi_ghi(
     ds: xarray.Dataset
         ACT Xarray Dataset with direct normal irradiance included as new DataArray.
 
+    References
+    ----------
+    Sengupta, Manajit, Habte, Aron, Wilbert, Stefan, Christian Gueymard, Jan Remund, Elke Lorenz,
+        Wilfried van Sark, and Adam R. Jensen "Best Practices Handbook for the Collection and Use of
+        Solar Resource Data for Solar Energy Applications: Fourth Edition" (2024).
+        https://doi.org/10.69766/eneh5295
+
     """
 
     # Get solar zenith angle
@@ -238,6 +259,13 @@ def calculate_dhi_from_dni_ghi(
 
     ds: xarray.Dataset
         ACT Xarray Dataset with diffuse horizontal irradiance included as new DataArray.
+
+    References
+    ----------
+    Sengupta, Manajit, Habte, Aron, Wilbert, Stefan, Christian Gueymard, Jan Remund, Elke Lorenz,
+        Wilfried van Sark, and Adam R. Jensen "Best Practices Handbook for the Collection and Use of
+        Solar Resource Data for Solar Energy Applications: Fourth Edition" (2024).
+        https://doi.org/10.69766/eneh5295
 
     """
 
@@ -374,6 +402,11 @@ def calculate_net_radiation(
     ds : xarray.Dataset
         Xarray dataset with calculations included as new variables.
 
+    References
+    ----------
+    Monteith, John L., and Mike H. Unsworth. 2013. Principles of Environmental Physics.
+        Edited by John L. Monteith and Mike H. Unsworth. Boston: Academic Press.
+
     """
 
     # Calculate Net Radiation
@@ -438,7 +471,7 @@ def calculate_longwave_radiation(
         Xarray dataset with 3 new variables; monteith_clear, monteith_cloudy, prata_clear
 
     References
-    ---------
+    ----------
     Monteith, John L., and Mike H. Unsworth. 2013. Principles of Environmental Physics.
         Edited by John L. Monteith and Mike H. Unsworth. Boston: Academic Press.
 

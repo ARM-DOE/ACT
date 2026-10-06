@@ -44,7 +44,8 @@ def destination_azimuth_distance(lat, lon, az, dist, dist_units='m'):
         Longitude of new point in degrees
 
     """
-    # Volumetric Mean Radius of Earth in km
+    # Equatorial radius of Earth in km. Note this is not the volumetric mean
+    # radius (6371.0 km); the great circle equations below assume a sphere.
     R = 6378.0
 
     # Convert az to radian
@@ -92,6 +93,18 @@ def add_solar_variable(ds, latitude=None, longitude=None, solar_angle=0.0, dawn_
     -------
     ds : xarray.Dataset
         Xarray dataset containing sun and night flag.
+
+    References
+    ----------
+    Solar positions are computed with Skyfield (Rhodes) against the JPL DE421
+    planetary and lunar ephemeris bundled with ACT at act/utils/conf/de421.bsp.
+
+    Rhodes, B.: Skyfield: High precision research-grade positions for planets
+        and Earth satellites. https://rhodesmill.org/skyfield/
+
+    Folkner, W. M., J. G. Williams, and D. H. Boggs: The Planetary and Lunar
+        Ephemeris DE 421. JPL IPN Progress Report 42-178.
+
     """
     variables = list(ds.keys())
 
@@ -200,6 +213,17 @@ def get_solar_azimuth_elevation(
         Values returned are a tuple of elevation, azimuth and distance. Elevation and
         azimuth are in degrees, with distance in Astronomical Units.
 
+    References
+    ----------
+    Solar positions are computed with Skyfield (Rhodes) against the JPL DE421
+    planetary and lunar ephemeris bundled with ACT at act/utils/conf/de421.bsp.
+
+    Rhodes, B.: Skyfield: High precision research-grade positions for planets
+        and Earth satellites. https://rhodesmill.org/skyfield/
+
+    Folkner, W. M., J. G. Williams, and D. H. Boggs: The Planetary and Lunar
+        Ephemeris DE 421. JPL IPN Progress Report 42-178.
+
     """
 
     # result = {'elevation': None, 'azimuth': None, 'distance': None}
@@ -267,6 +291,18 @@ def get_sunrise_sunset_noon(
         If no values can be calculated will return empty list. If the date is within
         polar night will return empty lists. If spans the transition to polar day
         will return previous sunrise or next sunset outside of date range provided.
+
+    References
+    ----------
+    Solar positions are computed with Skyfield (Rhodes) against the JPL DE421
+    planetary and lunar ephemeris bundled with ACT at act/utils/conf/de421.bsp.
+
+    Rhodes, B.: Skyfield: High precision research-grade positions for planets
+        and Earth satellites. https://rhodesmill.org/skyfield/
+
+    Folkner, W. M., J. G. Williams, and D. H. Boggs: The Planetary and Lunar
+        Ephemeris DE 421. JPL IPN Progress Report 42-178.
+
     """
     sunrise, sunset, noon = np.array([]), np.array([]), np.array([])
 
@@ -414,6 +450,18 @@ def is_sun_visible(latitude=None, longitude=None, date_time=None, dawn_dusk=Fals
     -------
     result : list
         List matching size of date_time containing True/False if sun is above horizon.
+
+    References
+    ----------
+    Solar positions are computed with Skyfield (Rhodes) against the JPL DE421
+    planetary and lunar ephemeris bundled with ACT at act/utils/conf/de421.bsp.
+
+    Rhodes, B.: Skyfield: High precision research-grade positions for planets
+        and Earth satellites. https://rhodesmill.org/skyfield/
+
+    Folkner, W. M., J. G. Williams, and D. H. Boggs: The Planetary and Lunar
+        Ephemeris DE 421. JPL IPN Progress Report 42-178.
+
     """
     sf_dates = None
 

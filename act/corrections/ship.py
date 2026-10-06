@@ -43,7 +43,7 @@ def correct_wind_for_ship_motion(
 
     References
     ----------
-    Bradley, F. and Farall. C. (2007) A Guide to Making Climate Quality Meteorological
+    Bradley, F. and Fairall, C. (2007) A Guide to Making Climate Quality Meteorological
     and Flux Measurements at Sea. Boulder, CO, NOAA, Earth System Research Laboratory,
     Physical Sciences Division, 44pp. & appendices. (NOAA Technical Memorandum OAR PSD-311).
     http://hdl.handle.net/11329/386
