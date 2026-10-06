@@ -785,7 +785,8 @@ def accumulate_precip(ds, variable, time_delta=None):
 
     # Calculate the accumulation based on the units
     t_factor = t_delta / 60.0
-    if units == 'mm/hr':
+    RATE_UNITS = ("mm/hr", "mm/hour", "mm/h", "mm h-1")
+    if units in RATE_UNITS:
         data = data * (t_factor / 60.0)
 
     accum = np.nancumsum(data.values)
