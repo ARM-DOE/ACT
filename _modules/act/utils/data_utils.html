@@ -1255,7 +1255,8 @@
 
     <span class="c1"># Calculate the accumulation based on the units</span>
     <span class="n">t_factor</span> <span class="o">=</span> <span class="n">t_delta</span> <span class="o">/</span> <span class="mf">60.0</span>
-    <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">'mm/hr'</span><span class="p">:</span>
+    <span class="n">RATE_UNITS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"mm/hr"</span><span class="p">,</span> <span class="s2">"mm/hour"</span><span class="p">,</span> <span class="s2">"mm/h"</span><span class="p">,</span> <span class="s2">"mm h-1"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">units</span> <span class="ow">in</span> <span class="n">RATE_UNITS</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_factor</span> <span class="o">/</span> <span class="mf">60.0</span><span class="p">)</span>
 
     <span class="n">accum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nancumsum</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
