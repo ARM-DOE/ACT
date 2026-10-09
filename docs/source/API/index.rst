@@ -21,4 +21,5 @@ Documentation of each procedure in each module is provided as a reference.
    plotting
    qc
    retrievals
+   transform
    utils

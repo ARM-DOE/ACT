@@ -26,6 +26,7 @@ submodules = [
     'retrievals',
     'plotting',
     'tests',
+    'transform',
 ]
 __getattr__, __dir__, _ = lazy.attach(__name__, submodules)
 
