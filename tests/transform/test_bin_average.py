@@ -72,6 +72,64 @@ def test_qc_mask_assessment_and_default():
     assert indeterminate_qc.values[0] & act.transform.QC_SOME_BAD_INPUTS
 
 
+def test_qc_matching_or_transposed_dimensions_produce_identical_results():
+    time = np.arange(6, dtype=float)
+    height = [100, 200]
+    da = xr.DataArray(
+        np.array([[1, 10], [2, 20], [3, 30], [4, 40], [5, 50], [6, 60]]),
+        dims=("time", "height"),
+        coords={"time": time, "height": height},
+    )
+    qc = xr.DataArray(
+        np.array([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1]]),
+        dims=da.dims,
+        coords=da.coords,
+    )
+    target = xr.DataArray([1.0, 3.0, 5.0], dims=["time"])
+
+    expected_data, expected_qc = act.transform.bin_average(
+        da, target, dim="time", qc=qc, qc_mask=1
+    )
+    actual_data, actual_qc = act.transform.bin_average(
+        da, target, dim="time", qc=qc.transpose("height", "time"), qc_mask=1
+    )
+
+    np.testing.assert_array_equal(expected_data.values[:, 1], MISSING)
+    xr.testing.assert_identical(actual_data, expected_data)
+    xr.testing.assert_identical(actual_qc, expected_qc)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        lambda qc: qc.rename(height="level"),
+        lambda qc: qc.assign_coords(time=np.arange(6, dtype=float) + 1),
+        lambda qc: qc.assign_coords(height=[200, 100]),
+        lambda qc: qc.isel(time=slice(None, -1)),
+        lambda qc: qc.drop_indexes("height").drop_vars("height"),
+    ],
+    ids=[
+        "wrong-dimensions",
+        "wrong-time",
+        "wrong-height",
+        "wrong-shape",
+        "missing-coordinate",
+    ],
+)
+def test_qc_mismatched_dimensions_or_coordinates_raise(change):
+    da = xr.DataArray(
+        np.arange(12).reshape(6, 2),
+        dims=("time", "height"),
+        coords={"time": np.arange(6, dtype=float), "height": [100, 200]},
+    )
+    qc = xr.zeros_like(da, dtype=np.int32)
+
+    with pytest.raises(ValueError, match="QC.*(dimensions|coordinates|shape)"):
+        act.transform.bin_average(
+            da, [1.0, 3.0, 5.0], dim="time", qc=change(qc), qc_mask=1
+        )
+
+
 def test_qc_without_flag_masks_requires_explicit_mask():
     da = _da([1.0, 100.0, 1.0, 1.0])
     qc = xr.DataArray([0, 1, 0, 0], coords=da.coords, dims=da.dims)
