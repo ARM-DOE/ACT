@@ -87,9 +87,7 @@ def test_qc_matching_or_transposed_dimensions_produce_identical_results():
     )
     target = xr.DataArray([1.0, 3.0, 5.0], dims=["time"])
 
-    expected_data, expected_qc = act.transform.bin_average(
-        da, target, dim="time", qc=qc, qc_mask=1
-    )
+    expected_data, expected_qc = act.transform.bin_average(da, target, dim="time", qc=qc, qc_mask=1)
     actual_data, actual_qc = act.transform.bin_average(
         da, target, dim="time", qc=qc.transpose("height", "time"), qc_mask=1
     )
@@ -125,9 +123,7 @@ def test_qc_mismatched_dimensions_or_coordinates_raise(change):
     qc = xr.zeros_like(da, dtype=np.int32)
 
     with pytest.raises(ValueError, match="QC.*(dimensions|coordinates|shape)"):
-        act.transform.bin_average(
-            da, [1.0, 3.0, 5.0], dim="time", qc=change(qc), qc_mask=1
-        )
+        act.transform.bin_average(da, [1.0, 3.0, 5.0], dim="time", qc=change(qc), qc_mask=1)
 
 
 def test_qc_without_flag_masks_requires_explicit_mask():

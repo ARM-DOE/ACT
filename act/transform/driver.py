@@ -524,9 +524,7 @@ def apply_transform(
     qc_arr = None
     if qc is not None:
         if set(qc.dims) != set(data.dims):
-            raise ValueError(
-                f"QC dimensions {qc.dims} do not match data dimensions {data.dims}"
-            )
+            raise ValueError(f"QC dimensions {qc.dims} do not match data dimensions {data.dims}")
         qc = qc.transpose(*data.dims)
         if qc.shape != data.shape:
             raise ValueError(f"QC shape {qc.shape} does not match data shape {data.shape}")
@@ -536,9 +534,7 @@ def apply_transform(
             if (coord in data.coords) != (coord in qc.coords) or (
                 coord in data.coords and not data[coord].equals(qc[coord])
             ):
-                raise ValueError(
-                    f"QC coordinates do not match data coordinates for {coord!r}"
-                )
+                raise ValueError(f"QC coordinates do not match data coordinates for {coord!r}")
         qc_arr = qc.values
     resolved_qc_mask = _resolve_qc_mask(qc, qc_mask)
 
