@@ -24,7 +24,9 @@ except:
     acf = None
 
 
-def calculate_gradient_pbl(ds, parm="beta_att", dis_parm="range", min_height=100, smooth_dis=5):
+def calculate_gradient_pbl(
+    ds, parm="beta_att", dis_parm="range", min_height=100, smooth_dis=5, max_height=None
+):
     """
     Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR
     through a gradient method, where the PBL height is identified through the
@@ -49,6 +51,11 @@ def calculate_gradient_pbl(ds, parm="beta_att", dis_parm="range", min_height=100
         Minimum allowed PBL height in meters.
     smooth_dis : int
         Number of bins to average vertical profile over to smooth data
+    max_height : float or None
+        Maximum allowed PBL height in meters. Restricts the search for the
+        sharpest negative gradient to below this height, so that an elevated
+        cloud base or a noisy return aloft is not mistaken for the PBL top.
+        If None, no upper bound is applied.
 
     Returns
     -------
@@ -75,25 +82,42 @@ def calculate_gradient_pbl(ds, parm="beta_att", dis_parm="range", min_height=100
     """
     # smooth the data within the range bins (~20m bins)
     smoothed = ds[parm].rolling({dis_parm: smooth_dis}, center=True).mean()
+    height = smoothed[dis_parm].values  # 1D height coordinate
+
+    # Restrict the search for the PBL-top gradient to the valid height window.
+    # Bounding below (min_height) keeps near-surface noise from masking a
+    # genuine transition higher up in the profile, and bounding above
+    # (max_height, if given) keeps an elevated cloud base or noisy return
+    # aloft from being mistaken for the PBL top.
+    in_range = height > min_height
+    if max_height is not None:
+        in_range &= height <= max_height
+    search_idx = np.flatnonzero(in_range)
 
     # Loop over time to find the sharpest negative gradient
     pbl_heights = []
 
     for t in range(len(ds["time"].values)):
         profile = smoothed.isel(time=t).values  # 1D backscatter profile
-        height = smoothed[dis_parm].values  # 1D height coordinate
 
         # Compute first derivative
         p_grad = np.gradient(profile, height)
+        window = p_grad[search_idx]
 
-        # Find the first negative gradient
-        indice = next(i for i, x in enumerate(p_grad) if x < 0)
-
-        # Choose the first peak above a certain altitude (e.g., ignore surface noise)
-        if height[indice] > min_height:
-            pbl_heights.append(height[indice])
-        else:
+        if search_idx.size == 0 or np.all(np.isnan(window)):
             pbl_heights.append(np.nan)
+            continue
+
+        # The PBL height is identified as the height of the sharpest (most
+        # negative) gradient within the valid height window -- the steepest
+        # drop in backscatter, marking the transition out of the
+        # aerosol-laden mixed layer.
+        local_idx = np.nanargmin(window)
+        if window[local_idx] >= 0:
+            # No negative (decreasing) gradient found in the window.
+            pbl_heights.append(np.nan)
+        else:
+            pbl_heights.append(height[search_idx[local_idx]])
 
     # Add result to dataset
     ds = ds.assign(pbl_gradient=xr.DataArray(pbl_heights, dims="time"))
@@ -110,7 +134,13 @@ def calculate_gradient_pbl(ds, parm="beta_att", dis_parm="range", min_height=100
 
 
 def calculate_modified_gradient_pbl(
-    ds, parm="beta_att", dis_parm="range", min_height=100, threshold=1e-3, smooth_dis=5
+    ds,
+    parm="beta_att",
+    dis_parm="range",
+    min_height=100,
+    threshold=1e-3,
+    smooth_dis=5,
+    max_height=None,
 ):
     """
     Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR
@@ -141,6 +171,11 @@ def calculate_modified_gradient_pbl(
         Prominence value to use within scipy.signal.find_peaks
     smooth_dis : int
         Number of bins to average vertical profile over to smooth data
+    max_height : float or None
+        Maximum allowed PBL height in meters. Restricts candidate inflection
+        points to below this height, so that an elevated cloud base or a
+        noisy return aloft is not mistaken for the PBL top. If None, no
+        upper bound is applied.
 
     Returns
     -------
@@ -162,13 +197,13 @@ def calculate_modified_gradient_pbl(
     """
     # smooth the data within the range bins (~20m bins)
     smoothed = ds[parm].rolling({dis_parm: smooth_dis}, center=True).mean()
+    height = smoothed[dis_parm].values  # 1D height coordinate
 
     # Loop over time to get peaks in second derivative
     pbl_heights = []
 
     for t in range(len(ds["time"].values)):
         profile = smoothed.isel(time=t).values  # 1D backscatter profile
-        height = smoothed[dis_parm].values  # 1D height coordinate
 
         # Compute first and second derivatives
         d1 = np.gradient(profile, height)
@@ -179,8 +214,14 @@ def calculate_modified_gradient_pbl(
         peaks, _ = find_peaks(-d2, distance=10, prominence=threshold)
 
         if len(peaks) > 0:
-            # Choose the first peak above a certain altitude (e.g., ignore surface noise)
-            valid_peaks = [p for p in peaks if height[p] > min_height]
+            # Choose the first peak within the valid height window (e.g.,
+            # ignore surface noise and, if max_height is set, elevated
+            # cloud/noise aloft)
+            valid_peaks = [
+                p
+                for p in peaks
+                if height[p] > min_height and (max_height is None or height[p] <= max_height)
+            ]
             if valid_peaks:
                 pbl_heights.append(height[valid_peaks[0]])
             else:
