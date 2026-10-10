@@ -25,7 +25,7 @@ except:
 
 
 def calculate_gradient_pbl(
-    ds, parm="beta_att", dis_parm="range", min_height=100, smooth_dis=5, max_height=None
+    ds, parm="beta_att", dis_parm="range", smooth_dis=5, min_height=100, max_height=None
 ):
     """
     Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR
@@ -47,10 +47,10 @@ def calculate_gradient_pbl(
         Variable in the dataset to compute gradient on (e.g., attenuated backscatter).
     dis_parm : str
         Distance-from-instrument coordinate (e.g., 'range' or 'height').
-    min_height : float
-        Minimum allowed PBL height in meters.
     smooth_dis : int
         Number of bins to average vertical profile over to smooth data
+    min_height : float
+        Minimum allowed PBL height in meters.
     max_height : float or None
         Maximum allowed PBL height in meters. Restricts the search for the
         sharpest negative gradient to below this height, so that an elevated
@@ -137,9 +137,9 @@ def calculate_modified_gradient_pbl(
     ds,
     parm="beta_att",
     dis_parm="range",
-    min_height=100,
     threshold=1e-3,
     smooth_dis=5,
+    min_height=100,
     max_height=None,
 ):
     """
@@ -165,12 +165,12 @@ def calculate_modified_gradient_pbl(
         Variable in the dataset to compute gradient on (e.g., attenuated backscatter).
     dis_parm : str
         Distance-from-instrument coordinate (e.g., 'range' or 'height').
-    min_height : float
-        Minimum allowed PBL height in meters.
     threshold : float
         Prominence value to use within scipy.signal.find_peaks
     smooth_dis : int
         Number of bins to average vertical profile over to smooth data
+    min_height : float
+        Minimum allowed PBL height in meters.
     max_height : float or None
         Maximum allowed PBL height in meters. Restricts candidate inflection
         points to below this height, so that an elevated cloud base or a
