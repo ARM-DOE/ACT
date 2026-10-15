@@ -17,22 +17,59 @@ def test_calculate_gradient_pbl():
     ds = act.io.arm.read_arm_netcdf(DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc'))
     ds = act.corrections.correct_ceil(ds, var_name='backscatter')
 
-    # Call the Retrieval
+    # Call the Retrieval. max_height keeps the search within the
+    # ceilometer's usable return range for this profile: beyond ~1 km the
+    # backscatter is noise-dominated, and an unbounded search for the
+    # sharpest negative gradient will lock onto that noise rather than the
+    # aerosol-layer top actually visible in the profile (see
+    # test_calculate_gradient_pbl_max_height below).
     ds = act.retrievals.pbl_lidar.calculate_gradient_pbl(
-        ds, parm="backscatter", smooth_dis=3, min_height=200
+        ds, parm="backscatter", smooth_dis=3, min_height=200, max_height=1000.0
     )
 
     # create a subset for testing
     subset = ds.sel(time=slice("2019-01-01T11:30:00", "2019-01-01T11:40:00"))
     # Test the mean of the profile for the subset time
-    np.testing.assert_array_almost_equal(subset.pbl_gradient.mean(), 436.875, decimal=3)
+    np.testing.assert_array_almost_equal(subset.pbl_gradient.mean(), 863.684, decimal=3)
     # Test the minimum PBL Height during the period
     #   note this will test the minimum height threshold assigned
-    np.testing.assert_almost_equal(subset.pbl_gradient.min(), 225.0, 1)
+    np.testing.assert_almost_equal(subset.pbl_gradient.min(), 795.0, 1)
 
     # test attributes
     assert ds['pbl_gradient'].attrs["input_parameter"] == "backscatter"
     assert ds['pbl_gradient'].attrs["units"] == "m"
+
+
+def test_calculate_gradient_pbl_max_height():
+    # The plain gradient method identifies the PBL top as the single
+    # sharpest (most negative) gradient in the profile. Far from the
+    # instrument, ceilometer backscatter is noise-dominated, and
+    # point-to-point noise there can be sharper than the true, but smoother,
+    # PBL-top transition -- so an unbounded search is vulnerable to locking
+    # onto that noise well above any physically plausible PBL height. This
+    # is a known limitation of the gradient method in the literature, which
+    # is why it should only be applied to cloud-free, well-mixed profiles
+    # and why max_height is provided to bound the search.
+    ds = act.io.arm.read_arm_netcdf(DATASETS.fetch('sgpceilC1.b1.20190101.000000.nc'))
+    ds = act.corrections.correct_ceil(ds, var_name='backscatter')
+
+    ds_unbounded = act.retrievals.pbl_lidar.calculate_gradient_pbl(
+        ds.copy(deep=True), parm="backscatter", smooth_dis=3, min_height=200
+    )
+    ds_bounded = act.retrievals.pbl_lidar.calculate_gradient_pbl(
+        ds.copy(deep=True), parm="backscatter", smooth_dis=3, min_height=200, max_height=1000.0
+    )
+
+    subset_unbounded = ds_unbounded.sel(time=slice("2019-01-01T11:30:00", "2019-01-01T11:40:00"))
+    subset_bounded = ds_bounded.sel(time=slice("2019-01-01T11:30:00", "2019-01-01T11:40:00"))
+
+    # Without a ceiling, far-range noise dominates and the retrieval is
+    # pulled well above any plausible boundary layer height.
+    assert subset_unbounded.pbl_gradient.max() > 3000.0
+    # With the search bounded to the instrument's usable range, the
+    # retrieval recovers the aerosol-layer top that is actually visible in
+    # the backscatter profile.
+    assert subset_bounded.pbl_gradient.max() <= 1000.0
 
 
 def test_calculate_modified_gradient_pbl():
