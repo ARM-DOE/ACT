@@ -8,5 +8,6 @@ User Guide
    installation
    CREATING_ENVIRONMENTS
    usage
+   transform
    CONTRIBUTING
    GUIDE_V2

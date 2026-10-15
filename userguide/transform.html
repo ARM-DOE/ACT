@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Transforming Data &#8212; ACT Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/act-theme.css?v=e2ee527d" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('consent', 'default', {
+                    'ad_storage': 'denied',
+                    'ad_user_data': 'denied',
+                    'ad_personalization': 'denied',
+                    'analytics_storage': 'denied'
+                });
+            </script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-8YN80YZDD8');
+            </script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'userguide/transform';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/doc_shared.js?v=4c9803b4"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing" href="CONTRIBUTING.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.3" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+   
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../blog/atom.xml"
+  title="ACT Blog"
+/>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">ACT Documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../API/index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../blog.html">
+    Blog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../API/index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../blog.html">
+    Blog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CREATING_ENVIRONMENTS.html">Setting up an Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Transforming Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GUIDE_V2.html">ACT Version 2 Release Guide</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Transforming Data</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section id="transforming-data">
+<h1>Transforming Data<a class="headerlink" href="#transforming-data" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">act.transform</span></code> subpackage moves data from one coordinate grid onto another –
+most often resampling a datastream onto a different time base – while carrying
+quality control information through the resampling.</p>
+<p>Two things distinguish it from the resampling tools already in xarray:</p>
+<ol class="arabic simple">
+<li><p><strong>Quality control is propagated.</strong> Input QC is honored, so samples flagged bad are
+excluded from the computation rather than silently averaged in. Output QC is then
+<em>generated</em>, recording which output points were interpolated, extrapolated, built
+from partly bad input, or otherwise deserve suspicion.</p></li>
+<li><p><strong>Bin bounds are respected.</strong> <code class="docutils literal notranslate"><span class="pre">bin_average</span></code> treats each sample as covering a cell
+with a start and an end, using CF <code class="docutils literal notranslate"><span class="pre">bounds</span></code> attributes when they are present, rather
+than assuming an instantaneous point measurement.</p></li>
+</ol>
+<nav class="contents local" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#when-to-use-this-instead-of-xarray" id="id1">When to use this instead of xarray</a></p></li>
+<li><p><a class="reference internal" href="#choosing-a-transform" id="id2">Choosing a transform</a></p></li>
+<li><p><a class="reference internal" href="#a-first-example" id="id3">A first example</a></p></li>
+<li><p><a class="reference internal" href="#quality-control-end-to-end" id="id4">Quality control, end to end</a></p>
+<ul>
+<li><p><a class="reference internal" href="#passing-input-qc" id="id5">Passing input QC</a></p></li>
+<li><p><a class="reference internal" href="#reading-the-output-qc" id="id6">Reading the output QC</a></p></li>
+<li><p><a class="reference internal" href="#composing-with-ds-qcfilter" id="id7">Composing with <code class="docutils literal notranslate"><span class="pre">ds.qcfilter</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bounds-awareness-and-coverage-thresholds" id="id8">Bounds awareness and coverage thresholds</a></p></li>
+<li><p><a class="reference internal" href="#transforming-a-whole-dataset" id="id9">Transforming a whole Dataset</a></p></li>
+<li><p><a class="reference internal" href="#functions-or-accessor" id="id10">Functions or accessor</a></p></li>
+<li><p><a class="reference internal" href="#datetime-coordinates" id="id11">Datetime coordinates</a></p></li>
+<li><p><a class="reference internal" href="#the-numba-dependency" id="id12">The numba dependency</a></p></li>
+<li><p><a class="reference internal" href="#further-reading" id="id13">Further reading</a></p></li>
+</ul>
+</nav>
+<section id="when-to-use-this-instead-of-xarray">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">When to use this instead of xarray</a><a class="headerlink" href="#when-to-use-this-instead-of-xarray" title="Link to this heading">#</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">xarray</span></code>’s <code class="docutils literal notranslate"><span class="pre">.resample()</span></code> and <code class="docutils literal notranslate"><span class="pre">.interp()</span></code> for ordinary resampling and
+interpolation. Use <code class="docutils literal notranslate"><span class="pre">act.transform</span></code> when one of the following is true:</p>
+<ul class="simple">
+<li><p><strong>You have a companion QC variable and the answer must respect it.</strong> <code class="docutils literal notranslate"><span class="pre">ds['temp'].resample(time='30min').mean()</span></code>
+averages every sample it is given. If a sensor reported an obviously wrong value and the
+file’s <code class="docutils literal notranslate"><span class="pre">qc_temp</span></code> variable says so, that value still lands in the mean. <code class="docutils literal notranslate"><span class="pre">act.transform</span></code>
+takes the QC variable as an argument and drops the flagged samples.</p></li>
+<li><p><strong>You need to know how trustworthy each output point is.</strong> xarray gives you back data.
+<code class="docutils literal notranslate"><span class="pre">act.transform</span></code> gives you back data <em>and</em> a QC variable describing how each output
+point was produced, which you can then filter on.</p></li>
+<li><p><strong>Your samples are averages over an interval, not instantaneous points.</strong> Many ARM
+datastreams record a value accompanied by a <code class="docutils literal notranslate"><span class="pre">time_bounds</span></code> variable saying which
+interval it summarizes. <code class="docutils literal notranslate"><span class="pre">bin_average</span></code> weights each input sample by how much of its
+cell overlaps the output cell. <code class="docutils literal notranslate"><span class="pre">.resample()</span></code> assigns each timestamp to exactly one
+bin, so a sample straddling a bin edge is attributed entirely to one side.</p></li>
+<li><p><strong>You want to declare when a bin had too little or too noisy coverage to trust.</strong> The
+<code class="docutils literal notranslate"><span class="pre">std_*</span></code> and <code class="docutils literal notranslate"><span class="pre">goodfrac_*</span></code> thresholds flag output points whose input was more variable,
+or sparser, than you are willing to accept.</p></li>
+</ul>
+<p>If none of those apply, plain xarray is usually sufficient.</p>
+</section>
+<section id="choosing-a-transform">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Choosing a transform</a><a class="headerlink" href="#choosing-a-transform" title="Link to this heading">#</a></h2>
+<p>Three transforms are available. All three take the same first three arguments
+(<code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>, <code class="docutils literal notranslate"><span class="pre">dim</span></code>) and all three return a <code class="docutils literal notranslate"><span class="pre">(result,</span> <span class="pre">result_qc)</span></code> tuple of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">xarray.DataArray</span></code> objects.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 30.0%" />
+<col style="width: 34.0%" />
+<col style="width: 18.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Transform</p></th>
+<th class="head"><p>What it does</p></th>
+<th class="head"><p>Use it when</p></th>
+<th class="head"><p>Nearest xarray analogue</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../API/generated/act.transform.bin_average.html#act.transform.bin_average" title="act.transform.bin_average"><code class="xref py py-func docutils literal notranslate"><span class="pre">bin_average()</span></code></a></p></td>
+<td><p>Weighted average of every input sample overlapping each output cell.</p></td>
+<td><p>Going to a <strong>coarser</strong> grid, and the output should summarize the interval.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.resample().mean()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../API/generated/act.transform.interpolate.html#act.transform.interpolate" title="act.transform.interpolate"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate()</span></code></a></p></td>
+<td><p>Piecewise linear interpolation between the two bracketing samples.</p></td>
+<td><p>Going to a <strong>finer</strong> grid, or onto offset timestamps, for a continuous quantity.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.interp()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../API/generated/act.transform.subsample.html#act.transform.subsample" title="act.transform.subsample"><code class="xref py py-func docutils literal notranslate"><span class="pre">subsample()</span></code></a></p></td>
+<td><p>Selects the nearest input sample within <code class="docutils literal notranslate"><span class="pre">t_range</span></code>.</p></td>
+<td><p>The value must stay an <strong>actual observed sample</strong> – codes, flags, states, and
+other quantities an average would render meaningless.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.reindex(method='nearest')</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The choice matters for more than accuracy. Bin-averaging a
+present-weather <em>code</em> produces a number that means nothing; subsampling is correct
+there. Subsampling a temperature onto a much coarser grid throws away most of the
+record; bin-averaging is correct there.</p>
+<p><strong>Circular variables need special care.</strong> <code class="docutils literal notranslate"><span class="pre">bin_average</span></code> and <code class="docutils literal notranslate"><span class="pre">interpolate</span></code> treat
+values as linear numbers, so directions near the wrap point can give misleading
+results. For example, averaging 359° and 1° yields 180° instead of a direction near 0°.
+For wind direction, angles, and other circular quantities, use a circular-aware
+method (for example, transform sine and cosine components separately and recover
+the angle with <code class="docutils literal notranslate"><span class="pre">atan2</span></code>), or use <code class="docutils literal notranslate"><span class="pre">subsample</span></code> if retaining an observed value
+is appropriate.</p>
+<p>Only <code class="docutils literal notranslate"><span class="pre">bin_average</span></code> accepts bounds and the coverage thresholds. Only <code class="docutils literal notranslate"><span class="pre">interpolate</span></code>
+and <code class="docutils literal notranslate"><span class="pre">subsample</span></code> accept <code class="docutils literal notranslate"><span class="pre">t_range</span></code>, the maximum distance from a target point to an
+input sample beyond which no value is produced.</p>
+</section>
+<section id="a-first-example">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">A first example</a><a class="headerlink" href="#a-first-example" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="../API/generated/act.transform.make_coord.html#act.transform.make_coord" title="act.transform.make_coord"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_coord()</span></code></a> builds the target coordinate. It accepts datetime-like
+endpoints with a pandas frequency string, or numeric endpoints with a numeric step:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">act</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">arm_test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATASETS</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">'gucmetM1.b1.20230301.000000.cdf'</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">read_arm_netcdf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">cleanup_qc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># The file is 1-minute data; build a 30-minute target coordinate.</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">make_coord</span><span class="p">(</span><span class="s1">'2023-03-01'</span><span class="p">,</span> <span class="s1">'2023-03-02'</span><span class="p">,</span> <span class="s1">'30min'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'time'</span><span class="p">)</span>
+
+<span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">'temp_mean'</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">result</span></code> is a <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> on the new coordinate, keeping the input’s <code class="docutils literal notranslate"><span class="pre">attrs</span></code>,
+<code class="docutils literal notranslate"><span class="pre">encoding</span></code>, and any coordinates that do not depend on <code class="docutils literal notranslate"><span class="pre">dim</span></code>. <code class="docutils literal notranslate"><span class="pre">result_qc</span></code> is an
+integer QC <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> of the same shape.</p>
+<p>Any dimension works, not only time, and the array may be N-dimensional – the transform
+is applied along <code class="docutils literal notranslate"><span class="pre">dim</span></code> and every other axis is iterated over.</p>
+</section>
+<section id="quality-control-end-to-end">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Quality control, end to end</a><a class="headerlink" href="#quality-control-end-to-end" title="Link to this heading">#</a></h2>
+<section id="passing-input-qc">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Passing input QC</a><a class="headerlink" href="#passing-input-qc" title="Link to this heading">#</a></h3>
+<p>Pass the companion QC variable as <code class="docutils literal notranslate"><span class="pre">qc</span></code>. By default, <code class="docutils literal notranslate"><span class="pre">qc_mask=None</span></code> selects every
+QC bit whose <code class="docutils literal notranslate"><span class="pre">flag_assessments</span></code> metadata is <code class="docutils literal notranslate"><span class="pre">&quot;Bad&quot;</span></code>; samples matching those bits
+are excluded from the computation. This assessment-aware default is preferred over
+hardcoding a datastream-specific bit value:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">var_name</span> <span class="o">=</span> <span class="s1">'tbrg_precip_total_corr'</span>
+
+<span class="n">filtered</span><span class="p">,</span> <span class="n">filtered_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">qc</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">'qc_'</span> <span class="o">+</span> <span class="n">var_name</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>For the <code class="docutils literal notranslate"><span class="pre">gucmetM1.b1</span></code> file above, this excludes the <code class="docutils literal notranslate"><span class="pre">fail_max</span></code> QC test that flags
+the raw data’s 7999 mm spikes. You can choose a different assessment by passing its
+name as <code class="docutils literal notranslate"><span class="pre">qc_mask</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Exclude every input assessed as Indeterminate instead.</span>
+<span class="n">filtered</span><span class="p">,</span> <span class="n">filtered_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span>
+    <span class="n">target</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span>
+    <span class="n">qc</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">'qc_'</span> <span class="o">+</span> <span class="n">var_name</span><span class="p">],</span>
+    <span class="n">qc_mask</span><span class="o">=</span><span class="s1">'Indeterminate'</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The three supported forms are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> (the default): derive a mask for <code class="docutils literal notranslate"><span class="pre">&quot;Bad&quot;</span></code> from the QC variable’s
+<code class="docutils literal notranslate"><span class="pre">flag_assessments</span></code> and <code class="docutils literal notranslate"><span class="pre">flag_masks</span></code> metadata. If the QC variable has no
+<code class="docutils literal notranslate"><span class="pre">flag_masks</span></code>, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised rather than silently excluding nothing:
+read the data with <code class="docutils literal notranslate"><span class="pre">read_arm_netcdf(...,</span> <span class="pre">cleanup_qc=True)</span></code> or pass an integer
+mask. If no QC variable is supplied, no QC bits are excluded.</p></li>
+<li><p>A string such as <code class="docutils literal notranslate"><span class="pre">'Bad'</span></code> or <code class="docutils literal notranslate"><span class="pre">'Indeterminate'</span></code>: derive a mask for that exact
+assessment from the QC metadata. An explicit assessment string requires a QC
+variable with both metadata attributes.</p></li>
+<li><p>A list of strings such as <code class="docutils literal notranslate"><span class="pre">['Bad',</span> <span class="pre">'Suspect']</span></code>: combine the masks for all listed
+assessments. This is useful when several assessment categories should be excluded.</p></li>
+<li><p>An integer such as <code class="docutils literal notranslate"><span class="pre">4</span></code>: use that bitmask directly. This is useful when working
+with a non-CF QC array or when an exact bit-level selection is required. Remember
+that <code class="docutils literal notranslate"><span class="pre">qc_mask</span></code> is a bitmask, not a bit number: bit 3 is <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">&lt;&lt;</span> <span class="pre">2</span></code>, or <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p></li>
+</ul>
+<p>The same <code class="docutils literal notranslate"><span class="pre">qc_mask</span></code> options apply to <code class="docutils literal notranslate"><span class="pre">interpolate</span></code>, <code class="docutils literal notranslate"><span class="pre">subsample</span></code>,
+<code class="docutils literal notranslate"><span class="pre">transform_dataset</span></code>, and the Dataset accessor methods. The transform’s output QC
+still records any input QC bits that were not selected for exclusion.</p>
+</section>
+<section id="reading-the-output-qc">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Reading the output QC</a><a class="headerlink" href="#reading-the-output-qc" title="Link to this heading">#</a></h3>
+<p>The returned QC variable is bit-packed. The bit constants live in
+<code class="docutils literal notranslate"><span class="pre">act.transform.constants</span></code> and are re-exported at package level:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">act.transform.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">QC_SOME_BAD_INPUTS</span>
+
+<span class="n">affected</span> <span class="o">=</span> <span class="p">(</span><span class="n">filtered_qc</span><span class="o">.</span><span class="n">values</span> <span class="o">&amp;</span> <span class="n">QC_SOME_BAD_INPUTS</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">affected</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>  <span class="c1"># number of output bins that lost input to QC</span>
+</pre></div>
+</div>
+<p>The full set of bits, and which transforms can set them:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 8.0%" />
+<col style="width: 14.0%" />
+<col style="width: 48.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constant</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Assessment</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_BAD</span></code></p></td>
+<td><p>1</p></td>
+<td><p>Bad</p></td>
+<td><p>No value could be produced. Set alongside <code class="docutils literal notranslate"><span class="pre">QC_OUTSIDE_RANGE</span></code> or
+<code class="docutils literal notranslate"><span class="pre">QC_ALL_BAD_INPUTS</span></code>; it is <em>not</em> set by the threshold bits below.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">QC_INDETERMINATE</span></code></p></td>
+<td><p>2</p></td>
+<td><p>Indeterminate</p></td>
+<td><p>An input sample carried a QC bit that was <em>not</em> in <code class="docutils literal notranslate"><span class="pre">qc_mask</span></code>, so it was used
+but was not clean.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_INTERPOLATE</span></code></p></td>
+<td><p>4</p></td>
+<td><p>Indeterminate</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">interpolate</span></code> had to skip past a bad or missing neighbor to find a usable one.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">QC_EXTRAPOLATE</span></code></p></td>
+<td><p>8</p></td>
+<td><p>Indeterminate</p></td>
+<td><p>The output point lies beyond the input samples used.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_NOT_USING_CLOSEST</span></code></p></td>
+<td><p>16</p></td>
+<td><p>Indeterminate</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">subsample</span></code> rejected the nearest sample (bad or missing) and took a farther one.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">QC_SOME_BAD_INPUTS</span></code></p></td>
+<td><p>32</p></td>
+<td><p>Indeterminate</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bin_average</span></code> excluded some, but not all, candidate samples from this bin.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_ZERO_WEIGHT</span></code></p></td>
+<td><p>64</p></td>
+<td><p>Indeterminate</p></td>
+<td><p>Total weight for this output point was zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">QC_OUTSIDE_RANGE</span></code></p></td>
+<td><p>128</p></td>
+<td><p>Bad</p></td>
+<td><p>The output point falls outside the input coordinate range, or beyond <code class="docutils literal notranslate"><span class="pre">t_range</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_ALL_BAD_INPUTS</span></code></p></td>
+<td><p>256</p></td>
+<td><p>Bad</p></td>
+<td><p>Every candidate input sample was bad or missing; no value could be produced.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">QC_BAD_STD</span></code></p></td>
+<td><p>512</p></td>
+<td><p>Bad</p></td>
+<td><p>Within-bin standard deviation exceeded <code class="docutils literal notranslate"><span class="pre">std_bad_max</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_INDETERMINATE_STD</span></code></p></td>
+<td><p>1024</p></td>
+<td><p>Indeterminate</p></td>
+<td><p>Within-bin standard deviation exceeded <code class="docutils literal notranslate"><span class="pre">std_ind_max</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">QC_BAD_GOODFRAC</span></code></p></td>
+<td><p>2048</p></td>
+<td><p>Bad</p></td>
+<td><p>Good coverage fraction fell below <code class="docutils literal notranslate"><span class="pre">goodfrac_bad_min</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QC_INDETERMINATE_GOODFRAC</span></code></p></td>
+<td><p>4096</p></td>
+<td><p>Indeterminate</p></td>
+<td><p>Good coverage fraction fell below <code class="docutils literal notranslate"><span class="pre">goodfrac_ind_min</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Note the distinction between <code class="docutils literal notranslate"><span class="pre">qc_mask</span></code> and <code class="docutils literal notranslate"><span class="pre">QC_INDETERMINATE</span></code>: bits you name in
+<code class="docutils literal notranslate"><span class="pre">qc_mask</span></code> cause a sample to be <em>excluded</em>, while any other bit set on a used sample
+raises <code class="docutils literal notranslate"><span class="pre">QC_INDETERMINATE</span></code> on the output. Input QC you did not ask to be treated as bad
+is therefore not discarded – it is reported.</p>
+</section>
+<section id="composing-with-ds-qcfilter">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Composing with <code class="docutils literal notranslate"><span class="pre">ds.qcfilter</span></code></a><a class="headerlink" href="#composing-with-ds-qcfilter" title="Link to this heading">#</a></h3>
+<p>Every output QC variable is stamped with ARM-style <code class="docutils literal notranslate"><span class="pre">flag_masks</span></code>,
+<code class="docutils literal notranslate"><span class="pre">flag_meanings</span></code>, <code class="docutils literal notranslate"><span class="pre">flag_assessments</span></code>, <code class="docutils literal notranslate"><span class="pre">flag_comments</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">standard_name='quality_flag'</span></code> by
+<code class="xref py py-func docutils literal notranslate"><span class="pre">act.transform.constants.add_arm_qc_attrs()</span></code>. That means ARM metadata and
+ACT’s existing QC machinery work on transform output without any translation step:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+
+<span class="n">out_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="n">filtered</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">filtered</span><span class="p">,</span> <span class="n">filtered_qc</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">filtered_qc</span><span class="p">})</span>
+
+<span class="c1"># Mask output points that lost input to QC.</span>
+<span class="n">masked</span> <span class="o">=</span> <span class="n">out_ds</span><span class="o">.</span><span class="n">qcfilter</span><span class="o">.</span><span class="n">get_masked_data</span><span class="p">(</span>
+    <span class="n">var_name</span><span class="p">,</span> <span class="n">rm_assessments</span><span class="o">=</span><span class="p">[</span><span class="s1">'Bad'</span><span class="p">,</span> <span class="s1">'Indeterminate'</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">qcfilter</span></code> finds the QC variable through the data variable’s <code class="docutils literal notranslate"><span class="pre">ancillary_variables</span></code>
+attribute. ARM files already set it, and the transform copies the input’s <code class="docutils literal notranslate"><span class="pre">attrs</span></code>
+onto the output, so this normally works without extra setup; if your input lacks the
+attribute, set <code class="docutils literal notranslate"><span class="pre">out_ds[var_name].attrs['ancillary_variables']</span> <span class="pre">=</span> <span class="pre">filtered_qc.name</span></code>
+first. Note also that most transform bits are assessed <code class="docutils literal notranslate"><span class="pre">Indeterminate</span></code> rather than
+<code class="docutils literal notranslate"><span class="pre">Bad</span></code>, so filtering only <code class="docutils literal notranslate"><span class="pre">rm_assessments=['Bad']</span></code> will not remove points flagged
+<code class="docutils literal notranslate"><span class="pre">QC_SOME_BAD_INPUTS</span></code>.</p>
+</section>
+</section>
+<section id="bounds-awareness-and-coverage-thresholds">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Bounds awareness and coverage thresholds</a><a class="headerlink" href="#bounds-awareness-and-coverage-thresholds" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">bin_average</span></code> works on cells rather than points. Each input sample and each output bin
+has a start and an end, and an input sample contributes to an output bin in proportion to
+how much of it overlaps.</p>
+<p>Bounds come from three places, in order of preference:</p>
+<ol class="arabic simple">
+<li><p><strong>Explicitly</strong>, via <code class="docutils literal notranslate"><span class="pre">input_bounds</span></code> and <code class="docutils literal notranslate"><span class="pre">output_bounds</span></code> – each an <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">2)</span></code> array
+of <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">end]</span></code> pairs.</p></li>
+<li><p><strong>From CF metadata.</strong> <a class="reference internal" href="../API/generated/act.transform.transform_dataset.html#act.transform.transform_dataset" title="act.transform.transform_dataset"><code class="xref py py-func docutils literal notranslate"><span class="pre">transform_dataset()</span></code></a> reads the coordinate’s
+<code class="docutils literal notranslate"><span class="pre">bounds</span></code> attribute and picks up the named variable automatically.</p></li>
+<li><p><strong>Inferred from midpoints.</strong> With no bounds available, each cell runs from the midpoint
+to its previous neighbor to the midpoint to its next, with the outermost edges
+extrapolated.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ARM met files carry a time_bounds variable; use it explicitly.</span>
+<span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'temp_mean'</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">input_bounds</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">'time_bounds'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Two sets of thresholds let a caller declare when a bin is not trustworthy. Both compare
+against quantities <code class="docutils literal notranslate"><span class="pre">bin_average</span></code> computes per output bin, and both have an
+“indeterminate” and a harder “bad” level:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std_ind_max</span></code> / <code class="docutils literal notranslate"><span class="pre">std_bad_max</span></code> – the weighted standard deviation of the input
+samples in the bin. High values mean the bin is averaging over real variability, so the
+single output number is a poor summary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">goodfrac_ind_min</span></code> / <code class="docutils literal notranslate"><span class="pre">goodfrac_bad_min</span></code> – the fraction of the bin’s span covered by
+<em>good</em> input. Low values mean the average rests on only part of the interval, because
+input was missing or QC-excluded.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">act.transform.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">QC_BAD_STD</span><span class="p">,</span> <span class="n">QC_INDETERMINATE_STD</span>
+
+<span class="c1"># Wind speed over 30-minute bins: flag gusty bins, reject the worst.</span>
+<span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'wspd_arith_mean'</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span>
+    <span class="n">std_ind_max</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">std_bad_max</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">((</span><span class="n">result_qc</span><span class="o">.</span><span class="n">values</span> <span class="o">&amp;</span> <span class="n">QC_INDETERMINATE_STD</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">result_qc</span><span class="o">.</span><span class="n">values</span> <span class="o">&amp;</span> <span class="n">QC_BAD_STD</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Both default to a no-op – the <code class="docutils literal notranslate"><span class="pre">std_*</span></code> thresholds to infinity and the <code class="docutils literal notranslate"><span class="pre">goodfrac_*</span></code>
+thresholds to zero – so the bits only appear once you set a threshold. The right values
+are a property of your instrument and your tolerance, not something the library can
+guess.</p>
+</section>
+<section id="transforming-a-whole-dataset">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Transforming a whole Dataset</a><a class="headerlink" href="#transforming-a-whole-dataset" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="../API/generated/act.transform.transform_dataset.html#act.transform.transform_dataset" title="act.transform.transform_dataset"><code class="xref py py-func docutils literal notranslate"><span class="pre">transform_dataset()</span></code></a> applies a transform to every variable in a
+Dataset that has <code class="docutils literal notranslate"><span class="pre">dim</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">transform_dataset</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s1">'bin_average'</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">transform_dataset</span></code> handles QC pairing, bounds lookup, and pass-through variables:</p>
+<ul class="simple">
+<li><p><strong>QC auto-pairing.</strong> For each variable <code class="docutils literal notranslate"><span class="pre">foo</span></code>, if <code class="docutils literal notranslate"><span class="pre">qc_foo</span></code> exists in the Dataset it is
+passed as that variable’s <code class="docutils literal notranslate"><span class="pre">qc</span></code> automatically. The prefix is configurable with
+<code class="docutils literal notranslate"><span class="pre">qc_prefix</span></code>, which defaults to <code class="docutils literal notranslate"><span class="pre">'qc_'</span></code>. QC variables are not themselves transformed
+as data; each appears in the output as the transformed variable’s companion.</p></li>
+<li><p><strong>CF bounds auto-detection.</strong> For <code class="docutils literal notranslate"><span class="pre">bin_average</span></code>, the coordinate’s <code class="docutils literal notranslate"><span class="pre">bounds</span></code> attribute
+is followed and the named variable used as <code class="docutils literal notranslate"><span class="pre">input_bounds</span></code>. The bounds variable itself
+is skipped rather than transformed, since it describes coordinate cells rather than
+measured data. If the target coordinate has its own bounds variable, that output-grid
+variable is preserved; otherwise the output coordinate does not retain a dangling
+<code class="docutils literal notranslate"><span class="pre">bounds</span></code> reference.</p></li>
+<li><p><strong>Pass-through.</strong> Variables without <code class="docutils literal notranslate"><span class="pre">dim</span></code> are copied across unchanged, and the
+Dataset’s global <code class="docutils literal notranslate"><span class="pre">attrs</span></code> are preserved.</p></li>
+</ul>
+<p>Because one transform is rarely right for every variable in a file, per-variable
+overrides are supported:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_ds</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">transform_dataset</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span>
+    <span class="n">transform</span><span class="o">=</span><span class="s1">'bin_average'</span><span class="p">,</span>          <span class="c1"># default for most variables</span>
+    <span class="c1"># qc_mask=None (the default) excludes QC bits assessed as Bad.</span>
+    <span class="n">per_var_transform</span><span class="o">=</span><span class="p">{</span>
+        <span class="c1"># Averaging a present-weather code is meaningless; take a real sample.</span>
+        <span class="s1">'pwd_pw_code_inst'</span><span class="p">:</span> <span class="s1">'subsample'</span><span class="p">,</span>
+        <span class="c1"># Wind direction is circular; avoid averaging across 0°/360°.</span>
+        <span class="s1">'wdir_vec_mean'</span><span class="p">:</span> <span class="s1">'subsample'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">per_var_kwargs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">'wspd_arith_mean'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'std_ind_max'</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Check every variable when transforming a whole Dataset. Wind direction is circular,
+so <code class="docutils literal notranslate"><span class="pre">bin_average</span></code> (or <code class="docutils literal notranslate"><span class="pre">interpolate</span></code>) can give misleading values near the 0°/360°
+boundary. The override above retains an observed direction instead. Support for
+circular-aware averaging/interpolation is not yet implemented.</p>
+</div>
+<p>You can also give <code class="docutils literal notranslate"><span class="pre">target_ds=</span></code> another Dataset instead of <code class="docutils literal notranslate"><span class="pre">target=</span></code> to transform onto
+an existing file’s coordinate – convenient for putting two datastreams on a common time
+base. The two arguments are mutually exclusive.</p>
+</section>
+<section id="functions-or-accessor">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Functions or accessor</a><a class="headerlink" href="#functions-or-accessor" title="Link to this heading">#</a></h2>
+<p>Each transform has a function form and a Dataset-accessor form. Functions accept
+<code class="docutils literal notranslate"><span class="pre">DataArray</span></code> objects; accessors accept variable names and delegate to the same
+implementation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function form -- takes DataArrays.</span>
+<span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'temp_mean'</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">qc</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s1">'qc_temp_mean'</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Accessor form -- takes names. Identical result.</span>
+<span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">bin_average</span><span class="p">(</span>
+    <span class="s1">'temp_mean'</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="s1">'qc_temp_mean'</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Note the argument name changes with the form: the functions take <code class="docutils literal notranslate"><span class="pre">qc=&lt;DataArray&gt;</span></code>,
+while the accessor takes <code class="docutils literal notranslate"><span class="pre">qc_var_name=&lt;str&gt;</span></code>. <code class="docutils literal notranslate"><span class="pre">ds.transform.transform_dataset(...)</span></code>
+works the same way, taking every argument except <code class="docutils literal notranslate"><span class="pre">ds</span></code> itself.</p>
+</section>
+<section id="datetime-coordinates">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Datetime coordinates</a><a class="headerlink" href="#datetime-coordinates" title="Link to this heading">#</a></h2>
+<p>Datetime coordinates are handled directly; there is no need to convert to numeric time
+first. <code class="docutils literal notranslate"><span class="pre">datetime64</span></code> coordinates, and the <code class="docutils literal notranslate"><span class="pre">cftime</span></code> objects that
+<code class="xref py py-func docutils literal notranslate"><span class="pre">act.io.arm.read_arm_netcdf()</span></code> produces for CF <code class="docutils literal notranslate"><span class="pre">bounds</span></code> variables, are all
+normalized to nanoseconds internally, so values from coordinates and bounds recorded in
+different units stay mutually comparable. The output coordinate is returned as a datetime,
+not as a number.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">interpolate</span></code> and <code class="docutils literal notranslate"><span class="pre">subsample</span></code>, <code class="docutils literal notranslate"><span class="pre">t_range</span></code> must be given as a timedelta when the
+coordinate is a datetime. A bare number raises <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> rather than being silently
+read as nanoseconds:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span> <span class="o">=</span> <span class="n">act</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">subsample</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">'temp_mean'</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">'time'</span><span class="p">,</span> <span class="n">t_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Numeric coordinates continue to use the same behavior.</p>
+</section>
+<section id="the-numba-dependency">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">The numba dependency</a><a class="headerlink" href="#the-numba-dependency" title="Link to this heading">#</a></h2>
+<p>The numeric kernels are JIT-compiled with <a class="reference external" href="https://numba.pydata.org/">numba</a>. If numba
+cannot be imported, cannot compile a kernel, or raises an error while running a kernel,
+that kernel falls back to a pure-Python implementation of the same logic
+(see <code class="docutils literal notranslate"><span class="pre">act/transform/_numba_support.py</span></code>) and emits a <code class="docutils literal notranslate"><span class="pre">RuntimeWarning</span></code> once for each failing kernel type, naming the reason:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RuntimeWarning: act.transform: numba JIT unavailable or failed for the
+'bin_average' kernel (...); falling back to a slower pure-Python
+implementation. Results are unaffected.
+</pre></div>
+</div>
+<p>The fallback uses the same Python kernel as the JIT path, so it preserves results but
+may run more slowly.</p>
+</section>
+<section id="further-reading">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Further reading</a><a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../auto_examples/transform/index.html#transform-examples"><span class="std std-ref">Transform Examples</span></a> – runnable gallery examples.</p></li>
+<li><p><a class="reference internal" href="../API/generated/act.transform.html#module-act.transform" title="act.transform"><code class="xref py py-mod docutils literal notranslate"><span class="pre">act.transform</span></code></a> – the generated API reference.</p></li>
+</ul>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+   
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="usage.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Usage</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="CONTRIBUTING.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Contributing</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-this-instead-of-xarray">When to use this instead of xarray</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-a-transform">Choosing a transform</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-example">A first example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-control-end-to-end">Quality control, end to end</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#passing-input-qc">Passing input QC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-the-output-qc">Reading the output QC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composing-with-ds-qcfilter">Composing with <code class="docutils literal notranslate"><span class="pre">ds.qcfilter</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bounds-awareness-and-coverage-thresholds">Bounds awareness and coverage thresholds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transforming-a-whole-dataset">Transforming a whole Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-or-accessor">Functions or accessor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datetime-coordinates">Datetime coordinates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-numba-dependency">The numba dependency</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further reading</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/userguide/transform.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, ACT Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

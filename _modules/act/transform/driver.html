@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>act.transform.driver &#8212; ACT Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=e2ee527d" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('consent', 'default', {
+                    'ad_storage': 'denied',
+                    'ad_user_data': 'denied',
+                    'ad_personalization': 'denied',
+                    'analytics_storage': 'denied'
+                });
+            </script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-8YN80YZDD8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-8YN80YZDD8');
+            </script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/act/transform/driver';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../../_static/doc_shared.js?v=4c9803b4"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.3" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+   
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="ACT Blog"
+/>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">ACT Documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../API/index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../auto_examples/index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blog.html">
+    Blog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/GUIDE_V2.html">
+    ACT Version 2 Release Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../API/index.html">
+    API Reference Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../auto_examples/index.html">
+    ACT Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blog.html">
+    Blog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/ARM-DOE/ACT/issues">
+    GitHub Issue Tracker
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ARM-DOE/ACT" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">act.transform.driver</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <h1>Source code for act.transform.driver</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">N-D axis-iteration driver for the act.transform kernels.</span>
+
+<span class="sd">Applies a 1D transformation kernel (bin_average, interpolate, or subsample)</span>
+<span class="sd">along a single axis of an N-dimensional array by iterating over all slices</span>
+<span class="sd">perpendicular to that axis.</span>
+
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.transform.bin_average</span><span class="w"> </span><span class="kn">import</span> <span class="n">_bin_average_1d</span><span class="p">,</span> <span class="n">bin_average</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.transform.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_arm_qc_attrs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.transform.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">_bilinear_interpolate_1d</span><span class="p">,</span> <span class="n">interpolate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">act.transform.subsample</span><span class="w"> </span><span class="kn">import</span> <span class="n">_subsample_1d</span><span class="p">,</span> <span class="n">subsample</span>
+
+<span class="n">TRANSFORM_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'bin_average'</span><span class="p">,</span> <span class="s1">'interpolate'</span><span class="p">,</span> <span class="s1">'subsample'</span><span class="p">)</span>
+
+<span class="n">DEFAULT_MISSING</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9999.0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_qc_mask</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">qc_mask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Resolve an integer QC mask from bitmasks or flag assessments.</span>
+
+<span class="sd">    ``None`` selects the ``Bad`` assessment; without a QC variable it means</span>
+<span class="sd">    that no QC bits are excluded. Integer masks are returned unchanged. A string or list of strings is matched against the QC variable's</span>
+<span class="sd">    ``flag_assessments`` metadata and the corresponding ``flag_masks`` are ORed</span>
+<span class="sd">    together.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">qc_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">assessments</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Bad'</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_mask</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">assessments</span> <span class="o">=</span> <span class="p">[</span><span class="n">qc_mask</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_mask</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">qc_mask</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">qc_mask</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"qc_mask lists must contain at least one assessment string"</span><span class="p">)</span>
+        <span class="n">assessments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">qc_mask</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_mask</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qc_mask</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">qc_mask</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"qc_mask must be an integer, assessment string, list of assessment strings, or None"</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">qc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">qc_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot resolve QC assessment(s) </span><span class="si">{</span><span class="n">assessments</span><span class="si">!r}</span><span class="s2"> without a QC DataArray"</span><span class="p">)</span>
+
+    <span class="c1"># Silently excluding nothing would let bad values into the output, so a</span>
+    <span class="c1"># QC variable without CF metadata requires an explicit integer mask.</span>
+    <span class="k">if</span> <span class="n">qc_mask</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">'flag_masks'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">qc</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"QC variable has no 'flag_masks' metadata, so the default 'Bad' mask cannot be "</span>
+            <span class="s2">"resolved. Pass an integer qc_mask, or read the data with "</span>
+            <span class="s2">"act.io.arm.read_arm_netcdf(..., cleanup_qc=True)."</span>
+        <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">flag_masks</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'flag_masks'</span><span class="p">]</span>
+        <span class="n">flag_assessments</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'flag_assessments'</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"QC assessment masks require 'flag_masks' and 'flag_assessments' metadata"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag_assessments</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"QC flag_masks and flag_assessments must have the same length"</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">matched</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">flag_mask</span><span class="p">,</span> <span class="n">flag_assessment</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">flag_masks</span><span class="p">,</span> <span class="n">flag_assessments</span><span class="p">):</span>
+        <span class="n">assessment</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">flag_assessment</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">assessment</span> <span class="ow">in</span> <span class="n">assessments</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">|=</span> <span class="nb">int</span><span class="p">(</span><span class="n">flag_mask</span><span class="p">)</span>
+            <span class="n">matched</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">assessment</span><span class="p">)</span>
+
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">assessment</span> <span class="k">for</span> <span class="n">assessment</span> <span class="ow">in</span> <span class="n">assessments</span> <span class="k">if</span> <span class="n">assessment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">matched</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"QC assessment(s) </span><span class="si">{</span><span class="n">missing</span><span class="si">!r}</span><span class="s2"> were not found in flag_assessments"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_datetime_like_array</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return True if ``arr`` holds datetime64, timedelta64, or date-like objects."""</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="s1">'Mm'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span> <span class="ow">and</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'year'</span><span class="p">,</span> <span class="s1">'month'</span><span class="p">,</span> <span class="s1">'day'</span><span class="p">))</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_numeric</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert coordinate-like values to float64 for the numeric kernels.</span>
+
+<span class="sd">    The kernels do plain arithmetic on their coordinate arguments, so</span>
+<span class="sd">    datetime-like coordinates have to be reduced to numbers first.</span>
+<span class="sd">    ``datetime64``/``timedelta64`` arrays and object arrays of date-like</span>
+<span class="sd">    values (e.g. the :class:`cftime.DatetimeGregorian` objects that</span>
+<span class="sd">    :func:`act.io.arm.read_arm_netcdf` produces for CF ``bounds`` variables)</span>
+<span class="sd">    are all normalized to nanoseconds, so values originating from different</span>
+<span class="sd">    units remain mutually comparable. Numeric input is passed through</span>
+<span class="sd">    unchanged apart from the float64 cast.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : array_like</span>
+<span class="sd">        Coordinate, bounds, or target values of any supported dtype.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        float64 array; nanoseconds since the epoch for datetime-like input.</span>
+
+<span class="sd">    """</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">'M'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">'m'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'timedelta64[ns]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">_is_datetime_like_array</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="c1"># cftime / datetime.datetime objects: let numpy parse them via</span>
+        <span class="c1"># datetime64. Fall through to the plain float cast if it can't.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+
+<span class="n">_KERNEL_ERRORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">"input or output bin bounds are inconsistent (each bin's end must follow its start "</span>
+    <span class="s2">"in the direction of the coordinate)"</span><span class="p">,</span>
+    <span class="o">-</span><span class="mi">5</span><span class="p">:</span> <span class="s2">"input and target coordinates must be monotonic in the same direction"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_kernel_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raise if a transform kernel reported an error status.</span>
+
+<span class="sd">    The kernels signal failure with a negative return code and leave their</span>
+<span class="sd">    output arrays untouched, which would otherwise be returned as all-missing</span>
+<span class="sd">    data with no QC flags set.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">reason</span> <span class="o">=</span> <span class="n">_KERNEL_ERRORS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="s2">"unknown kernel error"</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2"> failed with status </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_numeric_t_range</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime_coord</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert ``t_range`` to float64 in the units of the numeric coordinate.</span>
+
+<span class="sd">    A datetime coordinate is reduced to nanoseconds, so its ``t_range`` must be</span>
+<span class="sd">    a timedelta; a bare number would otherwise be read as nanoseconds. A numeric</span>
+<span class="sd">    coordinate requires a numeric ``t_range``. None means no limit.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">is_duration</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">'m'</span>
+    <span class="k">if</span> <span class="n">datetime_coord</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_duration</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"t_range must be a timedelta (e.g. np.timedelta64(5, 'm')) for a datetime coordinate"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">datetime_coord</span> <span class="ow">and</span> <span class="n">is_duration</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"t_range must be a number for a numeric coordinate"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_duration</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'timedelta64[ns]'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_1d</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">qc_data</span><span class="p">,</span>
+    <span class="n">qc_mask</span><span class="p">,</span>
+    <span class="n">input_coord</span><span class="p">,</span>
+    <span class="n">output_coord</span><span class="p">,</span>
+    <span class="n">transform</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">,</span>
+    <span class="n">input_missing_value</span><span class="o">=</span><span class="n">DEFAULT_MISSING</span><span class="p">,</span>
+    <span class="n">output_missing_value</span><span class="o">=</span><span class="n">DEFAULT_MISSING</span><span class="p">,</span>
+    <span class="c1"># bin_average params</span>
+    <span class="n">input_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">std_bad_max</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+    <span class="n">std_ind_max</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+    <span class="n">goodfrac_bad_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">goodfrac_ind_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="c1"># interpolate / subsample params</span>
+    <span class="n">t_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Apply a 1D transform kernel along ``axis`` of an N-D array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : numpy.ndarray</span>
+<span class="sd">        Input data array of any shape.</span>
+<span class="sd">    qc_data : numpy.ndarray or None</span>
+<span class="sd">        Integer QC array with same shape as ``data``, or None (treated as</span>
+<span class="sd">        all-zero / no QC).</span>
+<span class="sd">    qc_mask : int, str, list[str], or None</span>
+<span class="sd">        Bitmask, assessment name, or None. An assessment name is matched</span>
+<span class="sd">        against ``qc_data`` metadata; None selects ``"Bad"``, which requires</span>
+<span class="sd">        ``flag_masks`` metadata, and excludes no QC bits without QC data.</span>
+<span class="sd">    input_coord : numpy.ndarray</span>
+<span class="sd">        1-D coordinate values for the transform dimension (length == ``data.shape[axis]``).</span>
+<span class="sd">    output_coord : numpy.ndarray</span>
+<span class="sd">        1-D target coordinate values (length == output size along ``axis``).</span>
+<span class="sd">    transform : {"bin_average", "interpolate", "subsample"}</span>
+<span class="sd">        Which transform kernel to apply.</span>
+<span class="sd">    axis : int</span>
+<span class="sd">        Axis of ``data`` along which to apply the transform.</span>
+<span class="sd">    input_missing_value : float</span>
+<span class="sd">        Sentinel value for missing input data.</span>
+<span class="sd">    output_missing_value : float</span>
+<span class="sd">        Sentinel value to fill missing output data.</span>
+<span class="sd">    input_bounds : numpy.ndarray, optional</span>
+<span class="sd">        Shape ``(ni, 2)`` array of [start, end] bounds for each input bin.</span>
+<span class="sd">        Used for ``"bin_average"``; inferred from midpoints if None.</span>
+<span class="sd">    output_bounds : numpy.ndarray, optional</span>
+<span class="sd">        Shape ``(nt, 2)`` array of [start, end] bounds for each output bin.</span>
+<span class="sd">        Used for ``"bin_average"``; inferred from midpoints if None.</span>
+<span class="sd">    weights : numpy.ndarray, optional</span>
+<span class="sd">        Per-input-sample weights for ``"bin_average"``. Defaults to ones.</span>
+<span class="sd">    std_bad_max : float</span>
+<span class="sd">        Stdev threshold above which output is flagged ``QC_BAD_STD``.</span>
+<span class="sd">    std_ind_max : float</span>
+<span class="sd">        Stdev threshold above which output is flagged ``QC_INDETERMINATE_STD``.</span>
+<span class="sd">    goodfrac_bad_min : float</span>
+<span class="sd">        Coverage fraction below which output is flagged ``QC_BAD_GOODFRAC``.</span>
+<span class="sd">    goodfrac_ind_min : float</span>
+<span class="sd">        Coverage fraction below which output is flagged ``QC_INDETERMINATE_GOODFRAC``.</span>
+<span class="sd">    t_range : float or numpy.timedelta64, optional</span>
+<span class="sd">        Max distance for interpolate/subsample. Must be a timedelta for a</span>
+<span class="sd">        datetime coordinate and a number otherwise. Defaults to no limit.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output_data : numpy.ndarray</span>
+<span class="sd">        Transformed data array; same shape as ``data`` except along ``axis``</span>
+<span class="sd">        where the size equals ``len(output_coord)``.</span>
+<span class="sd">    output_qc : numpy.ndarray</span>
+<span class="sd">        Integer QC array with same shape as ``output_data``.</span>
+
+<span class="sd">    """</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">ni</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_coord</span><span class="p">)</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_coord</span><span class="p">)</span>
+
+    <span class="c1"># The kernels do arithmetic directly on the coordinate arrays, so reduce</span>
+    <span class="c1"># datetime-like coordinates to numbers up front for every transform.</span>
+    <span class="c1"># bin_average used to get this only incidentally, via _get_bounds().</span>
+    <span class="n">datetime_coord</span> <span class="o">=</span> <span class="n">_is_datetime_like_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">input_coord</span><span class="p">))</span>
+    <span class="n">input_coord</span> <span class="o">=</span> <span class="n">_to_numeric</span><span class="p">(</span><span class="n">input_coord</span><span class="p">)</span>
+    <span class="n">output_coord</span> <span class="o">=</span> <span class="n">_to_numeric</span><span class="p">(</span><span class="n">output_coord</span><span class="p">)</span>
+    <span class="n">t_range</span> <span class="o">=</span> <span class="n">_to_numeric_t_range</span><span class="p">(</span><span class="n">t_range</span><span class="p">,</span> <span class="n">datetime_coord</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ni</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"data.shape[</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">]=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="si">}</span><span class="s2"> does not match len(input_coord)=</span><span class="si">{</span><span class="n">ni</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">qc_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">qc_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">qc_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">qc_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="c1"># Move the transform axis to position 0 for easy iteration</span>
+    <span class="n">data_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># (ni, ...)</span>
+    <span class="n">qc_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">qc_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># (ni, ...)</span>
+
+    <span class="n">other_shape</span> <span class="o">=</span> <span class="n">data_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">n_other</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">other_shape</span><span class="p">))</span> <span class="k">if</span> <span class="n">other_shape</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="c1"># Flatten to (ni, n_other) for uniform iteration</span>
+    <span class="n">data_2d</span> <span class="o">=</span> <span class="n">data_t</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">n_other</span><span class="p">)</span>
+    <span class="n">qc_2d</span> <span class="o">=</span> <span class="n">qc_t</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">n_other</span><span class="p">)</span>
+
+    <span class="n">out_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="n">n_other</span><span class="p">),</span> <span class="n">output_missing_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">qc_out_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="n">n_other</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">transform</span> <span class="o">==</span> <span class="s1">'bin_average'</span><span class="p">:</span>
+        <span class="c1"># The numba kernel does no bounds checking, so a short weights array</span>
+        <span class="c1"># would be read past its end rather than raising.</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">ni</span><span class="p">,):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"weights has shape </span><span class="si">{</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">; expected (</span><span class="si">{</span><span class="n">ni</span><span class="si">}</span><span class="s2">,)"</span><span class="p">)</span>
+        <span class="n">in_start</span><span class="p">,</span> <span class="n">in_end</span> <span class="o">=</span> <span class="n">_get_bounds</span><span class="p">(</span><span class="n">input_coord</span><span class="p">,</span> <span class="n">input_bounds</span><span class="p">)</span>
+        <span class="n">out_start</span><span class="p">,</span> <span class="n">out_end</span> <span class="o">=</span> <span class="n">_get_bounds</span><span class="p">(</span><span class="n">output_coord</span><span class="p">,</span> <span class="n">output_bounds</span><span class="p">)</span>
+        <span class="c1"># libtrans rejects zero-width output bins: nothing can be averaged over them.</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">out_start</span> <span class="o">==</span> <span class="n">out_end</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"bin_average output bins must have nonzero width; pass output_bounds "</span>
+                <span class="s2">"when averaging onto a single target point"</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_other</span><span class="p">):</span>
+            <span class="n">stdev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">output_missing_value</span><span class="p">)</span>
+            <span class="n">coverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">output_missing_value</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">_bin_average_1d</span><span class="p">(</span>
+                <span class="n">array</span><span class="o">=</span><span class="n">data_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_array</span><span class="o">=</span><span class="n">qc_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span>
+                <span class="n">index_start</span><span class="o">=</span><span class="n">in_start</span><span class="p">,</span>
+                <span class="n">index_end</span><span class="o">=</span><span class="n">in_end</span><span class="p">,</span>
+                <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+                <span class="n">ni</span><span class="o">=</span><span class="n">ni</span><span class="p">,</span>
+                <span class="n">output</span><span class="o">=</span><span class="n">out_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_output</span><span class="o">=</span><span class="n">qc_out_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">target_start</span><span class="o">=</span><span class="n">out_start</span><span class="p">,</span>
+                <span class="n">target_end</span><span class="o">=</span><span class="n">out_end</span><span class="p">,</span>
+                <span class="n">nt</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span>
+                <span class="n">input_missing_value</span><span class="o">=</span><span class="n">input_missing_value</span><span class="p">,</span>
+                <span class="n">output_missing_value</span><span class="o">=</span><span class="n">output_missing_value</span><span class="p">,</span>
+                <span class="n">rmet</span><span class="o">=</span><span class="p">[</span><span class="n">stdev</span><span class="p">,</span> <span class="n">coverage</span><span class="p">],</span>
+                <span class="n">std_bad_max</span><span class="o">=</span><span class="n">std_bad_max</span><span class="p">,</span>
+                <span class="n">std_ind_max</span><span class="o">=</span><span class="n">std_ind_max</span><span class="p">,</span>
+                <span class="n">goodfrac_bad_min</span><span class="o">=</span><span class="n">goodfrac_bad_min</span><span class="p">,</span>
+                <span class="n">goodfrac_ind_min</span><span class="o">=</span><span class="n">goodfrac_ind_min</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">_check_kernel_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">transform</span> <span class="o">==</span> <span class="s1">'interpolate'</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_other</span><span class="p">):</span>
+            <span class="n">dist_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">output_missing_value</span><span class="p">)</span>
+            <span class="n">dist_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">output_missing_value</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">_bilinear_interpolate_1d</span><span class="p">(</span>
+                <span class="n">array</span><span class="o">=</span><span class="n">data_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_array</span><span class="o">=</span><span class="n">qc_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">input_coord</span><span class="p">,</span>
+                <span class="n">ni</span><span class="o">=</span><span class="n">ni</span><span class="p">,</span>
+                <span class="n">output</span><span class="o">=</span><span class="n">out_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_output</span><span class="o">=</span><span class="n">qc_out_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">output_coord</span><span class="p">,</span>
+                <span class="n">nt</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span>
+                <span class="n">input_missing_value</span><span class="o">=</span><span class="n">input_missing_value</span><span class="p">,</span>
+                <span class="n">output_missing_value</span><span class="o">=</span><span class="n">output_missing_value</span><span class="p">,</span>
+                <span class="n">rmet</span><span class="o">=</span><span class="p">[</span><span class="n">dist_1</span><span class="p">,</span> <span class="n">dist_2</span><span class="p">],</span>
+                <span class="n">t_range</span><span class="o">=</span><span class="n">t_range</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">_check_kernel_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">transform</span> <span class="o">==</span> <span class="s1">'subsample'</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_other</span><span class="p">):</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">output_missing_value</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">_subsample_1d</span><span class="p">(</span>
+                <span class="n">array</span><span class="o">=</span><span class="n">data_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_array</span><span class="o">=</span><span class="n">qc_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">input_coord</span><span class="p">,</span>
+                <span class="n">ni</span><span class="o">=</span><span class="n">ni</span><span class="p">,</span>
+                <span class="n">output</span><span class="o">=</span><span class="n">out_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">qc_output</span><span class="o">=</span><span class="n">qc_out_2d</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">output_coord</span><span class="p">,</span>
+                <span class="n">nt</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span>
+                <span class="n">input_missing_value</span><span class="o">=</span><span class="n">input_missing_value</span><span class="p">,</span>
+                <span class="n">output_missing_value</span><span class="o">=</span><span class="n">output_missing_value</span><span class="p">,</span>
+                <span class="n">rmet</span><span class="o">=</span><span class="p">[</span><span class="n">distance</span><span class="p">],</span>
+                <span class="n">t_range</span><span class="o">=</span><span class="n">t_range</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">_check_kernel_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Unknown transform '</span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">'. "</span>
+            <span class="s2">"Must be one of: 'bin_average', 'interpolate', 'subsample'."</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Reshape back to (nt, *other_shape) then move axis back</span>
+    <span class="n">out_nd</span> <span class="o">=</span> <span class="n">out_2d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nt</span><span class="p">,)</span> <span class="o">+</span> <span class="n">other_shape</span><span class="p">)</span>
+    <span class="n">qc_nd</span> <span class="o">=</span> <span class="n">qc_out_2d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">nt</span><span class="p">,)</span> <span class="o">+</span> <span class="n">other_shape</span><span class="p">)</span>
+
+    <span class="n">output_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">out_nd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="n">output_qc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">qc_nd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_data</span><span class="p">,</span> <span class="n">output_qc</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_bounds</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return (start, end) bound arrays for a coordinate.</span>
+
+<span class="sd">    If ``bounds`` is provided (shape ``(n, 2)``), use it directly.</span>
+<span class="sd">    Otherwise infer midpoint-based bounds from the coordinate values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coord : numpy.ndarray</span>
+<span class="sd">        1-D coordinate values.</span>
+<span class="sd">    bounds : numpy.ndarray or None</span>
+<span class="sd">        Shape ``(n, 2)`` array of [start, end] bounds, or None to infer them.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    starts : numpy.ndarray</span>
+<span class="sd">        Start coordinate of each bin.</span>
+<span class="sd">    ends : numpy.ndarray</span>
+<span class="sd">        End coordinate of each bin.</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">_to_numeric</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">b</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">coord</span> <span class="o">=</span> <span class="n">_to_numeric</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+    <span class="n">starts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">starts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ends</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span>
+
+    <span class="c1"># Interior midpoints</span>
+    <span class="n">mids</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">coord</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="c1"># Extrapolate edges</span>
+    <span class="n">starts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">mids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">starts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">mids</span>
+
+    <span class="n">ends</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mids</span>
+    <span class="n">ends</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">mids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_missing_value</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Extract a missing value from DataArray encoding or attrs, with fallback."""</span>
+    <span class="k">for</span> <span class="n">src</span> <span class="ow">in</span> <span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'_FillValue'</span><span class="p">,</span> <span class="s1">'missing_value'</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DEFAULT_MISSING</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_transform</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">target</span><span class="p">,</span>
+    <span class="n">dim</span><span class="p">,</span>
+    <span class="n">transform</span><span class="p">,</span>
+    <span class="n">qc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">qc_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Apply a 1D transform kernel to an :class:`xarray.DataArray` along ``dim``.</span>
+
+<span class="sd">    Shared xarray-shape-handling implementation used by</span>
+<span class="sd">    :func:`act.transform.bin_average.bin_average`,</span>
+<span class="sd">    :func:`act.transform.interpolate.interpolate`, and</span>
+<span class="sd">    :func:`act.transform.subsample.subsample`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : xarray.DataArray</span>
+<span class="sd">        Input DataArray.</span>
+<span class="sd">    target : xarray.DataArray or numpy.ndarray</span>
+<span class="sd">        Target coordinate values.</span>
+<span class="sd">    dim : str</span>
+<span class="sd">        Name of the dimension along which to apply the transform.</span>
+<span class="sd">    transform : {"bin_average", "interpolate", "subsample"}</span>
+<span class="sd">        Which transform kernel to apply.</span>
+<span class="sd">    qc : xarray.DataArray, optional</span>
+<span class="sd">        Optional integer QC DataArray with same shape as ``data``.</span>
+<span class="sd">    qc_mask : int, str, list[str], or None</span>
+<span class="sd">        Integer bitmask, QC assessment name, or None. An assessment name is</span>
+<span class="sd">        matched against ``qc.attrs['flag_assessments']``; None selects</span>
+<span class="sd">        ``"Bad"``, which requires ``flag_masks`` metadata on ``qc`` (a</span>
+<span class="sd">        ``ValueError`` is raised otherwise); without ``qc`` no QC bits are</span>
+<span class="sd">        excluded.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments forwarded to :func:`transform_1d`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : xarray.DataArray</span>
+<span class="sd">        Transformed DataArray on the target coordinate.</span>
+<span class="sd">    result_qc : xarray.DataArray</span>
+<span class="sd">        Integer QC DataArray with same shape as ``result``, annotated with</span>
+<span class="sd">        ARM-style ``flag_masks``/``flag_meanings``/``flag_assessments``/</span>
+<span class="sd">        ``flag_comments`` and ``standard_name='quality_flag'`` (see</span>
+<span class="sd">        :func:`act.transform.constants.add_arm_qc_attrs`).</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dimension '</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">' not found in DataArray with dims </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">input_coord</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="k">if</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">coords</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
+        <span class="n">output_coord</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">target_da</span> <span class="o">=</span> <span class="n">target</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">output_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="c1"># Keep datetime-like targets as-is so the output coordinate stays a</span>
+        <span class="c1"># datetime; transform_1d reduces it to numbers for the kernels. Numeric</span>
+        <span class="c1"># targets keep their historical float64 cast.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_datetime_like_array</span><span class="p">(</span><span class="n">output_coord</span><span class="p">):</span>
+            <span class="n">output_coord</span> <span class="o">=</span> <span class="n">output_coord</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">target_da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">output_coord</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+        <span class="n">orig_coord</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
+        <span class="n">target_da</span> <span class="o">=</span> <span class="n">target_da</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">orig_coord</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_da</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">target_da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">orig_coord</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_da</span><span class="o">.</span><span class="n">encoding</span><span class="p">:</span>
+                <span class="n">target_da</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="n">_get_missing_value</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">qc_arr</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"QC dimensions </span><span class="si">{</span><span class="n">qc</span><span class="o">.</span><span class="n">dims</span><span class="si">}</span><span class="s2"> do not match data dimensions </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">qc</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qc</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"QC shape </span><span class="si">{</span><span class="n">qc</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> does not match data shape </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+            <span class="c1"># Fail if 1) coord exists on only one of data or qc, or 2) label exists on</span>
+            <span class="c1"># both but they are not equivalent</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">coord</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">coord</span> <span class="ow">in</span> <span class="n">qc</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">coord</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">coords</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="n">coord</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">qc</span><span class="p">[</span><span class="n">coord</span><span class="p">])</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"QC coordinates do not match data coordinates for </span><span class="si">{</span><span class="n">coord</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">qc_arr</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">resolved_qc_mask</span> <span class="o">=</span> <span class="n">_resolve_qc_mask</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">qc_mask</span><span class="p">)</span>
+
+    <span class="n">out_data</span><span class="p">,</span> <span class="n">out_qc_arr</span> <span class="o">=</span> <span class="n">transform_1d</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">qc_data</span><span class="o">=</span><span class="n">qc_arr</span><span class="p">,</span>
+        <span class="n">qc_mask</span><span class="o">=</span><span class="n">resolved_qc_mask</span><span class="p">,</span>
+        <span class="n">input_coord</span><span class="o">=</span><span class="n">input_coord</span><span class="p">,</span>
+        <span class="n">output_coord</span><span class="o">=</span><span class="n">output_coord</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+        <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+        <span class="n">input_missing_value</span><span class="o">=</span><span class="n">missing</span><span class="p">,</span>
+        <span class="n">output_missing_value</span><span class="o">=</span><span class="n">missing</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Build output coords: replace the transformed dim, keep all others</span>
+    <span class="n">new_coords</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">dim</span><span class="p">:</span>
+                <span class="n">new_coords</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_da</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_coords</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_coords</span><span class="p">:</span>
+        <span class="n">new_coords</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_da</span>
+
+    <span class="n">new_dims</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dims</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">out_data</span><span class="p">,</span>
+        <span class="n">dims</span><span class="o">=</span><span class="n">new_dims</span><span class="p">,</span>
+        <span class="n">coords</span><span class="o">=</span><span class="n">new_coords</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+
+    <span class="n">qc_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"qc_</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="s1">'qc'</span>
+    <span class="n">result_qc</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">out_qc_arr</span><span class="p">,</span>
+        <span class="n">dims</span><span class="o">=</span><span class="n">new_dims</span><span class="p">,</span>
+        <span class="n">coords</span><span class="o">=</span><span class="n">new_coords</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">qc_name</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">add_arm_qc_attrs</span><span class="p">(</span><span class="n">result_qc</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">result_qc</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_bounds</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">bounds_name</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return an (n, 2) bounds array for ``coord`` if a bounds variable exists, else None.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coord : xarray.DataArray</span>
+<span class="sd">        Coordinate to look up bounds for.</span>
+<span class="sd">    bounds_name : str or None</span>
+<span class="sd">        Explicit name of the bounds variable, or None to look it up via</span>
+<span class="sd">        ``coord.attrs['bounds']``.</span>
+<span class="sd">    ds : xarray.Dataset or None</span>
+<span class="sd">        Dataset that may contain the bounds variable.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray or None</span>
+<span class="sd">        Shape ``(n, 2)`` bounds array, or None if not found.</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">bounds_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="s1">'attrs'</span><span class="p">):</span>
+        <span class="n">bounds_name</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'bounds'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bounds_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">bounds_name</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ds</span><span class="p">[</span><span class="n">bounds_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="make_coord">
+<a class="viewcode-back" href="../../../API/generated/act.transform.make_coord.html#act.transform.make_coord">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_coord</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'time'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Create a coordinate DataArray for datetimes or numeric steps.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start : int, float, str, numpy.datetime64, or pandas.Timestamp</span>
+<span class="sd">        Start value (datetime-like or numeric).</span>
+<span class="sd">    stop : int, float, str, numpy.datetime64, or pandas.Timestamp</span>
+<span class="sd">        Stop value (datetime-like or numeric).</span>
+<span class="sd">    freq : int, float, or str</span>
+<span class="sd">        Frequency step. For datetimes, a pandas frequency string</span>
+<span class="sd">        (e.g. ``'30min'``, ``'1h'``). For numeric coordinates, a float or</span>
+<span class="sd">        int step size.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the coordinate and dimension (default ``'time'``).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xarray.DataArray</span>
+<span class="sd">        Coordinate array with ``name`` as its dimension and coordinate.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A datetime coordinate, from datetime-like endpoints and a pandas frequency</span>
+<span class="sd">    string. The endpoints may be strings, ``numpy.datetime64``, or</span>
+<span class="sd">    ``pandas.Timestamp``.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        target_time = act.transform.make_coord('2023-01-01', '2023-01-02', '30min')</span>
+
+<span class="sd">    A numeric coordinate, from numeric endpoints and a numeric step. Note that</span>
+<span class="sd">    the numeric form excludes ``stop``, following ``numpy.arange``, while the</span>
+<span class="sd">    datetime form includes it, following ``pandas.date_range``.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        target_height = act.transform.make_coord(0.0, 5000.0, 250.0, name='height')</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_datetime_like</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">'year'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">'month'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">'day'</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">_is_datetime_like</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_is_datetime_like</span><span class="p">(</span><span class="n">stop</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">values</span><span class="p">},</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="transform_dataset">
+<a class="viewcode-back" href="../../../API/generated/act.transform.transform_dataset.html#act.transform.transform_dataset">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_dataset</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">qc_prefix</span><span class="o">=</span><span class="s1">'qc_'</span><span class="p">,</span>
+    <span class="n">qc_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">per_var_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">per_var_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Apply a transform to every variable in ``ds`` that contains ``dim``.</span>
+
+<span class="sd">    For each variable, if a companion QC variable named ``{qc_prefix}&lt;var&gt;``</span>
+<span class="sd">    exists in the dataset it is used automatically.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        Input Dataset.</span>
+<span class="sd">    target : xarray.DataArray or numpy.ndarray, optional</span>
+<span class="sd">        Target coordinate values. Mutually exclusive with ``target_ds``.</span>
+<span class="sd">    dim : str</span>
+<span class="sd">        Dimension name along which to transform.</span>
+<span class="sd">    transform : {"bin_average", "interpolate", "subsample"}</span>
+<span class="sd">        Default transform to apply to every matching variable.</span>
+<span class="sd">    qc_prefix : str</span>
+<span class="sd">        Prefix used to find companion QC variables (default ``"qc_"``).</span>
+<span class="sd">    qc_mask : int, str, list[str], or None</span>
+<span class="sd">        Integer bitmask, QC assessment name, or None. An assessment name is</span>
+<span class="sd">        matched against each QC companion's ``flag_assessments`` metadata;</span>
+<span class="sd">        None selects ``"Bad"``, which requires ``flag_masks`` metadata on</span>
+<span class="sd">        each QC companion (a ``ValueError`` is raised otherwise).</span>
+<span class="sd">    target_ds : xarray.Dataset, optional</span>
+<span class="sd">        Source dataset containing the target coordinate. If its coordinate</span>
+<span class="sd">        declares a CF bounds variable, that target-grid bounds variable is</span>
+<span class="sd">        included in the output; input bounds are only consumed for the</span>
+<span class="sd">        transform and are not copied.</span>
+<span class="sd">    per_var_transform : dict, optional</span>
+<span class="sd">        Mapping of variable name to a transform override.</span>
+<span class="sd">    per_var_kwargs : dict, optional</span>
+<span class="sd">        Mapping of variable name to keyword argument overrides.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments forwarded to the underlying transform</span>
+<span class="sd">        (e.g. ``t_range``, ``std_bad_max``).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xarray.Dataset</span>
+<span class="sd">        New dataset with transformed variables on the target coordinate.</span>
+<span class="sd">        Each transformed variable has a companion QC variable included.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    act.transform.bin_average : Bin-average a single DataArray.</span>
+<span class="sd">    act.transform.interpolate : Interpolate a single DataArray.</span>
+<span class="sd">    act.transform.subsample : Subsample a single DataArray.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Bin-average every time-dependent variable onto a 30-minute time base. Each</span>
+<span class="sd">    variable's ``qc_&lt;var&gt;`` companion is found and honored automatically, and for</span>
+<span class="sd">    ``bin_average`` the coordinate's CF ``bounds`` variable is picked up as</span>
+<span class="sd">    ``input_bounds``. The bounds variable itself is not transformed.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import act</span>
+
+<span class="sd">        ds = act.io.arm.read_arm_netcdf(filename, cleanup_qc=True)</span>
+<span class="sd">        target = act.transform.make_coord('2023-03-01', '2023-03-02', '30min')</span>
+
+<span class="sd">        new_ds = act.transform.transform_dataset(</span>
+<span class="sd">            ds, target=target, dim='time', transform='bin_average', qc_mask=4</span>
+<span class="sd">        )</span>
+
+<span class="sd">    One transform is rarely right for every variable in a file, which is the</span>
+<span class="sd">    usual reason to use this instead of looping yourself. ``per_var_transform``</span>
+<span class="sd">    overrides the transform for named variables and ``per_var_kwargs`` overrides</span>
+<span class="sd">    their keyword arguments -- here a categorical present-weather code is</span>
+<span class="sd">    subsampled rather than averaged, since averaging two codes yields a value</span>
+<span class="sd">    that corresponds to no weather condition.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        new_ds = act.transform.transform_dataset(</span>
+<span class="sd">            ds,</span>
+<span class="sd">            target=target,</span>
+<span class="sd">            dim='time',</span>
+<span class="sd">            transform='bin_average',  # default for everything else</span>
+<span class="sd">            qc_mask=4,</span>
+<span class="sd">            per_var_transform={'pwd_pw_code_inst': 'subsample'},</span>
+<span class="sd">            per_var_kwargs={'wspd_arith_mean': {'std_ind_max': 0.8}},</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Transform onto another Dataset's coordinate instead of an explicit target,</span>
+<span class="sd">    which is convenient for putting two datastreams on a common time base.</span>
+<span class="sd">    ``target`` and ``target_ds`` are mutually exclusive.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        new_ds = act.transform.transform_dataset(</span>
+<span class="sd">            ds, target_ds=other_ds, dim='time', transform='interpolate'</span>
+<span class="sd">        )</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The 'dim' parameter is required."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The 'transform' parameter is required."</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">target_ds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must provide either 'target' or 'target_ds'"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">target_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot provide both 'target' and 'target_ds'"</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_ds</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dimension '</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">' not found in target_ds"</span><span class="p">)</span>
+        <span class="n">target_da</span> <span class="o">=</span> <span class="n">target_ds</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">target_da</span> <span class="o">=</span> <span class="n">target</span>
+
+    <span class="c1"># A coordinate's bounds attribute is valid in the output only when its</span>
+    <span class="c1"># referenced variable describes the output grid. Source bounds are used</span>
+    <span class="c1"># for bin averaging below, but must not be left as dangling references.</span>
+    <span class="n">target_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">target_bounds_name</span> <span class="o">=</span> <span class="n">target_da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'bounds'</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target_da</span><span class="p">,</span> <span class="s1">'attrs'</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">target_bounds_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+        <span class="n">target_bounds_name</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'bounds'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">target_bounds_name</span> <span class="ow">in</span> <span class="n">target_ds</span><span class="p">:</span>
+        <span class="n">target_bounds</span> <span class="o">=</span> <span class="n">target_ds</span><span class="p">[</span><span class="n">target_bounds_name</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">target_bounds_name</span> <span class="ow">and</span> <span class="n">transform</span> <span class="o">==</span> <span class="s1">'bin_average'</span><span class="p">:</span>
+        <span class="n">explicit_bounds</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'output_bounds'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">explicit_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">target_bounds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="n">explicit_bounds</span><span class="p">,</span>
+                <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="s1">'bound'</span><span class="p">),</span>
+                <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="n">dim</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">target_da</span><span class="p">)},</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">target_bounds_name</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target_bounds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target_da</span><span class="p">,</span> <span class="s1">'attrs'</span><span class="p">):</span>
+        <span class="n">target_da</span> <span class="o">=</span> <span class="n">target_da</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">target_da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'bounds'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">_transform_fn</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'bin_average'</span><span class="p">:</span> <span class="n">bin_average</span><span class="p">,</span>
+        <span class="s1">'interpolate'</span><span class="p">:</span> <span class="n">interpolate</span><span class="p">,</span>
+        <span class="s1">'subsample'</span><span class="p">:</span> <span class="n">subsample</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">result_vars</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">per_var_transform</span> <span class="o">=</span> <span class="n">per_var_transform</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">per_var_kwargs</span> <span class="o">=</span> <span class="n">per_var_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="c1"># CF bounds variables describe the coordinate cells rather than measured</span>
+    <span class="c1"># data, so they are consumed as bounds below and never transformed. They</span>
+    <span class="c1"># are also not necessarily numeric -- read_arm_netcdf leaves them as</span>
+    <span class="c1"># cftime objects -- so feeding them to a kernel would fail outright.</span>
+    <span class="n">bounds_vars</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'bounds'</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="s1">'bounds'</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'attrs'</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">data_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">bounds_vars</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+            <span class="n">result_vars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Skip variables that are themselves QC companions</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">qc_prefix</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">qc_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">qc_prefix</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">qc_da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">qc_name</span><span class="p">]</span> <span class="k">if</span> <span class="n">qc_name</span> <span class="ow">in</span> <span class="n">ds</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">var_transform</span> <span class="o">=</span> <span class="n">per_var_transform</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">var_transform</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_transform_fn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Unknown transform '</span><span class="si">{</span><span class="n">var_transform</span><span class="si">}</span><span class="s2">' for variable '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">'. "</span>
+                <span class="sa">f</span><span class="s1">'Must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">_transform_fn</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">_transform_fn</span><span class="p">[</span><span class="n">var_transform</span><span class="p">]</span>
+
+        <span class="c1"># Combine global kwargs and per-variable kwargs</span>
+        <span class="n">var_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">per_var_kwargs</span><span class="p">:</span>
+            <span class="n">var_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">per_var_kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+        <span class="c1"># Auto-detect bounds if bin_average is used and bounds aren't explicitly provided</span>
+        <span class="k">if</span> <span class="n">var_transform</span> <span class="o">==</span> <span class="s1">'bin_average'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">'input_bounds'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">var_kwargs</span> <span class="ow">and</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+                <span class="n">ib</span> <span class="o">=</span> <span class="n">_extract_bounds</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">var_kwargs</span><span class="p">[</span><span class="s1">'input_bounds'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ib</span>
+
+            <span class="k">if</span> <span class="s1">'output_bounds'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">var_kwargs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">target_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">target_ds</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
+                    <span class="n">ob</span> <span class="o">=</span> <span class="n">_extract_bounds</span><span class="p">(</span><span class="n">target_ds</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">target_ds</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ob</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">var_kwargs</span><span class="p">[</span><span class="s1">'output_bounds'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ob</span>
+
+        <span class="n">out</span><span class="p">,</span> <span class="n">out_qc</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">target_da</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc</span><span class="o">=</span><span class="n">qc_da</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">var_kwargs</span><span class="p">)</span>
+        <span class="c1"># apply_transform also preserves source coordinate attrs. Override its</span>
+        <span class="c1"># bounds reference here so the returned coordinate cannot point at an</span>
+        <span class="c1"># omitted source-grid bounds variable.</span>
+        <span class="k">if</span> <span class="n">target_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'bounds'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">target_bounds_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'bounds'</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_bounds_name</span>
+        <span class="n">result_vars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="n">result_vars</span><span class="p">[</span><span class="n">qc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_qc</span>
+
+    <span class="k">if</span> <span class="n">target_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result_vars</span><span class="p">[</span><span class="n">target_bounds_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_bounds</span>
+
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">result_vars</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Transform">
+<a class="viewcode-back" href="../../../API/generated/act.transform.Transform.html#act.transform.Transform">[docs]</a>
+<span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s1">'transform'</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Transform</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Xarray Dataset accessor exposing the ``act.transform`` kernels.</span>
+
+<span class="sd">    Every method here forwards straight through to the corresponding</span>
+<span class="sd">    module-level function (:func:`act.transform.bin_average`,</span>
+<span class="sd">    :func:`act.transform.interpolate`, :func:`act.transform.subsample`,</span>
+<span class="sd">    :func:`act.transform.transform_dataset`) using ``self._ds[var]`` in</span>
+<span class="sd">    place of an explicit DataArray argument. No transform logic is</span>
+<span class="sd">    duplicated here.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The accessor takes variable *names* and looks them up in the Dataset, where</span>
+<span class="sd">    the module-level functions take :class:`xarray.DataArray` objects. Note that</span>
+<span class="sd">    the QC argument changes name accordingly: ``qc_var_name`` here versus ``qc``</span>
+<span class="sd">    on the functions.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import act</span>
+
+<span class="sd">        ds = act.io.arm.read_arm_netcdf(filename, cleanup_qc=True)</span>
+<span class="sd">        target = act.transform.make_coord('2023-03-01', '2023-03-02', '30min')</span>
+
+<span class="sd">        result, result_qc = ds.transform.bin_average(</span>
+<span class="sd">            'temp_mean', target, dim='time', qc_var_name='qc_temp_mean', qc_mask=4</span>
+<span class="sd">        )</span>
+
+<span class="sd">    These two calls are equivalent; the accessor forwards straight to the</span>
+<span class="sd">    function, so neither form is more capable than the other.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        result, result_qc = ds.transform.interpolate('temp_mean', target, dim='time')</span>
+
+<span class="sd">        result, result_qc = act.transform.interpolate(ds['temp_mean'], target, dim='time')</span>
+
+<span class="sd">    Any extra keyword arguments are passed through to the underlying function,</span>
+<span class="sd">    and ``transform_dataset`` takes every argument except ``ds`` itself.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        result, result_qc = ds.transform.bin_average(</span>
+<span class="sd">            'wspd_arith_mean', target, dim='time', std_ind_max=0.8</span>
+<span class="sd">        )</span>
+
+<span class="sd">        new_ds = ds.transform.transform_dataset(</span>
+<span class="sd">            target=target, dim='time', transform='bin_average', qc_mask=4</span>
+<span class="sd">        )</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span>
+
+<div class="viewcode-block" id="Transform.bin_average">
+<a class="viewcode-back" href="../../../API/generated/act.transform.Transform.bin_average.html#act.transform.Transform.bin_average">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin_average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Bin-average ``self._ds[var_name]`` onto ``target``. See :func:`act.transform.bin_average`."""</span>
+        <span class="n">qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">bin_average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc</span><span class="o">=</span><span class="n">qc</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Transform.interpolate">
+<a class="viewcode-back" href="../../../API/generated/act.transform.Transform.interpolate.html#act.transform.Transform.interpolate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Interpolate ``self._ds[var_name]`` onto ``target``. See :func:`act.transform.interpolate`."""</span>
+        <span class="n">qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc</span><span class="o">=</span><span class="n">qc</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Transform.subsample">
+<a class="viewcode-back" href="../../../API/generated/act.transform.Transform.subsample.html#act.transform.Transform.subsample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subsample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc_var_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Subsample ``self._ds[var_name]`` onto ``target``. See :func:`act.transform.subsample`."""</span>
+        <span class="n">qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">qc_var_name</span><span class="p">]</span> <span class="k">if</span> <span class="n">qc_var_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">subsample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">[</span><span class="n">var_name</span><span class="p">],</span> <span class="n">target</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">qc</span><span class="o">=</span><span class="n">qc</span><span class="p">,</span> <span class="n">qc_mask</span><span class="o">=</span><span class="n">qc_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Transform.transform_dataset">
+<a class="viewcode-back" href="../../../API/generated/act.transform.Transform.transform_dataset.html#act.transform.Transform.transform_dataset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Apply a transform to every matching variable in this Dataset. See :func:`act.transform.transform_dataset`."""</span>
+        <span class="k">return</span> <span class="n">transform_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+<div class="section ablog__blog_comments">
+   
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2018-2024, ACT Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
