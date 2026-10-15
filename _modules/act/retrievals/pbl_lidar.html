@@ -25,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
@@ -40,10 +40,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/act-theme.css?v=e2ee527d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
     <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -75,6 +75,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.3" />
   
@@ -467,7 +468,9 @@
 
 <div class="viewcode-block" id="calculate_gradient_pbl">
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_gradient_pbl.html#act.retrievals.calculate_gradient_pbl">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">calculate_gradient_pbl</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="s2">"beta_att"</span><span class="p">,</span> <span class="n">dis_parm</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span> <span class="n">min_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">smooth_dis</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_gradient_pbl</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="s2">"beta_att"</span><span class="p">,</span> <span class="n">dis_parm</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span> <span class="n">smooth_dis</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR</span>
 <span class="sd">    through a gradient method, where the PBL height is identified through the</span>
@@ -488,10 +491,15 @@
 <span class="sd">        Variable in the dataset to compute gradient on (e.g., attenuated backscatter).</span>
 <span class="sd">    dis_parm : str</span>
 <span class="sd">        Distance-from-instrument coordinate (e.g., 'range' or 'height').</span>
-<span class="sd">    min_height : float</span>
-<span class="sd">        Minimum allowed PBL height in meters.</span>
 <span class="sd">    smooth_dis : int</span>
 <span class="sd">        Number of bins to average vertical profile over to smooth data</span>
+<span class="sd">    min_height : float</span>
+<span class="sd">        Minimum allowed PBL height in meters.</span>
+<span class="sd">    max_height : float or None</span>
+<span class="sd">        Maximum allowed PBL height in meters. Restricts the search for the</span>
+<span class="sd">        sharpest negative gradient to below this height, so that an elevated</span>
+<span class="sd">        cloud base or a noisy return aloft is not mistaken for the PBL top.</span>
+<span class="sd">        If None, no upper bound is applied.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -518,25 +526,42 @@
 <span class="sd">    """</span>
     <span class="c1"># smooth the data within the range bins (~20m bins)</span>
     <span class="n">smoothed</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">parm</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">({</span><span class="n">dis_parm</span><span class="p">:</span> <span class="n">smooth_dis</span><span class="p">},</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">smoothed</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># 1D height coordinate</span>
+
+    <span class="c1"># Restrict the search for the PBL-top gradient to the valid height window.</span>
+    <span class="c1"># Bounding below (min_height) keeps near-surface noise from masking a</span>
+    <span class="c1"># genuine transition higher up in the profile, and bounding above</span>
+    <span class="c1"># (max_height, if given) keeps an elevated cloud base or noisy return</span>
+    <span class="c1"># aloft from being mistaken for the PBL top.</span>
+    <span class="n">in_range</span> <span class="o">=</span> <span class="n">height</span> <span class="o">&gt;</span> <span class="n">min_height</span>
+    <span class="k">if</span> <span class="n">max_height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">in_range</span> <span class="o">&amp;=</span> <span class="n">height</span> <span class="o">&lt;=</span> <span class="n">max_height</span>
+    <span class="n">search_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">in_range</span><span class="p">)</span>
 
     <span class="c1"># Loop over time to find the sharpest negative gradient</span>
     <span class="n">pbl_heights</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
         <span class="n">profile</span> <span class="o">=</span> <span class="n">smoothed</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># 1D backscatter profile</span>
-        <span class="n">height</span> <span class="o">=</span> <span class="n">smoothed</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># 1D height coordinate</span>
 
         <span class="c1"># Compute first derivative</span>
         <span class="n">p_grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="n">p_grad</span><span class="p">[</span><span class="n">search_idx</span><span class="p">]</span>
 
-        <span class="c1"># Find the first negative gradient</span>
-        <span class="n">indice</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p_grad</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># Choose the first peak above a certain altitude (e.g., ignore surface noise)</span>
-        <span class="k">if</span> <span class="n">height</span><span class="p">[</span><span class="n">indice</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_height</span><span class="p">:</span>
-            <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">height</span><span class="p">[</span><span class="n">indice</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">search_idx</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">window</span><span class="p">)):</span>
             <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># The PBL height is identified as the height of the sharpest (most</span>
+        <span class="c1"># negative) gradient within the valid height window -- the steepest</span>
+        <span class="c1"># drop in backscatter, marking the transition out of the</span>
+        <span class="c1"># aerosol-laden mixed layer.</span>
+        <span class="n">local_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">window</span><span class="p">[</span><span class="n">local_idx</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># No negative (decreasing) gradient found in the window.</span>
+            <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">height</span><span class="p">[</span><span class="n">search_idx</span><span class="p">[</span><span class="n">local_idx</span><span class="p">]])</span>
 
     <span class="c1"># Add result to dataset</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">pbl_gradient</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">pbl_heights</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="s2">"time"</span><span class="p">))</span>
@@ -556,7 +581,13 @@
 <div class="viewcode-block" id="calculate_modified_gradient_pbl">
 <a class="viewcode-back" href="../../../API/generated/act.retrievals.calculate_modified_gradient_pbl.html#act.retrievals.calculate_modified_gradient_pbl">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_modified_gradient_pbl</span><span class="p">(</span>
-    <span class="n">ds</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="s2">"beta_att"</span><span class="p">,</span> <span class="n">dis_parm</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span> <span class="n">min_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">smooth_dis</span><span class="o">=</span><span class="mi">5</span>
+    <span class="n">ds</span><span class="p">,</span>
+    <span class="n">parm</span><span class="o">=</span><span class="s2">"beta_att"</span><span class="p">,</span>
+    <span class="n">dis_parm</span><span class="o">=</span><span class="s2">"range"</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">smooth_dis</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">min_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">max_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR</span>
@@ -581,12 +612,17 @@
 <span class="sd">        Variable in the dataset to compute gradient on (e.g., attenuated backscatter).</span>
 <span class="sd">    dis_parm : str</span>
 <span class="sd">        Distance-from-instrument coordinate (e.g., 'range' or 'height').</span>
-<span class="sd">    min_height : float</span>
-<span class="sd">        Minimum allowed PBL height in meters.</span>
 <span class="sd">    threshold : float</span>
 <span class="sd">        Prominence value to use within scipy.signal.find_peaks</span>
 <span class="sd">    smooth_dis : int</span>
 <span class="sd">        Number of bins to average vertical profile over to smooth data</span>
+<span class="sd">    min_height : float</span>
+<span class="sd">        Minimum allowed PBL height in meters.</span>
+<span class="sd">    max_height : float or None</span>
+<span class="sd">        Maximum allowed PBL height in meters. Restricts candidate inflection</span>
+<span class="sd">        points to below this height, so that an elevated cloud base or a</span>
+<span class="sd">        noisy return aloft is not mistaken for the PBL top. If None, no</span>
+<span class="sd">        upper bound is applied.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -608,13 +644,13 @@
 <span class="sd">    """</span>
     <span class="c1"># smooth the data within the range bins (~20m bins)</span>
     <span class="n">smoothed</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">parm</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">({</span><span class="n">dis_parm</span><span class="p">:</span> <span class="n">smooth_dis</span><span class="p">},</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">smoothed</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># 1D height coordinate</span>
 
     <span class="c1"># Loop over time to get peaks in second derivative</span>
     <span class="n">pbl_heights</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
         <span class="n">profile</span> <span class="o">=</span> <span class="n">smoothed</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># 1D backscatter profile</span>
-        <span class="n">height</span> <span class="o">=</span> <span class="n">smoothed</span><span class="p">[</span><span class="n">dis_parm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># 1D height coordinate</span>
 
         <span class="c1"># Compute first and second derivatives</span>
         <span class="n">d1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
@@ -625,8 +661,14 @@
         <span class="n">peaks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="o">-</span><span class="n">d2</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">prominence</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">peaks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># Choose the first peak above a certain altitude (e.g., ignore surface noise)</span>
-            <span class="n">valid_peaks</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">peaks</span> <span class="k">if</span> <span class="n">height</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_height</span><span class="p">]</span>
+            <span class="c1"># Choose the first peak within the valid height window (e.g.,</span>
+            <span class="c1"># ignore surface noise and, if max_height is set, elevated</span>
+            <span class="c1"># cloud/noise aloft)</span>
+            <span class="n">valid_peaks</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">p</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">peaks</span>
+                <span class="k">if</span> <span class="n">height</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_height</span> <span class="ow">and</span> <span class="p">(</span><span class="n">max_height</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">height</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_height</span><span class="p">)</span>
+            <span class="p">]</span>
             <span class="k">if</span> <span class="n">valid_peaks</span><span class="p">:</span>
                 <span class="n">pbl_heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">height</span><span class="p">[</span><span class="n">valid_peaks</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1334,8 +1376,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1368,7 +1410,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
 </p></div>
       
     </div>

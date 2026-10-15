@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -41,10 +41,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/act-theme.css?v=e2ee527d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -78,6 +78,7 @@
     <link rel="next" title="act.retrievals.calculate_irradiance_stats" href="act.retrievals.calculate_irradiance_stats.html" />
     <link rel="prev" title="act.retrievals.calculate_dsh_from_dsdh_sdn" href="act.retrievals.calculate_dsh_from_dsdh_sdn.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.3" />
   
@@ -818,7 +819,7 @@
 <h1>act.retrievals.calculate_gradient_pbl<a class="headerlink" href="#act-retrievals-calculate-gradient-pbl" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="act.retrievals.calculate_gradient_pbl">
-<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_gradient_pbl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'beta_att'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dis_parm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'range'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_dis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/pbl_lidar.html#calculate_gradient_pbl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_gradient_pbl" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">act.retrievals.</span></span><span class="sig-name descname"><span class="pre">calculate_gradient_pbl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'beta_att'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dis_parm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'range'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_dis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/act/retrievals/pbl_lidar.html#calculate_gradient_pbl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#act.retrievals.calculate_gradient_pbl" title="Link to this definition">#</a></dt>
 <dd><p>Estimation of the Planetary Boundary Layer (PBL) height from a backscatter LIDAR
 through a gradient method, where the PBL height is identified through the
 sharpest negative gradient.</p>
@@ -833,8 +834,12 @@ environmental conditions.</p>
 <li><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Dataset containing the zenith-pointing remote sensing data.</p></li>
 <li><p><strong>parm</strong> (<em>str</em>) – Variable in the dataset to compute gradient on (e.g., attenuated backscatter).</p></li>
 <li><p><strong>dis_parm</strong> (<em>str</em>) – Distance-from-instrument coordinate (e.g., ‘range’ or ‘height’).</p></li>
-<li><p><strong>min_height</strong> (<em>float</em>) – Minimum allowed PBL height in meters.</p></li>
 <li><p><strong>smooth_dis</strong> (<em>int</em>) – Number of bins to average vertical profile over to smooth data</p></li>
+<li><p><strong>min_height</strong> (<em>float</em>) – Minimum allowed PBL height in meters.</p></li>
+<li><p><strong>max_height</strong> (<em>float or None</em>) – Maximum allowed PBL height in meters. Restricts the search for the
+sharpest negative gradient to below this height, so that an elevated
+cloud base or a noisy return aloft is not mistaken for the PBL top.
+If None, no upper bound is applied.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -937,8 +942,8 @@ with Validation by UAV Measurements. Aerosol and Air Quality Research,
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -971,7 +976,7 @@ with Validation by UAV Measurements. Aerosol and Air Quality Research,
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
 </p></div>
       
     </div>
