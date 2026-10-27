@@ -55,6 +55,9 @@ def _bilinear_interpolate_kernel_impl(
             sign = -1
         else:
             return -5
+    elif index[0] > index[1]:
+        # A single target has no direction of its own; use the input order.
+        sign = -1
 
     i = 0
     for j in range(nt):

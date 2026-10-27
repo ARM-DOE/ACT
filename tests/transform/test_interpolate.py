@@ -109,3 +109,11 @@ def test_matched_descending_order():
     )
     np.testing.assert_allclose(result.values, [15, 5])
     np.testing.assert_array_equal(qc.values, [0, 0])
+
+
+def test_single_target_with_descending_input_order():
+    result, qc = act.transform.interpolate(
+        _da([20, 10, 0], coord=[2, 1, 0]), [1.5], dim="time"
+    )
+    np.testing.assert_allclose(result.values, [15])
+    np.testing.assert_array_equal(qc.values, [0])
