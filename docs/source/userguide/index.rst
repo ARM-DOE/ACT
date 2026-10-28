@@ -6,6 +6,7 @@ User Guide
    :maxdepth: 1
 
    installation
+   AI_POLICY
    CREATING_ENVIRONMENTS
    usage
    CONTRIBUTING
