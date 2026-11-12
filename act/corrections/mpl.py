@@ -70,6 +70,20 @@ def correct_mpl(
         Xarray dataset containing the corrected values. The original Xarray Dataset
         passed in is modified.
 
+    References
+    ----------
+    Campbell, J. R., D. L. Hlavka, E. J. Welton, C. J. Flynn, D. D. Turner,
+        J. D. Spinhirne, V. S. Scott, and I. H. Hwang, 2002: Full-Time,
+        Eye-Safe Cloud and Aerosol Lidar Observation at Atmospheric Radiation
+        Measurement Program Sites: Instruments and Data Processing. Journal of
+        Atmospheric and Oceanic Technology, 19(4), 431-442.
+        https://doi.org/10.1175/1520-0426(2002)019<0431:FTESCA>2.0.CO;2
+
+    Welton, E. J., and J. R. Campbell, 2002: Micropulse Lidar Signals:
+        Uncertainty Analysis. Journal of Atmospheric and Oceanic Technology,
+        19(12), 2089-2094.
+        https://doi.org/10.1175/1520-0426(2002)019<2089:MLSUA>2.0.CO;2
+
     """
 
     data_dims = ds[co_pol_var_name].dims
