@@ -1021,7 +1021,7 @@ def process_sst_data(sfc_t, sky_t, emis, maxit, tempLow, tempHigh, tol):
         Sea surface temperature
 
     References
-    ---------
+    ----------
     Donlon, C., I.S. Robinson, W. Wimmer, G. Fisher, M. Reynolds, R. Edwards,
     and T.J. Nightingale, 2008: An Infrared Sea Surface Temperature Autonomous
     Radiometer (ISAR) for Deployment aboard Volunteer Observing Ships (VOS).
@@ -1091,7 +1091,7 @@ def sst_from_irt(
         Xarray dataset with Sea surface temperature array inserted
 
     References
-    ---------
+    ----------
     Donlon, C., I.S. Robinson, W. Wimmer, G. Fisher, M. Reynolds, R. Edwards,
     and T.J. Nightingale, 2008: An Infrared Sea Surface Temperature Autonomous
     Radiometer (ISAR) for Deployment aboard Volunteer Observing Ships (VOS).

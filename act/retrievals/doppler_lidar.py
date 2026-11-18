@@ -69,10 +69,10 @@ def compute_winds_from_ppi(
 
     References
     ----------
-    Rob K Newsom, Alan W Brewer, James M Wilczak, Daniel E Wolfe,
-    Steven P Oncley and Julie K Lundquist ; Validating Precision Estimates in
-    Horizontal Wind Measurements from a Doppler Lidar, Atmospheric Measurement
-    Techniques Discussions 2016, 10, 1-30
+    Newsom, R. K., W. A. Brewer, J. M. Wilczak, D. E. Wolfe, S. P. Oncley,
+    and J. K. Lundquist, 2017: Validating precision estimates in horizontal
+    wind measurements from a Doppler lidar. Atmospheric Measurement
+    Techniques, 10(3), 1229-1240. https://doi.org/10.5194/amt-10-1229-2017
 
     """
 
